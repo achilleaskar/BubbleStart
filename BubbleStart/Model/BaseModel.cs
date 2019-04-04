@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BubbleStart.Model
 {
-    public class BaseModel : ObservableObject
+    public class BaseModel : PropertyValidateModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

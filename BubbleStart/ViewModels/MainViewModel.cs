@@ -103,7 +103,7 @@ namespace BubbleStart.ViewModels
         {
             StartingRepository = startingRepository;
 #if DEBUG
-            Helpers.StaticResources.User = new User { Id = 0, Level = 0, UserName = "admin" };
+            Helpers.StaticResources.User = new User { Id = 0, Level = 0, UserName = "admin",Name="Achilleas" };
             RaisePropertyChanged(nameof(MenuVisibility));
 #endif
             if (Helpers.StaticResources.User == null)

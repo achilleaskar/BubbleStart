@@ -16,7 +16,9 @@ namespace BubbleStart.ViewModels
             OpenUsersEditCommand = new RelayCommand(async () => { await OpenUsersWindow(); }, CanEditWindows);
 
             StartingRepository = startingRepository;
+            SearchCustomer_ViewModel = new SearchCustomer_ViewModel(startingRepository);
         }
+        public SearchCustomer_ViewModel SearchCustomer_ViewModel { get; set; }
 
         private bool CanEditWindows()
         {
@@ -42,7 +44,7 @@ namespace BubbleStart.ViewModels
 
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
-             await Task.Delay(0);
+            await SearchCustomer_ViewModel.LoadAsync();
         }
 
         public override async Task ReloadAsync()

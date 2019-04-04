@@ -1,6 +1,8 @@
-﻿using BubbleStart.Model;
+﻿using BubbleStart.Messages;
+using BubbleStart.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
@@ -68,6 +70,25 @@ namespace BubbleStart.Database
         public async Task<IEnumerable<User>> GetAllUsersAsyncSortedByUserName()
         {
             return await Context.Set<User>().OrderBy(x => x.UserName).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Customer>> LoadAllCustomersAsync()
+        {
+            try
+            {
+                return await Context.Set<Customer>()
+                        .Include(c => c.Illness)
+                        .Include(c => c.WeightHistory)
+                        .Include(c => c.ShowUps)
+                        .OrderBy(x => x.SureName).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return null;
+               
+            }
+            finally
+            { }
         }
     }
 }

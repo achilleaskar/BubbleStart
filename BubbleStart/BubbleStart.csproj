@@ -17,6 +17,21 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>0.0.1.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -142,9 +157,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AttachedProperties\PasswordBoxMVVMAttachedProperties.cs" />
+    <Compile Include="Converters\UserToVisibility.cs" />
     <Compile Include="Database\GenericRepository.cs" />
     <Compile Include="Database\MainDatabase.cs" />
+    <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\StaticResources.cs" />
+    <Compile Include="MessageListener.cs" />
     <Compile Include="Messages\ChangeVisibilityMessage.cs" />
     <Compile Include="Messages\LoginLogOutMessage.cs" />
     <Compile Include="Messages\OpenChildWindowCommand.cs" />
@@ -153,10 +171,31 @@
     <Compile Include="Migrations\201904030918422_first2.Designer.cs">
       <DependentUpon>201904030918422_first2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904031803177_lastmin.cs" />
+    <Compile Include="Migrations\201904031803177_lastmin.Designer.cs">
+      <DependentUpon>201904031803177_lastmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904031804593_lastmin1.cs" />
+    <Compile Include="Migrations\201904031804593_lastmin1.Designer.cs">
+      <DependentUpon>201904031804593_lastmin1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904032311581_anotherchance.cs" />
+    <Compile Include="Migrations\201904032311581_anotherchance.Designer.cs">
+      <DependentUpon>201904032311581_anotherchance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904040110224_anotherchance2.cs" />
+    <Compile Include="Migrations\201904040110224_anotherchance2.Designer.cs">
+      <DependentUpon>201904040110224_anotherchance2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\Customer.cs" />
+    <Compile Include="Model\Illness.cs" />
     <Compile Include="Model\INamed.cs" />
+    <Compile Include="Model\PropertyValidateModel.cs" />
+    <Compile Include="Model\ShowUp.cs" />
     <Compile Include="Model\User.cs" />
+    <Compile Include="Model\Weight.cs" />
     <Compile Include="Security\PasswordHashing.cs" />
     <Compile Include="Security\SecureStringManipulation.cs" />
     <Compile Include="ViewModels\AddEditBase.cs" />
@@ -165,10 +204,23 @@
     <Compile Include="ViewModels\MainUserControl_ViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MyViewModelBase.cs" />
+    <Compile Include="ViewModels\SearchCustomer_ViewModel.cs" />
     <Compile Include="ViewModels\UsersManagement_viewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="Views\Login_UserControl.xaml.cs">
+      <DependentUpon>Login_UserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Main_UserControl.xaml.cs">
+      <DependentUpon>Main_UserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SearchCustomers.xaml.cs">
+      <DependentUpon>SearchCustomers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserDetail.xaml.cs">
+      <DependentUpon>UserDetail.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UsersManagement_Window.xaml.cs">
       <DependentUpon>UsersManagement_Window.xaml</DependentUpon>
@@ -194,6 +246,15 @@
     <EmbeddedResource Include="Migrations\201904030918422_first2.resx">
       <DependentUpon>201904030918422_first2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904031804593_lastmin1.resx">
+      <DependentUpon>201904031804593_lastmin1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904032311581_anotherchance.resx">
+      <DependentUpon>201904032311581_anotherchance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904040110224_anotherchance2.resx">
+      <DependentUpon>201904040110224_anotherchance2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -208,7 +269,23 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Login_UserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Main_UserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SearchCustomers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -217,10 +294,30 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Sources\" />
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <SplashScreen Include="Sources\bubble.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
+    </GetAssemblyIdentity>
+    <Exec Command="nuget pack MyApp.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
+    <Exec Command="squirrel --releasify BubbleStart\$(OutDir)BubbleStart.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="BubbleStart.Views.Main_UserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:BubbleStart.Views"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
+             d:DataContext="{d:DesignInstance viewmodels:MainUserControl_ViewModel}"
+             mc:Ignorable="d"
+             Background="White"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:SearchCustomer_ViewModel}">
+            <views:SearchCustomers />
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Menu DockPanel.Dock="Top"
+                  Height="30">
+                <MenuItem Header="Διαχείριση">
+                    <MenuItem Command="{Binding OpenUsersEditCommand}"
+                              Header="Χρήστες"
+                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
+                    <MenuItem Command="{Binding OpenPartnersEditCommand}"
+                              Header="Συνεργάτες"
+                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
+                </MenuItem>
+            </Menu>
+            <StackPanel HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Background="White"
+                        Grid.Column="1"
+                        Height="30"
+                        Orientation="Horizontal">
+                <!--<Border BorderBrush="DimGray"
+                        BorderThickness="1"
+                        Visibility="{Binding IsBusy, Converter={StaticResource booleanToVisibilityConverter}}">
+                    <iconPacks:PackIconFontAwesome Kind="SpinnerSolid"
+                                                   VerticalAlignment="Center"
+                                                   Spin="True"
+                                                   Margin="5" />
+                </Border>-->
+                <Label Content="{Binding UserName}" />
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+
+                <Button Content="Αποσύνδεση"
+                        Margin="5,0"
+                        VerticalAlignment="Center"
+                        Command="{Binding LogOutCommand}" />
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1"
+              VerticalAlignment="Stretch"
+              HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TabControl Grid.Column="1">
+                <TabItem Header="Αναζήτηση Πελάτη">
+                    <ContentControl Content="{Binding SearchCustomer_ViewModel}" />
+                </TabItem>
+
+            </TabControl>
+        </Grid>
+    </Grid>
+</UserControl>

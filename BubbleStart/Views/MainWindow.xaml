@@ -6,12 +6,32 @@
         xmlns:local="clr-namespace:BubbleStart.Views"
         Loaded="MainWindow_OnLoaded"
         mc:Ignorable="d"
+        FontSize="13"
         Height="840"
+        Language="el-Gr"
         Width="1335"
         Closed="Window_Closed"
+        xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
+        xmlns:views="clr-namespace:BubbleStart.Views"
+        d:DataContext="{d:DesignInstance viewmodels:MainViewModel}"
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen">
-    <Grid>
-        
-    </Grid>
+    <Window.IsEnabled>
+        <Binding Path="BindableProperty"
+                 Source="{StaticResource MessageListener}" />
+    </Window.IsEnabled>
+    <Window.Visibility>
+        <Binding Path="Visibility" />
+    </Window.Visibility>
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
+            <views:Login_UserControl />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:MainUserControl_ViewModel}">
+            <views:Main_UserControl />
+        </DataTemplate>
+    </Window.Resources>
+
+    <ContentControl Content="{Binding SelectedViewmodel}"
+                    Grid.Row="1" />
 </Window>

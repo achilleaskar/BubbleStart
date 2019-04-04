@@ -1,0 +1,147 @@
+﻿<UserControl x:Class="BubbleStart.Views.SearchCustomers"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
+             xmlns:models="clr-namespace:BubbleStart.Model"
+             xmlns:views="clr-namespace:BubbleStart.Views"
+             xmlns:helpers="clr-namespace:BubbleStart.Helpers"
+             d:DataContext="{d:DesignInstance viewmodels:SearchCustomer_ViewModel}"
+             mc:Ignorable="d"
+             Background="White"
+             d:DesignHeight="450"
+             d:DesignWidth="900">
+    <!--<UserControl.Resources>
+        <DataTemplate DataType="{x:Type models:Customer}">
+            <views:UserDetail />
+        </DataTemplate>
+    </UserControl.Resources>-->
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <GroupBox Margin="5"
+                  Padding="5"
+                  Header="Αναζήτηση Πελάτη">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Λέξη Κλειδί:" />
+                <TextBox Grid.Row="1"
+                         FontSize="15"
+                         Margin="0 0 0 4"
+                         Text="{Binding SearchTerm, Delay=100,UpdateSourceTrigger=PropertyChanged}" />
+                <DataGrid ItemsSource="{Binding Customers}"
+                          Grid.Row="2"
+                          SelectedItem="{Binding SelectedCustomer}"
+                          CanUserAddRows="False"
+                          VirtualizingStackPanel.VirtualizationMode="Standard"
+                          IsReadOnly="True"
+                          CanUserDeleteRows="False"
+                          AutoGenerateColumns="False">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="{x:Type DataGridRow}">
+                            <Setter Property="IsSelected"
+                                    Value="{Binding IsSelected,
+                             UpdateSourceTrigger=PropertyChanged}" />
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+
+                        <DataGridTextColumn Header="Όνομα"
+                                            Binding="{Binding Name}" />
+                        <DataGridTextColumn Header="Επίθετο"
+                                            Binding="{Binding SureName}" />
+                        <DataGridTextColumn Header="Ηλικία"
+                                            Binding="{Binding Age}" />
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button>Λεπτομέριες</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding DataContext.ShowedUpCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}"
+                                            Background="LightBlue">Προσήλθε</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="3">
+                    <Button Content="Δημιουργία Νέου"
+                            Margin="5"
+                            Command="{Binding CreateNewCustomerCommand}" />
+                    <Button Content="Αποθήκευση"
+                            Margin="5"
+                            Command="{Binding SaveCustomerCommand}" />
+                </StackPanel>
+                <!--row 9-->
+            </Grid>
+        </GroupBox>
+
+        <TabControl Grid.Column="1">
+            <TabItem Header="Τρέχουσα Κατάσταση">
+                <DataGrid ItemsSource="{Binding CustomersPracticing}"
+                          SelectedItem="{Binding SelectedPracticingCustomer}"
+                          CanUserAddRows="False"
+                          VirtualizingStackPanel.VirtualizationMode="Standard"
+                          IsReadOnly="True"
+                          CanUserDeleteRows="False"
+                          AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+
+                        <DataGridTextColumn Header="Επίθετο"
+                                            Binding="{Binding SureName}" />
+                        <DataGridTextColumn Header="Όνομα"
+                                            Binding="{Binding Name}" />
+                        <DataGridTextColumn Header="Ηλικία"
+                                            Binding="{Binding Age}" />
+                        <DataGridTextColumn Header="Διάρκεια"
+                                            Width="60"
+                                            Binding="{Binding Duration,  StringFormat={}{0:hh}:{0:mm}, FallbackValue=00:00}" />
+                        <DataGridTemplateColumn Header="Αποχώρηση">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="10"
+                                                Command="{Binding SetPriceCommand}" CommandParameter="10" />
+                                        <Button Content="20"
+                                                Margin="5 0"
+                                                Command="{Binding SetPriceCommand}"
+                                                CommandParameter="20" />
+                                        <Button Content="30"
+                                                Command="{Binding SetPriceCommand}"
+                                                CommandParameter="30" />
+                                        <Button Content="40"
+                                                Margin="5 0"
+                                                Command="{Binding SetPriceCommand}"
+                                                CommandParameter="40" />
+                                        <TextBox Text="{Binding LastShowUp.Amount, StringFormat=c0,UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="30" />
+                                        <Button Content="Πληρωμή"
+                                                Command="{Binding DataContext.PaymentCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
