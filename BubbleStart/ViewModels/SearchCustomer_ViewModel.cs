@@ -3,7 +3,6 @@ using BubbleStart.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -13,37 +12,72 @@ namespace BubbleStart.ViewModels
 {
     public class SearchCustomer_ViewModel : MyViewModelBase
     {
+        #region Constructors
+
         public SearchCustomer_ViewModel(GenericRepository Context)
         {
             this.Context = Context;
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
             SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); });
             ShowedUpCommand = new RelayCommand(async () => { await CustomerShowedUp(); });
+            BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
+
             CustomersPracticing = new ObservableCollection<Customer>();
             PaymentCommand = new RelayCommand<int>(async (obj) => { await MakePayment(obj); });
             CreateNewCustomer();
         }
 
-        private async Task MakePayment(int obj)
+
+        private void BodyPartChanged(string selectedIndex)
         {
-            if (obj == 0)
-            {
-                SelectedPracticingCustomer.LastShowUp.Paid = false;
-
-            }
-            else
-            {
-                SelectedPracticingCustomer.LastShowUp.Paid = true;
-
-            }
-            SelectedPracticingCustomer.IsPracticing = false;
-            Customers.Add(SelectedPracticingCustomer);
-            CustomersPracticing.Remove(SelectedPracticingCustomer);
-            await Context.SaveAsync();
+            _SelectedCustomer.Illness.SelectedIllnessPropertyName = selectedIndex;
         }
+
+        #endregion Constructors
+
+        #region Fields
+
+        private ObservableCollection<Customer> _Customers;
 
         private ObservableCollection<Customer> _CustomersPracticing;
 
+        private string _SearchTerm;
+
+        private Customer _SelectedCustomer;
+
+        private Customer _SelectedPracticingCustomer;
+
+        #endregion Fields
+
+        #region Properties
+
+        public GenericRepository Context { get; }
+
+        public RelayCommand CreateNewCustomerCommand { get; set; }
+
+        public ObservableCollection<Customer> Customers
+        {
+            get
+            {
+                return _Customers;
+            }
+
+            set
+            {
+                if (_Customers == value)
+                {
+                    return;
+                }
+
+                _Customers = value;
+                CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
+                CustomersCollectionView.Filter = CustomerFilter;
+                CustomersCollectionView.SortDescriptions.Add(new SortDescription(nameof(Customer.SureName), ListSortDirection.Ascending));
+                RaisePropertyChanged();
+            }
+        }
+
+        public ICollectionView CustomersCollectionView { get; set; }
 
         public ObservableCollection<Customer> CustomersPracticing
         {
@@ -66,67 +100,28 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        private async Task CustomerShowedUp()
-        {
-            if (SelectedCustomer != null)
-            {
-                SelectedCustomer.ShowedUp(true);
-                CustomersPracticing.Add(SelectedCustomer);
-                CustomersCollectionView.Refresh();
-                await Context.SaveAsync();
-            }
-        }
+        public ICollectionView CustomersPracticingCollectionView { get; set; }
 
-        private async Task SaveCustomer()
-        {
-            Mouse.OverrideCursor = Cursors.Wait;
-            if (SelectedCustomer != null)
-            {
-                if (SelectedCustomer.Id > 0)
-                {
-                    await Context.SaveAsync();
-                }
-                else
-                {
-                    Context.Add(SelectedCustomer);
-                    await Context.SaveAsync();
-                }
-            }
-            Mouse.OverrideCursor = Cursors.Arrow;
-        }
-
-        private void CreateNewCustomer()
-        {
-            SelectedCustomer = new Customer();
-        }
-
-        public RelayCommand CreateNewCustomerCommand { get; set; }
         public RelayCommand<int> PaymentCommand { get; set; }
+
         public RelayCommand SaveCustomerCommand { get; set; }
 
-        private Customer _SelectedCustomer;
-
-
-
-
-        private Customer _SelectedPracticingCustomer;
-
-
-        public Customer SelectedPracticingCustomer
+        public string SearchTerm
         {
             get
             {
-                return _SelectedPracticingCustomer;
+                return _SearchTerm;
             }
 
             set
             {
-                if (_SelectedPracticingCustomer == value)
+                if (_SearchTerm == value)
                 {
                     return;
                 }
-
-                _SelectedPracticingCustomer = value;
+                _SearchTerm = value;
+                if (CustomersCollectionView != null)
+                    CustomersCollectionView.Refresh();
                 RaisePropertyChanged();
             }
         }
@@ -153,71 +148,37 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public ICollectionView CustomersCollectionView { get; set; }
-        public ICollectionView CustomersPracticingCollectionView { get; set; }
-
-        private string _SearchTerm;
-
-        public string SearchTerm
+        public Customer SelectedPracticingCustomer
         {
             get
             {
-                return _SearchTerm;
+                return _SelectedPracticingCustomer;
             }
 
             set
             {
-                if (_SearchTerm == value)
+                if (_SelectedPracticingCustomer == value)
                 {
                     return;
                 }
-                _SearchTerm = value;
-                if (CustomersCollectionView != null)
-                    CustomersCollectionView.Refresh();
+
+                _SelectedPracticingCustomer = value;
                 RaisePropertyChanged();
             }
         }
 
         public RelayCommand ShowedUpCommand { get; set; }
 
-        private ObservableCollection<Customer> _Customers;
+        #endregion Properties
 
-        public ObservableCollection<Customer> Customers
-        {
-            get
-            {
-                return _Customers;
-            }
-
-            set
-            {
-                if (_Customers == value)
-                {
-                    return;
-                }
-
-                _Customers = value;
-                CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
-                CustomersCollectionView.Filter = CustomerFilter;
-                CustomersCollectionView.SortDescriptions.Add(new SortDescription(nameof(Customer.SureName), ListSortDirection.Ascending));
-                RaisePropertyChanged();
-            }
-        }
-
-        public GenericRepository Context { get; }
-
-        private bool CustomerFilter(object item)
-        {
-            Customer customer = item as Customer;
-            return !customer.IsPracticing && (string.IsNullOrEmpty(SearchTerm) || customer.Name.ToLower().Contains(SearchTerm) || customer.SureName.ToLower().Contains(SearchTerm) || customer.Tel.Contains(SearchTerm));
-        }
+        #region Methods
 
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
             Customers = new ObservableCollection<Customer>(await Context.LoadAllCustomersAsync());
             foreach (var item in Customers)
             {
-                if (item.LastShowUp.Left<item.LastShowUp.Arrived)
+                if (item.LastShowUp != null && item.LastShowUp.Left < item.LastShowUp.Arrived)
                 {
                     item.IsPracticing = true;
                     CustomersPracticing.Add(item);
@@ -225,9 +186,74 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public RelayCommand<string> BodyPartSelected { get; set; }
+
         public override Task ReloadAsync()
         {
             throw new NotImplementedException();
         }
+
+        private void CreateNewCustomer()
+        {
+            SelectedCustomer = new Customer();
+        }
+
+        private bool CustomerFilter(object item)
+        {
+            Customer customer = item as Customer;
+            return string.IsNullOrEmpty(SearchTerm) || customer.Name.ToLower().Contains(SearchTerm) || customer.SureName.ToLower().Contains(SearchTerm) || customer.Tel.Contains(SearchTerm);
+        }
+
+        private async Task CustomerShowedUp()
+        {
+            if (SelectedCustomer != null)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                CustomersPracticing.Add(SelectedCustomer);
+                SelectedCustomer.ShowedUp(true);
+                await Context.SaveAsync();
+                SelectedCustomer = null;
+                Mouse.OverrideCursor = Cursors.Arrow;
+            }
+        }
+
+        private async Task MakePayment(int obj)
+        {
+            if (obj == 1)
+            {
+                SelectedPracticingCustomer.MakePayment();
+            }
+            SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
+            SelectedPracticingCustomer.IsPracticing = false;
+            CustomersPracticing.Remove(SelectedPracticingCustomer);
+            await Context.SaveAsync();
+        }
+
+        private async Task SaveCustomer()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            if (SelectedCustomer != null)
+            {
+                if (SelectedCustomer.NewWeight > 0)
+                {
+                    SelectedCustomer.WeightHistory.Add(new Weight { WeightValue = SelectedCustomer.NewWeight });
+                    SelectedCustomer.NewWeight = 0;
+                }
+                if (SelectedCustomer.Id > 0)
+                {
+                    await Context.SaveAsync();
+                }
+                else
+                {
+                    Context.Add(SelectedCustomer);
+                    Customers.Add(SelectedCustomer);
+                    await Context.SaveAsync();
+                }
+                SelectedCustomer.RaisePropertyChanged(nameof(Customer.BMI));
+            }
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        #endregion Methods
     }
 }

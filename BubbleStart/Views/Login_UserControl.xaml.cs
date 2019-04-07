@@ -33,5 +33,10 @@ namespace BubbleStart.Views
             //of the PasswordBox.
             AttachedProperties.PasswordBoxMVVMAttachedProperties.SetEncryptedPassword(pBox, pBox.SecurePassword);
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            username.Focus();
+        }
     }
 }

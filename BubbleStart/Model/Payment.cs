@@ -1,62 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BubbleStart.Model
 {
-   public class Weight:BaseModel
+    [Table("BubblePayments")]
+    public class Payment:BaseModel
     {
-        public Weight()
+        public Payment()
         {
-            DateOfMeasure = DateTime.Today;
+            Date = DateTime.Now;
         }
 
 
-        private DateTime _DateOfMeasure;
+        private DateTime _Date;
 
 
-        public DateTime DateOfMeasure
+        public DateTime Date
         {
             get
             {
-                return _DateOfMeasure;
+                return _Date;
             }
 
             set
             {
-                if (_DateOfMeasure == value)
+                if (_Date == value)
                 {
                     return;
                 }
 
-                _DateOfMeasure = value;
+                _Date = value;
                 RaisePropertyChanged();
             }
         }
 
 
 
+        private int _Amount;
 
-        private float _WeightValue;
 
-
-        public float WeightValue
+        public int Amount
         {
             get
             {
-                return _WeightValue;
+                return _Amount;
             }
 
             set
             {
-                if (_WeightValue == value)
+                if (_Amount == value)
                 {
                     return;
                 }
 
-                _WeightValue = value;
+                _Amount = value;
                 RaisePropertyChanged();
             }
         }

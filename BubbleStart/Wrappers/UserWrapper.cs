@@ -11,9 +11,8 @@ namespace BubbleStart.Wrappers
     {
         #region Constructors
 
-        public UserWrapper() : base(new User())
+        public UserWrapper() : this(new User())
         {
-            Title = "Ο χρήστης";
         }
 
         public UserWrapper(User model) : base(model)
@@ -26,37 +25,37 @@ namespace BubbleStart.Wrappers
         #region Properties
 
        
-        public byte[] HashedPassword
+        public byte[] HashedPassword//
         {
             get { return GetValue<byte[]>(); }
             set { SetValue(value); }
         }
 
-        public int Level
+        public int Level//
         {
             get { return GetValue<int>(); }
             set { SetValue(value); }
         }
 
-        public string Name
+        public string Name//
         {
             get { return GetValue<string>(); }
             set { SetValue(value); }
         }
 
-        public string Surename
+        public string Surename//
         {
             get { return GetValue<string>(); }
             set { SetValue(value); }
         }
 
-        public string Tel
+        public string Tel//
         {
             get { return GetValue<string>(); }
             set { SetValue(value); }
         }
 
-        public string UserName
+        public string UserName//
         {
             get { return GetValue<string>(); }
             set { SetValue(value); }

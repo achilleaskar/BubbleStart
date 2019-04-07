@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace BubbleStart.Model
@@ -11,6 +13,7 @@ namespace BubbleStart.Model
     [Table("BubbleCustomers")]
     public class Customer : BaseModel
     {
+
         #region Constructors
 
         public Customer()
@@ -20,6 +23,8 @@ namespace BubbleStart.Model
             WeightHistory = new ObservableCollection<Weight>();
             ShowUps = new ObservableCollection<ShowUp>();
             SetPriceCommand = new RelayCommand<int>(SetPrice);
+            WeightHistory.CollectionChanged += WeigthsChanged;
+            Payments = new ObservableCollection<Payment>();
             DispatcherTimer timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMinutes(1)
@@ -28,53 +33,57 @@ namespace BubbleStart.Model
             timer.Start();
         }
 
-        private void SetPrice(int price)
-        {
-            if (ShowUps != null && ShowUps.Count > 0)
-            {
-                ShowUps.Last().Amount = price;
-            }
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            RaisePropertyChanged(nameof(Duration));
-        }
-
-        public RelayCommand<int> SetPriceCommand { get; set; }
         #endregion Constructors
 
         #region Fields
 
         private string _Address;
+
         private bool _Alcohol;
+
         private int _AlcoholUsage;
+
         private int _District;
+
         private DateTime _DOB;
+
         private string _Email;
+
         private DateTime _FirstDate;
+
         private bool _Gender;
+
         private int _Height;
 
-        internal void ShowedUp(bool arrived)
-        {
-            IsPracticing = arrived;
-            ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now });
-        }
+        private int _HistoryDuration;
 
-        private bool _HistoryDuration;
-        private bool _HistoryKind;
+        private string _HistoryKind;
+
         private bool _HistoryNotFirstTime;
-        private bool _HistoryTimesPerWeek;
+
+        private int _HistoryTimesPerWeek;
+
         private Illness _Illness;
+
+        private bool _IsPracticing;
+
+        private bool _IsSelected;
+
         private string _Job;
+
+        private bool _Medicine;
+
         private bool _MyProperty;
+
         private string _Name;
 
-        public TimeSpan Duration => (DateTime.Now.Subtract(LastShowUp.Arrived));
-
         private float _NewWeight;
+
+        private ObservableCollection<Payment> _Payments;
+
         private bool _PreferedHand;
+
+        private bool _Pregnancy;
 
         private bool _ReasonInjury;
 
@@ -82,11 +91,19 @@ namespace BubbleStart.Model
 
         private bool _ReasonSlim;
 
+        private bool _ReasonVeltiwsh;
+
+        private ObservableCollection<ShowUp> _ShowUps;
+
         private bool _Smoker;
 
         private int _SmokingUsage;
 
         private string _SureName;
+
+        private bool _Surgery;
+
+        private string _SurgeryInfo;
 
         private string _Tel;
 
@@ -95,73 +112,6 @@ namespace BubbleStart.Model
         private ObservableCollection<Weight> _WeightHistory;
 
         #endregion Fields
-
-        private ObservableCollection<ShowUp> _ShowUps;
-
-        public ObservableCollection<ShowUp> ShowUps
-        {
-            get
-            {
-                return _ShowUps;
-            }
-
-            set
-            {
-                if (_ShowUps == value)
-                {
-                    return;
-                }
-
-                _ShowUps = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _IsPracticing;
-
-        [NotMapped]
-        public bool IsPracticing
-        {
-            get
-            {
-                return _IsPracticing;
-            }
-
-            set
-            {
-                if (_IsPracticing == value)
-                {
-                    return;
-                }
-
-                _IsPracticing = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int Age => DateTime.Today.Year - DOB.Year;
-
-        private bool _IsSelected;
-
-        [NotMapped]
-        public bool IsSelected
-        {
-            get
-            {
-                return _IsSelected;
-            }
-
-            set
-            {
-                if (_IsSelected == value)
-                {
-                    return;
-                }
-
-                _IsSelected = value;
-                RaisePropertyChanged();
-            }
-        }
 
         #region Properties
 
@@ -179,10 +129,12 @@ namespace BubbleStart.Model
                     return;
                 }
 
-                _Address = value;
+                _Address = value.ToUpper();
                 RaisePropertyChanged();
             }
         }
+
+        public int Age => DateTime.Today.Year - DOB.Year;
 
         public bool Alcohol
         {
@@ -223,7 +175,26 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public float BMI => (float)Math.Round((WeightHistory.Count > 0 && WeightHistory.Last().WeightValue > 0 && Height > 0) ? WeightHistory.Last().WeightValue / (Height * Height) : 0, 2);
+        public SolidColorBrush BackGround
+        {
+            get
+            {
+                if (IsPracticing)
+                {
+                    return new SolidColorBrush(Colors.LightGreen);
+                }
+                return new SolidColorBrush(Colors.White);
+            }
+        }
+
+        [NotMapped]
+        public float BMI
+        {
+            get
+            {
+                return (float)Math.Round((WeightHistory.Count > 0 && LastWeight > 0 && Height > 0) ? LastWeight / (Height * Height / 10000) : 0, 2); ;
+            }
+        }
 
         public int District
         {
@@ -264,6 +235,8 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        public TimeSpan Duration => (DateTime.Now.Subtract(LastShowUp.Arrived));
 
         [StringLength(30, MinimumLength = 0)]
         [DataType(DataType.EmailAddress, ErrorMessage = "Το Email δεν έχει τη σωστή μορφή")]
@@ -344,7 +317,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public bool HistoryDuration
+        public int HistoryDuration
         {
             get
             {
@@ -363,7 +336,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public bool HistoryKind
+        public string HistoryKind
         {
             get
             {
@@ -401,7 +374,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public bool HistoryTimesPerWeek
+        public int HistoryTimesPerWeek
         {
             get
             {
@@ -439,6 +412,50 @@ namespace BubbleStart.Model
             }
         }
 
+        public bool IsNotPracticing => !IsPracticing;
+
+        [NotMapped]
+        public bool IsPracticing
+        {
+            get
+            {
+                return _IsPracticing;
+            }
+
+            set
+            {
+                if (_IsPracticing == value)
+                {
+                    return;
+                }
+
+                _IsPracticing = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(IsNotPracticing));
+                RaisePropertyChanged(nameof(BackGround));
+            }
+        }
+
+        [NotMapped]
+        public bool IsSelected
+        {
+            get
+            {
+                return _IsSelected;
+            }
+
+            set
+            {
+                if (_IsSelected == value)
+                {
+                    return;
+                }
+
+                _IsSelected = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public string Job
         {
             get
@@ -453,13 +470,58 @@ namespace BubbleStart.Model
                     return;
                 }
 
-                _Job = value;
+                _Job = value.ToUpper();
                 RaisePropertyChanged();
             }
         }
 
-        public float LastWeight => (float)Math.Round((WeightHistory.Count > 0 && WeightHistory.Last().WeightValue > 0) ? WeightHistory.Last().WeightValue : 0, 2);
-        public ShowUp LastShowUp => ShowUps != null && ShowUps.Count > 0 ? ShowUps.OrderBy(x=>x.Id).Last():null;
+        public ShowUp LastShowUp => ShowUps != null && ShowUps.Count > 0 ? ShowUps.OrderBy(x => x.Id).Last() : null;
+
+        public float LastWeight => (float)Math.Round((WeightHistory.Count > 0 && WeightHistory.OrderBy(x => x.Id).Last().WeightValue > 0) ? WeightHistory.Last().WeightValue : 0, 2);
+
+        public bool Medicine
+        {
+            get
+            {
+                return _Medicine;
+            }
+
+            set
+            {
+                if (_Medicine == value)
+                {
+                    return;
+                }
+
+                _Medicine = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private string _MedicineText;
+
+
+        public string MedicineText
+        {
+            get
+            {
+                return _MedicineText;
+            }
+
+            set
+            {
+                if (_MedicineText == value)
+                {
+                    return;
+                }
+
+                _MedicineText = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public bool MyProperty
         {
@@ -496,7 +558,7 @@ namespace BubbleStart.Model
                     return;
                 }
 
-                _Name = value;
+                _Name = value.ToUpper();
                 RaisePropertyChanged();
             }
         }
@@ -521,6 +583,25 @@ namespace BubbleStart.Model
             }
         }
 
+        public ObservableCollection<Payment> Payments
+        {
+            get
+            {
+                return _Payments;
+            }
+
+            set
+            {
+                if (_Payments == value)
+                {
+                    return;
+                }
+
+                _Payments = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool PreferedHand
         {
             get
@@ -536,6 +617,25 @@ namespace BubbleStart.Model
                 }
 
                 _PreferedHand = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool Pregnancy
+        {
+            get
+            {
+                return _Pregnancy;
+            }
+
+            set
+            {
+                if (_Pregnancy == value)
+                {
+                    return;
+                }
+
+                _Pregnancy = value;
                 RaisePropertyChanged();
             }
         }
@@ -597,6 +697,46 @@ namespace BubbleStart.Model
             }
         }
 
+        public bool ReasonVeltiwsh
+        {
+            get
+            {
+                return _ReasonVeltiwsh;
+            }
+
+            set
+            {
+                if (_ReasonVeltiwsh == value)
+                {
+                    return;
+                }
+
+                _ReasonVeltiwsh = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public RelayCommand<int> SetPriceCommand { get; set; }
+
+        public ObservableCollection<ShowUp> ShowUps
+        {
+            get
+            {
+                return _ShowUps;
+            }
+
+            set
+            {
+                if (_ShowUps == value)
+                {
+                    return;
+                }
+
+                _ShowUps = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool Smoker
         {
             get
@@ -651,7 +791,45 @@ namespace BubbleStart.Model
                     return;
                 }
 
-                _SureName = value;
+                _SureName = value.ToUpper();
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool Surgery
+        {
+            get
+            {
+                return _Surgery;
+            }
+
+            set
+            {
+                if (_Surgery == value)
+                {
+                    return;
+                }
+
+                _Surgery = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string SurgeryInfo
+        {
+            get
+            {
+                return _SurgeryInfo;
+            }
+
+            set
+            {
+                if (_SurgeryInfo == value)
+                {
+                    return;
+                }
+
+                _SurgeryInfo = value;
                 RaisePropertyChanged();
             }
         }
@@ -717,5 +895,38 @@ namespace BubbleStart.Model
         }
 
         #endregion Properties
+
+        #region Methods
+
+        internal void MakePayment()
+        {
+            Payments.Add(new Payment { Amount = LastShowUp.Amount });
+        }
+
+        internal void ShowedUp(bool arrived)
+        {
+            IsPracticing = arrived;
+            ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now });
+        }
+
+        private void SetPrice(int price)
+        {
+            if (ShowUps != null && ShowUps.Count > 0)
+            {
+                LastShowUp.Amount = price;
+            }
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(Duration));
+        }
+
+        private void WeigthsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(BMI));
+        }
+
+        #endregion Methods
     }
 }

@@ -1,0 +1,53 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:BubbleStart.Converters"
+                    xmlns:local="clr-namespace:BubbleStart.Views">
+    <converters:ContentToColorConverter x:Key="ContentToColorConverter" />
+    <Style TargetType="{x:Type local:OvalBorderedButton}"
+           BasedOn="{StaticResource {x:Type RadioButton}}">
+        <Setter Property="Height"
+                Value="30" />
+        <Setter Property="Width"
+                Value="50" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:OvalBorderedButton}">
+                    <Grid>
+                        <Border CornerRadius="20"
+                                BorderBrush="Blue"
+                                x:Name="border"
+                                BorderThickness="0">
+                            <Ellipse VerticalAlignment="Stretch"
+                                     Opacity="0.5"
+                                     Fill="{Binding Converter={StaticResource ContentToColorConverter}, Mode=OneWay}"
+                                     x:Name="theEllipse" />
+                        </Border>
+                        <ContentPresenter VerticalAlignment="Center"
+                                          HorizontalAlignment="Center" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked"
+                                 Value="True">
+                            <Setter Property="BorderThickness"
+                                    Value="1"
+                                    TargetName="border" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Opacity"
+                                    Value="0.9"
+                                    TargetName="theEllipse" />
+                        </Trigger>
+                        <Trigger Property="IsPressed"
+                                 Value="True">
+                            <Setter Property="Fill"
+                                    Value="blue"
+                                    TargetName="theEllipse" />
+                        </Trigger>
+                       
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

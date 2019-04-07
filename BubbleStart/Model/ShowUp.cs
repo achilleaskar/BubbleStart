@@ -41,29 +41,7 @@ namespace BubbleStart.Model
 
 
 
-        private bool _Paid;
-
-
-        public bool Paid
-        {
-            get
-            {
-                return _Paid;
-            }
-
-            set
-            {
-                if (_Paid == value)
-                {
-                    return;
-                }
-
-                _Paid = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
+    
 
         private DateTime _Left;
 

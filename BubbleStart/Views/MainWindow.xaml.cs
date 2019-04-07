@@ -33,14 +33,12 @@ namespace BubbleStart.Views
             InitializeComponent();
             _viewModel = viewModel;
             DataContext = _viewModel;
-            Loaded += MainWindow_Loaded;
             StartingRepository = new GenericRepository();
+            _viewModel.LoadAsync(StartingRepository).Wait();
+
         }
 
-        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            await _viewModel.LoadAsync(StartingRepository);
-        }
+       
 
         private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {

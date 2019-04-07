@@ -80,7 +80,8 @@ namespace BubbleStart.Database
                         .Include(c => c.Illness)
                         .Include(c => c.WeightHistory)
                         .Include(c => c.ShowUps)
-                        .OrderBy(x => x.SureName).ToListAsync();
+                        .Include(t => t.Payments)
+                        .OrderBy(x => x.SureName).OrderBy(c=>c.Name).ToListAsync();
             }
             catch (Exception ex)
             {

@@ -53,11 +53,7 @@ namespace BubbleStart.Wrappers
             return false;
         }
 
-        public DateTime? ModifiedDate
-        {
-            get { return GetValue<DateTime>(); }
-            set { SetValue(value); }
-        }
+
 
         public T Model { get; }
 
@@ -77,9 +73,14 @@ namespace BubbleStart.Wrappers
 
         public void ValidateAllProperties()
         {
+            var list = Model.GetType().GetProperties();
             foreach (PropertyInfo pi in Model.GetType().GetProperties())
             {
-                ValidatePropertyInternal(pi.Name, pi.GetValue(Model));
+                if (pi.Name != "Item" && pi.Name != "Error")
+                {
+
+                    ValidatePropertyInternal(pi.Name, pi.GetValue(Model));
+                }
             }
         }
 
@@ -88,11 +89,6 @@ namespace BubbleStart.Wrappers
             return (TValue)typeof(T).GetProperty(propertyName).GetValue(Model);
         }
 
-        public DateTime CreatedDate
-        {
-            get { return GetValue<DateTime>(); }
-            set { SetValue(value); }
-        }
 
         protected void ValidatePropertyInternal(string propertyName, object currentValue)
         {

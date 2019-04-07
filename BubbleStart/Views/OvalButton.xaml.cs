@@ -16,23 +16,13 @@ using System.Windows.Shapes;
 namespace BubbleStart.Views
 {
     /// <summary>
-    /// Interaction logic for UserDetail.xaml
+    /// Interaction logic for OvalButton.xaml
     /// </summary>
-    public partial class UserDetail : UserControl
+    public partial class OvalButton : UserControl
     {
-        public UserDetail()
+        public OvalButton()
         {
             InitializeComponent();
-        }
-
-        private void OvalBorderedButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void OvalBorderedButton_Checked(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
