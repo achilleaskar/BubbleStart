@@ -6,7 +6,6 @@
              xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
              xmlns:models="clr-namespace:BubbleStart.Model"
              xmlns:views="clr-namespace:BubbleStart.Views"
-             xmlns:helpers="clr-namespace:BubbleStart.Helpers"
              d:DataContext="{d:DesignInstance viewmodels:SearchCustomer_ViewModel}"
              mc:Ignorable="d"
              Background="White"
@@ -17,16 +16,15 @@
             <views:UserDetail />
         </DataTemplate>
     </UserControl.Resources>
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <GroupBox Margin="5"
                   Padding="5"
                   Header="Αναζήτηση Πελάτη">
-
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -35,7 +33,6 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-
                 <TextBlock Text="Λέξη Κλειδί:" />
                 <TextBox Grid.Row="1"
                          FontSize="15"
@@ -57,11 +54,10 @@
                             <Setter Property="Background"
                                     Value="{Binding BackGround}" />
                         </Style>
-
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
-
-                        <DataGridTextColumn Header="Όνομα" Width="120"
+                        <DataGridTextColumn Header="Όνομα"
+                                            Width="120"
                                             Binding="{Binding Name}" />
                         <DataGridTextColumn Header="Επίθετο"
                                             Width="120"
@@ -69,7 +65,6 @@
                         <DataGridTextColumn Header="Ηλικία"
                                             Width="60"
                                             Binding="{Binding Age}" />
-                       
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -82,8 +77,49 @@
                 </DataGrid>
             </Grid>
         </GroupBox>
-
-        <TabControl Grid.Column="1">
+        <GroupBox Grid.Column="1">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Content="Ονοματεπώνυμο:"
+                           Grid.Row="0"
+                           Grid.Column="0"
+                            />
+                    <TextBlock Text="{Binding SelectedCustomer.FullName,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               Margin="0,5,0,4" />
+                    <Label Content="Ηλικία"
+                           Grid.Row="1"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="2" />
+                    <TextBlock Text="{Binding SelectedCustomer.Age,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Margin="0,1" />
+                    <Label Content="Τηλέφωνο:"
+                           Grid.Row="3"
+                           Grid.Column="0" />
+                    <TextBox Text="{Binding SelectedCustomer.Tel,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
+                             Grid.Row="1"
+                             Grid.Column="4"
+                             Margin="0,4" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+        <TabControl Grid.Column="2">
             <TabItem Header="Τρέχουσα Κατάσταση">
                 <DataGrid ItemsSource="{Binding CustomersPracticing}"
                           SelectedItem="{Binding SelectedPracticingCustomer}"
@@ -93,7 +129,6 @@
                           CanUserDeleteRows="False"
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
-
                         <DataGridTextColumn Header="Επίθετο"
                                             Binding="{Binding SureName}" />
                         <DataGridTextColumn Header="Όνομα"
@@ -107,27 +142,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Content="10"
-                                                Command="{Binding SetPriceCommand}"
-                                                CommandParameter="10" />
-                                        <Button Content="20"
-                                                Margin="5 0"
-                                                Command="{Binding SetPriceCommand}"
-                                                CommandParameter="20" />
-                                        <Button Content="30"
-                                                Command="{Binding SetPriceCommand}"
-                                                CommandParameter="30" />
-                                        <Button Content="40"
-                                                Margin="5 0"
-                                                Command="{Binding SetPriceCommand}"
-                                                CommandParameter="40" />
-                                        <TextBox Text="{Binding LastShowUp.Amount, StringFormat=c0,UpdateSourceTrigger=PropertyChanged}"
-                                                 Width="30" />
-                                        <Button Content="Πληρωμή"
-                                                Margin="5 0"
-                                                Command="{Binding DataContext.PaymentCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}"
-                                                CommandParameter="1" />
-                                        <Button Content="Υπόλοιπο"
+                                        <Button Content="Τέλος"
                                                 Margin="5 0"
                                                 Command="{Binding DataContext.PaymentCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
                                     </StackPanel>

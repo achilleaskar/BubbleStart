@@ -25,6 +25,7 @@ namespace BubbleStart.Model
             SetPriceCommand = new RelayCommand<int>(SetPrice);
             WeightHistory.CollectionChanged += WeigthsChanged;
             Payments = new ObservableCollection<Payment>();
+            Programs = new ObservableCollection<Program>();
             DispatcherTimer timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMinutes(1)
@@ -35,6 +36,8 @@ namespace BubbleStart.Model
 
         #endregion Constructors
 
+
+        public string FullName => Name + " " + SureName;
         #region Fields
 
         private string _Address;
@@ -73,6 +76,7 @@ namespace BubbleStart.Model
 
         private bool _Medicine;
 
+        private string _MedicineText;
         private bool _MyProperty;
 
         private string _Name;
@@ -85,6 +89,7 @@ namespace BubbleStart.Model
 
         private bool _Pregnancy;
 
+        private ObservableCollection<Program> _Programs;
         private bool _ReasonInjury;
 
         private bool _ReasonPower;
@@ -134,7 +139,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public int Age => DateTime.Today.Year - DOB.Year;
+        public int Age => (new DateTime()+DateTime.Now.Subtract(DOB)).Year;
 
         public bool Alcohol
         {
@@ -498,12 +503,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private string _MedicineText;
-
-
         public string MedicineText
         {
             get
@@ -640,6 +639,27 @@ namespace BubbleStart.Model
             }
         }
 
+        public ObservableCollection<Program> Programs
+        {
+            get
+            {
+                return _Programs;
+            }
+
+            set
+            {
+                if (_Programs == value)
+                {
+                    return;
+                }
+
+                _Programs = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
         public bool ReasonInjury
         {
             get
@@ -714,6 +734,16 @@ namespace BubbleStart.Model
                 _ReasonVeltiwsh = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public int RemainingAmount
+        {
+            get
+            {
+                return CalculateRemainingAmount();
+            }
+
+
         }
 
         public RelayCommand<int> SetPriceCommand { get; set; }
@@ -909,6 +939,20 @@ namespace BubbleStart.Model
             ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now });
         }
 
+        private int CalculateRemainingAmount()
+        {
+            int sum = 0;
+            int remainingAmount = 0;
+            foreach (Program program in Programs)
+            {
+                sum += program.Amount;
+            }
+            foreach (var payment in Payments)
+            {
+                remainingAmount -= payment.Amount;
+            }
+            return remainingAmount;
+        }
         private void SetPrice(int price)
         {
             if (ShowUps != null && ShowUps.Count > 0)
@@ -928,5 +972,6 @@ namespace BubbleStart.Model
         }
 
         #endregion Methods
+
     }
 }

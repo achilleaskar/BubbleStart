@@ -1,42 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BubbleStart.Model
 {
-    [Table("BubblePayments")]
-    public class Payment : BaseModel
+    public class Program : BaseModel
     {
-        public Payment()
-        {
-            Date = DateTime.Now;
-        }
 
 
-        private DateTime _Date;
+
+        private DateTime _DayOfIssue;
 
 
-        public DateTime Date
+        public DateTime DayOfIssue
         {
             get
             {
-                return _Date;
+                return _DayOfIssue;
             }
 
             set
             {
-                if (_Date == value)
+                if (_DayOfIssue == value)
                 {
                     return;
                 }
 
-                _Date = value;
+                _DayOfIssue = value;
                 RaisePropertyChanged();
             }
         }
+
+
+
+
+        private int _Duration;
+
+
+        public int Duration
+        {
+            get
+            {
+                return _Duration;
+            }
+
+            set
+            {
+                if (_Duration == value)
+                {
+                    return;
+                }
+
+                _Duration = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
 
 
@@ -61,5 +82,6 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
     }
 }
