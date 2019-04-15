@@ -13,9 +13,31 @@ namespace BubbleStart.Model
     [Table("BubbleCustomers")]
     public class Customer : BaseModel
     {
-
         #region Constructors
 
+
+
+        private int _ProgramPrice;
+
+        [NotMapped]
+        public int ProgramPrice
+        {
+            get
+            {
+                return _ProgramPrice;
+            }
+
+            set
+            {
+                if (_ProgramPrice == value)
+                {
+                    return;
+                }
+
+                _ProgramPrice = value;
+                RaisePropertyChanged();
+            }
+        }
         public Customer()
         {
             FirstDate = DateTime.Today;
@@ -34,10 +56,124 @@ namespace BubbleStart.Model
             timer.Start();
         }
 
+        internal bool ProgramDataCheck()
+        {
+            return ProgramPrice >= 0 && ProgramTypeIndex >= 0;
+        }
+
+        private int _ProgramTypeIndex;
+
+        [NotMapped]
+        public int ProgramTypeIndex
+        {
+            get
+            {
+                return _ProgramTypeIndex;
+            }
+
+            set
+            {
+                if (_ProgramTypeIndex == value)
+                {
+                    return;
+                }
+
+                _ProgramTypeIndex = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TypeOfProgram => GettypeOfProgram();
+
+        private string GettypeOfProgram()
+        {
+            if (SelectedProgram != null)
+            {
+                switch (SelectedProgram.ProgramType)
+                {
+                    case Program.ProgramTypes.daily30:
+                        return "Ημερήσιο 30'";
+
+                    case Program.ProgramTypes.daily60:
+                        return "Ημερήσιο 60'";
+
+                    case Program.ProgramTypes.pilates2:
+                        return "Reformer Pilates (1-2)";
+
+                    case Program.ProgramTypes.functional2:
+                        return "Functional Training(1-2)";
+
+                    case Program.ProgramTypes.pilates5:
+                        return "Reformer Pilates (3-5)";
+
+                    case Program.ProgramTypes.functional5:
+                        return "Functional Training (3-5)";
+
+                    case Program.ProgramTypes.freeUse:
+                        return "Ελέυθερη Χρήση";
+                }
+            }
+            return "Ανενεργό";
+        }
+
         #endregion Constructors
 
+        public void SelectProperProgram()
+        {
+            foreach (var p in Programs)
+            {
+                if (p.StartDay <= DateTime.Today && (DateTime.Today - p.StartDay).Days <= 35)
+                {
+                }
+            }
+        }
+
+        private Program _SelectedProgram;
+
+        [NotMapped]
+        public Program SelectedProgram
+        {
+            get
+            {
+                return _SelectedProgram;
+            }
+
+            set
+            {
+                if (_SelectedProgram == value)
+                {
+                    return;
+                }
+
+                _SelectedProgram = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(RemainingDays));
+                RaisePropertyChanged(nameof(Active));
+                RaisePropertyChanged(nameof(TypeOfProgram));
+            }
+        }
+
+        public int RemainingDays => GetRemainingDays();
+
+        private int GetRemainingDays()
+        {
+            int duration = 0;
+            if (SelectedProgram != null)
+            {
+                duration = SelectedProgram.Duration;
+                foreach (var showUp in ShowUps.Select(s => s.Arrived >= SelectedProgram.StartDay))
+                {
+                    duration--;
+                }
+            }
+
+            return duration;
+        }
+
+        public string Active => SelectedProgram != null && RemainingDays > 0 ? "ΝΑΙ" : "ΟΧΙ";
 
         public string FullName => Name + " " + SureName;
+
         #region Fields
 
         private string _Address;
@@ -139,7 +275,39 @@ namespace BubbleStart.Model
             }
         }
 
-        public int Age => (new DateTime()+DateTime.Now.Subtract(DOB)).Year;
+
+
+
+        private DateTime _StartDate;
+
+        [NotMapped]
+        public DateTime StartDate
+        {
+            get
+            {
+                if (_StartDate.Year < 2019)
+                    _StartDate = DateTime.Today;
+                return _StartDate;
+            }
+
+            set
+            {
+                if (_StartDate == value)
+                {
+                    return;
+                }
+
+                _StartDate = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        internal void AddNewProgram()
+        {
+            Programs.Add(new Program { Amount = ProgramPrice, DayOfIssue = DateTime.Now, Duration = ProgramTypeIndex < 2 ? 1 : 8, ProgramType = (Program.ProgramTypes)ProgramTypeIndex, StartDay = StartDate });
+        }
+
+        public int Age => (new DateTime() + DateTime.Now.Subtract(DOB)).Year;
 
         public bool Alcohol
         {
@@ -658,8 +826,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
         public bool ReasonInjury
         {
             get
@@ -742,8 +908,6 @@ namespace BubbleStart.Model
             {
                 return CalculateRemainingAmount();
             }
-
-
         }
 
         public RelayCommand<int> SetPriceCommand { get; set; }
@@ -930,7 +1094,7 @@ namespace BubbleStart.Model
 
         internal void MakePayment()
         {
-            Payments.Add(new Payment { Amount = LastShowUp.Amount });
+            Payments.Add(new Payment { Amount = ProgramPrice });
         }
 
         internal void ShowedUp(bool arrived)
@@ -953,6 +1117,7 @@ namespace BubbleStart.Model
             }
             return remainingAmount;
         }
+
         private void SetPrice(int price)
         {
             if (ShowUps != null && ShowUps.Count > 0)
@@ -972,6 +1137,5 @@ namespace BubbleStart.Model
         }
 
         #endregion Methods
-
     }
 }

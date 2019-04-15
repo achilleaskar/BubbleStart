@@ -20,13 +20,17 @@ namespace BubbleStart.ViewModels
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
             SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); });
             ShowedUpCommand = new RelayCommand(async () => { await CustomerShowedUp(); });
+            CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
-
             CustomersPracticing = new ObservableCollection<Customer>();
             PaymentCommand = new RelayCommand<int>(async (obj) => { await MakePayment(obj); });
             CreateNewCustomer();
         }
 
+        private bool CanMakePayment(int arg)
+        {
+            return SelectedCustomer.ProgramDataCheck();
+        }
 
         private void BodyPartChanged(string selectedIndex)
         {
@@ -168,6 +172,7 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand ShowedUpCommand { get; set; }
+        public RelayCommand CustomerLeftCommand { get; set; }
 
         #endregion Properties
 
@@ -219,10 +224,17 @@ namespace BubbleStart.ViewModels
 
         private async Task MakePayment(int obj)
         {
+            SelectedCustomer.AddNewProgram();
             if (obj == 1)
             {
-                SelectedPracticingCustomer.MakePayment();
+                SelectedCustomer.MakePayment();
             }
+
+            await Context.SaveAsync();
+        }
+
+        public async Task CustomerLeft()
+        {
             SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
             SelectedPracticingCustomer.IsPracticing = false;
             CustomersPracticing.Remove(SelectedPracticingCustomer);

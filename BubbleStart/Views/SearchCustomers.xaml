@@ -79,12 +79,19 @@
         </GroupBox>
         <GroupBox Grid.Column="1">
             <StackPanel>
-                <Grid>
+                <Grid Width="320">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -95,9 +102,8 @@
                     </Grid.RowDefinitions>
                     <Label Content="Ονοματεπώνυμο:"
                            Grid.Row="0"
-                           Grid.Column="0"
-                            />
-                    <TextBlock Text="{Binding SelectedCustomer.FullName,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
+                           Grid.Column="0" />
+                    <TextBlock Text="{Binding SelectedCustomer.FullName}"
                                Grid.Row="0"
                                Grid.Column="1"
                                Margin="0,5,0,4" />
@@ -105,17 +111,103 @@
                            Grid.Row="1"
                            Grid.Column="0"
                            Grid.ColumnSpan="2" />
-                    <TextBlock Text="{Binding SelectedCustomer.Age,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
-                                Grid.Row="1"
-                                Grid.Column="2"
-                                Margin="0,1" />
+                    <TextBlock Text="{Binding SelectedCustomer.Age}"
+                               Grid.Row="1"
+                               Grid.Column="2"
+                               Margin="0,1" />
                     <Label Content="Τηλέφωνο:"
                            Grid.Row="3"
                            Grid.Column="0" />
-                    <TextBox Text="{Binding SelectedCustomer.Tel,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
-                             Grid.Row="1"
-                             Grid.Column="4"
-                             Margin="0,4" />
+                    <TextBlock Text="{Binding SelectedCustomer.Tel}"
+                               Grid.Row="3"
+                               Grid.Column="1"
+                               Margin="0,4" />
+                    <Separator Grid.Row="4"
+                               Grid.ColumnSpan="2" />
+                    <Label Content="Ενεργή συνδρομή:"
+                           Grid.Row="5"
+                           Grid.Column="0" />
+                    <TextBlock Text="{Binding SelectedCustomer.Active}"
+                               Grid.Row="5"
+                               Grid.Column="1"
+                               Margin="0,4" />
+                    <Label Content="Απομένουν(φορές):"
+                           Grid.Row="6"
+                           Grid.Column="0" />
+                    <TextBlock Text="{Binding SelectedCustomer.RemainingDays}"
+                               Grid.Row="6"
+                               Grid.Column="1"
+                               Margin="0,4" />
+                    <Label Content="Τύπος Ενεργού Πακέτου:"
+                           Grid.Row="7"
+                           Grid.Column="0" />
+                    <TextBlock Text="{Binding SelectedCustomer.TypeOfProgram}"
+                               Grid.Row="7"
+                               Grid.Column="1"
+                               Margin="0,4" />
+                    <GroupBox Grid.Row="8"
+                              Grid.ColumnSpan="2"
+                              Header="Αγορά πακέτου">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Row="0"
+                                        Margin="5" VerticalAlignment="Top"
+                                        Grid.Column="0">
+                                <TextBlock Text="Τύπος:" />
+                                <ComboBox VerticalAlignment="Center"
+                                          SelectedIndex="{Binding SelectedCustomer.ProgramTypeIndex,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
+                                          Margin="0">
+                                    <ComboBoxItem Content="Ημερήσιο 30'" />
+                                    <ComboBoxItem Content="Ημερήσιο 60'" />
+                                    <ComboBoxItem Content="Reformer Pilates (1-2)" />
+                                    <ComboBoxItem Content="Functional Training (1-2)" />
+                                    <ComboBoxItem Content="Reformer Pilates (3-5)" />
+                                    <ComboBoxItem Content="Functional Training (3-5)" />
+                                    <ComboBoxItem Content="Ελέυθερη Χρήση - Ραντεβού" />
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Row="0"
+                                        Grid.Column="1"
+                                        Orientation="Horizontal">
+                                <StackPanel VerticalAlignment="Center"
+                                            Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Τιμή:" />
+                                        <TextBox Text="{Binding SelectedCustomer.ProgramPrice,StringFormat=c0,UpdateSourceTrigger=PropertyChanged}"
+                                                 Margin="5 0 0 0"
+                                                 Width="30" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Text="Έναρξη:" />
+                                        <DatePicker SelectedDate="{Binding SelectedCustomer.StartDate,StringFormat=c0,UpdateSourceTrigger=PropertyChanged}"
+                                                 
+                                                  />
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Row="0"
+                                            Margin="5 0"
+                                            Grid.Column="1">
+                                    <Button Content="Πληρωμή"
+                                            Command="{Binding PaymentCommand}"
+                                            CommandParameter="1" />
+                                    <Button Content="Πίστωση"
+                                            Margin="0 5 0 0"
+                                            Command="{Binding PaymentCommand}" 
+                                            CommandParameter="0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
                 </Grid>
             </StackPanel>
         </GroupBox>
@@ -144,7 +236,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="Τέλος"
                                                 Margin="5 0"
-                                                Command="{Binding DataContext.PaymentCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
+                                                Command="{Binding DataContext.CustomerLeftCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
