@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BubbleStart.Model
 {
     public class ShowUp : BaseModel
     {
-
-
-
-        private DateTime _Time;
-
-
-
+        #region Fields
 
         private int _Amount;
+        private bool _Arrive;
+        private DateTime _Left;
+        private DateTime _Time;
 
+        #endregion Fields
+
+        #region Properties
 
         public int Amount
         {
@@ -38,29 +34,21 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-    
-
-        private DateTime _Left;
-
-
-        public DateTime Left
+        public bool Arrive
         {
             get
             {
-                return _Left;
+                return _Arrive;
             }
 
             set
             {
-                if (_Left == value)
+                if (_Arrive == value)
                 {
                     return;
                 }
 
-                _Left = value;
+                _Arrive = value;
                 RaisePropertyChanged();
             }
         }
@@ -84,29 +72,25 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private bool _Arrive;
-
-
-        public bool Arrive
+        public DateTime Left
         {
             get
             {
-                return _Arrive;
+                return _Left;
             }
 
             set
             {
-                if (_Arrive == value)
+                if (_Left == value)
                 {
                     return;
                 }
 
-                _Arrive = value;
+                _Left = value;
                 RaisePropertyChanged();
             }
         }
+
+        #endregion Properties
     }
 }

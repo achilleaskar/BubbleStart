@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace BubbleStart.Model
 {
@@ -14,22 +17,30 @@ namespace BubbleStart.Model
         private string _agonasD;
 
         private bool _allergia;
+        private string _allergiaText;
         private bool _Arthritida;
 
+        private string _arthritidaText;
         private bool _Asthma;
 
+        private string _asthmaText;
+        private string _cancerText;
         private string _DaxtylaA;
 
         private string _DaxtylaD;
 
         private bool _Diavitis;
 
+        private string _diavitisText;
         private bool _Eggymosini;
 
+        private string _eggymosynhText;
+        private string _emmhnopafshText;
         private bool _Emminopafsi;
 
         private bool _Epilipsia;
 
+        private string _epilipsiaText;
         private string _GonatoA;
 
         private string _gonatoD;
@@ -40,6 +51,7 @@ namespace BubbleStart.Model
 
         private bool _Kardia;
 
+        private string _kardiaText;
         private bool _Karkinos;
 
         private string _karposD;
@@ -48,20 +60,26 @@ namespace BubbleStart.Model
 
         private bool _Katagma;
 
+        private string _KatagmaText;
         private string _mesh;
 
         private bool _NevrikiVlavi;
 
+        private string _nevrikoText;
         private bool _omoiopathitiki;
         private string _omosA;
 
         private string _omosd;
 
+        private string _opoiopathitikiText;
         private bool _Osteoporosi;
 
+        private string _osteoporosiText;
+        private string _pieshText;
         private bool _Piesi;
 
         private bool _PiesiXamili;
+        private string _PiesiXamiliText;
         private string _PodoknhmhA;
 
         private string _podoknhmhD;
@@ -70,11 +88,15 @@ namespace BubbleStart.Model
 
         private bool _Stomaxika;
 
+        private string _stomaxikaText;
         private bool _Thiroidis;
 
+        private string _thiroidisText;
         private string _thorakas;
 
         private bool _travmatismos;
+
+        private string _travmatismosText;
 
         #endregion Fields
 
@@ -159,12 +181,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private string _allergiaText;
-
-
         public string allergiaText
         {
             get
@@ -202,12 +218,6 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
-
-
-
-
-        private string _arthritidaText;
-
 
         public string arthritidaText
         {
@@ -247,12 +257,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private string _asthmaText;
-
-
         public string asthmaText
         {
             get
@@ -268,6 +272,25 @@ namespace BubbleStart.Model
                 }
 
                 _asthmaText = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string cancerText
+        {
+            get
+            {
+                return _cancerText;
+            }
+
+            set
+            {
+                if (_cancerText == value)
+                {
+                    return;
+                }
+
+                _cancerText = value;
                 RaisePropertyChanged();
             }
         }
@@ -331,11 +354,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-        private string _diavitisText;
-
-
         public string diavitisText
         {
             get
@@ -374,12 +392,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private string _eggymosynhText;
-
-
         public string eggymosynhText
         {
             get
@@ -395,6 +407,25 @@ namespace BubbleStart.Model
                 }
 
                 _eggymosynhText = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string emmhnopafshText
+        {
+            get
+            {
+                return _emmhnopafshText;
+            }
+
+            set
+            {
+                if (_emmhnopafshText == value)
+                {
+                    return;
+                }
+
+                _emmhnopafshText = value;
                 RaisePropertyChanged();
             }
         }
@@ -418,31 +449,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private string _emmhnopafshText;
-
-
-        public string emmhnopafshText
-        {
-            get
-            {
-                return _emmhnopafshText;
-            }
-
-            set
-            {
-                if (_emmhnopafshText == value)
-                {
-                    return;
-                }
-
-                _emmhnopafshText = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public bool Epilipsia
         {
             get
@@ -461,12 +467,6 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
-
-
-
-
-        private string _epilipsiaText;
-
 
         public string epilipsiaText
         {
@@ -586,12 +586,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private string _kardiaText;
-
-
         public string kardiaText
         {
             get
@@ -630,31 +624,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-
-        private string _cancerText;
-
-
-        public string cancerText
-        {
-            get
-            {
-                return _cancerText;
-            }
-
-            set
-            {
-                if (_cancerText == value)
-                {
-                    return;
-                }
-
-                _cancerText = value;
-                RaisePropertyChanged();
-            }
-        }
         [DisplayName("Δεξιός Καρπός")]
         public string karposD
         {
@@ -714,12 +683,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private string _KatagmaText;
-
-
         public string KatagmaText
         {
             get
@@ -778,11 +741,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-        private string _nevrikoText;
-
-
         public string nevrikoText
         {
             get
@@ -821,31 +779,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private string _opoiopathitikiText;
-
-
-        public string opoiopathitikiText
-        {
-            get
-            {
-                return _opoiopathitikiText;
-            }
-
-            set
-            {
-                if (_opoiopathitikiText == value)
-                {
-                    return;
-                }
-
-                _opoiopathitikiText = value;
-                RaisePropertyChanged();
-            }
-        }
-
         [DisplayName("Αριστερός Ώμος")]
         public string omosA
         {
@@ -865,6 +798,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         [DisplayName("Δεξιός Ώμος")]
         public string omosd
         {
@@ -881,6 +815,27 @@ namespace BubbleStart.Model
                 }
 
                 _omosd = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Dictionary<string, string> Problems => GetProblems();
+
+        public string opoiopathitikiText
+        {
+            get
+            {
+                return _opoiopathitikiText;
+            }
+
+            set
+            {
+                if (_opoiopathitikiText == value)
+                {
+                    return;
+                }
+
+                _opoiopathitikiText = value;
                 RaisePropertyChanged();
             }
         }
@@ -904,14 +859,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-
-
-        private string _osteoporosiText;
-
-
         public string osteoporosiText
         {
             get
@@ -927,6 +874,25 @@ namespace BubbleStart.Model
                 }
 
                 _osteoporosiText = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string pieshText
+        {
+            get
+            {
+                return _pieshText;
+            }
+
+            set
+            {
+                if (_pieshText == value)
+                {
+                    return;
+                }
+
+                _pieshText = value;
                 RaisePropertyChanged();
             }
         }
@@ -950,33 +916,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-        private string _pieshText;
-
-
-        public string pieshText
-        {
-            get
-            {
-                return _pieshText;
-            }
-
-            set
-            {
-                if (_pieshText == value)
-                {
-                    return;
-                }
-
-                _pieshText = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-
         public bool PiesiXamili
         {
             get
@@ -995,12 +934,6 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
-
-
-
-
-        private string _PiesiXamiliText;
-
 
         public string PiesiXamiliText
         {
@@ -1101,8 +1034,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public string SeleptedPropertyFriendlyName => SelectedIllnessPropertyName != null ?
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    (GetType().GetProperty(SelectedIllnessPropertyName).GetCustomAttributes(typeof(DisplayNameAttribute), false)[0] as DisplayNameAttribute).DisplayName : "Keno";
+        public string SeleptedPropertyFriendlyName => SelectedIllnessPropertyName != null ? (GetType().GetProperty(SelectedIllnessPropertyName).GetCustomAttributes(typeof(DisplayNameAttribute), false)[0] as DisplayNameAttribute).DisplayName : "Keno";
 
         public bool Stomaxika
         {
@@ -1122,12 +1054,6 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
-
-
-
-
-        private string _stomaxikaText;
-
 
         public string stomaxikaText
         {
@@ -1167,11 +1093,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-        private string _thiroidisText;
-
-
         public string thiroidisText
         {
             get
@@ -1190,6 +1111,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         [DisplayName("ΘΜΣΣ")]
         public string thorakas
         {
@@ -1229,11 +1151,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-        private string _travmatismosText;
-
-
         public string travmatismosText
         {
             get
@@ -1252,6 +1169,27 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         #endregion Properties
+
+        #region Methods
+
+        private Dictionary<string, string> GetProblems()
+        {
+            string tmpValue;
+            Dictionary<string, string> tmpDict = new Dictionary<string, string>();
+            foreach (var p in GetType().GetProperties().Where(
+                prop => Attribute.IsDefined(prop, typeof(DisplayNameAttribute))))
+            {
+                tmpValue = (string)GetType().GetProperty(p.Name).GetValue(this);
+                if (!string.IsNullOrEmpty(tmpValue))
+                {
+                    tmpDict.Add((GetType().GetProperty(p.Name).GetCustomAttributes(typeof(DisplayNameAttribute), false)[0] as DisplayNameAttribute).DisplayName, tmpValue);
+                }
+            }
+            return tmpDict;
+        }
+
+        #endregion Methods
     }
 }

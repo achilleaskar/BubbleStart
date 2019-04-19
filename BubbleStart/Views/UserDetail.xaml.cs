@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using BubbleStart.Model;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BubbleStart.Views
 {
@@ -25,14 +14,19 @@ namespace BubbleStart.Views
             InitializeComponent();
         }
 
-        private void OvalBorderedButton_Click(object sender, RoutedEventArgs e)
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
-
-        }
-
-        private void OvalBorderedButton_Checked(object sender, RoutedEventArgs e)
-        {
-
+            if (e.Key == Key.Enter)
+            {
+                if (DataContext is Customer c)
+                {
+                    if (c.NewWeight > 0)
+                    {
+                        c.WeightHistory.Add(new Weight { WeightValue = c.NewWeight, Height = c.Height });
+                        c.NewWeight = 0;
+                    }
+                }
+            }
         }
     }
 }

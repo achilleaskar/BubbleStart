@@ -1,26 +1,27 @@
-﻿<UserControl x:Class="BubbleStart.Views.SearchCustomers"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
              xmlns:models="clr-namespace:BubbleStart.Model"
              xmlns:views="clr-namespace:BubbleStart.Views"
-             d:DataContext="{d:DesignInstance viewmodels:SearchCustomer_ViewModel}"
+             xmlns:Converters="clr-namespace:BubbleStart.Converters"
+             x:Class="BubbleStart.Views.SearchCustomers"
+             d:DataContext="{d:DesignInstance {x:Type viewmodels:SearchCustomer_ViewModel}}"
              mc:Ignorable="d"
              Background="White"
-             d:DesignHeight="450"
-             d:DesignWidth="900">
+             d:DesignHeight="650"
+             d:DesignWidth="1200">
     <UserControl.Resources>
-        <DataTemplate DataType="{x:Type models:Customer}">
-            <views:UserDetail />
-        </DataTemplate>
+        <Converters:ProgramTypeToStringConverter x:Key="ProgramTypeToStringConverter" />
+        <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
+       
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <GroupBox Margin="5"
                   Padding="5"
@@ -37,22 +38,34 @@
                 <TextBox Grid.Row="1"
                          FontSize="15"
                          Margin="0 0 0 4"
-                         Text="{Binding SearchTerm, Delay=100,UpdateSourceTrigger=PropertyChanged}" />
-                <DataGrid ItemsSource="{Binding Customers}"
+                         Text="{Binding SearchTerm, Delay=100, UpdateSourceTrigger=PropertyChanged}" />
+                <DataGrid ItemsSource="{Binding CustomersCollectionView}"
                           Grid.Row="2"
                           SelectedItem="{Binding SelectedCustomer}"
                           CanUserAddRows="False"
-                          VirtualizingStackPanel.VirtualizationMode="Standard"
+                          SelectionMode="Single"
+                          VirtualizingPanel.VirtualizationMode="Standard"
                           IsReadOnly="True"
                           CanUserDeleteRows="False"
                           AutoGenerateColumns="False">
+                    <!--<DataGrid.Resources>
+                        <ContextMenu x:Key="manualACtivationSubMenu">
+                            <MenuItem Header="΅Ενεργ"
+                                      Command="{Binding DataContext.EditBookingCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"></MenuItem>
+                            <MenuItem Header="Διαγραφή Κράτησης"
+                                      Command="{Binding DataContext.DeleteReservationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"></MenuItem>
+                        </ContextMenu>
+                    </DataGrid.Resources>-->
                     <DataGrid.RowStyle>
                         <Style TargetType="{x:Type DataGridRow}">
                             <Setter Property="IsSelected"
-                                    Value="{Binding IsSelected,
-                             UpdateSourceTrigger=PropertyChanged}" />
+                                    Value="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" />
                             <Setter Property="Background"
                                     Value="{Binding BackGround}" />
+                            <!--<Setter Property="ContextMenu"
+                                    Value="{StaticResource manualACtivationSubMenu}" />-->
+                            <EventSetter Event="MouseDoubleClick"
+                                         Handler="ListView_MouseDoubleClick" />
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
@@ -65,11 +78,20 @@
                         <DataGridTextColumn Header="Ηλικία"
                                             Width="60"
                                             Binding="{Binding Age}" />
+                        <DataGridTemplateColumn Header="Ενερ.">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="{Binding IsActiveColor}"
+                                            Opacity="0.7" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Command="{Binding DataContext.ShowedUpCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}"
-                                            IsEnabled="{Binding IsNotPracticing}">Προσήλθε</Button>
+                                            IsEnabled="{Binding IsNotPracticing}"
+                                            Content="Προσήλθε" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -77,146 +99,13 @@
                 </DataGrid>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Column="1">
-            <StackPanel>
-                <Grid Width="320">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Label Content="Ονοματεπώνυμο:"
-                           Grid.Row="0"
-                           Grid.Column="0" />
-                    <TextBlock Text="{Binding SelectedCustomer.FullName}"
-                               Grid.Row="0"
-                               Grid.Column="1"
-                               Margin="0,5,0,4" />
-                    <Label Content="Ηλικία"
-                           Grid.Row="1"
-                           Grid.Column="0"
-                           Grid.ColumnSpan="2" />
-                    <TextBlock Text="{Binding SelectedCustomer.Age}"
-                               Grid.Row="1"
-                               Grid.Column="2"
-                               Margin="0,1" />
-                    <Label Content="Τηλέφωνο:"
-                           Grid.Row="3"
-                           Grid.Column="0" />
-                    <TextBlock Text="{Binding SelectedCustomer.Tel}"
-                               Grid.Row="3"
-                               Grid.Column="1"
-                               Margin="0,4" />
-                    <Separator Grid.Row="4"
-                               Grid.ColumnSpan="2" />
-                    <Label Content="Ενεργή συνδρομή:"
-                           Grid.Row="5"
-                           Grid.Column="0" />
-                    <TextBlock Text="{Binding SelectedCustomer.Active}"
-                               Grid.Row="5"
-                               Grid.Column="1"
-                               Margin="0,4" />
-                    <Label Content="Απομένουν(φορές):"
-                           Grid.Row="6"
-                           Grid.Column="0" />
-                    <TextBlock Text="{Binding SelectedCustomer.RemainingDays}"
-                               Grid.Row="6"
-                               Grid.Column="1"
-                               Margin="0,4" />
-                    <Label Content="Τύπος Ενεργού Πακέτου:"
-                           Grid.Row="7"
-                           Grid.Column="0" />
-                    <TextBlock Text="{Binding SelectedCustomer.TypeOfProgram}"
-                               Grid.Row="7"
-                               Grid.Column="1"
-                               Margin="0,4" />
-                    <GroupBox Grid.Row="8"
-                              Grid.ColumnSpan="2"
-                              Header="Αγορά πακέτου">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Row="0"
-                                        Margin="5" VerticalAlignment="Top"
-                                        Grid.Column="0">
-                                <TextBlock Text="Τύπος:" />
-                                <ComboBox VerticalAlignment="Center"
-                                          SelectedIndex="{Binding SelectedCustomer.ProgramTypeIndex,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
-                                          Margin="0">
-                                    <ComboBoxItem Content="Ημερήσιο 30'" />
-                                    <ComboBoxItem Content="Ημερήσιο 60'" />
-                                    <ComboBoxItem Content="Reformer Pilates (1-2)" />
-                                    <ComboBoxItem Content="Functional Training (1-2)" />
-                                    <ComboBoxItem Content="Reformer Pilates (3-5)" />
-                                    <ComboBoxItem Content="Functional Training (3-5)" />
-                                    <ComboBoxItem Content="Ελέυθερη Χρήση - Ραντεβού" />
-                                </ComboBox>
-                            </StackPanel>
-                            <StackPanel Grid.Row="0"
-                                        Grid.Column="1"
-                                        Orientation="Horizontal">
-                                <StackPanel VerticalAlignment="Center"
-                                            Orientation="Vertical">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Τιμή:" />
-                                        <TextBox Text="{Binding SelectedCustomer.ProgramPrice,StringFormat=c0,UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="5 0 0 0"
-                                                 Width="30" />
-                                    </StackPanel>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="Έναρξη:" />
-                                        <DatePicker SelectedDate="{Binding SelectedCustomer.StartDate,StringFormat=c0,UpdateSourceTrigger=PropertyChanged}"
-                                                 
-                                                  />
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Grid.Row="0"
-                                            Margin="5 0"
-                                            Grid.Column="1">
-                                    <Button Content="Πληρωμή"
-                                            Command="{Binding PaymentCommand}"
-                                            CommandParameter="1" />
-                                    <Button Content="Πίστωση"
-                                            Margin="0 5 0 0"
-                                            Command="{Binding PaymentCommand}" 
-                                            CommandParameter="0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
-            </StackPanel>
-        </GroupBox>
-        <TabControl Grid.Column="2">
+       
+        <TabControl Grid.Column="1">
             <TabItem Header="Τρέχουσα Κατάσταση">
                 <DataGrid ItemsSource="{Binding CustomersPracticing}"
                           SelectedItem="{Binding SelectedPracticingCustomer}"
                           CanUserAddRows="False"
-                          VirtualizingStackPanel.VirtualizationMode="Standard"
+                          VirtualizingPanel.VirtualizationMode="Standard"
                           IsReadOnly="True"
                           CanUserDeleteRows="False"
                           AutoGenerateColumns="False">
@@ -229,15 +118,14 @@
                                             Binding="{Binding Age}" />
                         <DataGridTextColumn Header="Διάρκεια"
                                             Width="60"
-                                            Binding="{Binding Duration,  StringFormat={}{0:hh}:{0:mm}, FallbackValue=00:00}" />
+                                            Binding="{Binding Duration, FallbackValue=00:00, StringFormat=\{0:hh\}:\{0:mm\}}" />
                         <DataGridTemplateColumn Header="Αποχώρηση">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="Τέλος"
-                                                Margin="5 0"
-                                                Command="{Binding DataContext.CustomerLeftCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
-                                    </StackPanel>
+                                    <Button Content="Τέλος"
+                                            HorizontalAlignment="Center"
+                                            Margin="5 0"
+                                            Command="{Binding DataContext.CustomerLeftCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -245,7 +133,7 @@
                 </DataGrid>
             </TabItem>
             <TabItem Header="Λεπτομέριες Πελάτη">
-                <ContentControl Content="{Binding SelectedCustomer}" />
+                <views:UserDetail DataContext="{Binding SelectedCustomer}" />
             </TabItem>
         </TabControl>
     </Grid>

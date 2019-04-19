@@ -6,76 +6,29 @@
              xmlns:models="clr-namespace:BubbleStart.Model"
              xmlns:converters="clr-namespace:BubbleStart.Converters"
              xmlns:local="clr-namespace:BubbleStart.Views"
+             xmlns:helpers="clr-namespace:BubbleStart.Helpers"
              d:DataContext="{d:DesignInstance models:Customer}"
              mc:Ignorable="d"
-             d:DesignHeight="850"
+             d:DesignHeight="1850"
              Background="White"
              d:DesignWidth="1000">
     <UserControl.Resources>
+        <converters:IsCustomerNullToBoolConverter x:Key="IsCustomerNullToBoolConverter" />
         <converters:ContentToColorConverter x:Key="ContentToColorConverter" />
         <converters:BMItoColorConverter x:Key="BMItoColorConverter" />
         <Style TargetType="{x:Type ComboBox}">
             <Setter Property="VerticalAlignment"
                     Value="Center" />
         </Style>
-        <!--<ControlTemplate x:Key="RadioButtonControlTemplate"
-                         TargetType="{x:Type RadioButton}">
-            <Grid>
-                <Border CornerRadius="20"
-                        BorderBrush="Blue"
-                        x:Name="border"
-                        BorderThickness="0">
-                    <Ellipse VerticalAlignment="Stretch"
-                             Opacity="0.5"
-                             Fill="Red"
-                             x:Name="theEllipse" />
-                    -->
-        <!--Fill="{Binding Converter={StaticResource ContentToColorConverter}, Mode=OneWay}"-->
-        <!--
-                </Border>
-                <ContentPresenter VerticalAlignment="Center"
-                                  HorizontalAlignment="Center" />
-            </Grid>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsChecked"
-                         Value="True">
-                    <Setter Property="BorderThickness"
-                            Value="1"
-                            TargetName="border" />
-                </Trigger>
-                <Trigger Property="IsMouseOver"
-                         Value="True">
-                    <Setter Property="Opacity"
-                            Value="0.9"
-                            TargetName="theEllipse" />
-                </Trigger>
-                <Trigger Property="IsPressed"
-                         Value="True">
-                    <Setter Property="Fill"
-                            Value="Gray"
-                            TargetName="theEllipse" />
-                </Trigger>
-                -->
-        <!--<DataTrigger Binding="{Binding SomeConditionalProperty}"
-                             Value="True">
-                    <Setter Property="Background"
-                            Value="Pink" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding SomeConditionalProperty}"
-                             Value="True">
-                    <Setter Property="Background"
-                            Value="Pink" />
-                </DataTrigger>-->
-        <!--
-            </ControlTemplate.Triggers>
-        </ControlTemplate>-->
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ScrollViewer>
+        <ScrollViewer VerticalScrollBarVisibility="Visible"
+                      IsEnabled="{Binding Converter={StaticResource IsCustomerNullToBoolConverter}, Mode=OneWay}"
+                      HorizontalScrollBarVisibility="Visible">
             <StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -99,24 +52,24 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="13.667" />
-                                <ColumnDefinition Width="117.333" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="140" />
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="160" />
+                                <ColumnDefinition Width="210" />
                             </Grid.ColumnDefinitions>
                             <Label Content="Όνομα:"
                                    Grid.Row="0"
                                    Grid.Column="0"
                                    Grid.ColumnSpan="2" />
-                            <TextBox Text="{Binding Name,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
+                            <TextBox Text="{Binding Name,ValidatesOnDataErrors=True,ValidatesOnExceptions=True,ValidatesOnNotifyDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
                                      Grid.Row="0"
                                      Grid.Column="2"
                                      Margin="0,5,0,4" />
                             <Label Content="Επίθετο:"
                                    Grid.Row="0"
                                    Grid.Column="3" />
-                            <TextBox Text="{Binding SureName,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
+                            <TextBox Text="{Binding SureName,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True,ValidatesOnNotifyDataErrors=True}"
                                      Grid.Row="0"
                                      Grid.Column="4"
                                      Margin="0,5,0,4" />
@@ -152,17 +105,12 @@
                                    Grid.Row="2"
                                    Grid.Column="3" />
                             <ComboBox Grid.Row="2"
-                                      SelectedIndex="{Binding District,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
+                                      ItemsSource="{x:Static helpers:StaticResources.Districts}"
+                                      Text="{Binding DistrictText,UpdateSourceTrigger=PropertyChanged}"
+                                      DisplayMemberPath="Name"
                                       Grid.Column="4"
-                                      Margin="0,4">
-                                <ComboBoxItem>Ευζώνων</ComboBoxItem>
-                                <ComboBoxItem>Λαογραφικό Μουσείο</ComboBoxItem>
-                                <ComboBoxItem>Μπότσαρη</ComboBoxItem>
-                                <ComboBoxItem>Πανόραμα</ComboBoxItem>
-                                <ComboBoxItem>Σχολή Τυφλων</ComboBoxItem>
-                                <ComboBoxItem>Φάληρο</ComboBoxItem>
-                                <ComboBoxItem>Άλλο</ComboBoxItem>
-                            </ComboBox>
+                                      IsEditable="True"
+                                      Margin="0,4" />
                             <Label Content="Επάγγελμα:"
                                    Grid.Row="3"
                                    Grid.Column="3" />
@@ -188,6 +136,7 @@
                                       Grid.Column="4">
                                 <ComboBoxItem>Δεξί</ComboBoxItem>
                                 <ComboBoxItem>Αριστερό</ComboBoxItem>
+                                <ComboBoxItem>Αμφιδέξιος</ComboBoxItem>
                             </ComboBox>
                             <!--row 5-->
                             <Label Content="Φύλο:"
@@ -209,15 +158,26 @@
                                       Grid.RowSpan="4"
                                       AutoGenerateColumns="False"
                                       CanUserAddRows="False"
-                                      Width="160"
+                                      Width="205"
                                       Height="100"
                                       Grid.Column="4"
                                       Margin="0,5">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding WeightValue}"
                                                         Header="Βάρος" />
-                                    <DataGridTextColumn Header="Ημερομηνία"
-                                                        Binding="{Binding DateOfMeasure,StringFormat='{}{0:dd/MM/yyyy}'}" />
+                                    <DataGridTemplateColumn Header="Ημερομηνία">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <DatePicker Width="Auto"
+                                                            VerticalAlignment="Center"
+                                                            MinWidth="60"
+                                                            SelectedDate="{Binding DateOfMeasure,UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="BMI"
+                                                        IsReadOnly="True"
+                                                        Binding="{Binding BMI}" />
                                 </DataGrid.Columns>
                             </DataGrid>
                             <!--row 6-->
@@ -227,6 +187,7 @@
                                    Grid.ColumnSpan="2" />
                             <TextBox Text="{Binding NewWeight,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,NotifyOnValidationError=True}"
                                      Grid.Row="6"
+                                     KeyUp="TextBox_KeyUp"
                                      Grid.Column="2"
                                      Margin="0,4" />
                             <!--row 7-->
@@ -253,281 +214,8 @@
                                      Margin="0,4" />
                         </Grid>
                     </GroupBox>
-                    <Canvas Height="285"
-                            Grid.Column="1"
-                            HorizontalAlignment="Right"
-                            Width="310">
-                        <Image VerticalAlignment="Top"
-                               Margin="5"
-                               HorizontalAlignment="Left"
-                               Width="300"
-                               Source="/BubbleStart;component/Sources/neutral.jpg" />
-                        <local:OvalBorderedButton Canvas.Left="32"
-                                                  GroupName="buttons"
-                                                  Height="24"
-                                                  CommandParameter="omosA"
-                                                  Canvas.Top="53"
-                                                  DataContext="{Binding Illness.omosA}"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Width="36"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-44" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="82"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="24"
-                                                  CommandParameter="omosd"
-                                                  Canvas.Top="53"
-                                                  DataContext="{Binding Illness.omosd}"
-                                                  Width="36"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-136" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="37"
-                                                  CommandParameter="isxioA"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="27"
-                                                  Canvas.Top="122"
-                                                  DataContext="{Binding Illness.isxioA}"
-                                                  Width="42"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-80" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="70"
-                                                  CommandParameter="IsxioD"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="27"
-                                                  Canvas.Top="122"
-                                                  DataContext="{Binding Illness.IsxioD}"
-                                                  Width="42"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-100" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="26"
-                                                  CommandParameter="agonasA"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="22"
-                                                  Canvas.Top="87"
-                                                  DataContext="{Binding Illness.agonasA}"
-                                                  Width="22" />
-                        <local:OvalBorderedButton Canvas.Left="101"
-                                                  CommandParameter="agonasD"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="22"
-                                                  Canvas.Top="87"
-                                                  DataContext="{Binding Illness.agonasD}"
-                                                  Width="22" />
-                        <local:OvalBorderedButton Canvas.Left="49"
-                                                  CommandParameter="GonatoA"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="20"
-                                                  Canvas.Top="193"
-                                                  DataContext="{Binding Illness.GonatoA}"
-                                                  Width="29"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-90" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="71"
-                                                  CommandParameter="gonatoD"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="20"
-                                                  Canvas.Top="193"
-                                                  DataContext="{Binding Illness.gonatoD}"
-                                                  Width="29"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-90" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="114"
-                                                  CommandParameter="karposD"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="16"
-                                                  Canvas.Top="125"
-                                                  DataContext="{Binding Illness.karposD}"
-                                                  Width="20"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-110" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="15"
-                                                  CommandParameter="karsposA"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="16"
-                                                  Canvas.Top="125"
-                                                  DataContext="{Binding Illness.karsposA}"
-                                                  Width="20"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-70" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="58"
-                                                  CommandParameter="PodoknhmhA"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="13"
-                                                  Canvas.Top="256"
-                                                  DataContext="{Binding Illness.PodoknhmhA}"
-                                                  Width="18"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-90" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="73"
-                                                  CommandParameter="podoknhmhD"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="13"
-                                                  Canvas.Top="256"
-                                                  DataContext="{Binding Illness.podoknhmhD}"
-                                                  Width="18"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-90" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="3"
-                                                  CommandParameter="DaxtylaA"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="27"
-                                                  Canvas.Top="142"
-                                                  DataContext="{Binding Illness.DaxtylaA}"
-                                                  Width="22"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="15" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="124"
-                                                  CommandParameter="DaxtylaD"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="27"
-                                                  Canvas.Top="142"
-                                                  DataContext="{Binding Illness.DaxtylaD}"
-                                                  Width="22"
-                                                  RenderTransformOrigin="0.5,0.5">
-                            <local:OvalBorderedButton.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="150" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </local:OvalBorderedButton.RenderTransform>
-                        </local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="218"
-                                                  CommandParameter="afxenas"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="24"
-                                                  Canvas.Top="30"
-                                                  DataContext="{Binding Illness.afxenas}"
-                                                  Width="31"
-                                                  RenderTransformOrigin="0.5,0.5"></local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="207"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="42"
-                                                  CommandParameter="thorakas"
-                                                  Canvas.Top="56"
-                                                  DataContext="{Binding Illness.thorakas}"
-                                                  Width="56"
-                                                  RenderTransformOrigin="0.5,0.5"></local:OvalBorderedButton>
-                        <local:OvalBorderedButton Canvas.Left="209"
-                                                  CommandParameter="mesh"
-                                                  GroupName="buttons"
-                                                  Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
-                                                  Height="42"
-                                                  Canvas.Top="100"
-                                                  DataContext="{Binding Illness.mesh}"
-                                                  Width="48"
-                                                  RenderTransformOrigin="0.5,0.5"></local:OvalBorderedButton>
-                    </Canvas>
                 </Grid>
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
                     <GroupBox Header="Πρόσθετες Πληροφορίες - Ιστορικό"
                               Margin="5"
                               VerticalAlignment="Top"
@@ -540,9 +228,10 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <GroupBox Header="Τρόπος Ζωής"
-                                      Width="235">
+                                      Width="245">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -612,7 +301,7 @@
                                 </Grid>
                             </GroupBox>
                             <GroupBox Header="Ιστορικό Εκγύμνασης"
-                                      Width="400"
+                                      Width="410"
                                       Grid.Column="1">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -628,10 +317,11 @@
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Ποιοί είναι οι κυριοι λόγοι που ξεκινάτε?"
                                                Grid.ColumnSpan="2" />
+                                    
                                     <StackPanel Margin="10 0"
                                                 Grid.Row="1">
                                         <CheckBox Content="Γενική Βελτίωση"
@@ -643,6 +333,18 @@
                                         <CheckBox Content="Μυϊκή Δύναμη"
                                                   IsChecked="{Binding ReasonPower}" />
                                     </StackPanel>
+                                    <StackPanel Orientation="Vertical"
+                                                Grid.Row="1"
+                                                Grid.Column="2">
+                                            <Label Content="Άλλοι Λόγοι:"
+                                                   Padding="0" />
+                                            <TextBox Text="{Binding ExtraReasons}"
+                                                     Height="44"
+                                                     HorizontalAlignment="Stretch"
+                                                     TextWrapping="Wrap"
+                                                     Grid.Column="1" />
+                                        </StackPanel>
+                              
                                     <Label Content="Έχετε κάνει ξανά δομημένη άσκηση?"
                                            Grid.Row="2"
                                            Grid.Column="0" />
@@ -655,12 +357,16 @@
                                            Grid.Row="3"
                                            Visibility="{Binding IsChecked, ElementName=firsttime, Converter={StaticResource booleanToVisibilityConverter}}"
                                            Grid.Column="0" />
-                                    <TextBox Text="{Binding HistoryKind}"
-                                             Grid.Row="3"
-                                             Width="150"
-                                             Visibility="{Binding IsChecked, ElementName=firsttime, Converter={StaticResource booleanToVisibilityConverter}}"
-                                             VerticalAlignment="Center"
-                                             Grid.Column="1" />
+                                    <ScrollViewer MaxHeight="150"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  Visibility="{Binding IsChecked, ElementName=firsttime, Converter={StaticResource booleanToVisibilityConverter}}"
+                                                  VerticalAlignment="Center"
+                                                  Grid.Column="1"
+                                                  Grid.Row="3">
+                                        <TextBox Text="{Binding HistoryKind}"
+                                                 TextWrapping="Wrap"
+                                                 AcceptsReturn="True" />
+                                    </ScrollViewer>
                                     <Label Content="Πόσες φορές την εβδομάδα?"
                                            Grid.Row="4"
                                            Visibility="{Binding IsChecked, ElementName=firsttime, Converter={StaticResource booleanToVisibilityConverter}}"
@@ -675,478 +381,740 @@
                                         <ComboBoxItem>4-5</ComboBoxItem>
                                         <ComboBoxItem>5-7</ComboBoxItem>
                                     </ComboBox>
-                                    <Label Content="Για πόσους μήνες το ακολουθήσατε??"
+                                    <Label Content="Για πόσο διάστημα το ακολουθήσατε?"
                                            Grid.Row="5"
                                            Visibility="{Binding IsChecked, ElementName=firsttime, Converter={StaticResource booleanToVisibilityConverter}}"
                                            Grid.Column="0" />
                                     <TextBox Text="{Binding HistoryDuration}"
                                              Grid.Row="5"
-                                             Width="40"
-                                             HorizontalAlignment="Left"
-                                             Visibility="{Binding IsChecked, ElementName=firsttime, Converter={StaticResource booleanToVisibilityConverter}}"
+                                             HorizontalAlignment="Stretch"
                                              VerticalAlignment="Center"
                                              Grid.Column="1" />
+                                    <!--Visibility="{Binding IsChecked, ElementName=firsttime, Converter={StaticResource booleanToVisibilityConverter}}"-->
                                 </Grid>
                             </GroupBox>
                             <GroupBox Grid.Row="1"
                                       Grid.ColumnSpan="2"
                                       Header="Ιστορικό Υγείας">
-                                <Grid>
-                                    <Grid.Resources>
-                                        <Style TargetType="CheckBox">
-                                            <Setter Property="VerticalAlignment"
-                                                    Value="Center" />
-                                        </Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="VerticalAlignment"
-                                                    Value="Center" />
-                                        </Style>
-                                    </Grid.Resources>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="155" />
-                                        <ColumnDefinition Width="20" />
-                                        <ColumnDefinition Width="225" />
-                                        <ColumnDefinition Width="20" />
-                                    </Grid.ColumnDefinitions>
-                                    <!--row 0-->
-                                    <TextBlock Text="Υψηλή Αρτηριακή Πίεση"
-                                               Grid.Row="0"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Illness.Piesi}"
-                                              Grid.Row="0"
-                                              Grid.Column="1" />
-                                    <TextBlock Text="Καρδιακό Πρόβλημα/Βηματοδότη"
-                                               Grid.Row="0"
-                                               Margin="10 0 5 5"
-                                               Grid.Column="2" />
-                                    <CheckBox IsChecked="{Binding Illness.Kardia}"
-                                              Grid.Row="0"
-                                              Grid.Column="3" />
-                                    <!--row 1-->
-                                    <TextBox Grid.Row="1"
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Vertical"
+                                                Grid.Column="1">
+                                        <StackPanel Orientation="Horizontal">
+                                            <StackPanel Orientation="Vertical">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Έχετε κάποιο τραυματισμό?"
+                                                               Grid.Row="8"
+                                                               Margin="0 0 5 5"
+                                                               Grid.Column="0" />
+                                                    <CheckBox IsChecked="{Binding Illness.travmatismos}"
+                                                              Grid.Row="8"
+                                                              Grid.Column="1" />
+                                                </StackPanel>
+                                                <Canvas Height="285"
+                                                        Margin="5 5 0 5"
+                                                        HorizontalAlignment="Left"
+                                                        Width="310">
+                                                    <Image VerticalAlignment="Top"
+                                                           Margin="5"
+                                                           HorizontalAlignment="Left"
+                                                           Width="300"
+                                                           Source="/BubbleStart;component/Sources/neutral.jpg" />
+                                                    <local:OvalBorderedButton Canvas.Left="32"
+                                                                              GroupName="buttons"
+                                                                              Height="24"
+                                                                              CommandParameter="omosA"
+                                                                              Canvas.Top="53"
+                                                                              DataContext="{Binding Illness.omosA}"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Width="36"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-44" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="82"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="24"
+                                                                              CommandParameter="omosd"
+                                                                              Canvas.Top="53"
+                                                                              DataContext="{Binding Illness.omosd}"
+                                                                              Width="36"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-136" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="37"
+                                                                              CommandParameter="isxioA"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="27"
+                                                                              Canvas.Top="122"
+                                                                              DataContext="{Binding Illness.isxioA}"
+                                                                              Width="42"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-80" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="70"
+                                                                              CommandParameter="IsxioD"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="27"
+                                                                              Canvas.Top="122"
+                                                                              DataContext="{Binding Illness.IsxioD}"
+                                                                              Width="42"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-100" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="26"
+                                                                              CommandParameter="agonasA"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="22"
+                                                                              Canvas.Top="87"
+                                                                              DataContext="{Binding Illness.agonasA}"
+                                                                              Width="22" />
+                                                    <local:OvalBorderedButton Canvas.Left="101"
+                                                                              CommandParameter="agonasD"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="22"
+                                                                              Canvas.Top="87"
+                                                                              DataContext="{Binding Illness.agonasD}"
+                                                                              Width="22" />
+                                                    <local:OvalBorderedButton Canvas.Left="49"
+                                                                              CommandParameter="GonatoA"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="20"
+                                                                              Canvas.Top="193"
+                                                                              DataContext="{Binding Illness.GonatoA}"
+                                                                              Width="29"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-90" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="71"
+                                                                              CommandParameter="gonatoD"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="20"
+                                                                              Canvas.Top="193"
+                                                                              DataContext="{Binding Illness.gonatoD}"
+                                                                              Width="29"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-90" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="114"
+                                                                              CommandParameter="karposD"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="16"
+                                                                              Canvas.Top="125"
+                                                                              DataContext="{Binding Illness.karposD}"
+                                                                              Width="20"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-110" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="15"
+                                                                              CommandParameter="karsposA"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="16"
+                                                                              Canvas.Top="125"
+                                                                              DataContext="{Binding Illness.karsposA}"
+                                                                              Width="20"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-70" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="58"
+                                                                              CommandParameter="PodoknhmhA"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="13"
+                                                                              Canvas.Top="256"
+                                                                              DataContext="{Binding Illness.PodoknhmhA}"
+                                                                              Width="18"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-90" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="73"
+                                                                              CommandParameter="podoknhmhD"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="13"
+                                                                              Canvas.Top="256"
+                                                                              DataContext="{Binding Illness.podoknhmhD}"
+                                                                              Width="18"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="-90" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="3"
+                                                                              CommandParameter="DaxtylaA"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="27"
+                                                                              Canvas.Top="142"
+                                                                              DataContext="{Binding Illness.DaxtylaA}"
+                                                                              Width="22"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="15" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="124"
+                                                                              CommandParameter="DaxtylaD"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="27"
+                                                                              Canvas.Top="142"
+                                                                              DataContext="{Binding Illness.DaxtylaD}"
+                                                                              Width="22"
+                                                                              RenderTransformOrigin="0.5,0.5">
+                                                        <local:OvalBorderedButton.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform />
+                                                                <SkewTransform />
+                                                                <RotateTransform Angle="150" />
+                                                                <TranslateTransform />
+                                                            </TransformGroup>
+                                                        </local:OvalBorderedButton.RenderTransform>
+                                                    </local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="218"
+                                                                              CommandParameter="afxenas"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="24"
+                                                                              Canvas.Top="30"
+                                                                              DataContext="{Binding Illness.afxenas}"
+                                                                              Width="31"
+                                                                              RenderTransformOrigin="0.5,0.5"></local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="207"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="42"
+                                                                              CommandParameter="thorakas"
+                                                                              Canvas.Top="56"
+                                                                              DataContext="{Binding Illness.thorakas}"
+                                                                              Width="56"
+                                                                              RenderTransformOrigin="0.5,0.5"></local:OvalBorderedButton>
+                                                    <local:OvalBorderedButton Canvas.Left="209"
+                                                                              CommandParameter="mesh"
+                                                                              GroupName="buttons"
+                                                                              Command="{Binding DataContext.BodyPartSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}"
+                                                                              Height="42"
+                                                                              Canvas.Top="100"
+                                                                              DataContext="{Binding Illness.mesh}"
+                                                                              Width="48"
+                                                                              RenderTransformOrigin="0.5,0.5"></local:OvalBorderedButton>
+                                                </Canvas>
+                                            </StackPanel>
+                                            <StackPanel Margin="10 0 0 0 "
+                                                        VerticalAlignment="Top">
+                                                <Label Margin="0"
+                                                       Padding="0"
+                                                       HorizontalAlignment="Left"
+                                                       Content="{Binding Illness.SeleptedPropertyFriendlyName}" />
+                                                <TextBox Width="315"
+                                                         HorizontalAlignment="Left"
+                                                         TextWrapping="Wrap"
+                                                         Margin="0"
+                                                         Height="70"
+                                                         Text="{Binding Illness.SelectedIllness}" />
+                                                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                                              MaxHeight="230">
+                                                    <DataGrid HorizontalAlignment="Left"
+                                                              Width="315"
+                                                              Margin=" 0 5  "
+                                                              VerticalAlignment="Stretch"
+                                                              AutoGenerateColumns="False"
+                                                              MinHeight="100"
+                                                              IsReadOnly="True"
+                                                              CanUserDeleteRows="False"
+                                                              CanUserAddRows="False"
+                                                              ItemsSource="{Binding Illness.Problems}">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTemplateColumn Header="Σημείο"
+                                                                                    Width="Auto"
+                                                                                    MaxWidth="85">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBlock Width="80"
+                                                                                   VerticalAlignment="Top"
+                                                                                   TextWrapping="Wrap"
+                                                                                   MaxHeight="40"
+                                                                                   Text="{Binding Key}" />
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                            <DataGridTemplateColumn Header="Πρόβλημα"
+                                                                                    Width="220">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBlock Width="Auto"
+                                                                                   VerticalAlignment="Top"
+                                                                                   TextWrapping="Wrap"
+                                                                                   MaxHeight="60"
+                                                                                   Text="{Binding Value}" />
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ScrollViewer>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Separator />
+                                    <Grid>
+                                        <Grid.Resources>
+                                            <Style TargetType="CheckBox">
+                                                <Setter Property="VerticalAlignment"
+                                                        Value="Center" />
+                                            </Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="VerticalAlignment"
+                                                        Value="Center" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="155" />
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="225" />
+                                            <ColumnDefinition Width="20" />
+                                        </Grid.ColumnDefinitions>
+                                        <!--row 0-->
+                                        <TextBlock Text="Υψηλή Αρτηριακή Πίεση"
+                                                   Grid.Row="0"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Illness.Piesi}"
+                                                  Grid.Row="0"
+                                                  Grid.Column="1" />
+                                        <TextBlock Text="Καρδιακό Πρόβλημα/Βηματοδότη"
+                                                   Grid.Row="0"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
+                                        <CheckBox IsChecked="{Binding Illness.Kardia}"
+                                                  Grid.Row="0"
+                                                  Grid.Column="3" />
+                                        <!--row 1-->
+                                        <TextBox Grid.Row="1"
+                                                 Height="35"
+                                                 Grid.ColumnSpan="2"
+                                                 Margin="0 0 5 0"
+                                                 TextWrapping="Wrap"
+                                                 Visibility="{Binding Illness.Piesi,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.pieshText}"
+                                                 Grid.Column="0" />
+                                        <TextBox Grid.Row="1"
+                                                 Margin="10 0 5 0"
+                                                 Height="35"
+                                                 TextWrapping="Wrap"
+                                                 Visibility="{Binding Illness.Kardia,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.kardiaText}"
+                                                 Grid.ColumnSpan="2"
+                                                 Grid.Column="2" />
+                                        <!--row 2-->
+                                        <TextBlock Text="Χαμηλή Αρτηριακή Πίεση"
+                                                   Grid.Row="2"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Illness.PiesiXamili}"
+                                                  Grid.Row="2"
+                                                  Grid.Column="1" />
+                                        <TextBlock Text="Διαβήτη"
+                                                   Grid.Row="2"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
+                                        <CheckBox IsChecked="{Binding Illness.Diavitis}"
+                                                  Grid.Row="2"
+                                                  Grid.Column="3" />
+                                        <!--row 3-->
+                                        <TextBox Grid.Row="3"
+                                                 Height="35"
+                                                 Grid.ColumnSpan="2"
+                                                 Margin="0 0 5 0"
+                                                 TextWrapping="Wrap"
+                                                 Text="{Binding Illness.PiesiXamiliText}"
+                                                 Visibility="{Binding Illness.PiesiXamili,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Grid.Column="0" />
+                                        <TextBox Grid.Row="3"
+                                                 Margin="10 0 5 0"
+                                                 Height="35"
+                                                 TextWrapping="Wrap"
+                                                 Visibility="{Binding Illness.Diavitis,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.diavitisText}"
+                                                 Grid.ColumnSpan="2"
+                                                 Grid.Column="2" />
+                                        <!--row 4-->
+                                        <TextBlock Text="Στομαχικά Προβλήματα"
+                                                   Grid.Row="4"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Illness.Stomaxika}"
+                                                  Grid.Row="4"
+                                                  Grid.Column="1" />
+                                        <TextBlock Text="(Πρόωρη) Εμμηνόπαυση"
+                                                   Grid.Row="4"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
+                                        <CheckBox IsChecked="{Binding Illness.Emminopafsi}"
+                                                  Grid.Row="4"
+                                                  Grid.Column="3" />
+                                        <!--row 5-->
+                                        <TextBox Grid.Row="5"
+                                                 Height="35"
+                                                 Grid.ColumnSpan="2"
+                                                 TextWrapping="Wrap"
+                                                 Margin="0 0 5 0"
+                                                 Visibility="{Binding Illness.Stomaxika,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.stomaxikaText}"
+                                                 Grid.Column="0" />
+                                        <TextBox Grid.Row="5"
+                                                 Margin="10 0 5 0"
+                                                 Height="35"
+                                                 Visibility="{Binding Illness.Emminopafsi,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.emmhnopafshText}"
+                                                 Grid.ColumnSpan="2"
+                                                 TextWrapping="Wrap"
+                                                 Grid.Column="2" />
+                                        <!--row 6-->
+                                        <TextBlock Text="Οστεοπόρωση"
+                                                   Grid.Row="6"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Illness.Osteoporosi}"
+                                                  Grid.Row="6"
+                                                  Grid.Column="1" />
+                                        <TextBlock Text="(Ρευματοειδής) Αρθρίτιδα"
+                                                   Grid.Row="6"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
+                                        <CheckBox IsChecked="{Binding Illness.Arthritida}"
+                                                  Grid.Row="6"
+                                                  Grid.Column="3" />
+                                        <!--row 7-->
+                                        <TextBox Grid.Row="7"
+                                                 Height="35"
+                                                 TextWrapping="Wrap"
+                                                 Grid.ColumnSpan="2"
+                                                 Margin="0 0 5 0"
+                                                 Visibility="{Binding Illness.Osteoporosi,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.osteoporosiText}"
+                                                 Grid.Column="0" />
+                                        <TextBox Grid.Row="7"
+                                                 TextWrapping="Wrap"
+                                                 Margin="10 0 5 0"
+                                                 Visibility="{Binding Illness.Arthritida,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Height="35"
+                                                 Text="{Binding Illness.arthritidaText}"
+                                                 Grid.ColumnSpan="2"
+                                                 Grid.Column="2" />
+                                        <!--row 8-->
+                                        <TextBlock Text="Έχετε κάποια αλλεργία?"
+                                                   Grid.Row="8"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Illness.allergia}"
+                                                  Grid.Row="8"
+                                                  Grid.Column="1" />
+                                        <TextBlock Text="Κάταγμα στα οστά"
+                                                   Grid.Row="8"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
+                                        <CheckBox IsChecked="{Binding Illness.Katagma}"
+                                                  Grid.Row="8"
+                                                  Grid.Column="3" />
+                                        <!--row 9-->
+                                        <TextBox Grid.Row="9"
+                                                 Height="35"
+                                                 TextWrapping="Wrap"
+                                                 Grid.ColumnSpan="2"
+                                                 Margin="0 0 5 0"
+                                                 Visibility="{Binding Illness.allergia,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.allergiaText}"
+                                                 Grid.Column="0" />
+                                        <!--<TextBox Grid.Row="9"
                                              Height="35"
-                                             Grid.ColumnSpan="2"
-                                             Margin="0 0 5 0"
                                              TextWrapping="Wrap"
-                                             Visibility="{Binding Illness.Piesi,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.pieshText}"
-                                             Grid.Column="0" />
-                                    <TextBox Grid.Row="1"
-                                             Margin="10 0 5 0"
-                                             Height="35"
-                                             Visibility="{Binding Illness.Kardia,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.kardiaText}"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Column="2" />
-                                    <!--row 2-->
-                                    <TextBlock Text="Χαμηλή Αρτηριακή Πίεση"
-                                               Grid.Row="2"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Illness.PiesiXamili}"
-                                              Grid.Row="2"
-                                              Grid.Column="1" />
-                                    <TextBlock Text="Διαβήτη"
-                                               Grid.Row="2"
-                                               Margin="10 0 5 5"
-                                               Grid.Column="2" />
-                                    <CheckBox IsChecked="{Binding Illness.Diavitis}"
-                                              Grid.Row="2"
-                                              Grid.Column="3" />
-                                    <!--row 3-->
-                                    <TextBox Grid.Row="3"
-                                             Height="35"
-                                             Grid.ColumnSpan="2"
-                                             Margin="0 0 5 0"
-                                             Text="{Binding Illness.PiesiXamiliText}"
-                                             Visibility="{Binding Illness.PiesiXamili,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Grid.Column="0" />
-                                    <TextBox Grid.Row="3"
-                                             Margin="10 0 5 0"
-                                             Height="35"
-                                             Visibility="{Binding Illness.Diavitis,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.diavitisText}"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Column="2" />
-                                    <!--row 4-->
-                                    <TextBlock Text="Στομαχικά Προβλήματα"
-                                               Grid.Row="4"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Illness.Stomaxika}"
-                                              Grid.Row="4"
-                                              Grid.Column="1" />
-                                    <TextBlock Text="(Πρόωρη) Εμμηνόπαυση"
-                                               Grid.Row="4"
-                                               Margin="10 0 5 5"
-                                               Grid.Column="2" />
-                                    <CheckBox IsChecked="{Binding Illness.Emminopafsi}"
-                                              Grid.Row="4"
-                                              Grid.Column="3" />
-                                    <!--row 5-->
-                                    <TextBox Grid.Row="5"
-                                             Height="35"
-                                             Grid.ColumnSpan="2"
-                                             Margin="0 0 5 0"
-                                             Visibility="{Binding Illness.Stomaxika,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.stomaxikaText}"
-                                             Grid.Column="0" />
-                                    <TextBox Grid.Row="5"
-                                             Margin="10 0 5 0"
-                                             Height="35"
-                                             Visibility="{Binding Illness.Emminopafsi,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.emmhnopafshText}"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Column="2" />
-                                    <!--row 6-->
-                                    <TextBlock Text="Οστεοπόρωση"
-                                               Grid.Row="6"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Illness.Osteoporosi}"
-                                              Grid.Row="6"
-                                              Grid.Column="1" />
-                                    <TextBlock Text="(Ρευματοειδής) Αρθρίτιδα"
-                                               Grid.Row="6"
-                                               Margin="10 0 5 5"
-                                               Grid.Column="2" />
-                                    <CheckBox IsChecked="{Binding Illness.Arthritida}"
-                                              Grid.Row="6"
-                                              Grid.Column="3" />
-                                    <!--row 7-->
-                                    <TextBox Grid.Row="7"
-                                             Height="35"
-                                             Grid.ColumnSpan="2"
-                                             Margin="0 0 5 0"
-                                             Visibility="{Binding Illness.Osteoporosi,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.osteoporosiText}"
-                                             Grid.Column="0" />
-                                    <TextBox Grid.Row="7"
-                                             Margin="10 0 5 0"
-                                             Visibility="{Binding Illness.Arthritida,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Height="35"
-                                             Text="{Binding Illness.arthritidaText}"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Column="2" />
-                                    <!--row 8-->
-                                    <TextBlock Text="Έχετε κάποιο τραυματισμό?"
-                                               Grid.Row="8"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Illness.travmatismos}"
-                                              Grid.Row="8"
-                                              Grid.Column="1" />
-                                    <TextBlock Text="Κάταγμα στα οστά"
-                                               Grid.Row="8"
-                                               Margin="10 0 5 5"
-                                               Grid.Column="2" />
-                                    <CheckBox IsChecked="{Binding Illness.Katagma}"
-                                              Grid.Row="8"
-                                              Grid.Column="3" />
-                                    <!--row 9-->
-                                    <TextBox Grid.Row="9"
-                                             Height="35"
                                              Grid.ColumnSpan="2"
                                              Margin="0 0 5 0"
                                              Text="{Binding Illness.travmatismosText}"
                                              Visibility="{Binding Illness.travmatismos,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Grid.Column="0" />
-                                    <TextBox Grid.Row="9"
-                                             Margin="10 0 5 0"
-                                             Height="35"
-                                             Visibility="{Binding Illness.Katagma,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.KatagmaText}"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Column="2" />
-                                    <!--row 10-->
-                                    <TextBlock Text="Νευρική Βλάβη"
-                                               Grid.Row="10"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Illness.NevrikiVlavi}"
-                                              Grid.Row="10"
-                                              Grid.Column="1" />
-                                    <TextBlock Text="Επιληψία"
-                                               Grid.Row="10"
-                                               Margin="10 0 5 5"
-                                               Grid.Column="2" />
-                                    <CheckBox IsChecked="{Binding Illness.Epilipsia}"
-                                              Grid.Row="10"
-                                              Grid.Column="3" />
-                                    <!--row 11-->
-                                    <TextBox Grid.Row="11"
-                                             Height="35"
-                                             Grid.ColumnSpan="2"
-                                             Margin="0 0 5 0"
-                                             Visibility="{Binding Illness.NevrikiVlavi,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.nevrikoText}"
-                                             Grid.Column="0" />
-                                    <TextBox Grid.Row="11"
-                                             Margin="10 0 5 0"
-                                             Height="35"
-                                             Visibility="{Binding Illness.Epilipsia,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.epilipsiaText}"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Column="2" />
-                                    <!--row 12-->
-                                    <TextBlock Text="Καρκίνος"
-                                               Grid.Row="12"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Illness.Karkinos}"
-                                              Grid.Row="12"
-                                              Grid.Column="1" />
-                                    <TextBlock Text="Θυροειδής"
-                                               Grid.Row="12"
-                                               Margin="10 0 5 5"
-                                               Grid.Column="2" />
-                                    <CheckBox IsChecked="{Binding Illness.Thiroidis}"
-                                              Grid.Row="12"
-                                              Grid.Column="3" />
-                                    <!--row 13-->
-                                    <TextBox Grid.Row="13"
-                                             Height="35"
-                                             Grid.ColumnSpan="2"
-                                             Margin="0 0 5 0"
-                                             Visibility="{Binding Illness.Karkinos,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.cancerText}"
-                                             Grid.Column="0" />
-                                    <TextBox Grid.Row="13"
-                                             Margin="10 0 5 0"
-                                             Height="35"
-                                             Visibility="{Binding Illness.Thiroidis,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.thiroidisText}"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Column="2" />
-                                    <!--row 14-->
-                                    <TextBlock Text="Παίρνετε Κάποιο Φάρμακο?"
-                                               Grid.Row="14"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Medicine}"
-                                              Grid.Row="14"
-                                              Grid.Column="1" />
-                                    <TextBlock Text="Εγκυμοσύνη τελευταίους 12 μήνες?"
-                                               Grid.Row="14"
-                                               Margin="10 0 5 5"
-                                               Grid.Column="2" />
-                                    <CheckBox IsChecked="{Binding Illness.Eggymosini}"
-                                              Grid.Row="14"
-                                              Grid.Column="3" />
-                                    <!--row 15-->
-                                    <TextBox Grid.Row="15"
-                                             Height="35"
-                                             Grid.ColumnSpan="2"
-                                             Visibility="{Binding Medicine,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Margin="0 0 5 0"
-                                             Text="{Binding MedicineText}"
-                                             Grid.Column="0" />
-                                    <TextBox Grid.Row="15"
-                                             Margin="10 0 5 0"
-                                             Visibility="{Binding Illness.Eggymosini,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Height="35"
-                                             Text="{Binding Illness.eggymosynhText}"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Column="2" />
-                                    <!--row 16-->
-                                    <TextBlock Text="Άσθμα"
-                                               Grid.Row="16"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Illness.Asthma}"
-                                              Grid.Row="16"
-                                              Grid.Column="1" />
-                                    <TextBlock Text="Κάνετε ομοιπαθητική?"
-                                               Grid.Row="16"
-                                               Margin="10 0 5 5"
-                                               Grid.Column="2" />
-                                    <CheckBox IsChecked="{Binding Illness.omoiopathitiki}"
-                                              Grid.Row="16"
-                                              Grid.Column="3" />
-                                    <!--row 17-->
-                                    <TextBox Grid.Row="17"
-                                             Height="35"
-                                             Grid.ColumnSpan="2"
-                                             Margin="0 0 5 0"
-                                             Visibility="{Binding Illness.Asthma,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.asthmaText}"
-                                             Grid.Column="0" />
-                                    <TextBox Grid.Row="17"
-                                             Margin="10 0 5 0"
-                                             Height="35"
-                                             Visibility="{Binding Illness.omoiopathitiki,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.opoiopathitikiText}"
-                                             Grid.ColumnSpan="2"
-                                             Grid.Column="2" />
-                                    <!--row 18-->
-                                    <TextBlock Text="Έχετε κάποια αλλεργία?"
-                                               Grid.Row="18"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Illness.allergia}"
-                                              Grid.Row="18"
-                                              Grid.Column="1" />
-                                    <!--row 19-->
-                                    <TextBox Grid.Row="19"
-                                             Height="35"
-                                             Grid.ColumnSpan="2"
-                                             Margin="0 0 5 0"
-                                             Visibility="{Binding Illness.allergia,Converter={StaticResource booleanToVisibilityConverter}}"
-                                             Text="{Binding Illness.allergiaText}"
-                                             Grid.Column="0" />
-                                    <!--row 20-->
-                                    <TextBlock Text="Έχετε κάνει κάποια χειρουργική επέμβαση τα τελευταία 10 χρόνια?"
-                                               Grid.Row="20"
-                                               Grid.ColumnSpan="3"
-                                               Margin="0 0 5 5"
-                                               Grid.Column="0" />
-                                    <CheckBox IsChecked="{Binding Surgery}"
-                                              Grid.Row="20"
-                                              Name="surgery"
-                                              Grid.Column="3" />
-                                    <!--row 11-->
-                                    <TextBlock Text="Λεπτομέριες:"
-                                               Grid.Row="21"
-                                               Grid.ColumnSpan="3"
-                                               Margin="0 0 5 5"
-                                               Visibility="{Binding IsChecked, ElementName=surgery, Converter={StaticResource booleanToVisibilityConverter}}"
-                                               Grid.Column="0" />
-                                    <TextBox Text="{Binding SurgeryInfo,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"
-                                             Grid.Row="21"
-                                             Width="260"
-                                             Visibility="{Binding IsChecked, ElementName=surgery, Converter={StaticResource booleanToVisibilityConverter}}"
-                                             TextWrapping="Wrap"
-                                             Height="40"
-                                             Margin="0 0 5 0"
-                                             Grid.ColumnSpan="3"
-                                             Grid.Column="1" />
-                                </Grid>
+                                             Grid.Column="0" />-->
+                                        <TextBox Grid.Row="9"
+                                                 Margin="10 0 5 0"
+                                                 TextWrapping="Wrap"
+                                                 Height="35"
+                                                 Visibility="{Binding Illness.Katagma,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.KatagmaText}"
+                                                 Grid.ColumnSpan="2"
+                                                 Grid.Column="2" />
+                                        <!--row 10-->
+                                        <TextBlock Text="Νευρική Βλάβη"
+                                                   Grid.Row="10"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Illness.NevrikiVlavi}"
+                                                  Grid.Row="10"
+                                                  Grid.Column="1" />
+                                        <TextBlock Text="Επιληψία"
+                                                   Grid.Row="10"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
+                                        <CheckBox IsChecked="{Binding Illness.Epilipsia}"
+                                                  Grid.Row="10"
+                                                  Grid.Column="3" />
+                                        <!--row 11-->
+                                        <TextBox Grid.Row="11"
+                                                 Height="35"
+                                                 TextWrapping="Wrap"
+                                                 Grid.ColumnSpan="2"
+                                                 Margin="0 0 5 0"
+                                                 Visibility="{Binding Illness.NevrikiVlavi,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.nevrikoText}"
+                                                 Grid.Column="0" />
+                                        <TextBox Grid.Row="11"
+                                                 Margin="10 0 5 0"
+                                                 TextWrapping="Wrap"
+                                                 Height="35"
+                                                 Visibility="{Binding Illness.Epilipsia,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.epilipsiaText}"
+                                                 Grid.ColumnSpan="2"
+                                                 Grid.Column="2" />
+                                        <!--row 12-->
+                                        <TextBlock Text="Καρκίνος"
+                                                   Grid.Row="12"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Illness.Karkinos}"
+                                                  Grid.Row="12"
+                                                  Grid.Column="1" />
+                                        <TextBlock Text="Θυροειδής"
+                                                   Grid.Row="12"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
+                                        <CheckBox IsChecked="{Binding Illness.Thiroidis}"
+                                                  Grid.Row="12"
+                                                  Grid.Column="3" />
+                                        <!--row 13-->
+                                        <TextBox Grid.Row="13"
+                                                 Height="35"
+                                                 Grid.ColumnSpan="2"
+                                                 TextWrapping="Wrap"
+                                                 Margin="0 0 5 0"
+                                                 Visibility="{Binding Illness.Karkinos,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.cancerText}"
+                                                 Grid.Column="0" />
+                                        <TextBox Grid.Row="13"
+                                                 Margin="10 0 5 0"
+                                                 Height="35"
+                                                 TextWrapping="Wrap"
+                                                 Visibility="{Binding Illness.Thiroidis,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.thiroidisText}"
+                                                 Grid.ColumnSpan="2"
+                                                 Grid.Column="2" />
+                                        <!--row 14-->
+                                        <TextBlock Text="Παίρνετε Κάποιο Φάρμακο?"
+                                                   Grid.Row="14"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Medicine}"
+                                                  Grid.Row="14"
+                                                  Grid.Column="1" />
+                                        <TextBlock Text="Εγκυμοσύνη τελευταίους 12 μήνες?"
+                                                   Grid.Row="14"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
+                                        <CheckBox IsChecked="{Binding Illness.Eggymosini}"
+                                                  Grid.Row="14"
+                                                  Grid.Column="3" />
+                                        <!--row 15-->
+                                        <TextBox Grid.Row="15"
+                                                 Height="35"
+                                                 TextWrapping="Wrap"
+                                                 Grid.ColumnSpan="2"
+                                                 Visibility="{Binding Medicine,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Margin="0 0 5 0"
+                                                 Text="{Binding MedicineText}"
+                                                 Grid.Column="0" />
+                                        <TextBox Grid.Row="15"
+                                                 Margin="10 0 5 0"
+                                                 TextWrapping="Wrap"
+                                                 Visibility="{Binding Illness.Eggymosini,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Height="35"
+                                                 Text="{Binding Illness.eggymosynhText}"
+                                                 Grid.ColumnSpan="2"
+                                                 Grid.Column="2" />
+                                        <!--row 16-->
+                                        <TextBlock Text="Άσθμα"
+                                                   Grid.Row="16"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Illness.Asthma}"
+                                                  Grid.Row="16"
+                                                  Grid.Column="1" />
+                                        <TextBlock Text="Κάνετε ομοιπαθητική?"
+                                                   Grid.Row="16"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
+                                        <CheckBox IsChecked="{Binding Illness.omoiopathitiki}"
+                                                  Grid.Row="16"
+                                                  Grid.Column="3" />
+                                        <!--row 17-->
+                                        <TextBox Grid.Row="17"
+                                                 TextWrapping="Wrap"
+                                                 Height="35"
+                                                 Grid.ColumnSpan="2"
+                                                 Margin="0 0 5 0"
+                                                 Visibility="{Binding Illness.Asthma,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.asthmaText}"
+                                                 Grid.Column="0" />
+                                        <TextBox Grid.Row="17"
+                                                 Margin="10 0 5 0"
+                                                 TextWrapping="Wrap"
+                                                 Height="35"
+                                                 Visibility="{Binding Illness.omoiopathitiki,Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 Text="{Binding Illness.opoiopathitikiText}"
+                                                 Grid.ColumnSpan="2"
+                                                 Grid.Column="2" />
+                                        <!--row 18-->
+                                        <!--row 19-->
+                                        <!--row 20-->
+                                        <TextBlock Text="Έχετε κάνει κάποια χειρουργική επέμβαση τα τελευταία 10 χρόνια?"
+                                                   Grid.Row="20"
+                                                   Grid.ColumnSpan="3"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Surgery}"
+                                                  Grid.Row="20"
+                                                  Name="surgery"
+                                                  Grid.Column="3" />
+                                        <!--row 11-->
+                                        <TextBlock Text="Λεπτομέριες:"
+                                                   Grid.Row="21"
+                                                   Grid.ColumnSpan="3"
+                                                   Margin="0 0 5 5"
+                                                   Visibility="{Binding IsChecked, ElementName=surgery, Converter={StaticResource booleanToVisibilityConverter}}"
+                                                   Grid.Column="0" />
+                                        <TextBox Text="{Binding SurgeryInfo,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"
+                                                 Grid.Row="21"
+                                                 Width="260"
+                                                 Visibility="{Binding IsChecked, ElementName=surgery, Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 TextWrapping="Wrap"
+                                                 Height="40"
+                                                 Margin="0 0 5 0"
+                                                 Grid.ColumnSpan="3"
+                                                 Grid.Column="1" />
+                                    </Grid>
+                                </StackPanel>
                             </GroupBox>
+                            <StackPanel Grid.Row="2">
+                                <Label Content="Επιπλέον Σημειώσεις:"
+                                       Padding="0 5 0 0" />
+                                <TextBox Text="{Binding ExtraNotes}"
+                                         Height="80" TextWrapping="Wrap"
+                                         Grid.Column="1" />
+                            </StackPanel>
                         </Grid>
                     </GroupBox>
-                    <StackPanel Grid.Column="1">
-                        <StackPanel.Resources>
-                            <Style TargetType="Label">
-                                <Setter Property="Padding"
-                                        Value="5 0 0 2" />
-                                <Setter Property="Margin"
-                                        Value="5 0 0 2" />
-                                <Setter Property="Width"
-                                        Value="90" />
-                            </Style>
-                        </StackPanel.Resources>
-                        <StackPanel>
-                            <Label Margin="0" Width="200"
-                                   HorizontalAlignment="Left"
-                                   Content="{Binding Illness.SeleptedPropertyFriendlyName}" />
-                            <TextBox Width="200"
-                                     HorizontalAlignment="Left"
-                                     TextWrapping="Wrap"
-                                     Height="150"
-                                     Text="{Binding Illness.SelectedIllness}" />
-                        </StackPanel>
-                        <!--<StackPanel Orientation="Horizontal">
-                            <Label Content="Ώμος Δεξ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.omosd}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Ώμος αρ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.omosA}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Ισχίο Δεξ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.IsxioD}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Ισχίο Αρ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.isxioA}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Αγκώνας Δεξ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.agonasD}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Αγκώνας Aρ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.agonasA}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Γόνατο Δεξ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.gonatoD}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Γόνατο Aρ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.GonatoA}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Καρπός Δεξ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.karposD}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Καρπός Aρ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.karsposA}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Κνήμη Δεξ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.podoknhmhD}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Κνήμη Aρ." />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.PodoknhmhA}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Αυχένας" />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.afxenas}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Θώρακας" />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.thorakas}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Μέση" />
-                            <TextBox Width="200"
-                                     Text="{Binding Illness.mesh}" />
-                        </StackPanel>-->
-                    </StackPanel>
                 </Grid>
             </StackPanel>
         </ScrollViewer>

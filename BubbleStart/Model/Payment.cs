@@ -1,23 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BubbleStart.Model
 {
     [Table("BubblePayments")]
     public class Payment : BaseModel
     {
+        #region Constructors
+
         public Payment()
         {
             Date = DateTime.Now;
         }
 
+        #endregion Constructors
 
+        #region Fields
+
+        private int _Amount;
         private DateTime _Date;
 
+        #endregion Fields
+
+        #region Properties
+
+        public int Amount
+        {
+            get
+            {
+                return _Amount;
+            }
+
+            set
+            {
+                if (_Amount == value)
+                {
+                    return;
+                }
+
+                _Amount = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public DateTime Date
         {
@@ -38,28 +62,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-        private int _Amount;
-
-
-        public int Amount
-        {
-            get
-            {
-                return _Amount;
-            }
-
-            set
-            {
-                if (_Amount == value)
-                {
-                    return;
-                }
-
-                _Amount = value;
-                RaisePropertyChanged();
-            }
-        }
+        #endregion Properties
     }
 }

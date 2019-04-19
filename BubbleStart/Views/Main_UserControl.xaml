@@ -32,9 +32,7 @@
                     <MenuItem Command="{Binding OpenUsersEditCommand}"
                               Header="Χρήστες"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
-                    <MenuItem Command="{Binding OpenPartnersEditCommand}"
-                              Header="Συνεργάτες"
-                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
+                  
                 </MenuItem>
             </Menu>
             <StackPanel HorizontalAlignment="Right"
@@ -51,6 +49,14 @@
                                                    Spin="True"
                                                    Margin="5" />
                 </Border>-->
+                <Button HorizontalAlignment="Right"
+                        Cursor="Hand"
+                        Command="{Binding RefreshAllDataCommand}">
+                    <iconPacks:PackIconFontAwesome Kind="SyncSolid"
+                                                   VerticalAlignment="Center"
+                                                   
+                                                   Margin="5" />
+                </Button>
                 <Label Content="{Binding UserName}" />
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
 

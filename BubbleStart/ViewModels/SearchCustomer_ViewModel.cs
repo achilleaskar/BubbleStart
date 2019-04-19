@@ -1,10 +1,16 @@
 ﻿using BubbleStart.Database;
 using BubbleStart.Model;
+using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -18,23 +24,26 @@ namespace BubbleStart.ViewModels
         {
             this.Context = Context;
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
-            SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); });
+            PaymentCommand = new RelayCommand(async () => { await MakePayment(); }, CanMakePayment);
+            SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); }, CanSaveCustomer);
             ShowedUpCommand = new RelayCommand(async () => { await CustomerShowedUp(); });
             CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
-            PaymentCommand = new RelayCommand<int>(async (obj) => { await MakePayment(obj); });
-            CreateNewCustomer();
+            //PaymentCommand.CanExecute((obj) => CanMakePayment(obj));
+            // CreateNewCustomer();
         }
 
-        private bool CanMakePayment(int arg)
-        {
-            return SelectedCustomer.ProgramDataCheck();
-        }
 
-        private void BodyPartChanged(string selectedIndex)
+
+
+
+
+        public bool Enabled => SelectedCustomer != null;
+
+        private bool CanSaveCustomer()
         {
-            _SelectedCustomer.Illness.SelectedIllnessPropertyName = selectedIndex;
+            return SelectedCustomer != null && !string.IsNullOrEmpty(SelectedCustomer.Name) && !string.IsNullOrEmpty(SelectedCustomer.SureName) && !string.IsNullOrEmpty(SelectedCustomer.Tel);
         }
 
         #endregion Constructors
@@ -44,6 +53,8 @@ namespace BubbleStart.ViewModels
         private ObservableCollection<Customer> _Customers;
 
         private ObservableCollection<Customer> _CustomersPracticing;
+
+        private int _PaymentAmount;
 
         private string _SearchTerm;
 
@@ -55,9 +66,14 @@ namespace BubbleStart.ViewModels
 
         #region Properties
 
+        public RelayCommand<string> BodyPartSelected { get; set; }
+
+
         public GenericRepository Context { get; }
 
         public RelayCommand CreateNewCustomerCommand { get; set; }
+
+        public RelayCommand CustomerLeftCommand { get; set; }
 
         public ObservableCollection<Customer> Customers
         {
@@ -74,14 +90,35 @@ namespace BubbleStart.ViewModels
                 }
 
                 _Customers = value;
-                CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
-                CustomersCollectionView.Filter = CustomerFilter;
-                CustomersCollectionView.SortDescriptions.Add(new SortDescription(nameof(Customer.SureName), ListSortDirection.Ascending));
+
                 RaisePropertyChanged();
             }
         }
 
-        public ICollectionView CustomersCollectionView { get; set; }
+
+
+
+        private ICollectionView _CustomersCollectionView;
+
+
+        public ICollectionView CustomersCollectionView
+        {
+            get
+            {
+                return _CustomersCollectionView;
+            }
+
+            set
+            {
+                if (_CustomersCollectionView == value)
+                {
+                    return;
+                }
+
+                _CustomersCollectionView = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public ObservableCollection<Customer> CustomersPracticing
         {
@@ -106,7 +143,26 @@ namespace BubbleStart.ViewModels
 
         public ICollectionView CustomersPracticingCollectionView { get; set; }
 
-        public RelayCommand<int> PaymentCommand { get; set; }
+        public int PaymentAmount
+        {
+            get
+            {
+                return _PaymentAmount;
+            }
+
+            set
+            {
+                if (_PaymentAmount == value)
+                {
+                    return;
+                }
+
+                _PaymentAmount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public RelayCommand PaymentCommand { get; set; }
 
         public RelayCommand SaveCustomerCommand { get; set; }
 
@@ -148,7 +204,13 @@ namespace BubbleStart.ViewModels
                     _SelectedCustomer.IsSelected = false;
                 }
                 _SelectedCustomer = value;
+                if (_SelectedCustomer != null)
+                {
+                    _SelectedCustomer.SelectProperProgram();
+                }
+                PaymentAmount = 0;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Enabled));
             }
         }
 
@@ -172,15 +234,35 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand ShowedUpCommand { get; set; }
-        public RelayCommand CustomerLeftCommand { get; set; }
 
         #endregion Properties
 
         #region Methods
 
+        public async Task CustomerLeft()
+        {
+            SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
+            SelectedPracticingCustomer.IsPracticing = false;
+            CustomersPracticing.Remove(SelectedPracticingCustomer);
+            await Context.SaveAsync();
+        }
+
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
-            Customers = new ObservableCollection<Customer>(await Context.LoadAllCustomersAsync());
+            List<District> Districts = (await Context.GetAllAsync<District>()).OrderBy(d => d.Name).ToList();
+            Helpers.StaticResources.Districts.Clear();
+            foreach (var item in Districts)
+            {
+                Helpers.StaticResources.Districts.Add(item);
+            }
+            OpenCustomerManagementCommand = new RelayCommand(OpenCustomerManagement);
+            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()).OrderByDescending(c => c.ActiveCustomer).ThenBy(x => x.SureName));
+            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
+            CustomersCollectionView.Filter = CustomerFilter;
+            //CustomersCollectionView.SortDescriptions.Add(new SortDescription(nameof(Customer.IsActiveColor.Color), ListSortDirection.Descending));
+            //CustomersCollectionView.SortDescriptions.Add(new SortDescription(nameof(Customer.SureName), ListSortDirection.Ascending));
+            //CustomersCollectionView.Refresh();
+
             foreach (var item in Customers)
             {
                 if (item.LastShowUp != null && item.LastShowUp.Left < item.LastShowUp.Arrived)
@@ -191,11 +273,38 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public RelayCommand<string> BodyPartSelected { get; set; }
+        private void OpenCustomerManagement()
+        {
+            if (SelectedCustomer != null)
+            {
+                SelectedCustomer.Context = Context;
+                Window window = new CustomerManagement
+                {
+                    DataContext = SelectedCustomer
+                };
+                Application.Current.MainWindow.Visibility = Visibility.Hidden;
+                window.ShowDialog();
+                Application.Current.MainWindow.Visibility = Visibility.Visible;
+            }
+        }
+
+        public RelayCommand OpenCustomerManagementCommand { get; set; }
 
         public override Task ReloadAsync()
         {
             throw new NotImplementedException();
+        }
+
+        private void BodyPartChanged(string selectedIndex)
+        {
+            _SelectedCustomer.Illness.SelectedIllnessPropertyName = selectedIndex;
+        }
+
+      
+
+        private bool CanMakePayment()
+        {
+            return SelectedCustomer != null && PaymentAmount <= SelectedCustomer.RemainingAmount;
         }
 
         private void CreateNewCustomer()
@@ -217,28 +326,17 @@ namespace BubbleStart.ViewModels
                 CustomersPracticing.Add(SelectedCustomer);
                 SelectedCustomer.ShowedUp(true);
                 await Context.SaveAsync();
-                SelectedCustomer = null;
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
         }
 
-        private async Task MakePayment(int obj)
-        {
-            SelectedCustomer.AddNewProgram();
-            if (obj == 1)
-            {
-                SelectedCustomer.MakePayment();
-            }
+       
 
-            await Context.SaveAsync();
-        }
-
-        public async Task CustomerLeft()
+        private async Task MakePayment()
         {
-            SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
-            SelectedPracticingCustomer.IsPracticing = false;
-            CustomersPracticing.Remove(SelectedPracticingCustomer);
+            SelectedCustomer.Payments.Add(new Payment { Date = DateTime.Now, Amount = PaymentAmount });
             await Context.SaveAsync();
+            SelectedCustomer.RaisePropertyChanged(nameof(SelectedCustomer.RemainingAmount));
         }
 
         private async Task SaveCustomer()
@@ -246,10 +344,15 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             if (SelectedCustomer != null)
             {
-                if (SelectedCustomer.NewWeight > 0)
+
+                //if (SelectedCustomer.NewWeight > 0)
+                //{
+                //    SelectedCustomer.WeightHistory.Add(new Weight { WeightValue = SelectedCustomer.NewWeight });
+                //    SelectedCustomer.NewWeight = 0;
+                //}
+                if (!string.IsNullOrEmpty(SelectedCustomer.DistrictText) && !Helpers.StaticResources.Districts.Any(d => d.Name == SelectedCustomer.DistrictText))
                 {
-                    SelectedCustomer.WeightHistory.Add(new Weight { WeightValue = SelectedCustomer.NewWeight });
-                    SelectedCustomer.NewWeight = 0;
+                    Context.Add(new District { Name = SelectedCustomer.DistrictText });
                 }
                 if (SelectedCustomer.Id > 0)
                 {
@@ -267,5 +370,23 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Methods
+    }
+
+    public class CustomSorter : IComparer
+    {
+        public int Compare(object x, object y)
+        {
+            int digitsX = x.ToString().Length;
+            int digitsY = y.ToString().Length;
+            if (digitsX < digitsY)
+            {
+                return 1;
+            }
+            else if (digitsX > digitsY)
+            {
+                return -1;
+            }
+            return (int)x - (int)y;
+        }
     }
 }

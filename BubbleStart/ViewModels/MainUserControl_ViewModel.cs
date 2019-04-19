@@ -5,6 +5,7 @@ using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BubbleStart.ViewModels
 {
@@ -15,10 +16,58 @@ namespace BubbleStart.ViewModels
             LogOutCommand = new RelayCommand(TryLogOut, CanLogout);
             OpenUsersEditCommand = new RelayCommand(async () => { await OpenUsersWindow(); }, CanEditWindows);
 
+            RefreshAllDataCommand = new RelayCommand(async () => { await RefreshAllData(); });
+
             StartingRepository = startingRepository;
             SearchCustomer_ViewModel = new SearchCustomer_ViewModel(startingRepository);
         }
-        public SearchCustomer_ViewModel SearchCustomer_ViewModel { get; set; }
+
+        private async Task RefreshAllData()
+        {
+            if (SearchCustomer_ViewModel != null)
+            {
+                MessageBoxResult result = MessageBoxResult.Yes;
+                if (StartingRepository.HasChanges())
+                {
+                    result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να κάνετε ανανέωση?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                }
+                if (result == MessageBoxResult.Yes)
+                {
+
+                    StartingRepository = new GenericRepository();
+                    SearchCustomer_ViewModel = new SearchCustomer_ViewModel(StartingRepository);
+                    await SearchCustomer_ViewModel.LoadAsync();
+                }
+            }
+        }
+
+
+
+
+        private SearchCustomer_ViewModel _SearchCustomer_ViewModel;
+
+
+        public SearchCustomer_ViewModel SearchCustomer_ViewModel
+        {
+            get
+            {
+                return _SearchCustomer_ViewModel;
+            }
+
+            set
+            {
+                if (_SearchCustomer_ViewModel == value)
+                {
+                    return;
+                }
+
+                _SearchCustomer_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        public RelayCommand RefreshAllDataCommand { get; set; }
 
         private bool CanEditWindows()
         {
@@ -38,9 +87,9 @@ namespace BubbleStart.ViewModels
 
         public RelayCommand LogOutCommand { get; set; }
 
-        public GenericRepository StartingRepository { get; }
+        public GenericRepository StartingRepository { get; set; }
 
-        public string Username => Helpers.StaticResources.User.Name;
+        public string Username => StaticResources.User.Name;
 
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {

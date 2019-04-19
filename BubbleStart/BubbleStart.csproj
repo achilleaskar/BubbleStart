@@ -162,6 +162,9 @@
     <Compile Include="AttachedProperties\PasswordBoxMVVMAttachedProperties.cs" />
     <Compile Include="Converters\BMItoColorConverter.cs" />
     <Compile Include="Converters\ContentToColorConverter.cs" />
+    <Compile Include="Converters\IsCustomerNullToBoolConverter.cs" />
+    <Compile Include="Converters\MeetingsToColorConverter.cs" />
+    <Compile Include="Converters\ProgramTypeToStringConverter.cs" />
     <Compile Include="Converters\UserToVisibility.cs" />
     <Compile Include="Database\GenericRepository.cs" />
     <Compile Include="Database\MainDatabase.cs" />
@@ -244,9 +247,42 @@
     <Compile Include="Migrations\201904131248232_elina22.Designer.cs">
       <DependentUpon>201904131248232_elina22.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904172124563_418.cs" />
+    <Compile Include="Migrations\201904172124563_418.Designer.cs">
+      <DependentUpon>201904172124563_418.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904181141339_4181.cs" />
+    <Compile Include="Migrations\201904181141339_4181.Designer.cs">
+      <DependentUpon>201904181141339_4181.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904182112071_419.cs" />
+    <Compile Include="Migrations\201904182112071_419.Designer.cs">
+      <DependentUpon>201904182112071_419.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904182129482_4191.cs" />
+    <Compile Include="Migrations\201904182129482_4191.Designer.cs">
+      <DependentUpon>201904182129482_4191.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904190002377_4194.cs" />
+    <Compile Include="Migrations\201904190002377_4194.Designer.cs">
+      <DependentUpon>201904190002377_4194.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904190055014_4195.cs" />
+    <Compile Include="Migrations\201904190055014_4195.Designer.cs">
+      <DependentUpon>201904190055014_4195.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904190102306_4196.cs" />
+    <Compile Include="Migrations\201904190102306_4196.Designer.cs">
+      <DependentUpon>201904190102306_4196.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904190122160_4197.cs" />
+    <Compile Include="Migrations\201904190122160_4197.Designer.cs">
+      <DependentUpon>201904190122160_4197.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Customer.cs" />
+    <Compile Include="Model\District.cs" />
     <Compile Include="Model\Illness.cs" />
     <Compile Include="Model\INamed.cs" />
     <Compile Include="Model\Payment.cs" />
@@ -266,6 +302,9 @@
     <Compile Include="ViewModels\SearchCustomer_ViewModel.cs" />
     <Compile Include="ViewModels\UsersManagement_viewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="Views\CustomerManagement.xaml.cs">
+      <DependentUpon>CustomerManagement.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Login_UserControl.xaml.cs">
       <DependentUpon>Login_UserControl.xaml</DependentUpon>
     </Compile>
@@ -357,6 +396,30 @@
     <EmbeddedResource Include="Migrations\201904131248232_elina22.resx">
       <DependentUpon>201904131248232_elina22.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904172124563_418.resx">
+      <DependentUpon>201904172124563_418.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904181141339_4181.resx">
+      <DependentUpon>201904181141339_4181.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904182112071_419.resx">
+      <DependentUpon>201904182112071_419.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904182129482_4191.resx">
+      <DependentUpon>201904182129482_4191.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904190002377_4194.resx">
+      <DependentUpon>201904190002377_4194.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904190055014_4195.resx">
+      <DependentUpon>201904190055014_4195.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904190102306_4196.resx">
+      <DependentUpon>201904190102306_4196.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904190122160_4197.resx">
+      <DependentUpon>201904190122160_4197.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -374,6 +437,10 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CustomerManagement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Login_UserControl.xaml">
       <SubType>Designer</SubType>

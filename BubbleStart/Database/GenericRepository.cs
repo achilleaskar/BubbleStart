@@ -48,6 +48,59 @@ namespace BubbleStart.Database
 
         public async Task SaveAsync()
         {
+            var AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
+
+            AddedEntities.ForEach(E =>
+            {
+                if (E.CurrentValues.PropertyNames.Contains("CreatedDate"))
+                {
+                    E.Property("CreatedDate").CurrentValue = DateTime.Now;
+                }
+            });
+
+            var EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
+
+            EditedEntities.ForEach(E =>
+            {
+                if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
+                {
+                    //   E.Property("ModifiedDate").CurrentValue = DateTime.Now;
+                }
+            });
+
+            var changes = from e in Context.ChangeTracker.Entries()
+                          where e.State != EntityState.Unchanged
+                          select e;
+
+            foreach (var change in changes)
+            {
+                if (change.State == EntityState.Added)
+                {
+                    // Log Added
+                }
+                else if (change.State == EntityState.Modified)
+                {
+                    // Log Modified
+                    var item = change.Entity;
+                    var originalValues = Context.Entry(item).OriginalValues;
+                    var currentValues = Context.Entry(item).CurrentValues;
+
+                    foreach (string propertyName in originalValues.PropertyNames)
+                    {
+                        var original = originalValues[propertyName];
+                        var current = currentValues[propertyName];
+
+                        Console.WriteLine("Property {0} changed from {1} to {2}",
+                     propertyName,
+                     originalValues[propertyName],
+                     currentValues[propertyName]);
+                    }
+                }
+                else if (change.State == EntityState.Deleted)
+                {
+                    // log deleted
+                }
+            }
             await Context.SaveChangesAsync();
         }
 
@@ -80,10 +133,11 @@ namespace BubbleStart.Database
                         .Include(c => c.Illness)
                         .Include(c => c.WeightHistory)
                         .Include(c => c.ShowUps)
+                        .Include(c => c.Programs)
                         .Include(t => t.Payments)
-                        .OrderBy(x => x.SureName).OrderBy(c=>c.Name).ToListAsync();
+                        .ToListAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
                
