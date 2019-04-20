@@ -75,6 +75,7 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public int Height { get; set; }
+
         public float WeightValue
         {
             get

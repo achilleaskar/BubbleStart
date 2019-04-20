@@ -3,7 +3,6 @@ using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
-using System;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -20,6 +19,7 @@ namespace BubbleStart.ViewModels
 
             StartingRepository = startingRepository;
             SearchCustomer_ViewModel = new SearchCustomer_ViewModel(startingRepository);
+            EconomicData_ViewModel = new EconomicData_ViewModel(startingRepository);
         }
 
         private async Task RefreshAllData()
@@ -33,10 +33,11 @@ namespace BubbleStart.ViewModels
                 }
                 if (result == MessageBoxResult.Yes)
                 {
-
                     StartingRepository = new GenericRepository();
                     SearchCustomer_ViewModel = new SearchCustomer_ViewModel(StartingRepository);
                     await SearchCustomer_ViewModel.LoadAsync();
+                    EconomicData_ViewModel = new EconomicData_ViewModel(StartingRepository);
+                    await EconomicData_ViewModel.LoadAsync();
                 }
             }
         }
@@ -44,8 +45,31 @@ namespace BubbleStart.ViewModels
 
 
 
-        private SearchCustomer_ViewModel _SearchCustomer_ViewModel;
 
+
+        private EconomicData_ViewModel _EconomicData_ViewModel;
+
+
+        public EconomicData_ViewModel EconomicData_ViewModel
+        {
+            get
+            {
+                return _EconomicData_ViewModel;
+            }
+
+            set
+            {
+                if (_EconomicData_ViewModel == value)
+                {
+                    return;
+                }
+
+                _EconomicData_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private SearchCustomer_ViewModel _SearchCustomer_ViewModel;
 
         public SearchCustomer_ViewModel SearchCustomer_ViewModel
         {
@@ -66,7 +90,6 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
         public RelayCommand RefreshAllDataCommand { get; set; }
 
         private bool CanEditWindows()
@@ -84,7 +107,6 @@ namespace BubbleStart.ViewModels
             MessengerInstance.Send(new OpenChildWindowCommand(new UsersManagement_Window { DataContext = vm }));
         }
 
-
         public RelayCommand LogOutCommand { get; set; }
 
         public GenericRepository StartingRepository { get; set; }
@@ -94,6 +116,7 @@ namespace BubbleStart.ViewModels
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
             await SearchCustomer_ViewModel.LoadAsync();
+            await EconomicData_ViewModel.LoadAsync();
         }
 
         public override async Task ReloadAsync()

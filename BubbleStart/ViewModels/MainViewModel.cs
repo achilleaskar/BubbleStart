@@ -98,12 +98,11 @@ namespace BubbleStart.ViewModels
 
         #endregion Properties
 
-
         public async Task LoadAsync(GenericRepository startingRepository)
         {
             StartingRepository = startingRepository;
 #if DEBUG
-            Helpers.StaticResources.User = new User { Id = 0, Level = 0, UserName = "admin",Name="Achilleas" };
+            Helpers.StaticResources.User = new User { Id = 0, Level = 0, UserName = "admin", Name = "Achilleas" };
             RaisePropertyChanged(nameof(MenuVisibility));
 #endif
             if (Helpers.StaticResources.User == null)
@@ -112,6 +111,5 @@ namespace BubbleStart.ViewModels
                 SelectedViewmodel = new MainUserControl_ViewModel(StartingRepository);//TODO
             await SelectedViewmodel.LoadAsync();
         }
-
     }
 }

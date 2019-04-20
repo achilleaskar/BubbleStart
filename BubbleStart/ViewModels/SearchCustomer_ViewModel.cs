@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,11 +19,10 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-        public SearchCustomer_ViewModel(GenericRepository Context)
+        public SearchCustomer_ViewModel(GenericRepository context)
         {
-            this.Context = Context;
+            Context = context;
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
-            PaymentCommand = new RelayCommand(async () => { await MakePayment(); }, CanMakePayment);
             SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); }, CanSaveCustomer);
             ShowedUpCommand = new RelayCommand(async () => { await CustomerShowedUp(); });
             CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
@@ -33,11 +31,6 @@ namespace BubbleStart.ViewModels
             //PaymentCommand.CanExecute((obj) => CanMakePayment(obj));
             // CreateNewCustomer();
         }
-
-
-
-
-
 
         public bool Enabled => SelectedCustomer != null;
 
@@ -54,8 +47,6 @@ namespace BubbleStart.ViewModels
 
         private ObservableCollection<Customer> _CustomersPracticing;
 
-        private int _PaymentAmount;
-
         private string _SearchTerm;
 
         private Customer _SelectedCustomer;
@@ -67,7 +58,6 @@ namespace BubbleStart.ViewModels
         #region Properties
 
         public RelayCommand<string> BodyPartSelected { get; set; }
-
 
         public GenericRepository Context { get; }
 
@@ -95,11 +85,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private ICollectionView _CustomersCollectionView;
-
 
         public ICollectionView CustomersCollectionView
         {
@@ -142,27 +128,6 @@ namespace BubbleStart.ViewModels
         }
 
         public ICollectionView CustomersPracticingCollectionView { get; set; }
-
-        public int PaymentAmount
-        {
-            get
-            {
-                return _PaymentAmount;
-            }
-
-            set
-            {
-                if (_PaymentAmount == value)
-                {
-                    return;
-                }
-
-                _PaymentAmount = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public RelayCommand PaymentCommand { get; set; }
 
         public RelayCommand SaveCustomerCommand { get; set; }
 
@@ -208,7 +173,6 @@ namespace BubbleStart.ViewModels
                 {
                     _SelectedCustomer.SelectProperProgram();
                 }
-                PaymentAmount = 0;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Enabled));
             }
@@ -265,6 +229,7 @@ namespace BubbleStart.ViewModels
 
             foreach (var item in Customers)
             {
+                item.SelectProperProgram();
                 if (item.LastShowUp != null && item.LastShowUp.Left < item.LastShowUp.Arrived)
                 {
                     item.IsPracticing = true;
@@ -300,13 +265,6 @@ namespace BubbleStart.ViewModels
             _SelectedCustomer.Illness.SelectedIllnessPropertyName = selectedIndex;
         }
 
-      
-
-        private bool CanMakePayment()
-        {
-            return SelectedCustomer != null && PaymentAmount <= SelectedCustomer.RemainingAmount;
-        }
-
         private void CreateNewCustomer()
         {
             SelectedCustomer = new Customer();
@@ -330,21 +288,11 @@ namespace BubbleStart.ViewModels
             }
         }
 
-       
-
-        private async Task MakePayment()
-        {
-            SelectedCustomer.Payments.Add(new Payment { Date = DateTime.Now, Amount = PaymentAmount });
-            await Context.SaveAsync();
-            SelectedCustomer.RaisePropertyChanged(nameof(SelectedCustomer.RemainingAmount));
-        }
-
         private async Task SaveCustomer()
         {
             Mouse.OverrideCursor = Cursors.Wait;
             if (SelectedCustomer != null)
             {
-
                 //if (SelectedCustomer.NewWeight > 0)
                 //{
                 //    SelectedCustomer.WeightHistory.Add(new Weight { WeightValue = SelectedCustomer.NewWeight });

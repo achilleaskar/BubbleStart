@@ -1,9 +1,4 @@
 ﻿using BubbleStart.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BubbleStart.Wrappers
 {
@@ -24,7 +19,6 @@ namespace BubbleStart.Wrappers
 
         #region Properties
 
-       
         public byte[] HashedPassword//
         {
             get { return GetValue<byte[]>(); }

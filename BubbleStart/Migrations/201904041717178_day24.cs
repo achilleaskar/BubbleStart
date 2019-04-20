@@ -1,8 +1,7 @@
 namespace BubbleStart.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class day24 : DbMigration
     {
         public override void Up()
@@ -23,7 +22,7 @@ namespace BubbleStart.Migrations
             AddColumn("dbo.Illnesses", "thorakas", c => c.String(maxLength: 200, unicode: false));
             AddColumn("dbo.Illnesses", "mesh", c => c.String(maxLength: 200, unicode: false));
         }
-        
+
         public override void Down()
         {
             DropColumn("dbo.Illnesses", "mesh");

@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BubbleStart.Messages
+﻿namespace BubbleStart.Messages
 {
-   public class ShowExceptionMessage_Message
+    public class ShowExceptionMessage_Message
     {
         public ShowExceptionMessage_Message(string message)
         {
             Message = message;
         }
-
 
         #region properties
 

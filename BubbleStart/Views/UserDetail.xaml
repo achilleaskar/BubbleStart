@@ -321,7 +321,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Ποιοί είναι οι κυριοι λόγοι που ξεκινάτε?"
                                                Grid.ColumnSpan="2" />
-                                    
+
                                     <StackPanel Margin="10 0"
                                                 Grid.Row="1">
                                         <CheckBox Content="Γενική Βελτίωση"
@@ -344,7 +344,7 @@
                                                      TextWrapping="Wrap"
                                                      Grid.Column="1" />
                                         </StackPanel>
-                              
+
                                     <Label Content="Έχετε κάνει ξανά δομημένη άσκηση?"
                                            Grid.Row="2"
                                            Grid.Column="0" />
@@ -691,7 +691,7 @@
                                                          TextWrapping="Wrap"
                                                          Margin="0"
                                                          Height="70"
-                                                         Text="{Binding Illness.SelectedIllness}" />
+                                                         Text="{Binding Illness.SelectedIllness,UpdateSourceTrigger=PropertyChanged}" />
                                                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                                                               MaxHeight="230">
                                                     <DataGrid HorizontalAlignment="Left"

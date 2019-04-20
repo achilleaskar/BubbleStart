@@ -1,8 +1,6 @@
-﻿using BubbleStart.Messages;
-using BubbleStart.Model;
+﻿using BubbleStart.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
@@ -104,6 +102,23 @@ namespace BubbleStart.Database
             await Context.SaveChangesAsync();
         }
 
+        internal async Task<IEnumerable<Payment>> GetAllPaymentsAsync(DateTime startDateCash, DateTime endDateCash)
+        {
+            try
+            {
+                return await Context.Set<Payment>()
+                    .Where(p => p.Date >= startDateCash && p.Date <= endDateCash)
+                        .Include(p => p.Customer)
+                        .ToListAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            { }
+        }
+
         public void Add<TEntity>(TEntity model) where TEntity : BaseModel
         {
             Context.Set<TEntity>().Add(model);
@@ -140,7 +155,6 @@ namespace BubbleStart.Database
             catch (Exception)
             {
                 return null;
-               
             }
             finally
             { }

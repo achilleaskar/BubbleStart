@@ -6,7 +6,6 @@ namespace BubbleStart.Model
     {
         #region Fields
 
-        private int _Amount;
         private bool _Arrive;
         private DateTime _Left;
         private DateTime _Time;
@@ -14,25 +13,6 @@ namespace BubbleStart.Model
         #endregion Fields
 
         #region Properties
-
-        public int Amount
-        {
-            get
-            {
-                return _Amount;
-            }
-
-            set
-            {
-                if (_Amount == value)
-                {
-                    return;
-                }
-
-                _Amount = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public bool Arrive
         {
@@ -64,6 +44,11 @@ namespace BubbleStart.Model
             {
                 if (_Time == value)
                 {
+                    return;
+                }
+                if (value == null)
+                {
+                    RaisePropertyChanged();
                     return;
                 }
 

@@ -1,9 +1,12 @@
 ﻿using BubbleStart.ViewModels;
 using BubbleStart.Views;
 using System;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace BubbleStart
 {
@@ -20,6 +23,10 @@ namespace BubbleStart
               new RoutedEventHandler(SelectAllText), true);
 
             base.OnStartup(e);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("el-GR");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("el-GR");
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(
+                        XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
 
         private static void SelectivelyHandleMouseButton(object sender, MouseButtonEventArgs e)
@@ -47,11 +54,7 @@ namespace BubbleStart
             MainViewModel mvm = new MainViewModel();
             MainWindow mw = new MainWindow(mvm);
             mw.Show();
-
-
         }
-
-
 
         private void Application_DispatcherUnhandledException(object sender,
           System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

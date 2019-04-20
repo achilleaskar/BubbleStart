@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Media;
 using static BubbleStart.Model.Program;
 
 namespace BubbleStart.Converters
@@ -21,23 +20,17 @@ namespace BubbleStart.Converters
             {
                 switch (p)
                 {
-                    case ProgramTypes.daily30:
-                        return "Ημερήσιο 30'";
+                    case ProgramTypes.ReformerPilates:
+                        return "Reformer & Pilates";
 
-                    case ProgramTypes.daily60:
-                        return "Ημερήσιο 60'";
+                    case ProgramTypes.Pilates:
+                        return "Pilates";
 
-                    case ProgramTypes.pilates2:
-                        return "Reformer Pilates (1-2)";
+                    case ProgramTypes.Functional:
+                        return "Functional";
 
-                    case ProgramTypes.functional2:
-                        return "Functional Training(1-2)";
-
-                    case ProgramTypes.pilates5:
-                        return "Reformer Pilates (3-5)";
-
-                    case ProgramTypes.functional5:
-                        return "Functional Training (3-5)";
+                    case ProgramTypes.PilatesFunctional:
+                        return "Pilates & Functional";
 
                     case ProgramTypes.freeUse:
                         return "Ελέυθερη Χρήση";

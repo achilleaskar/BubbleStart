@@ -1,12 +1,8 @@
 ﻿using BubbleStart.Model;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BubbleStart.Wrappers
 {
@@ -53,8 +49,6 @@ namespace BubbleStart.Wrappers
             return false;
         }
 
-
-
         public T Model { get; }
 
         public int Id
@@ -78,7 +72,6 @@ namespace BubbleStart.Wrappers
             {
                 if (pi.Name != "Item" && pi.Name != "Error")
                 {
-
                     ValidatePropertyInternal(pi.Name, pi.GetValue(Model));
                 }
             }
@@ -88,7 +81,6 @@ namespace BubbleStart.Wrappers
         {
             return (TValue)typeof(T).GetProperty(propertyName).GetValue(Model);
         }
-
 
         protected void ValidatePropertyInternal(string propertyName, object currentValue)
         {

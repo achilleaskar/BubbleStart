@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Converters="clr-namespace:BubbleStart.Converters"
         xmlns:models="clr-namespace:BubbleStart.Model"
+        xmlns:helpers="clr-namespace:BubbleStart.Helpers"
         d:DataContext="{d:DesignInstance models:Customer}"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
@@ -13,12 +14,13 @@
         d:DesignHeight="950"
         d:DesignWidth="800">
     <Window.Resources>
+        <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:ProgramTypeToStringConverter x:Key="ProgramTypeToStringConverter" />
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
     </Window.Resources>
-    <GroupBox>
+    <GroupBox Padding="25">
         <StackPanel>
-            <Grid Width="330">
+            <Grid Width="380">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
@@ -38,6 +40,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Label Content="Ονοματεπώνυμο:"
                        Grid.Row="0"
@@ -95,6 +99,8 @@
                            Grid.Column="1"
                            Margin="0,4" />
                 <GroupBox Grid.Row="9"
+                          Width=" 330"
+                          HorizontalAlignment="Left"
                           Grid.ColumnSpan="2"
                           Header="Αγορά πακέτου">
                     <Grid>
@@ -117,12 +123,12 @@
                                 <TextBlock Text="Τύπος:"
                                            HorizontalAlignment="Left" />
                                 <ComboBox VerticalAlignment="Top"
-                                          Width="150"
+                                          Width="130"
                                           HorizontalAlignment="Left"
                                           Height="24"
                                           SelectedIndex="{Binding ProgramTypeIndex, UpdateSourceTrigger=PropertyChanged}"
                                           Margin="0">
-                                    <ComboBoxItem Content="Reformer Pilates" />
+                                    <ComboBoxItem Content="Reformer &amp; Pilates" />
                                     <ComboBoxItem Content="Pilates" />
                                     <ComboBoxItem Content="Functional" />
                                     <ComboBoxItem Content="Pilates &amp; Functional" />
@@ -137,11 +143,22 @@
                                            HorizontalAlignment="Left" />
                                 <TextBox  Height="23"
                                           Width="40"
-                                          Text="{Binding NumOfShowUps, StringFormat=c0, UpdateSourceTrigger=PropertyChanged}" />
+                                          Text="{Binding NumOfShowUps,  UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="0"
+                                        Margin="8 0 0 0"
+                                        VerticalAlignment="Top"
+                                        Grid.Column="0">
+                                <TextBlock Text="Μήνες:"
+                                           HorizontalAlignment="Left" />
+                                <ComboBox  Height="23"
+                                           Width="36"
+                                           ItemsSource="{x:Static helpers:StaticResources.Months}"
+                                           SelectedItem="{Binding ProgramDuration,  UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
                         </StackPanel>
                         <Button Content="Αγορά"
-                                Margin="5"
+                                Margin="0 5"
                                 Width="55"
                                 Grid.Column="1"
                                 HorizontalAlignment="Center"
@@ -153,7 +170,7 @@
                                 CommandParameter="0"
                                 Grid.Row="1"
                                 Width="55"
-                                Margin="5"
+                                Margin="0 5"
                                 Grid.Column="1"
                                 HorizontalAlignment="Center"
                                 Command="{Binding BookCommand}" />
@@ -163,9 +180,9 @@
                             <StackPanel>
                                 <TextBlock Text="Έναρξη:" />
                                 <DatePicker VerticalAlignment="Center"
-                                            SelectedDate="{Binding StartDate, StringFormat=c0, UpdateSourceTrigger=PropertyChanged}" />
+                                            SelectedDate="{Binding StartDate,  UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
-                            <StackPanel Margin="5 0 0 0"
+                            <StackPanel Margin="9 0 0 0"
                                         VerticalAlignment="Bottom">
                                 <TextBlock Text="Τιμή Συν.:"
                                            HorizontalAlignment="Left" />
@@ -173,13 +190,13 @@
                                          Height="20"
                                          Width="40" />
                             </StackPanel>
-                            <StackPanel Margin="5 0 0 0"
+                            <StackPanel Margin="7 0 0 0"
                                         VerticalAlignment="Bottom">
                                 <TextBlock Text="Σύνολο:"
                                            HorizontalAlignment="Left" />
                                 <TextBox Text="{Binding ProgramPrice, StringFormat=c0, UpdateSourceTrigger=PropertyChanged}"
                                          Height="20"
-                                         Width="40" />
+                                         Width="36" />
                             </StackPanel>
                         </StackPanel>
                         <TextBlock Grid.Row="3"
@@ -192,6 +209,8 @@
                     </Grid>
                 </GroupBox>
                 <GroupBox Grid.Row="10"
+                          Width=" 330"
+                          HorizontalAlignment="Left"
                           Grid.ColumnSpan="2"
                           Header="Εξόφληση">
                     <Grid Margin="0 -3 0 0">
@@ -205,7 +224,7 @@
                                     Grid.ColumnSpan="2"
                                     Grid.Column="0">
                             <TextBlock Text="Ποσό:" />
-                            <TextBox Text="{Binding PaymentAmount, StringFormat=c0, UpdateSourceTrigger=PropertyChanged}"
+                            <TextBox Text="{Binding paym, StringFormat=c0, UpdateSourceTrigger=PropertyChanged}"
                                      Width="30"
                                      Margin="5 0" />
                             <Button Content="Πληρωμή"
@@ -221,7 +240,22 @@
                                        Text="{Binding ProgramResult}" />-->
                     </Grid>
                 </GroupBox>
-                <StackPanel Grid.Row="11"
+                <GroupBox Grid.Row="11"
+                          Width=" 330"
+                          Grid.ColumnSpan="2"
+                          HorizontalAlignment="Left"
+                          Header="Προσθήκη Παρουσίας">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Ημερομηνία:" />
+                        <DatePicker SelectedDate="{Binding OldShowUpDate,UpdateSourceTrigger=PropertyChanged}"
+                                    VerticalAlignment="Center" />
+                        <Button Command="{Binding AddOldShowUpCommand}"
+                                Content="Προσθήκη"
+                                Margin="5 0"
+                                VerticalAlignment="Center" />
+                    </StackPanel>
+                </GroupBox>
+                <StackPanel Grid.Row="12"
                             Grid.ColumnSpan="2"
                             Orientation="Horizontal">
                     <GroupBox Header="Παρουσίες"
@@ -231,17 +265,18 @@
                                   SelectedItem="{Binding SelectedShowUp}"
                                   CanUserAddRows="False"
                                   Height="105"
+                                  Padding="5"
                                   VirtualizingPanel.VirtualizationMode="Standard"
-                                  IsReadOnly="True"
-                                  CanUserDeleteRows="False"
+                                  CanUserDeleteRows="True"
                                   AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Ημερομηνία"
-                                                    Binding="{Binding Arrived,StringFormat='{}{0:dd/MM/yyyy hh:mm}'}" />
+                                                    Binding="{Binding Arrived,ConverterParameter='dd/MM/yyyy hh:mm', Converter={StaticResource DateTimeToString}}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
                     <GroupBox Header="Πληρωμές"
+                              Padding="5"
                               HorizontalAlignment="Left"
                               Margin="0 0 5 0">
                         <DataGrid ItemsSource="{Binding Payments}"
@@ -249,12 +284,11 @@
                                   CanUserAddRows="False"
                                   Height="105"
                                   VirtualizingPanel.VirtualizationMode="Standard"
-                                  IsReadOnly="True"
-                                  CanUserDeleteRows="False"
+                                  CanUserDeleteRows="True"
                                   AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Ημερομηνία"
-                                                    Binding="{Binding Date,StringFormat='{}{0:dd/MM/yyyy}'}" />
+                                                    Binding="{Binding Date,ConverterParameter='dd/MM/yyyy', Converter={StaticResource DateTimeToString}}" />
                                 <DataGridTextColumn Header="Ποσό"
                                                     Binding="{Binding Amount,StringFormat=c0}" />
                             </DataGrid.Columns>
@@ -262,27 +296,38 @@
                     </GroupBox>
                 </StackPanel>
                 <GroupBox Header="Προγράμματα"
-                          Grid.Row="12"
+                          Width=" 380"
+                          Grid.Row="13"
+                          Padding="0 5"
                           HorizontalAlignment="Left"
                           Grid.ColumnSpan="2">
                     <DataGrid ItemsSource="{Binding Programs}"
-                              SelectedItem="{Binding SelectedProgram}"
                               CanUserAddRows="False"
                               VirtualizingPanel.VirtualizationMode="Standard"
-                              IsReadOnly="True"
                               Height="105"
-                              CanUserDeleteRows="False"
+                              CanUserDeleteRows="true"
                               AutoGenerateColumns="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Αγορά"
-                                                Binding="{Binding DayOfIssue,StringFormat='{}{0:dd/MM/yyyy}'}" />
                             <DataGridTextColumn Header="Έναρξη"
-                                                Binding="{Binding StartDay,StringFormat='{}{0:dd/MM/yyyy}'}" />
+                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yyyy', Converter={StaticResource DateTimeToString}}" />
                             <DataGridTextColumn Header="Τύπος"
+                                                IsReadOnly="True"
                                                 Binding="{Binding ProgramType, Converter={StaticResource ProgramTypeToStringConverter}}" />
+                            <DataGridTextColumn Header="Συνεδρίες"
+                                                Binding="{Binding Showups}" />
+                            <DataGridTextColumn Header="Μήνες"
+                                                Binding="{Binding Months}" />
+                            <DataGridTextColumn Header="Κόστος"
+                                                Binding="{Binding Amount,StringFormat=c0}" />
+                            <DataGridTextColumn Header="Αγορά"
+                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yyyy', Converter={StaticResource DateTimeToString}}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </GroupBox>
+                <StackPanel Grid.Row="14">
+                    <Button Content="Αποθήκευση αλλαγών"
+                            Command="{Binding SaveChangesAsyncCommand}" />
+                </StackPanel>
             </Grid>
         </StackPanel>
     </GroupBox>

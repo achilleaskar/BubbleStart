@@ -4,7 +4,7 @@
       <vm:ViewModelLocator xmlns:vm="clr-namespace:BubbleStart"
                            x:Key="Locator" />
   </Application.Resources>
-  
+
   In the View:
   DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
 
@@ -13,7 +13,6 @@
 */
 
 using CommonServiceLocator;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 
 namespace BubbleStart.ViewModels
@@ -52,7 +51,7 @@ namespace BubbleStart.ViewModels
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
-        
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

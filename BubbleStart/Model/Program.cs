@@ -8,23 +8,43 @@ namespace BubbleStart.Model
 
         private int _Amount;
         private DateTime _DayOfIssue;
-        private int _Duration;
         private ProgramTypes _ProgramType;
         private DateTime _StartDay;
 
         #endregion Fields
 
+
+
+        private int _Months;
+
+
+        public int Months
+        {
+            get
+            {
+                return _Months;
+            }
+
+            set
+            {
+                if (_Months == value)
+                {
+                    return;
+                }
+
+                _Months = value;
+                RaisePropertyChanged();
+            }
+        }
         #region Enums
 
         public enum ProgramTypes
         {
-            daily30,
-            daily60,
-            pilates2,
-            functional2,
-            pilates5,
-            functional5,
-            freeUse
+            ReformerPilates,
+            Pilates,
+            Functional,
+            PilatesFunctional,
+            freeUse,
         }
 
         #endregion Enums
@@ -63,31 +83,43 @@ namespace BubbleStart.Model
                 {
                     return;
                 }
+                if (value == null)
+                {
+                    RaisePropertyChanged();
+                    return;
+                }
 
                 _DayOfIssue = value;
                 RaisePropertyChanged();
             }
         }
 
-        public int Duration
+
+
+
+        private int _Showups;
+
+
+        public int Showups
         {
             get
             {
-                return _Duration;
+                return _Showups;
             }
 
             set
             {
-                if (_Duration == value)
+                if (_Showups == value)
                 {
                     return;
                 }
 
-                _Duration = value;
+                _Showups = value;
                 RaisePropertyChanged();
             }
         }
 
+      
         public ProgramTypes ProgramType
         {
             get
@@ -118,6 +150,11 @@ namespace BubbleStart.Model
             {
                 if (_StartDay == value)
                 {
+                    return;
+                }
+                if (value == null)
+                {
+                    RaisePropertyChanged();
                     return;
                 }
 

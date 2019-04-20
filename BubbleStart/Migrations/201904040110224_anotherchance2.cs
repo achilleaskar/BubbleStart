@@ -1,8 +1,7 @@
 namespace BubbleStart.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class anotherchance2 : DbMigration
     {
         public override void Up()
@@ -13,7 +12,7 @@ namespace BubbleStart.Migrations
             AddColumn("dbo.ShowUps", "Arrived", c => c.DateTime(nullable: false, precision: 0));
             DropColumn("dbo.ShowUps", "Time");
         }
-        
+
         public override void Down()
         {
             AddColumn("dbo.ShowUps", "Time", c => c.DateTime(nullable: false, precision: 0));

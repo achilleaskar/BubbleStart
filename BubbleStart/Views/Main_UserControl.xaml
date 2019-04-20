@@ -15,6 +15,9 @@
         <DataTemplate DataType="{x:Type viewmodels:SearchCustomer_ViewModel}">
             <views:SearchCustomers />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:EconomicData_ViewModel}">
+            <views:EconomicData_UserControl />
+        </DataTemplate>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -32,7 +35,6 @@
                     <MenuItem Command="{Binding OpenUsersEditCommand}"
                               Header="Χρήστες"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
-                  
                 </MenuItem>
             </Menu>
             <StackPanel HorizontalAlignment="Right"
@@ -54,7 +56,7 @@
                         Command="{Binding RefreshAllDataCommand}">
                     <iconPacks:PackIconFontAwesome Kind="SyncSolid"
                                                    VerticalAlignment="Center"
-                                                   
+
                                                    Margin="5" />
                 </Button>
                 <Label Content="{Binding UserName}" />
@@ -78,7 +80,10 @@
                 <TabItem Header="Αναζήτηση Πελάτη">
                     <ContentControl Content="{Binding SearchCustomer_ViewModel}" />
                 </TabItem>
-
+                <TabItem Header="Οικονομικά Στοιχεία"
+                         Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                    <ContentControl Content="{Binding EconomicData_ViewModel}" />
+                </TabItem>
             </TabControl>
         </Grid>
     </Grid>

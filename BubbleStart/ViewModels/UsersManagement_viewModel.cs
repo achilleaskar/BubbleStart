@@ -3,11 +3,9 @@ using BubbleStart.Model;
 using BubbleStart.Security;
 using BubbleStart.Wrappers;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BubbleStart.ViewModels

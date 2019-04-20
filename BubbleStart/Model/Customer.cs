@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -26,7 +27,6 @@ namespace BubbleStart.Model
             ShowUps = new ObservableCollection<ShowUp>();
             Payments = new ObservableCollection<Payment>();
             Programs = new ObservableCollection<Program>();
-            SetPriceCommand = new RelayCommand<int>(SetPrice);
             WeightHistory.CollectionChanged += WeigthsChanged;
             Payments.CollectionChanged += PaymentsCollectionChanged;
             DispatcherTimer timer = new DispatcherTimer
@@ -36,73 +36,132 @@ namespace BubbleStart.Model
             timer.Tick += Timer_Tick;
             timer.Start();
             BookCommand = new RelayCommand<string>(async (obj) => { await MakeBooking(obj); }, CanMakeBooking);
-
-        }
-        private bool CanMakeBooking(string arg)
-        {
-            return ProgramDataCheck() && IsDateValid && NumOfShowUps > 0;
+            AddOldShowUpCommand = new RelayCommand(AddOldShowUp);
+            SaveChangesAsyncCommand = new RelayCommand(async () => { await SaveChanges(); });
+            PaymentCommand = new RelayCommand(AddPayment, CanAddPayment);
         }
 
 
-        private async Task MakeBooking(string obj)
+
+
+
+        private int _ProgramDuration;
+
+        [NotMapped]
+        public int ProgramDuration
         {
-            AddNewProgram();
-            if (int.Parse(obj) == 1)
+            get
             {
-                MakePayment();
+                return _ProgramDuration;
             }
 
-            await Context.SaveAsync();
-            ProgramPrice = 0;
-            ProgramTypeIndex = 0;
-            StartDate = DateTime.Today;
-            RaisePropertyChanged(nameof(RemainingAmount));
+            set
+            {
+                if (_ProgramDuration == value)
+                {
+                    return;
+                }
+
+                _ProgramDuration = value;
+                RaisePropertyChanged();
+            }
         }
+        private bool CanAddPayment()
+        {
+            return PaymentAmount > 0 && PaymentAmount <= RemainingAmount;
+        }
+
+        [NotMapped]
+        public RelayCommand PaymentCommand { get; set; }
 
         #endregion Constructors
 
         #region Fields
 
         private bool _ActiveCustomer;
+
         private string _Address;
+
         private bool _Alcohol;
+
         private int _AlcoholUsage;
+
         private string _DistrictText;
+
         private DateTime _DOB;
+
         private string _Email;
+
         private string _ExtraNotes;
+
         private string _ExtraReasons;
+
         private DateTime _FirstDate;
+
         private bool _Gender;
+
         private int _Height;
+
         private string _HistoryDuration;
+
         private string _HistoryKind;
+
         private bool _HistoryNotFirstTime;
+
         private int _HistoryTimesPerWeek;
+
         private Illness _Illness;
+
         private SolidColorBrush _IsActiveColor;
+
         private bool _IsDateValid;
+
         private bool _IsManualyActive;
+
         private bool _IsPracticing;
+
         private bool _IsSelected;
+
         private string _Job;
+
         private bool _Medicine;
+
         private string _MedicineText;
+
         private string _Name;
+
         private float _NewWeight;
+
         private int _NumOfShowUps;
+
+        private DateTime _OldShowUpDate;
+
+        private int _PaymentAmount;
+
         private ObservableCollection<Payment> _Payments;
+
         private bool _PreferedHand;
+
         private bool _Pregnancy;
+
         private int _ProgramPrice;
+
         private string _ProgramResult;
+
         private ObservableCollection<Program> _Programs;
+
         private int _ProgramTypeIndex;
+
         private bool _ReasonInjury;
+
         private bool _ReasonPower;
+
         private bool _ReasonSlim;
+
         private bool _ReasonVeltiwsh;
+
         private Program _SelectedProgram;
+
         private int _ShowUpPrice;
 
         private ObservableCollection<ShowUp> _ShowUps;
@@ -129,13 +188,6 @@ namespace BubbleStart.Model
 
         #region Properties
 
-        [NotMapped]
-        public RelayCommand<string> BookCommand { get; set; }
-
-
-        [NotMapped]
-        public GenericRepository Context { get; set; }
-
         public string Active => SelectedProgram != null && RemainingDays > 0 ? $"ΝΑΙ (έως {SelectedProgram.StartDay.AddMonths(1).ToString("dd/MM")})" : "ΟΧΙ";
 
         [NotMapped]
@@ -161,6 +213,9 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        [NotMapped]
+        public RelayCommand AddOldShowUpCommand { get; set; }
 
         public string Address
         {
@@ -242,6 +297,12 @@ namespace BubbleStart.Model
                 return (float)Math.Round((WeightHistory.Count > 0 && LastWeight > 0 && Height > 0) ? LastWeight / (Height * Height / 10000) : 0, 2); ;
             }
         }
+
+        [NotMapped]
+        public RelayCommand<string> BookCommand { get; set; }
+
+        [NotMapped]
+        public GenericRepository Context { get; set; }
 
         public string DistrictText
         {
@@ -736,6 +797,46 @@ namespace BubbleStart.Model
             }
         }
 
+        [NotMapped]
+        public DateTime OldShowUpDate
+        {
+            get
+            {
+                return _OldShowUpDate;
+            }
+
+            set
+            {
+                if (_OldShowUpDate == value)
+                {
+                    return;
+                }
+
+                _OldShowUpDate = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [NotMapped]
+        public int PaymentAmount
+        {
+            get
+            {
+                return _PaymentAmount;
+            }
+
+            set
+            {
+                if (_PaymentAmount == value)
+                {
+                    return;
+                }
+
+                _PaymentAmount = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public ObservableCollection<Payment> Payments
         {
             get
@@ -965,6 +1066,9 @@ namespace BubbleStart.Model
         public int RemainingDays => GetRemainingDays(SelectedProgram);
 
         [NotMapped]
+        public RelayCommand SaveChangesAsyncCommand { get; set; }
+
+        [NotMapped]
         public Program SelectedProgram
         {
             get
@@ -987,14 +1091,11 @@ namespace BubbleStart.Model
             }
         }
 
-        public RelayCommand<int> SetPriceCommand { get; set; }
-
         [NotMapped]
         public int ShowUpPrice
         {
             get
             {
-
                 return _ShowUpPrice;
             }
 
@@ -1223,17 +1324,17 @@ namespace BubbleStart.Model
 
         public int GetRemainingDays(Program program)
         {
-            int duration = 0;
+            int showups = 0;
             if (program != null)
             {
-                duration = program.Duration;
+                showups = program.Showups;
                 foreach (ShowUp showUp in ShowUps.Where(s => s.Arrived >= program.StartDay))
                 {
-                    duration--;
+                    showups--;
                 }
             }
 
-            return duration;
+            return showups;
         }
 
         public void SelectProperProgram()
@@ -1249,24 +1350,9 @@ namespace BubbleStart.Model
 
         public void ValidateProgram()
         {
-            //IsDateValid = true;
-            //foreach (var p in Programs)
-            //{
-            //    if (p.StartDay <=StartDate)
-            //    {
-            //        if (StartDate< p.StartDay.AddDays(35))
-            //        {
-            //            if (GetRemainingDays(p) > 0)
-            //            {
-            //                IsDateValid = false;
-            //                ProgramResult = "Προσοχή, υπάρχει ήδη ενεργό πακέτο αυτη την ημερομηνία";
-            //                return;
-            //            }
-            //        }
-            //    }
-            //}
 
-            if (Programs.Any(p => p.StartDay <= StartDate && StartDate < p.StartDay.AddDays(35) && GetRemainingDays(p) > 0))
+
+            if (Programs.Any(p => p.StartDay <= StartDate && StartDate < p.StartDay.AddMonths(p.Months).AddDays(5) && GetRemainingDays(p) > 0))
             {
                 IsDateValid = false;
                 ProgramResult = "Προσοχή, υπάρχει ήδη ενεργό πακέτο αυτη την ημερομηνία";
@@ -1287,6 +1373,11 @@ namespace BubbleStart.Model
                 ProgramResult = "Προσοχή, δεν έχει επιλεγεί τιμή";
                 return;
             }
+            else if (ProgramDuration <1)
+            {
+                ProgramResult = "Προσοχή, δεν έχετε επιλέξει διάρκεια";
+                return;
+            }
             else if (StartDate < DateTime.Today)
             {
                 ProgramResult = "Προσοχή, η επιλεγμένη ημερομηνία έχει περάσει";
@@ -1301,24 +1392,24 @@ namespace BubbleStart.Model
 
         internal void AddNewProgram()
         {
-            Programs.Add(new Program { Amount = ProgramPrice, DayOfIssue = DateTime.Now, Duration = NumOfShowUps, ProgramType = (Program.ProgramTypes)ProgramTypeIndex, StartDay = StartDate });
-        }
-
-        internal void MakePayment()
-        {
-            Payments.Add(new Payment { Amount = ProgramPrice });
+            Programs.Add(new Program { Amount = ProgramPrice, DayOfIssue = DateTime.Now, Showups = NumOfShowUps, ProgramType = (Program.ProgramTypes)ProgramTypeIndex, Months = ProgramDuration, StartDay = StartDate });
         }
 
         internal bool ProgramDataCheck()
         {
             ValidateProgram();
-            return ProgramPrice >= 0 && ProgramTypeIndex >= 0;
+            return ProgramPrice >= 0 && ProgramTypeIndex >= 0 && IsDateValid && NumOfShowUps > 0 && ProgramDuration > 0;
         }
 
         internal void ShowedUp(bool arrived)
         {
             IsPracticing = arrived;
             ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now });
+        }
+
+        private void AddOldShowUp()
+        {
+            Context.Add(new ShowUp { Arrived = OldShowUpDate, Left = OldShowUpDate, });
         }
 
         private int CalculateRemainingAmount()
@@ -1335,6 +1426,16 @@ namespace BubbleStart.Model
                 remainingAmount -= payment.Amount;
             }
             return remainingAmount;
+        }
+
+        private bool CanMakeBooking(string arg)
+        {
+            return ProgramDataCheck() ;
+        }
+
+        private bool CanMakePayment()
+        {
+            return PaymentAmount <= RemainingAmount;
         }
 
         private SolidColorBrush GetCustomerColor()
@@ -1373,9 +1474,45 @@ namespace BubbleStart.Model
             }
         }
 
+        private async Task MakeBooking(string obj)
+        {
+            AddNewProgram();
+            if (int.Parse(obj) == 1)
+            {
+                MakeProgramPayment();
+            }
+
+            await Context.SaveAsync();
+            ProgramPrice = 0;
+            ProgramTypeIndex = 0;
+            StartDate = DateTime.Today;
+            RaisePropertyChanged(nameof(RemainingAmount));
+        }
+
+        internal void MakeProgramPayment()
+        {
+            Payments.Add(new Payment { Amount = ProgramPrice });
+        }
+
+        internal void AddPayment()
+        {
+            Payments.Add(new Payment { Amount = PaymentAmount });
+            PaymentAmount = 0;
+            RaisePropertyChanged(nameof(RemainingAmount));
+        }
+
         private void PaymentsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RaisePropertyChanged(nameof(RemainingAmount));
+        }
+
+        private async Task SaveChanges()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            SelectProperProgram();
+            GetRemainingDays(SelectedProgram);
+            await Context.SaveAsync();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         //private string GettypeOfProgram()
@@ -1408,14 +1545,6 @@ namespace BubbleStart.Model
         //    }
         //    return "Ανενεργό";
         //}
-
-        private void SetPrice(int price)
-        {
-            if (ShowUps != null && ShowUps.Count > 0)
-            {
-                LastShowUp.Amount = price;
-            }
-        }
 
         private void Timer_Tick(object sender, EventArgs e)
         {

@@ -2,16 +2,16 @@ namespace BubbleStart.Migrations
 {
     using System.Data.Entity.Migrations;
 
-    public partial class elina22 : DbMigration
+    public partial class _4198 : DbMigration
     {
         public override void Up()
         {
-            AddColumn("dbo.Programs", "ProgramType", c => c.Int(nullable: false));
+            DropColumn("dbo.ShowUps", "Amount");
         }
 
         public override void Down()
         {
-            DropColumn("dbo.Programs", "ProgramType");
+            AddColumn("dbo.ShowUps", "Amount", c => c.Int(nullable: false));
         }
     }
 }

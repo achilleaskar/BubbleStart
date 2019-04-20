@@ -24,6 +24,34 @@ namespace BubbleStart.Model
 
         #region Properties
 
+
+
+
+
+
+
+        private Customer _Customer;
+
+
+        public Customer Customer
+        {
+            get
+            {
+                return _Customer;
+            }
+
+            set
+            {
+                if (_Customer == value)
+                {
+                    return;
+                }
+
+                _Customer = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public int Amount
         {
             get
@@ -54,6 +82,11 @@ namespace BubbleStart.Model
             {
                 if (_Date == value)
                 {
+                    return;
+                }
+                if (value == null)
+                {
+                    RaisePropertyChanged();
                     return;
                 }
 

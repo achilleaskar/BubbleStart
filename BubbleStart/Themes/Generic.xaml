@@ -44,7 +44,6 @@
                                     Value="blue"
                                     TargetName="theEllipse" />
                         </Trigger>
-                       
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
