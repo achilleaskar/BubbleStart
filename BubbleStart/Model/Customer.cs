@@ -1409,7 +1409,8 @@ namespace BubbleStart.Model
 
         private void AddOldShowUp()
         {
-            Context.Add(new ShowUp { Arrived = OldShowUpDate, Left = OldShowUpDate, });
+            ShowUps.Add(new ShowUp { Arrived = OldShowUpDate, Left = OldShowUpDate });
+            //Context.Add( });
         }
 
         private int CalculateRemainingAmount()

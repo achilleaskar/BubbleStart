@@ -9,6 +9,7 @@ namespace BubbleStart.Migrations
             AddColumn("dbo.BubbleCustomers", "IsManualyActive", c => c.Boolean(nullable: false));
         }
 
+
         public override void Down()
         {
             DropColumn("dbo.BubbleCustomers", "IsManualyActive");
