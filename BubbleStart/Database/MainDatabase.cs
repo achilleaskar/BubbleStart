@@ -12,6 +12,7 @@ namespace BubbleStart.Database
         public DbSet<User> Users { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<District> Districts { get; set; }
+        public DbSet<Expense> Expenses { get; set; }
 
         public MainDatabase() : base("BubbleDatabase")
         {

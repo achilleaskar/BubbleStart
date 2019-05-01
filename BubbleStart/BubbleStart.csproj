@@ -163,9 +163,9 @@
     <Compile Include="Converters\BMItoColorConverter.cs" />
     <Compile Include="Converters\ContentToColorConverter.cs" />
     <Compile Include="Converters\DateTimeToString.cs" />
+    <Compile Include="Converters\FloadToStringValueConverter.cs" />
     <Compile Include="Converters\IsCustomerNullToBoolConverter.cs" />
     <Compile Include="Converters\MeetingsToColorConverter.cs" />
-    <Compile Include="Converters\ProgramTypeToStringConverter.cs" />
     <Compile Include="Converters\UserToVisibility.cs" />
     <Compile Include="Database\GenericRepository.cs" />
     <Compile Include="Database\MainDatabase.cs" />
@@ -288,10 +288,28 @@
     <Compile Include="Migrations\201904192330316_4201.Designer.cs">
       <DependentUpon>201904192330316_4201.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904210157028_421.cs" />
+    <Compile Include="Migrations\201904210157028_421.Designer.cs">
+      <DependentUpon>201904210157028_421.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904221120338_422.cs" />
+    <Compile Include="Migrations\201904221120338_422.Designer.cs">
+      <DependentUpon>201904221120338_422.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904240538014_424.cs" />
+    <Compile Include="Migrations\201904240538014_424.Designer.cs">
+      <DependentUpon>201904240538014_424.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904240551013_4241.cs" />
+    <Compile Include="Migrations\201904240551013_4241.Designer.cs">
+      <DependentUpon>201904240551013_4241.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\Change.cs" />
     <Compile Include="Model\Customer.cs" />
     <Compile Include="Model\District.cs" />
+    <Compile Include="Model\Expense.cs" />
     <Compile Include="Model\Illness.cs" />
     <Compile Include="Model\INamed.cs" />
     <Compile Include="Model\Payment.cs" />
@@ -363,15 +381,19 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904031804593_lastmin1.resx">
       <DependentUpon>201904031804593_lastmin1.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904032311581_anotherchance.resx">
       <DependentUpon>201904032311581_anotherchance.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904040110224_anotherchance2.resx">
       <DependentUpon>201904040110224_anotherchance2.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904040731524_day2.resx">
       <DependentUpon>201904040731524_day2.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904040742459_day21.resx">
       <DependentUpon>201904040742459_day21.cs</DependentUpon>
@@ -438,6 +460,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904192330316_4201.resx">
       <DependentUpon>201904192330316_4201.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904210157028_421.resx">
+      <DependentUpon>201904210157028_421.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904221120338_422.resx">
+      <DependentUpon>201904221120338_422.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904240538014_424.resx">
+      <DependentUpon>201904240538014_424.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904240551013_4241.resx">
+      <DependentUpon>201904240551013_4241.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

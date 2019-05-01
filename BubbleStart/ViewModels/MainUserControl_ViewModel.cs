@@ -1,8 +1,10 @@
 ﻿using BubbleStart.Database;
 using BubbleStart.Helpers;
 using BubbleStart.Messages;
+using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -38,6 +40,7 @@ namespace BubbleStart.ViewModels
                     await SearchCustomer_ViewModel.LoadAsync();
                     EconomicData_ViewModel = new EconomicData_ViewModel(StartingRepository);
                     await EconomicData_ViewModel.LoadAsync();
+                    StaticResources.User = (await StartingRepository.GetAllAsync<User>(c => c.Id == StaticResources.User.Id)).FirstOrDefault();
                 }
             }
         }

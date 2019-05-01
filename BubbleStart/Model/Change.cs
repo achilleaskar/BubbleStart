@@ -1,51 +1,31 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BubbleStart.Model
 {
-    [Table("BubblePayments")]
-    public class Payment : BaseModel
+    public class Change : BaseModel
     {
         #region Constructors
 
-        public Payment()
+        public Change(string description,User user)
         {
             Date = DateTime.Now;
-            User = Helpers.StaticResources.User;
+            Description = description;
+            User = user;
         }
 
         #endregion Constructors
 
         #region Fields
 
-        private float _Amount;
         private Customer _Customer;
         private DateTime _Date;
+        private string _Description;
 
         private User _User;
 
         #endregion Fields
 
         #region Properties
-
-        public float Amount
-        {
-            get
-            {
-                return _Amount;
-            }
-
-            set
-            {
-                if (_Amount == value)
-                {
-                    return;
-                }
-
-                _Amount = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public Customer Customer
         {
@@ -79,13 +59,27 @@ namespace BubbleStart.Model
                 {
                     return;
                 }
-                if (value == null)
+
+                _Date = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return _Description;
+            }
+
+            set
+            {
+                if (_Description == value)
                 {
-                    RaisePropertyChanged();
                     return;
                 }
 
-                _Date = value;
+                _Description = value;
                 RaisePropertyChanged();
             }
         }

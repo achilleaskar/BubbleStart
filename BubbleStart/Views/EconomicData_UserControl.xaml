@@ -12,12 +12,17 @@
              Background="White"
              d:DesignHeight="650"
              d:DesignWidth="1200">
+    <UserControl.Resources>
+        <Converters:FloadToStringValueConverter x:Key="FtoSConverter" />
+        <Converters:DateTimeToString x:Key="DateTimeToString" />
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Ταμείο">
+        <GroupBox Header="Έσοδα">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -55,11 +60,119 @@
                                             Binding="{Binding Customer.SureName}" />
                         <DataGridTextColumn Header="Ποσό"
                                             Width="60"
-                                            Binding="{Binding Amount}" />
+                                            Binding="{Binding Amount,StringFormat=c2}" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel Orientation="Horizontal"
                             Grid.Row="2">
+                    <Label Content="Σύνολο:" />
+                    <Label Content="{Binding Sum}" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Έξοδα"
+                  Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel>
+                        <TextBlock Text="Aπό:" />
+                        <DatePicker VerticalAlignment="Center"
+                                    SelectedDate="{Binding StartDateExpenses,  UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                    <StackPanel Margin=" 5 0 0 5">
+                        <TextBlock Text="Έως:" />
+                        <DatePicker VerticalAlignment="Center"
+                                    SelectedDate="{Binding EndDateExpenses, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                    <Button Content="Προβολή"
+                            Margin="5"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding ShowExpensesDataCommand}" />
+                </StackPanel>
+                <DataGrid ItemsSource="{Binding Expenses}"
+                          Grid.Row="1"
+                          CanUserAddRows="False"
+                          IsReadOnly="True"
+                          CanUserDeleteRows="False"
+                          AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Ποσό"
+                                            MaxWidth="60"
+                                            Binding="{Binding Amount,StringFormat=c2}" />
+                        <DataGridTextColumn Header="Ημερομηνία"
+                                            MaxWidth="120"
+                                            Binding="{Binding Date, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
+                        <DataGridTextColumn Header="Χρήστης"
+                                            MaxWidth="120"
+                                            Binding="{Binding User.UserName}" />
+                        <DataGridTemplateColumn Header="Αιτιολογία"
+                                                Width="220">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Width="Auto"
+                                               MaxWidth="200"
+                                               VerticalAlignment="Top"
+                                               TextWrapping="Wrap"
+                                               MaxHeight="60"
+                                               Text="{Binding Reason}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <GroupBox Grid.Row="2"
+                          Header="Προσθήκη Εξόδου">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel>
+                                <TextBlock Text="Ημερομηνία:" />
+                                <DatePicker VerticalAlignment="Bottom"
+                                            SelectedDate="{Binding NewExpense.Date,  UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Margin=" 5 0 0 0"
+                                        VerticalAlignment="Bottom">
+                                <TextBlock Text="Ποσό:" />
+                                <TextBox Text="{Binding NewExpense.Amount,Converter={StaticResource FtoSConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin=" 5 0 0 0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Top"
+                                   
+                                    HorizontalAlignment="Left">
+                            <TextBlock Text="Αιτιολογία:" />
+                            <TextBox Text="{Binding NewExpense.Reason, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="250"
+                                     AllowDrop="True" VerticalScrollBarVisibility="Auto"
+                                     TextWrapping="Wrap"
+                                     Height="55" />
+                        </StackPanel>
+                        <Button Content="Καταχώρηση"
+                                Grid.Row="1"
+                                VerticalAlignment="Bottom"
+                                HorizontalAlignment="Left"
+                                Margin="0 5"
+                                Command="{Binding RegisterExpenseCommand}" />
+                    </Grid>
+                </GroupBox>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="3">
                     <Label Content="Σύνολο:" />
                     <Label Content="{Binding Sum}" />
                 </StackPanel>

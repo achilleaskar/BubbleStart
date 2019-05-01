@@ -7,6 +7,7 @@ namespace BubbleStart.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+           
         }
 
         protected override void Seed(BubbleStart.Database.MainDatabase context)

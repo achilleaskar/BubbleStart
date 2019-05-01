@@ -6,7 +6,7 @@ namespace BubbleStart.Model
     {
         #region Fields
 
-        private int _Amount;
+        private float _Amount;
         private DateTime _DayOfIssue;
         private ProgramTypes _ProgramType;
         private DateTime _StartDay;
@@ -47,11 +47,33 @@ namespace BubbleStart.Model
             freeUse,
         }
 
+        public override string ToString()
+        {
+            switch (ProgramType)
+            {
+                case ProgramTypes.ReformerPilates:
+                    return "Reformer Pilates";
+
+                case ProgramTypes.Pilates:
+                    return "Pilates";
+
+                case ProgramTypes.Functional:
+                    return "Functional";
+
+                case ProgramTypes.PilatesFunctional:
+                    return "Pilates & Functional";
+
+                case ProgramTypes.freeUse:
+                    return "Ελέυθερη Χρήση";
+            }
+            return "Ανενεργό";
+        }
+
         #endregion Enums
 
         #region Properties
 
-        public int Amount
+        public float Amount
         {
             get
             {

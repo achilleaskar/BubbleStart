@@ -18,5 +18,19 @@ namespace BubbleStart.Views
         {
             ((SearchCustomer_ViewModel)DataContext).OpenCustomerManagementCommand.Execute(null);
         }
+
+       
+
+        private void Button_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                if (sender is Button b && b.IsEnabled)
+                {
+                    ((SearchCustomer_ViewModel)DataContext).ShowedUpCommand.Execute(null);
+                    e.Handled = true;
+                }
+            }
+        }
     }
 }

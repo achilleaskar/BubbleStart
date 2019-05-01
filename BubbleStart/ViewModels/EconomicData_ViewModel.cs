@@ -2,7 +2,6 @@
 using BubbleStart.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -14,34 +13,13 @@ namespace BubbleStart.ViewModels
 
         public EconomicData_ViewModel(GenericRepository context)
         {
+            NewExpense = new Expense();
             Context = context;
             ShowCashDataCommand = new RelayCommand(async () => { await ShowCashData(); });
-            StartDateCash = DateTime.Today;
-        }
-
-
-
-
-        private float _Sum;
-
-
-        public float Sum
-        {
-            get
-            {
-                return _Sum;
-            }
-
-            set
-            {
-                if (_Sum == value)
-                {
-                    return;
-                }
-
-                _Sum = value;
-                RaisePropertyChanged();
-            }
+            StartDateCash = StartDateExpenses = DateTime.Today;
+            Expenses = new ObservableCollection<Expense>();
+            RegisterExpenseCommand = new RelayCommand(async () => { await RegisterExpense(); }, CanRegisterExpense);
+            ShowExpensesDataCommand = new RelayCommand(async () => { await ShowExpensesData(); });
         }
 
         #endregion Constructors
@@ -49,10 +27,13 @@ namespace BubbleStart.ViewModels
         #region Fields
 
         private ObservableCollection<Payment> _DailyPayments;
-
         private DateTime _EndDateCash;
-
+        private DateTime _EndDateExpenses;
+        private ObservableCollection<Expense> _Expenses;
+        private Expense _NewExpense;
         private DateTime _StartDateCash;
+        private DateTime _StartDateExpenses;
+        private float _Sum;
 
         #endregion Fields
 
@@ -102,7 +83,70 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public DateTime EndDateExpenses
+        {
+            get
+            {
+                return _EndDateExpenses;
+            }
+
+            set
+            {
+                if (_EndDateExpenses == value)
+                {
+                    return;
+                }
+
+                _EndDateExpenses = value;
+                if (StartDateExpenses > value)
+                {
+                    _StartDateExpenses = value;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Expense> Expenses
+        {
+            get
+            {
+                return _Expenses;
+            }
+
+            set
+            {
+                if (_Expenses == value)
+                {
+                    return;
+                }
+
+                _Expenses = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Expense NewExpense
+        {
+            get
+            {
+                return _NewExpense;
+            }
+
+            set
+            {
+                if (_NewExpense == value)
+                {
+                    return;
+                }
+
+                _NewExpense = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public RelayCommand RegisterExpenseCommand { get; set; }
         public RelayCommand ShowCashDataCommand { get; set; }
+        public RelayCommand ShowExpensesDataCommand { get; set; }
 
         public DateTime StartDateCash
         {
@@ -128,6 +172,48 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public DateTime StartDateExpenses
+        {
+            get
+            {
+                return _StartDateExpenses;
+            }
+
+            set
+            {
+                if (_StartDateExpenses == value)
+                {
+                    return;
+                }
+
+                _StartDateExpenses = value;
+                if (EndDateExpenses < value)
+                {
+                    _EndDateExpenses = value;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        public float Sum
+        {
+            get
+            {
+                return _Sum;
+            }
+
+            set
+            {
+                if (_Sum == value)
+                {
+                    return;
+                }
+
+                _Sum = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -142,6 +228,17 @@ namespace BubbleStart.ViewModels
             throw new NotImplementedException();
         }
 
+        private bool CanRegisterExpense()
+        {
+            return NewExpense != null && NewExpense.Amount > 0 && !string.IsNullOrEmpty(NewExpense.Reason);
+        }
+
+        private async Task RegisterExpense()
+        {
+            Context.Add(NewExpense);
+            await Context.SaveAsync();
+        }
+
         private async Task ShowCashData()
         {
             Sum = 0;
@@ -150,6 +247,13 @@ namespace BubbleStart.ViewModels
             {
                 Sum += p.Amount;
             }
+        }
+
+        private async Task ShowExpensesData()
+        {
+            DateTime enddate = EndDateExpenses.AddDays(1);
+            Expenses = new ObservableCollection<Expense>(await Context.GetAllAsync<Expense>(e => e.Date >= StartDateExpenses && e.Date < enddate));
+            NewExpense = new Expense();
         }
 
         #endregion Methods

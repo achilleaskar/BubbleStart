@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +20,10 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
+        public SearchCustomer_ViewModel()
+        {
+
+        }
         public SearchCustomer_ViewModel(GenericRepository context)
         {
             Context = context;
@@ -28,8 +33,35 @@ namespace BubbleStart.ViewModels
             CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
+
             //PaymentCommand.CanExecute((obj) => CanMakePayment(obj));
             // CreateNewCustomer();
+        }
+
+        private void Customers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (Customer customer in e.OldItems)
+                {
+                    //Removed items
+                    customer.PropertyChanged -= EntityViewModelPropertyChanged;
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+
+                foreach (Customer customer in e.NewItems)
+                {
+
+                    customer.PropertyChanged += EntityViewModelPropertyChanged;
+                }
+            }
+        }
+
+        private void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(SelectedCustomer));
         }
 
         public bool Enabled => SelectedCustomer != null;
@@ -80,6 +112,7 @@ namespace BubbleStart.ViewModels
                 }
 
                 _Customers = value;
+                Customers.CollectionChanged += Customers_CollectionChanged;
 
                 RaisePropertyChanged();
             }
@@ -223,25 +256,39 @@ namespace BubbleStart.ViewModels
             Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()).OrderByDescending(c => c.ActiveCustomer).ThenBy(x => x.SureName));
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;
-            //CustomersCollectionView.SortDescriptions.Add(new SortDescription(nameof(Customer.IsActiveColor.Color), ListSortDirection.Descending));
-            //CustomersCollectionView.SortDescriptions.Add(new SortDescription(nameof(Customer.SureName), ListSortDirection.Ascending));
-            //CustomersCollectionView.Refresh();
 
             foreach (var item in Customers)
             {
                 item.SelectProperProgram();
-                if (item.LastShowUp != null && item.LastShowUp.Left < item.LastShowUp.Arrived)
+                if (item.LastShowUp != null && item.LastShowUp.Left < item.LastShowUp.Arrived && item.LastShowUp.Left.Year != 1234)
                 {
                     item.IsPracticing = true;
                     CustomersPracticing.Add(item);
                 }
             }
+            foreach (var c in Customers)
+            {
+                c.CalculateRemainingAmount();
+            }
+
         }
+
+
 
         private void OpenCustomerManagement()
         {
             if (SelectedCustomer != null)
             {
+                if (Context.HasChanges())
+                {
+                    MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να συνεχίσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+                }
+                if (Context.HasChanges())
+                    Context.RollBack();
                 SelectedCustomer.Context = Context;
                 Window window = new CustomerManagement
                 {
@@ -249,6 +296,8 @@ namespace BubbleStart.ViewModels
                 };
                 Application.Current.MainWindow.Visibility = Visibility.Hidden;
                 window.ShowDialog();
+                if (Context.HasChanges())
+                    Context.RollBack();
                 Application.Current.MainWindow.Visibility = Visibility.Visible;
             }
         }
@@ -276,7 +325,7 @@ namespace BubbleStart.ViewModels
             return string.IsNullOrEmpty(SearchTerm) || customer.Name.ToLower().Contains(SearchTerm) || customer.SureName.ToLower().Contains(SearchTerm) || customer.Tel.Contains(SearchTerm);
         }
 
-        private async Task CustomerShowedUp()
+        public async Task CustomerShowedUp()
         {
             if (SelectedCustomer != null)
             {

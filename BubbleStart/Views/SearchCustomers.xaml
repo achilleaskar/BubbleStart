@@ -13,7 +13,6 @@
              d:DesignHeight="650"
              d:DesignWidth="1200">
     <UserControl.Resources>
-        <Converters:ProgramTypeToStringConverter x:Key="ProgramTypeToStringConverter" />
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
     </UserControl.Resources>
     <Grid>
@@ -86,14 +85,14 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Πρόγραμμα:"
-                                            Binding="{Binding TypeOfProgram, Converter={StaticResource ProgramTypeToStringConverter}, Mode=OneWay}" />
+                                            Binding="{Binding TypeOfProgram}" />
                         <DataGridTextColumn Header="Απομένουν"
-                                            Width="60"
+                                            Width="60" FontSize="15"
                                             Binding="{Binding RemainingDays}" />
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Command="{Binding DataContext.ShowedUpCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}"
+                                    <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown"
                                             IsEnabled="{Binding IsNotPracticing}"
                                             Content="Προσήλθε" />
                                 </DataTemplate>

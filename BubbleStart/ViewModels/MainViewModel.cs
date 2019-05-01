@@ -3,6 +3,7 @@ using BubbleStart.Messages;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -102,7 +103,7 @@ namespace BubbleStart.ViewModels
         {
             StartingRepository = startingRepository;
 #if DEBUG
-            Helpers.StaticResources.User = new User { Id = 0, Level = 0, UserName = "admin", Name = "Achilleas" };
+            Helpers.StaticResources.User = (await StartingRepository.GetAllAsync<User>(u => u.Id == 3)).First();
             RaisePropertyChanged(nameof(MenuVisibility));
 #endif
             if (Helpers.StaticResources.User == null)

@@ -22,11 +22,19 @@ namespace BubbleStart
             EventManager.RegisterClassHandler(typeof(TextBox), UIElement.GotKeyboardFocusEvent,
               new RoutedEventHandler(SelectAllText), true);
 
+            var vCulture = new CultureInfo("el-GR");
+
+            Thread.CurrentThread.CurrentCulture = vCulture;
+            Thread.CurrentThread.CurrentUICulture = vCulture;
+            CultureInfo.DefaultThreadCurrentCulture = vCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = vCulture;
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+            typeof(FrameworkElement),
+            new FrameworkPropertyMetadata(
+         XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+
             base.OnStartup(e);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("el-GR");
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("el-GR");
-            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(
-                        XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
 
         private static void SelectivelyHandleMouseButton(object sender, MouseButtonEventArgs e)
