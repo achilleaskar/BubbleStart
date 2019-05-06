@@ -18,7 +18,6 @@
     <Window.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:FloadToStringValueConverter x:Key="FtoSConverter" />
-        
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
     </Window.Resources>
     <ScrollViewer>
@@ -90,9 +89,7 @@
                                Padding="5 0"
                                Background="{Binding IsActiveColor}"
                                Margin="0,4">
-                               <!--Background="{Binding ,ConverterParameter={Binding RemainingAmount}, Converter={StaticResource MeetingsToColorConverter}}"-->
-                       
-                    </TextBlock>
+                               <!--Background="{Binding ,ConverterParameter={Binding RemainingAmount}, Converter={StaticResource MeetingsToColorConverter}}"--></TextBlock>
                     <Label Content="Τύπος Ενεργού Πακέτου:"
                            Grid.Row="7"
                            Grid.Column="0" />
@@ -145,6 +142,7 @@
                                         <ComboBoxItem Content="Functional" />
                                         <ComboBoxItem Content="Pilates &amp; Functional" />
                                         <ComboBoxItem Content="Ελέυθερη Χρήση" />
+                                        <ComboBoxItem Content="Medical Exercise" />
                                     </ComboBox>
                                 </StackPanel>
                                 <StackPanel Grid.Row="0"

@@ -1667,10 +1667,7 @@ namespace BubbleStart.Model
             return PaymentAmount > 0 && PaymentAmount <= RemainingAmount;
         }
 
-        private bool CanMakeBooking(string arg)
-        {
-            return ProgramDataCheck();
-        }
+        private bool CanMakeBooking(string arg) => ProgramDataCheck();
 
         private async Task DeletePayment()
         {

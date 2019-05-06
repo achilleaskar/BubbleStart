@@ -45,6 +45,7 @@ namespace BubbleStart.Model
             Functional,
             PilatesFunctional,
             freeUse,
+            MedicalExersise
         }
 
         public override string ToString()
@@ -65,6 +66,8 @@ namespace BubbleStart.Model
 
                 case ProgramTypes.freeUse:
                     return "Ελέυθερη Χρήση";
+                case ProgramTypes.MedicalExersise:
+                    return "Medical Exercise";
             }
             return "Ανενεργό";
         }
@@ -141,7 +144,7 @@ namespace BubbleStart.Model
             }
         }
 
-      
+
         public ProgramTypes ProgramType
         {
             get
