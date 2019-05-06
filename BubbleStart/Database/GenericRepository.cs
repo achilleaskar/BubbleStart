@@ -247,7 +247,7 @@ namespace BubbleStart.Database
                         .Include(f => f.Programs)
                         .Include(g => g.Payments)
                         .ToListAsync();
-                return x;
+                return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
             }
             catch (Exception)
             {

@@ -253,7 +253,7 @@ namespace BubbleStart.ViewModels
                 Helpers.StaticResources.Districts.Add(item);
             }
             OpenCustomerManagementCommand = new RelayCommand(OpenCustomerManagement);
-            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()).OrderByDescending(c => c.ActiveCustomer).ThenBy(x => x.SureName));
+            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()));
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;
             CustomersPracticing.Clear();
