@@ -20,18 +20,18 @@ namespace BubbleStart.Model
 
         private DateTime _DateOfMeasure;
 
-        private float _WeightValue;
+        private decimal _WeightValue;
 
         #endregion Fields
 
         #region Properties
 
         [NotMapped]
-        public float BMI
+        public decimal BMI
         {
             get
             {
-                return (float)Math.Round(WeightValue / (Customer != null ? (Customer.Height * Customer.Height / 10000) : (Height * Height / 10000)), 2); ;
+                return (decimal)Math.Round(WeightValue / (Customer != null ? (Customer.Height * Customer.Height / 10000) : (Height * Height / 10000)), 2); ;
             }
         }
 
@@ -76,7 +76,7 @@ namespace BubbleStart.Model
         [NotMapped]
         public int Height { get; set; }
 
-        public float WeightValue
+        public decimal WeightValue
         {
             get
             {

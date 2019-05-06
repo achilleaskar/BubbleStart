@@ -89,14 +89,14 @@ namespace BubbleStart.Model
         private bool _Medicine;
         private string _MedicineText;
         private string _Name;
-        private float _NewWeight;
-        private float _NextPayment;
+        private decimal _NewWeight;
+        private decimal _NextPayment;
 
         private int _NumOfShowUps;
 
         private DateTime _OldShowUpDate;
 
-        private float _PaymentAmount;
+        private decimal _PaymentAmount;
 
         private ObservableCollection<Payment> _Payments;
 
@@ -106,7 +106,7 @@ namespace BubbleStart.Model
 
         private int _ProgramDuration;
 
-        private float _ProgramPrice;
+        private decimal _ProgramPrice;
 
         private string _ProgramResult;
 
@@ -122,7 +122,7 @@ namespace BubbleStart.Model
 
         private bool _ReasonVeltiwsh;
 
-        private float _RemainingAmount;
+        private decimal _RemainingAmount;
 
         private Payment _SelectedPayment;
 
@@ -132,7 +132,7 @@ namespace BubbleStart.Model
 
         private ShowUp _SelectedShowUp;
 
-        private float _ShowUpPrice;
+        private decimal _ShowUpPrice;
 
         private ObservableCollection<ShowUp> _ShowUps;
 
@@ -260,11 +260,11 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public float BMI
+        public decimal BMI
         {
             get
             {
-                return (float)Math.Round((WeightHistory.Count > 0 && LastWeight > 0 && Height > 0) ? LastWeight / (Height * Height / 10000) : 0, 2); ;
+                return (decimal)Math.Round((WeightHistory.Count > 0 && LastWeight > 0 && Height > 0) ? LastWeight / (Height * Height / 10000) : 0, 2); ;
             }
         }
 
@@ -728,7 +728,7 @@ namespace BubbleStart.Model
 
         public ShowUp LastShowUp => ShowUps != null && ShowUps.Count > 0 ? ShowUps.OrderBy(x => x.Id).Last() : null;
 
-        public float LastWeight => (float)Math.Round((WeightHistory.Count > 0 && WeightHistory.OrderBy(x => x.Id).Last().WeightValue > 0) ? WeightHistory.Last().WeightValue : 0, 2);
+        public decimal LastWeight => (decimal)Math.Round((WeightHistory.Count > 0 && WeightHistory.OrderBy(x => x.Id).Last().WeightValue > 0) ? WeightHistory.Last().WeightValue : 0, 2);
 
         public bool Medicine
         {
@@ -790,7 +790,7 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public float NewWeight
+        public decimal NewWeight
         {
             get
             {
@@ -810,7 +810,7 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public float NextPayment
+        public decimal NextPayment
         {
             get
             {
@@ -876,7 +876,7 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public float PaymentAmount
+        public decimal PaymentAmount
         {
             get
             {
@@ -1002,7 +1002,7 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public float ProgramPrice
+        public decimal ProgramPrice
         {
             get
             {
@@ -1186,7 +1186,7 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public float RemainingAmount
+        public decimal RemainingAmount
         {
             get
             {
@@ -1294,7 +1294,7 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public float ShowUpPrice
+        public decimal ShowUpPrice
         {
             get
             {
@@ -1650,14 +1650,14 @@ namespace BubbleStart.Model
             //Context.Add( });
         }
 
-        public float CalculateRemainingAmount()
+        public decimal CalculateRemainingAmount()
         {
-            float sum = 0;
+            decimal sum = 0;
             foreach (Program program in Programs)
             {
                 sum += program.Amount;
             }
-            float remainingAmount = sum;
+            decimal remainingAmount = sum;
             foreach (var payment in Payments)
             {
                 remainingAmount -= payment.Amount;

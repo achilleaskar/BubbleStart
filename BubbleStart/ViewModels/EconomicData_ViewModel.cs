@@ -33,7 +33,7 @@ namespace BubbleStart.ViewModels
         private Expense _NewExpense;
         private DateTime _StartDateCash;
         private DateTime _StartDateExpenses;
-        private float _Sum;
+        private decimal _Sum;
 
         #endregion Fields
 
@@ -195,7 +195,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public float Sum
+        public decimal Sum
         {
             get
             {

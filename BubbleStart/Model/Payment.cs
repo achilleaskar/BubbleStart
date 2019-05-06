@@ -15,7 +15,7 @@ namespace BubbleStart.Model
 
         #region Fields
 
-        private float _Amount;
+        private decimal _Amount;
         private Customer _Customer;
         private DateTime _Date;
 
@@ -26,7 +26,7 @@ namespace BubbleStart.Model
         #region Properties
 
 
-        public float Amount
+        public decimal Amount
         {
             get
             {

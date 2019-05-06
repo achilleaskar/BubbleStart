@@ -11,11 +11,11 @@ namespace BubbleStart.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is float)
+            if (value is decimal)
             {
-                if ((float)value < 18.5 || ((float)value >= 25 && ((float)value < 30)))
+                if ((decimal)value < 18.5m || ((decimal)value >= 25 && ((decimal)value < 30)))
                     return new SolidColorBrush(Colors.Orange);
-                else if ((float)value >= 30)
+                else if ((decimal)value >= 30)
                     return new SolidColorBrush(Colors.Red);
             }
 

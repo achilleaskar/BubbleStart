@@ -12,7 +12,7 @@ namespace BubbleStart.Converters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values[0] is int a && values[1] is float b)
+            if (values[0] is int a && values[1] is decimal b)
             {
                 if (a <= 0)
                     return new SolidColorBrush(Colors.Red);
