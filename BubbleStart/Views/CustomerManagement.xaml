@@ -93,7 +93,7 @@
                     <Label Content="Τύπος Ενεργού Πακέτου:"
                            Grid.Row="7"
                            Grid.Column="0" />
-                    <TextBlock Text="{Binding }"
+                    <TextBlock Text="{Binding TypeOfProgram }"
                                Grid.Row="7"
                                Grid.Column="1"
                                Margin="0,4" />

@@ -256,7 +256,7 @@ namespace BubbleStart.ViewModels
             Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()).OrderByDescending(c => c.ActiveCustomer).ThenBy(x => x.SureName));
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;
-
+            CustomersPracticing.Clear();
             foreach (var item in Customers)
             {
                 item.SelectProperProgram();

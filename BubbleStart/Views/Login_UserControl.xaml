@@ -48,6 +48,7 @@
                              GotKeyboardFocus="SelectAllPassword"
                              PasswordChanged="PasswordBox_PasswordChanged"
                              Grid.Column="1"
+                             Grid.Row="1"
                              Margin="0,0,5,0" />
                 <Button Content="Σύνδεση"
                         Grid.Row="2"

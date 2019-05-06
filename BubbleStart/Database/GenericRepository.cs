@@ -29,6 +29,11 @@ namespace BubbleStart.Database
             return await Context.Users.Where(u => u.UserName == userName).FirstOrDefaultAsync();
         }
 
+        public async Task<Payment> Gettest()
+        {
+            return await Context.Payments.Where(p => p.Id == 67).FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<TEntity>> GetAllAsync<TEntity>(Expression<Func<TEntity, bool>> filter = null) where TEntity : BaseModel
         {
             if (filter == null)
@@ -63,41 +68,45 @@ namespace BubbleStart.Database
             //    }
             //});
 
-            //var changes = from e in Context.ChangeTracker.Entries()
-            //              where e.State.HasFlag(EntityState.Added) ||
-            //                  e.State.HasFlag(EntityState.Modified) ||
-            //                  e.State.HasFlag(EntityState.Deleted)
-            //              select e;
+            var changes = from e in Context.ChangeTracker.Entries()
+                          where e.State.HasFlag(EntityState.Added) ||
+                              e.State.HasFlag(EntityState.Modified) ||
+                              e.State.HasFlag(EntityState.Deleted)
+                          select e;
 
-            //foreach (var change in changes)
-            //{
-            //    if (change.State == EntityState.Added)
-            //    {
-            //        // Log Added
-            //    }
-            //    else if (change.State == EntityState.Modified)
-            //    {
-            //        // Log Modified
-            //        var item = change.Entity;
-            //        var originalValues = Context.Entry(item).OriginalValues;
-            //        var currentValues = Context.Entry(item).CurrentValues;
+            foreach (var change in changes)
+            {
+                if (change.State == EntityState.Added)
+                {
+                    // Log Added
+                }
+                else if (change.State == EntityState.Modified)
+                {
+                    // Log Modified
+                    var item = change.Entity;
+                    var originalValues = Context.Entry(item).OriginalValues;
+                    var currentValues = Context.Entry(item).CurrentValues;
 
-            //        foreach (string propertyName in originalValues.PropertyNames)
-            //        {
-            //            var original = originalValues[propertyName];
-            //            var current = currentValues[propertyName];
+                    foreach (string propertyName in originalValues.PropertyNames)
+                    {
+                        var original = originalValues[propertyName];
+                        var current = currentValues[propertyName];
 
-            //            Console.WriteLine("Property {0} changed from {1} to {2}",
-            //         propertyName,
-            //         originalValues[propertyName],
-            //         currentValues[propertyName]);
-            //        }
-            //    }
-            //    else if (change.State == EntityState.Deleted)
-            //    {
-            //        // log deleted
-            //    }
-            //}
+                        if (original!=current)
+                        {
+
+                        }
+                        Console.WriteLine("Property {0} changed from {1} to {2}",
+                     propertyName,
+                     originalValues[propertyName],
+                     currentValues[propertyName]);
+                    }
+                }
+                else if (change.State == EntityState.Deleted)
+                {
+                    // log deleted
+                }
+            }
             //return Context.ChangeTracker.HasChanges();
             IEnumerable<DbEntityEntry> res = from e in Context.ChangeTracker.Entries()
                                              where 
@@ -231,13 +240,14 @@ namespace BubbleStart.Database
         {
             try
             {
-                return await Context.Set<Customer>()
+                var x = await Context.Set<Customer>()
                         .Include(c => c.Illness)
-                        .Include(c => c.WeightHistory)
-                        .Include(c => c.ShowUps)
-                        .Include(c => c.Programs)
-                        .Include(t => t.Payments)
+                        .Include(d => d.WeightHistory)
+                        .Include(e => e.ShowUps)
+                        .Include(f => f.Programs)
+                        .Include(g => g.Payments)
                         .ToListAsync();
+                return x;
             }
             catch (Exception)
             {

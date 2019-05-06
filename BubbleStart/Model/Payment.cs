@@ -6,15 +6,12 @@ namespace BubbleStart.Model
     [Table("BubblePayments")]
     public class Payment : BaseModel
     {
-        #region Constructors
 
         public Payment()
         {
             Date = DateTime.Now;
-            User = Helpers.StaticResources.User;
+            
         }
-
-        #endregion Constructors
 
         #region Fields
 
@@ -27,6 +24,7 @@ namespace BubbleStart.Model
         #endregion Fields
 
         #region Properties
+
 
         public float Amount
         {

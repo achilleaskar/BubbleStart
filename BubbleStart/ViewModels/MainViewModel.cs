@@ -19,6 +19,7 @@ namespace BubbleStart.ViewModels
 
         private async Task ChangeViewModel(bool login)
         {
+            StartingRepository = new GenericRepository();
             if (login)
             {
                 SelectedViewmodel = new MainUserControl_ViewModel(StartingRepository);

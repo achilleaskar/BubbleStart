@@ -32,6 +32,7 @@ namespace BubbleStart.Model
             Changes = new ObservableCollection<Change>();
             WeightHistory.CollectionChanged += WeigthsChanged;
             Payments.CollectionChanged += PaymentsCollectionChanged;
+            Programs.CollectionChanged += ProgramsCollectionChanged;
             DispatcherTimer timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMinutes(1)
@@ -48,6 +49,11 @@ namespace BubbleStart.Model
             OldShowUpDate = DateOfPayment = DateOfIssue = StartDate = DateTime.Today;
 
             ProgramTypeIndex = -1;
+        }
+
+        private void ProgramsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            CalculateRemainingAmount();
         }
 
         #endregion Constructors
@@ -914,7 +920,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public ObservableCollection<Payment> Payments
+        public virtual ObservableCollection<Payment> Payments
         {
             get
             {
@@ -1061,7 +1067,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public ObservableCollection<Program> Programs
+        public virtual ObservableCollection<Program> Programs
         {
             get
             {
@@ -1612,18 +1618,18 @@ namespace BubbleStart.Model
 
         internal void AddNewProgram()
         {
-            Programs.Add(new Program { Amount = ProgramPrice, DayOfIssue = DateOfIssue, Showups = NumOfShowUps, ProgramType = (Program.ProgramTypes)ProgramTypeIndex, Months = ProgramDuration, StartDay = StartDate });
+            Programs.Add(new Program { Amount = ProgramPrice, DayOfIssue = DateOfIssue, Showups = NumOfShowUps, ProgramType = (Program.ProgramTypes)ProgramTypeIndex, Months = ProgramDuration, StartDay = StartDate, });
         }
 
         internal void AddPayment()
         {
-            Payments.Add(new Payment { Amount = PaymentAmount, Date = DateOfPayment });
+            Payments.Add(new Payment { Amount = PaymentAmount, Date = DateOfPayment, User = Helpers.StaticResources.User });
             RaisePropertyChanged(nameof(PaymentVisibility));
         }
 
         internal void MakeProgramPayment()
         {
-            Payments.Add(new Payment { Amount = ProgramPrice, Date = DateOfIssue });
+            Payments.Add(new Payment { Amount = ProgramPrice, Date = DateOfIssue, User = Helpers.StaticResources.User });
         }
 
         internal bool ProgramDataCheck()
@@ -1704,7 +1710,7 @@ namespace BubbleStart.Model
                 if (lastShowUp > DateTime.Today.AddDays(-45))
                 {
 
-                    if (RemainingAmount == 0)
+                    if (RemainingAmount <= 0)
                     {
                         ActiveCustomer = true;
 

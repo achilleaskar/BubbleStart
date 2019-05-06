@@ -118,6 +118,7 @@ namespace BubbleStart.ViewModels
 
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
+            //await RefreshAllData();
             await SearchCustomer_ViewModel.LoadAsync();
             await EconomicData_ViewModel.LoadAsync();
         }

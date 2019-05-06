@@ -4,38 +4,18 @@ namespace BubbleStart.Model
 {
     public class Program : BaseModel
     {
+
         #region Fields
 
         private float _Amount;
         private DateTime _DayOfIssue;
+        private int _Months;
         private ProgramTypes _ProgramType;
+        private int _Showups;
         private DateTime _StartDay;
 
         #endregion Fields
 
-
-
-        private int _Months;
-
-
-        public int Months
-        {
-            get
-            {
-                return _Months;
-            }
-
-            set
-            {
-                if (_Months == value)
-                {
-                    return;
-                }
-
-                _Months = value;
-                RaisePropertyChanged();
-            }
-        }
         #region Enums
 
         public enum ProgramTypes
@@ -46,30 +26,6 @@ namespace BubbleStart.Model
             PilatesFunctional,
             freeUse,
             MedicalExersise
-        }
-
-        public override string ToString()
-        {
-            switch (ProgramType)
-            {
-                case ProgramTypes.ReformerPilates:
-                    return "Reformer Pilates";
-
-                case ProgramTypes.Pilates:
-                    return "Pilates";
-
-                case ProgramTypes.Functional:
-                    return "Functional";
-
-                case ProgramTypes.PilatesFunctional:
-                    return "Pilates & Functional";
-
-                case ProgramTypes.freeUse:
-                    return "Ελέυθερη Χρήση";
-                case ProgramTypes.MedicalExersise:
-                    return "Medical Exercise";
-            }
-            return "Ανενεργό";
         }
 
         #endregion Enums
@@ -119,11 +75,42 @@ namespace BubbleStart.Model
             }
         }
 
+        public int Months
+        {
+            get
+            {
+                return _Months;
+            }
 
+            set
+            {
+                if (_Months == value)
+                {
+                    return;
+                }
 
+                _Months = value;
+                RaisePropertyChanged();
+            }
+        }
+        public ProgramTypes ProgramType
+        {
+            get
+            {
+                return _ProgramType;
+            }
 
-        private int _Showups;
+            set
+            {
+                if (_ProgramType == value)
+                {
+                    return;
+                }
 
+                _ProgramType = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public int Showups
         {
@@ -140,26 +127,6 @@ namespace BubbleStart.Model
                 }
 
                 _Showups = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-        public ProgramTypes ProgramType
-        {
-            get
-            {
-                return _ProgramType;
-            }
-
-            set
-            {
-                if (_ProgramType == value)
-                {
-                    return;
-                }
-
-                _ProgramType = value;
                 RaisePropertyChanged();
             }
         }
@@ -189,5 +156,33 @@ namespace BubbleStart.Model
         }
 
         #endregion Properties
+
+        #region Methods
+
+        public override string ToString()
+        {
+            switch (ProgramType)
+            {
+                case ProgramTypes.ReformerPilates:
+                    return "Reformer Pilates";
+
+                case ProgramTypes.Pilates:
+                    return "Pilates";
+
+                case ProgramTypes.Functional:
+                    return "Functional";
+
+                case ProgramTypes.PilatesFunctional:
+                    return "Pilates & Functional";
+
+                case ProgramTypes.freeUse:
+                    return "Ελέυθερη Χρήση";
+                case ProgramTypes.MedicalExersise:
+                    return "Medical Exercise";
+            }
+            return "Ανενεργό";
+        }
+
+        #endregion Methods
     }
 }
