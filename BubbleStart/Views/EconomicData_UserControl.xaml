@@ -98,9 +98,24 @@
                 <DataGrid ItemsSource="{Binding Expenses}"
                           Grid.Row="1"
                           CanUserAddRows="False"
+                          SelectedItem="{Binding SelectedExpense}"
                           IsReadOnly="True"
                           CanUserDeleteRows="False"
                           AutoGenerateColumns="False">
+                    <DataGrid.Resources>
+                        <ContextMenu x:Key="expensesContextMenu">
+                            <MenuItem Header="Διαγραφή"
+                                      Command="{Binding DataContext.DeleteExpenseCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                        </ContextMenu>
+                    </DataGrid.Resources>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="{x:Type DataGridRow}">
+                            
+                            <Setter Property="ContextMenu"
+                                    Value="{StaticResource expensesContextMenu}" />
+                          
+                        </Style>
+                    </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Ποσό"
                                             MaxWidth="60"

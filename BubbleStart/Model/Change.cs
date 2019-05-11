@@ -5,7 +5,10 @@ namespace BubbleStart.Model
     public class Change : BaseModel
     {
         #region Constructors
+        public Change()
+        {
 
+        }
         public Change(string description,User user)
         {
             Date = DateTime.Now;

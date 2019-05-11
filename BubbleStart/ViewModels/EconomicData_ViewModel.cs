@@ -3,6 +3,7 @@ using BubbleStart.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BubbleStart.ViewModels
@@ -20,6 +21,40 @@ namespace BubbleStart.ViewModels
             Expenses = new ObservableCollection<Expense>();
             RegisterExpenseCommand = new RelayCommand(async () => { await RegisterExpense(); }, CanRegisterExpense);
             ShowExpensesDataCommand = new RelayCommand(async () => { await ShowExpensesData(); });
+            DeleteExpenseCommand = new RelayCommand(async () => { await DeleteExpense(); });
+        }
+
+
+
+
+        private Expense _SelectedExpense;
+
+
+        public Expense SelectedExpense
+        {
+            get
+            {
+                return _SelectedExpense;
+            }
+
+            set
+            {
+                if (_SelectedExpense == value)
+                {
+                    return;
+                }
+
+                _SelectedExpense = value;
+                RaisePropertyChanged();
+            }
+        }
+        private async Task DeleteExpense()
+        {
+            Context.Add(new Change($"Διαγράφηκε ΕΞΟΔΟ {SelectedExpense.Amount}€ που είχε περαστεί {SelectedExpense.Date.ToString("ddd dd/MM/yy")} απο τον χρήστη {SelectedExpense.User.UserName}", (await Context.GetAllAsync<User>(u => u.Id == Helpers.StaticResources.User.Id)).FirstOrDefault()));
+            Context.Delete(SelectedExpense);
+            await Context.SaveAsync();
+            Expenses.Clear();
+
         }
 
         #endregion Constructors
@@ -105,6 +140,8 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public RelayCommand DeleteExpenseCommand { get; set; }
 
         public ObservableCollection<Expense> Expenses
         {
@@ -237,6 +274,9 @@ namespace BubbleStart.ViewModels
         {
             Context.Add(NewExpense);
             await Context.SaveAsync();
+            NewExpense = new Expense();
+            Expenses.Clear();
+
         }
 
         private async Task ShowCashData()

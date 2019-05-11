@@ -33,6 +33,7 @@ namespace BubbleStart.Model
             WeightHistory.CollectionChanged += WeigthsChanged;
             Payments.CollectionChanged += PaymentsCollectionChanged;
             Programs.CollectionChanged += ProgramsCollectionChanged;
+            ShowUps.CollectionChanged += ShowUps_CollectionChanged;
             DispatcherTimer timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMinutes(1)
@@ -51,9 +52,11 @@ namespace BubbleStart.Model
             ProgramTypeIndex = -1;
         }
 
-        private void ProgramsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ShowUps_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            CalculateRemainingAmount();
+            RaisePropertyChanged(nameof(RemainingDays));
+            IsActiveColor = GetCustomerColor();
+            SelectProperProgram();
         }
 
         #endregion Constructors
@@ -61,35 +64,65 @@ namespace BubbleStart.Model
         #region Fields
 
         private bool _ActiveCustomer;
+
         private string _Address;
+
         private bool _Alcohol;
+
         private int _AlcoholUsage;
+
         private ObservableCollection<Change> _Changes;
+
         private DateTime _DateOfIssue;
+
         private DateTime _DateOfPayment;
+
         private string _DistrictText;
+
         private DateTime _DOB;
+
         private string _Email;
+
         private string _ExtraNotes;
+
         private string _ExtraReasons;
+
         private DateTime _FirstDate;
+
         private bool _Gender;
+
         private int _Height;
+
         private string _HistoryDuration;
+
         private string _HistoryKind;
+
         private bool _HistoryNotFirstTime;
+
         private int _HistoryTimesPerWeek;
+
         private Illness _Illness;
+
         private SolidColorBrush _IsActiveColor;
+
         private bool _IsDateValid;
+
         private bool _IsManualyActive;
+
         private bool _IsPracticing;
+
         private bool _IsSelected;
+
         private string _Job;
+
         private bool _Medicine;
+
         private string _MedicineText;
+
         private string _Name;
+
         private decimal _NewWeight;
+
         private decimal _NextPayment;
 
         private int _NumOfShowUps;
@@ -99,6 +132,8 @@ namespace BubbleStart.Model
         private decimal _PaymentAmount;
 
         private ObservableCollection<Payment> _Payments;
+
+        private ICollectionView _PaymentsCollectionView;
 
         private bool _PreferedHand;
 
@@ -111,6 +146,8 @@ namespace BubbleStart.Model
         private string _ProgramResult;
 
         private ObservableCollection<Program> _Programs;
+
+        private ICollectionView _ProgramsColelctionView;
 
         private int _ProgramTypeIndex;
 
@@ -135,6 +172,8 @@ namespace BubbleStart.Model
         private decimal _ShowUpPrice;
 
         private ObservableCollection<ShowUp> _ShowUps;
+
+        private ICollectionView _ShowUpsCollectionView;
 
         private bool _Smoker;
 
@@ -899,27 +938,6 @@ namespace BubbleStart.Model
         [NotMapped]
         public RelayCommand PaymentCommand { get; set; }
 
-        private ICollectionView _PaymentsCollectionView;
-
-        public ICollectionView PaymentsCollectionView
-        {
-            get
-            {
-                return _PaymentsCollectionView;
-            }
-
-            set
-            {
-                if (_PaymentsCollectionView == value)
-                {
-                    return;
-                }
-
-                _PaymentsCollectionView = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public virtual ObservableCollection<Payment> Payments
         {
             get
@@ -937,6 +955,25 @@ namespace BubbleStart.Model
                 _Payments = value;
                 PaymentsCollectionView = (CollectionView)CollectionViewSource.GetDefaultView(Payments);
                 PaymentsCollectionView.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Descending));
+                RaisePropertyChanged();
+            }
+        }
+
+        public ICollectionView PaymentsCollectionView
+        {
+            get
+            {
+                return _PaymentsCollectionView;
+            }
+
+            set
+            {
+                if (_PaymentsCollectionView == value)
+                {
+                    return;
+                }
+
+                _PaymentsCollectionView = value;
                 RaisePropertyChanged();
             }
         }
@@ -1046,27 +1083,6 @@ namespace BubbleStart.Model
             }
         }
 
-        private ICollectionView _ProgramsColelctionView;
-
-        public ICollectionView ProgramsColelctionView
-        {
-            get
-            {
-                return _ProgramsColelctionView;
-            }
-
-            set
-            {
-                if (_ProgramsColelctionView == value)
-                {
-                    return;
-                }
-
-                _ProgramsColelctionView = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public virtual ObservableCollection<Program> Programs
         {
             get
@@ -1084,6 +1100,25 @@ namespace BubbleStart.Model
                 _Programs = value;
                 ProgramsColelctionView = (CollectionView)CollectionViewSource.GetDefaultView(Programs);
                 ProgramsColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
+                RaisePropertyChanged();
+            }
+        }
+
+        public ICollectionView ProgramsColelctionView
+        {
+            get
+            {
+                return _ProgramsColelctionView;
+            }
+
+            set
+            {
+                if (_ProgramsColelctionView == value)
+                {
+                    return;
+                }
+
+                _ProgramsColelctionView = value;
                 RaisePropertyChanged();
             }
         }
@@ -1340,8 +1375,6 @@ namespace BubbleStart.Model
             }
         }
 
-        private ICollectionView _ShowUpsCollectionView;
-
         public ICollectionView ShowUpsCollectionView
         {
             get
@@ -1550,6 +1583,24 @@ namespace BubbleStart.Model
 
         #region Methods
 
+        public decimal CalculateRemainingAmount()
+        {
+            decimal sum = 0;
+            foreach (Program program in Programs)
+            {
+                sum += program.Amount;
+            }
+            decimal remainingAmount = sum;
+            foreach (var payment in Payments)
+            {
+                remainingAmount -= payment.Amount;
+            }
+            PaymentAmount = RemainingAmount = remainingAmount;
+            RaisePropertyChanged(nameof(RemainingDays));
+            IsActiveColor = GetCustomerColor();
+            return remainingAmount;
+        }
+
         public int GetRemainingDays(Program program)
         {
             int showups = 0;
@@ -1650,24 +1701,6 @@ namespace BubbleStart.Model
             //Context.Add( });
         }
 
-        public decimal CalculateRemainingAmount()
-        {
-            decimal sum = 0;
-            foreach (Program program in Programs)
-            {
-                sum += program.Amount;
-            }
-            decimal remainingAmount = sum;
-            foreach (var payment in Payments)
-            {
-                remainingAmount -= payment.Amount;
-            }
-            PaymentAmount = RemainingAmount = remainingAmount;
-            RaisePropertyChanged(nameof(RemainingDays));
-            IsActiveColor = GetCustomerColor();
-            return remainingAmount;
-        }
-
         private bool CanAddPayment()
         {
             return PaymentAmount > 0 && PaymentAmount <= RemainingAmount;
@@ -1709,7 +1742,6 @@ namespace BubbleStart.Model
                 DateTime lastShowUp = ShowUps.OrderByDescending(s => s.Arrived).FirstOrDefault().Arrived;
                 if (lastShowUp > DateTime.Today.AddDays(-45))
                 {
-
                     if (RemainingAmount <= 0)
                     {
                         ActiveCustomer = true;
@@ -1775,6 +1807,13 @@ namespace BubbleStart.Model
             //RaisePropertyChanged(nameof(RemainingAmount));
             CalculateRemainingAmount();
             RaisePropertyChanged(nameof(PaymentVisibility));
+        }
+
+        private void ProgramsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            CalculateRemainingAmount();
+            SelectProperProgram();
+            RaisePropertyChanged(nameof(RemainingDays));
         }
 
         private async Task SaveChanges()
