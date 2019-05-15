@@ -10,7 +10,7 @@
              mc:Ignorable="d"
              Background="White"
              d:DesignHeight="450"
-             d:DesignWidth="800">
+             d:DesignWidth="1000">
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type viewmodels:SearchCustomer_ViewModel}">
             <views:SearchCustomers />
@@ -30,7 +30,8 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Menu DockPanel.Dock="Top"
-                  Height="30">
+                  Height="30"
+                  Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                 <MenuItem Header="Διαχείριση">
                     <MenuItem Command="{Binding OpenUsersEditCommand}"
                               Header="Χρήστες"
@@ -56,12 +57,10 @@
                         Command="{Binding RefreshAllDataCommand}">
                     <iconPacks:PackIconFontAwesome Kind="SyncSolid"
                                                    VerticalAlignment="Center"
-
                                                    Margin="5" />
                 </Button>
                 <Label Content="{Binding UserName}" />
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-
                 <Button Content="Αποσύνδεση"
                         Margin="5,0"
                         VerticalAlignment="Center"
@@ -75,14 +74,15 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
             <TabControl Grid.Column="1">
                 <TabItem Header="Αναζήτηση Πελάτη">
                     <ContentControl Content="{Binding SearchCustomer_ViewModel}" />
                 </TabItem>
-                <TabItem Header="Οικονομικά Στοιχεία"
-                         Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                <TabItem Header="Οικονομικά Στοιχεία">
                     <ContentControl Content="{Binding EconomicData_ViewModel}" />
+                </TabItem>
+                <TabItem Header="Πρόγραμμα">
+                    <views:Apointments_UserControl DataContext="{Binding Apointments_ViewModel}" />
                 </TabItem>
             </TabControl>
         </Grid>

@@ -53,8 +53,7 @@ namespace BubbleStart.ViewModels
             Context.Add(new Change($"Διαγράφηκε ΕΞΟΔΟ {SelectedExpense.Amount}€ που είχε περαστεί {SelectedExpense.Date.ToString("ddd dd/MM/yy")} απο τον χρήστη {SelectedExpense.User.UserName}", (await Context.GetAllAsync<User>(u => u.Id == Helpers.StaticResources.User.Id)).FirstOrDefault()));
             Context.Delete(SelectedExpense);
             await Context.SaveAsync();
-            Expenses.Clear();
-
+            Expenses.Remove(SelectedExpense);
         }
 
         #endregion Constructors
@@ -274,8 +273,11 @@ namespace BubbleStart.ViewModels
         {
             Context.Add(NewExpense);
             await Context.SaveAsync();
+            if (NewExpense.Date>=StartDateExpenses && NewExpense.Date<EndDateExpenses.AddDays(1))
+            {
+                Expenses.Add(NewExpense);
+            }
             NewExpense = new Expense();
-            Expenses.Clear();
 
         }
 

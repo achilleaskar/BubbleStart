@@ -15,129 +15,136 @@
     <UserControl.Resources>
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
     </UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <GroupBox Margin="5"
-                  Padding="5"
-                  Header="Αναζήτηση Πελάτη">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Text="Λέξη Κλειδί:" />
-                <TextBox Grid.Row="1"
-                         FontSize="15"
-                         Margin="0 0 0 4"
-                         Text="{Binding SearchTerm, Delay=100, UpdateSourceTrigger=PropertyChanged}" />
-                <DataGrid ItemsSource="{Binding CustomersCollectionView}"
-                          Grid.Row="2"
-                          SelectedItem="{Binding SelectedCustomer}"
-                          CanUserAddRows="False"
-                          SelectionMode="Single"
-                          VirtualizingPanel.VirtualizationMode="Standard"
-                          IsReadOnly="True"
-                          CanUserDeleteRows="False"
-                          AutoGenerateColumns="False">
-                    <!--<DataGrid.Resources>
-                        <ContextMenu x:Key="manualACtivationSubMenu">
-                            <MenuItem Header="΅Ενεργ"
-                                      Command="{Binding DataContext.EditBookingCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"></MenuItem>
-                            <MenuItem Header="Διαγραφή Κράτησης"
-                                      Command="{Binding DataContext.DeleteReservationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"></MenuItem>
-                        </ContextMenu>
-                    </DataGrid.Resources>-->
-                    <DataGrid.RowStyle>
-                        <Style TargetType="{x:Type DataGridRow}">
-                            <Setter Property="IsSelected"
-                                    Value="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" />
-                            <Setter Property="Background"
-                                    Value="{Binding BackGround}" />
-                            <!--<Setter Property="ContextMenu"
-                                    Value="{StaticResource manualACtivationSubMenu}" />-->
-                            <EventSetter Event="MouseDoubleClick"
-                                         Handler="ListView_MouseDoubleClick" />
-                        </Style>
-                    </DataGrid.RowStyle>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Όνομα"
-                                            Width="120"
-                                            Binding="{Binding Name}" />
-                        <DataGridTextColumn Header="Επίθετο"
-                                            Width="120"
-                                            Binding="{Binding SureName}" />
-                        <DataGridTextColumn Header="Ηλικία"
-                                            Width="60"
-                                            Binding="{Binding Age}" />
-                        <DataGridTemplateColumn Header="Ενεργ.">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border Background="{Binding IsActiveColor}"
-                                            Opacity="0.7" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Πρόγραμμα:"
-                                            Binding="{Binding TypeOfProgram}" />
-                        <DataGridTextColumn Header="Απομένουν"
-                                            Width="60" FontSize="15"
-                                            Binding="{Binding RemainingDays}" />
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown"
-                                            IsEnabled="{Binding IsNotPracticing}"
-                                            Content="Προσήλθε" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </GroupBox>
-
-        <TabControl Grid.Column="1">
-            <TabItem Header="Τρέχουσα Κατάσταση">
-                <DataGrid ItemsSource="{Binding CustomersPracticing}"
-                          SelectedItem="{Binding SelectedPracticingCustomer}"
-                          CanUserAddRows="False"
-                          VirtualizingPanel.VirtualizationMode="Standard"
-                          IsReadOnly="True"
-                          CanUserDeleteRows="False"
-                          AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Επίθετο"
-                                            Binding="{Binding SureName}" />
-                        <DataGridTextColumn Header="Όνομα"
-                                            Binding="{Binding Name}" />
-                        <DataGridTextColumn Header="Ηλικία"
-                                            Binding="{Binding Age}" />
-                        <DataGridTextColumn Header="Διάρκεια"
-                                            Width="60"
-                                            Binding="{Binding Duration, FallbackValue=00:00, StringFormat=\{0:hh\}:\{0:mm\}}" />
-                        <DataGridTemplateColumn Header="Αποχώρηση">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="Τέλος"
-                                            HorizontalAlignment="Center"
-                                            Margin="5 0"
-                                            Command="{Binding DataContext.CustomerLeftCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </TabItem>
-            <TabItem Header="Λεπτομέριες Πελάτη">
-                <views:UserDetail DataContext="{Binding SelectedCustomer}" />
-            </TabItem>
-        </TabControl>
-    </Grid>
+    <TabControl>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <GroupBox Margin="5"
+                      Padding="5"
+                      Header="Αναζήτηση Πελάτη">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Λέξη Κλειδί:" />
+                    <TextBox Grid.Row="1"
+                             FontSize="15"
+                             Margin="0 0 0 4"
+                             Text="{Binding SearchTerm, Delay=100, UpdateSourceTrigger=PropertyChanged}" />
+                    <DataGrid ItemsSource="{Binding CustomersCollectionView}"
+                              Grid.Row="2"
+                              SelectedItem="{Binding SelectedCustomer}"
+                              CanUserAddRows="False"
+                              SelectionMode="Single"
+                              VirtualizingPanel.VirtualizationMode="Standard"
+                              IsReadOnly="True"
+                              CanUserDeleteRows="False"
+                              AutoGenerateColumns="False">
+                        <DataGrid.Resources>
+                            <ContextMenu x:Key="searchContextMenu"
+                                         Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                                <MenuItem Header="Διαγραφή Πελάτη"
+                                          Command="{Binding DataContext.DeleteCustomerCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                            </ContextMenu>
+                        </DataGrid.Resources>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="{x:Type DataGridRow}">
+                                <Setter Property="IsSelected"
+                                        Value="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" />
+                                <Setter Property="Background"
+                                        Value="{Binding BackGround}" />
+                                <Setter Property="ContextMenu"
+                                        Value="{StaticResource searchContextMenu}" />
+                                <EventSetter Event="MouseDoubleClick"
+                                             Handler="ListView_MouseDoubleClick" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Όνομα"
+                                                Width="120"
+                                                Binding="{Binding Name}" />
+                            <DataGridTextColumn Header="Επίθετο"
+                                                Width="120"
+                                                Binding="{Binding SureName}" />
+                            <DataGridTextColumn Header="Ηλικία"
+                                                Width="60"
+                                                Binding="{Binding Age}" />
+                            <DataGridTemplateColumn Header="Ενεργ.">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{Binding IsActiveColor}"
+                                                Opacity="0.7" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Πρόγραμμα:"
+                                                Binding="{Binding TypeOfProgram}" />
+                            <DataGridTextColumn Header="Απομένουν"
+                                                Width="60"
+                                                FontSize="15"
+                                                Binding="{Binding RemainingDays}" />
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown"
+                                                IsEnabled="{Binding IsNotPracticing}"
+                                                Content="Προσήλθε" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+            <TabControl Grid.Column="1">
+                <TabItem Header="Τρέχουσα Κατάσταση">
+                    <DataGrid ItemsSource="{Binding CustomersPracticing}"
+                              SelectedItem="{Binding SelectedPracticingCustomer}"
+                              CanUserAddRows="False"
+                              VirtualizingPanel.VirtualizationMode="Standard"
+                              IsReadOnly="True"
+                              CanUserDeleteRows="False"
+                              AutoGenerateColumns="False">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="{x:Type DataGridRow}">
+                                <EventSetter Event="MouseDoubleClick"
+                                             Handler="DataGridRow_MouseDoubleClick" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Επίθετο"
+                                                Binding="{Binding SureName}" />
+                            <DataGridTextColumn Header="Όνομα"
+                                                Binding="{Binding Name}" />
+                            <DataGridTextColumn Header="Ηλικία"
+                                                Binding="{Binding Age}" />
+                            <DataGridTextColumn Header="Διάρκεια"
+                                                Width="60"
+                                                Binding="{Binding Duration, FallbackValue=00:00, StringFormat=\{0:hh\}:\{0:mm\}}" />
+                            <DataGridTemplateColumn Header="Αποχώρηση">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Τέλος"
+                                                HorizontalAlignment="Center"
+                                                Margin="5 0"
+                                                Command="{Binding DataContext.CustomerLeftCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                <TabItem Header="Λεπτομέριες Πελάτη">
+                    <views:UserDetail DataContext="{Binding SelectedCustomer}" />
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </TabControl>
 </UserControl>

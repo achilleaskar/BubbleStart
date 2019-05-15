@@ -311,7 +311,12 @@
     <Compile Include="Migrations\201905061938464_day1.Designer.cs">
       <DependentUpon>201905061938464_day1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905121636429_teleftaio.cs" />
+    <Compile Include="Migrations\201905121636429_teleftaio.Designer.cs">
+      <DependentUpon>201905121636429_teleftaio.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\Apointment.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Change.cs" />
     <Compile Include="Model\Customer.cs" />
@@ -328,6 +333,7 @@
     <Compile Include="Security\PasswordHashing.cs" />
     <Compile Include="Security\SecureStringManipulation.cs" />
     <Compile Include="ViewModels\AddEditBase.cs" />
+    <Compile Include="ViewModels\Apointments_ViewModel.cs" />
     <Compile Include="ViewModels\EconomicData_ViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
@@ -336,12 +342,19 @@
     <Compile Include="ViewModels\MyViewModelBase.cs" />
     <Compile Include="ViewModels\SearchCustomer_ViewModel.cs" />
     <Compile Include="ViewModels\UsersManagement_viewModel.cs" />
+    <Compile Include="ViewModels\CustomersWindow_Viewmodel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="Views\Apointments_UserControl.xaml.cs">
+      <DependentUpon>Apointments_UserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CustomerManagement.xaml.cs">
       <DependentUpon>CustomerManagement.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EconomicData_UserControl.xaml.cs">
       <DependentUpon>EconomicData_UserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FindCustomerWidnow.xaml.cs">
+      <DependentUpon>FindCustomerWidnow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Login_UserControl.xaml.cs">
       <DependentUpon>Login_UserControl.xaml</DependentUpon>
@@ -483,6 +496,9 @@
     <EmbeddedResource Include="Migrations\201905061938464_day1.resx">
       <DependentUpon>201905061938464_day1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905121636429_teleftaio.resx">
+      <DependentUpon>201905121636429_teleftaio.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -501,11 +517,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Apointments_UserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CustomerManagement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EconomicData_UserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FindCustomerWidnow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

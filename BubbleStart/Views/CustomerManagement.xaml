@@ -335,8 +335,10 @@
                                 <DataGridTextColumn Header="Συνεδρίες"
                                                     Binding="{Binding Showups}" />
                                 <DataGridTextColumn Header="Μήνες"
-                                                    Binding="{Binding Months}" />
-                                <DataGridTextColumn Header="Κόστος"
+                                                    Binding="{Binding Months}" /> 
+                                <DataGridTextColumn Header="Τιμή Συν."
+                                                    Binding="{Binding ShowUpPrice,StringFormat=c}" />
+                                <DataGridTextColumn Header="Σύνολο"
                                                     Binding="{Binding Amount,StringFormat=c}" />
                                 <DataGridTextColumn Header="Αγορά"
                                                     Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yyyy', Converter={StaticResource DateTimeToString}}" />

@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Database;
+using BubbleStart.ViewModels;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.ObjectModel;
@@ -40,10 +41,10 @@ namespace BubbleStart.Model
             };
             timer.Tick += Timer_Tick;
             timer.Start();
-            BookCommand = new RelayCommand<string>(MakeBooking, CanMakeBooking);
-            AddOldShowUpCommand = new RelayCommand(AddOldShowUp);
+            BookCommand = new RelayCommand<string>(async (obj) => { await MakeBooking(obj); }, CanMakeBooking);
+            AddOldShowUpCommand = new RelayCommand(async () => { await AddOldShowUp(); });
             SaveChangesAsyncCommand = new RelayCommand(async () => { await SaveChanges(); });
-            PaymentCommand = new RelayCommand(AddPayment, CanAddPayment);
+            PaymentCommand = new RelayCommand(async () => { await AddPayment(); }, CanAddPayment);
             DeleteShowUpCommand = new RelayCommand(async () => { await DeleteShowUp(); });
             DeletePaymentCommand = new RelayCommand(async () => { await DeletePayment(); });
             DeleteProgramCommand = new RelayCommand(async () => { await DeleteProgram(); });
@@ -635,7 +636,11 @@ namespace BubbleStart.Model
 
                 _Illness = value;
                 RaisePropertyChanged();
-                Illness.PropertyChanged += Illness_PropertyChanged;
+                if (Illness != null)
+                {
+
+                    Illness.PropertyChanged += Illness_PropertyChanged;
+                }
             }
         }
 
@@ -661,6 +666,11 @@ namespace BubbleStart.Model
                 _IsActiveColor = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public override string ToString()
+        {
+            return SureName + " " + Name;
         }
 
         [NotMapped]
@@ -1672,10 +1682,11 @@ namespace BubbleStart.Model
             Programs.Add(new Program { Amount = ProgramPrice, DayOfIssue = DateOfIssue, Showups = NumOfShowUps, ProgramType = (Program.ProgramTypes)ProgramTypeIndex, Months = ProgramDuration, StartDay = StartDate, });
         }
 
-        internal void AddPayment()
+        internal async Task AddPayment()
         {
             Payments.Add(new Payment { Amount = PaymentAmount, Date = DateOfPayment, User = Helpers.StaticResources.User });
             RaisePropertyChanged(nameof(PaymentVisibility));
+            await SaveChanges();
         }
 
         internal void MakeProgramPayment()
@@ -1689,16 +1700,41 @@ namespace BubbleStart.Model
             return ProgramPrice >= 0 && ProgramTypeIndex >= 0 && IsDateValid && NumOfShowUps > 0 && ProgramDuration > 0;
         }
 
+
+
+
+        private ObservableCollection<Apointment> _Apointments;
+
+
+        public ObservableCollection<Apointment> Apointments
+        {
+            get
+            {
+                return _Apointments;
+            }
+
+            set
+            {
+                if (_Apointments == value)
+                {
+                    return;
+                }
+
+                _Apointments = value;
+                RaisePropertyChanged();
+            }
+        }
+
         internal void ShowedUp(bool arrived)
         {
             IsPracticing = arrived;
             ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now });
         }
 
-        private void AddOldShowUp()
+        private async Task AddOldShowUp()
         {
             ShowUps.Add(new ShowUp { Arrived = OldShowUpDate, Left = new DateTime(1234, 1, 1) });
-            //Context.Add( });
+            await Context.SaveAsync();
         }
 
         private bool CanAddPayment()
@@ -1774,7 +1810,7 @@ namespace BubbleStart.Model
             }
         }
 
-        private void MakeBooking(string obj)
+        private async Task MakeBooking(string obj)
         {
             AddNewProgram();
             if (int.Parse(obj) == 1)
@@ -1789,6 +1825,7 @@ namespace BubbleStart.Model
             ProgramTypeIndex = -1;
             DateOfIssue = StartDate = DateTime.Today;
             RaisePropertyChanged(nameof(RemainingAmount));
+            await Context.SaveAsync();
         }
 
         private void PaymentsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

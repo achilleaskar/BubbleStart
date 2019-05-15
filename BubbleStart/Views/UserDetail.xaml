@@ -775,9 +775,10 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="155" />
+                                            <ColumnDefinition Width="210" />
                                             <ColumnDefinition Width="20" />
                                             <ColumnDefinition Width="225" />
                                             <ColumnDefinition Width="20" />
@@ -790,13 +791,13 @@
                                         <CheckBox IsChecked="{Binding Illness.Piesi}"
                                                   Grid.Row="0"
                                                   Grid.Column="1" />
-                                        <TextBlock Text="Καρδιακό Πρόβλημα/Βηματοδότη"
-                                                   Grid.Row="0"
-                                                   Margin="10 0 5 5"
-                                                   Grid.Column="2" />
+                                        <TextBlock Text="Καρδιακό Πρόβλημα/Βηματοδότης"
+                                                   Grid.Row="8"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
                                         <CheckBox IsChecked="{Binding Illness.Kardia}"
-                                                  Grid.Row="0"
-                                                  Grid.Column="3" />
+                                                  Grid.Row="8"
+                                                  Grid.Column="1" />
                                         <!--row 1-->
                                         <TextBox Grid.Row="1"
                                                  Height="35"
@@ -806,14 +807,14 @@
                                                  Visibility="{Binding Illness.Piesi,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.pieshText}"
                                                  Grid.Column="0" />
-                                        <TextBox Grid.Row="1"
-                                                 Margin="10 0 5 0"
+                                        <TextBox Grid.Row="9"
+                                                 Margin="0 0 5 0"
                                                  Height="35"
                                                  TextWrapping="Wrap"
                                                  Visibility="{Binding Illness.Kardia,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.kardiaText}"
                                                  Grid.ColumnSpan="2"
-                                                 Grid.Column="2" />
+                                                 Grid.Column="0" />
                                         <!--row 2-->
                                         <TextBlock Text="Χαμηλή Αρτηριακή Πίεση"
                                                    Grid.Row="2"
@@ -823,12 +824,12 @@
                                                   Grid.Row="2"
                                                   Grid.Column="1" />
                                         <TextBlock Text="Διαβήτη"
-                                                   Grid.Row="2"
-                                                   Margin="10 0 5 5"
-                                                   Grid.Column="2" />
+                                                   Grid.Row="12"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
                                         <CheckBox IsChecked="{Binding Illness.Diavitis}"
-                                                  Grid.Row="2"
-                                                  Grid.Column="3" />
+                                                  Grid.Row="12"
+                                                  Grid.Column="1" />
                                         <!--row 3-->
                                         <TextBox Grid.Row="3"
                                                  Height="35"
@@ -838,14 +839,14 @@
                                                  Text="{Binding Illness.PiesiXamiliText}"
                                                  Visibility="{Binding Illness.PiesiXamili,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Grid.Column="0" />
-                                        <TextBox Grid.Row="3"
-                                                 Margin="10 0 5 0"
+                                        <TextBox Grid.Row="13"
+                                                 Margin="0 0 5 0"
                                                  Height="35"
                                                  TextWrapping="Wrap"
                                                  Visibility="{Binding Illness.Diavitis,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.diavitisText}"
                                                  Grid.ColumnSpan="2"
-                                                 Grid.Column="2" />
+                                                 Grid.Column="0" />
                                         <!--row 4-->
                                         <TextBlock Text="Στομαχικά Προβλήματα"
                                                    Grid.Row="4"
@@ -855,12 +856,12 @@
                                                   Grid.Row="4"
                                                   Grid.Column="1" />
                                         <TextBlock Text="(Πρόωρη) Εμμηνόπαυση"
-                                                   Grid.Row="4"
-                                                   Margin="10 0 5 5"
-                                                   Grid.Column="2" />
+                                                   Grid.Row="14"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
                                         <CheckBox IsChecked="{Binding Illness.Emminopafsi}"
-                                                  Grid.Row="4"
-                                                  Grid.Column="3" />
+                                                  Grid.Row="14"
+                                                  Grid.Column="1" />
                                         <!--row 5-->
                                         <TextBox Grid.Row="5"
                                                  Height="35"
@@ -870,39 +871,39 @@
                                                  Visibility="{Binding Illness.Stomaxika,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.stomaxikaText}"
                                                  Grid.Column="0" />
-                                        <TextBox Grid.Row="5"
-                                                 Margin="10 0 5 0"
+                                        <TextBox Grid.Row="15"
+                                                 Margin="0 0 5 0"
                                                  Height="35"
                                                  Visibility="{Binding Illness.Emminopafsi,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.emmhnopafshText}"
                                                  Grid.ColumnSpan="2"
                                                  TextWrapping="Wrap"
-                                                 Grid.Column="2" />
+                                                 Grid.Column="0" />
                                         <!--row 6-->
                                         <TextBlock Text="Οστεοπόρωση"
-                                                   Grid.Row="6"
-                                                   Margin="0 0 5 5"
-                                                   Grid.Column="0" />
+                                                   Grid.Row="0"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
                                         <CheckBox IsChecked="{Binding Illness.Osteoporosi}"
-                                                  Grid.Row="6"
-                                                  Grid.Column="1" />
+                                                  Grid.Row="0"
+                                                  Grid.Column="3" />
                                         <TextBlock Text="(Ρευματοειδής) Αρθρίτιδα"
-                                                   Grid.Row="6"
+                                                   Grid.Row="2"
                                                    Margin="10 0 5 5"
                                                    Grid.Column="2" />
                                         <CheckBox IsChecked="{Binding Illness.Arthritida}"
-                                                  Grid.Row="6"
+                                                  Grid.Row="2"
                                                   Grid.Column="3" />
                                         <!--row 7-->
-                                        <TextBox Grid.Row="7"
+                                        <TextBox Grid.Row="1"
                                                  Height="35"
                                                  TextWrapping="Wrap"
                                                  Grid.ColumnSpan="2"
-                                                 Margin="0 0 5 0"
+                                                 Margin="10 0 5 0"
                                                  Visibility="{Binding Illness.Osteoporosi,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.osteoporosiText}"
-                                                 Grid.Column="0" />
-                                        <TextBox Grid.Row="7"
+                                                 Grid.Column="2" />
+                                        <TextBox Grid.Row="3"
                                                  TextWrapping="Wrap"
                                                  Margin="10 0 5 0"
                                                  Visibility="{Binding Illness.Arthritida,Converter={StaticResource booleanToVisibilityConverter}}"
@@ -912,28 +913,28 @@
                                                  Grid.Column="2" />
                                         <!--row 8-->
                                         <TextBlock Text="Έχετε κάποια αλλεργία?"
-                                                   Grid.Row="8"
-                                                   Margin="0 0 5 5"
-                                                   Grid.Column="0" />
+                                                   Grid.Row="14"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
                                         <CheckBox IsChecked="{Binding Illness.allergia}"
-                                                  Grid.Row="8"
-                                                  Grid.Column="1" />
+                                                  Grid.Row="14"
+                                                  Grid.Column="3" />
                                         <TextBlock Text="Κάταγμα στα οστά"
-                                                   Grid.Row="8"
+                                                   Grid.Row="4"
                                                    Margin="10 0 5 5"
                                                    Grid.Column="2" />
                                         <CheckBox IsChecked="{Binding Illness.Katagma}"
-                                                  Grid.Row="8"
+                                                  Grid.Row="4"
                                                   Grid.Column="3" />
                                         <!--row 9-->
-                                        <TextBox Grid.Row="9"
+                                        <TextBox Grid.Row="15"
                                                  Height="35"
                                                  TextWrapping="Wrap"
                                                  Grid.ColumnSpan="2"
-                                                 Margin="0 0 5 0"
+                                                 Margin="10 0 5 0"
                                                  Visibility="{Binding Illness.allergia,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.allergiaText}"
-                                                 Grid.Column="0" />
+                                                 Grid.Column="2" />
                                         <!--<TextBox Grid.Row="9"
                                              Height="35"
                                              TextWrapping="Wrap"
@@ -942,7 +943,7 @@
                                              Text="{Binding Illness.travmatismosText}"
                                              Visibility="{Binding Illness.travmatismos,Converter={StaticResource booleanToVisibilityConverter}}"
                                              Grid.Column="0" />-->
-                                        <TextBox Grid.Row="9"
+                                        <TextBox Grid.Row="5"
                                                  Margin="10 0 5 0"
                                                  TextWrapping="Wrap"
                                                  Height="35"
@@ -952,29 +953,29 @@
                                                  Grid.Column="2" />
                                         <!--row 10-->
                                         <TextBlock Text="Νευρική Βλάβη"
-                                                   Grid.Row="10"
-                                                   Margin="0 0 5 5"
-                                                   Grid.Column="0" />
+                                                   Grid.Row="8"
+                                                   Margin="10 0 5 5"
+                                                   Grid.Column="2" />
                                         <CheckBox IsChecked="{Binding Illness.NevrikiVlavi}"
-                                                  Grid.Row="10"
-                                                  Grid.Column="1" />
+                                                  Grid.Row="8"
+                                                  Grid.Column="3" />
                                         <TextBlock Text="Επιληψία"
-                                                   Grid.Row="10"
+                                                   Grid.Row="6"
                                                    Margin="10 0 5 5"
                                                    Grid.Column="2" />
                                         <CheckBox IsChecked="{Binding Illness.Epilipsia}"
-                                                  Grid.Row="10"
+                                                  Grid.Row="6"
                                                   Grid.Column="3" />
                                         <!--row 11-->
-                                        <TextBox Grid.Row="11"
+                                        <TextBox Grid.Row="9"
                                                  Height="35"
                                                  TextWrapping="Wrap"
                                                  Grid.ColumnSpan="2"
-                                                 Margin="0 0 5 0"
+                                                 Margin="10 0 5 0"
                                                  Visibility="{Binding Illness.NevrikiVlavi,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.nevrikoText}"
-                                                 Grid.Column="0" />
-                                        <TextBox Grid.Row="11"
+                                                 Grid.Column="2" />
+                                        <TextBox Grid.Row="7"
                                                  Margin="10 0 5 0"
                                                  TextWrapping="Wrap"
                                                  Height="35"
@@ -984,61 +985,48 @@
                                                  Grid.Column="2" />
                                         <!--row 12-->
                                         <TextBlock Text="Καρκίνος"
-                                                   Grid.Row="12"
-                                                   Margin="0 0 5 5"
-                                                   Grid.Column="0" />
-                                        <CheckBox IsChecked="{Binding Illness.Karkinos}"
-                                                  Grid.Row="12"
-                                                  Grid.Column="1" />
-                                        <TextBlock Text="Θυροειδής"
-                                                   Grid.Row="12"
+                                                   Grid.Row="10"
                                                    Margin="10 0 5 5"
                                                    Grid.Column="2" />
-                                        <CheckBox IsChecked="{Binding Illness.Thiroidis}"
-                                                  Grid.Row="12"
+                                        <CheckBox IsChecked="{Binding Illness.Karkinos}"
+                                                  Grid.Row="10"
                                                   Grid.Column="3" />
+                                        <TextBlock Text="Θυροειδής"
+                                                   Grid.Row="6"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Illness.Thiroidis}"
+                                                  Grid.Row="6"
+                                                  Grid.Column="1" />
                                         <!--row 13-->
-                                        <TextBox Grid.Row="13"
+                                        <TextBox Grid.Row="11"
                                                  Height="35"
                                                  Grid.ColumnSpan="2"
                                                  TextWrapping="Wrap"
-                                                 Margin="0 0 5 0"
+                                                 Margin="10 0 5 0"
                                                  Visibility="{Binding Illness.Karkinos,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.cancerText}"
-                                                 Grid.Column="0" />
-                                        <TextBox Grid.Row="13"
-                                                 Margin="10 0 5 0"
+                                                 Grid.Column="2" />
+                                        <TextBox Grid.Row="7"
+                                                 Margin="0 0 5 0"
                                                  Height="35"
                                                  TextWrapping="Wrap"
                                                  Visibility="{Binding Illness.Thiroidis,Converter={StaticResource booleanToVisibilityConverter}}"
                                                  Text="{Binding Illness.thiroidisText}"
                                                  Grid.ColumnSpan="2"
-                                                 Grid.Column="2" />
+                                                 Grid.Column="0" />
                                         <!--row 14-->
-                                        <TextBlock Text="Παίρνετε Κάποιο Φάρμακο?"
-                                                   Grid.Row="14"
-                                                   Margin="0 0 5 5"
-                                                   Grid.Column="0" />
-                                        <CheckBox IsChecked="{Binding Medicine}"
-                                                  Grid.Row="14"
-                                                  Grid.Column="1" />
+                                      
                                         <TextBlock Text="Εγκυμοσύνη τελευταίους 12 μήνες?"
-                                                   Grid.Row="14"
+                                                   Grid.Row="12"
                                                    Margin="10 0 5 5"
                                                    Grid.Column="2" />
                                         <CheckBox IsChecked="{Binding Illness.Eggymosini}"
-                                                  Grid.Row="14"
+                                                  Grid.Row="12"
                                                   Grid.Column="3" />
                                         <!--row 15-->
-                                        <TextBox Grid.Row="15"
-                                                 Height="35"
-                                                 TextWrapping="Wrap"
-                                                 Grid.ColumnSpan="2"
-                                                 Visibility="{Binding Medicine,Converter={StaticResource booleanToVisibilityConverter}}"
-                                                 Margin="0 0 5 0"
-                                                 Text="{Binding MedicineText}"
-                                                 Grid.Column="0" />
-                                        <TextBox Grid.Row="15"
+                                     
+                                        <TextBox Grid.Row="13"
                                                  Margin="10 0 5 0"
                                                  TextWrapping="Wrap"
                                                  Visibility="{Binding Illness.Eggymosini,Converter={StaticResource booleanToVisibilityConverter}}"
@@ -1048,13 +1036,13 @@
                                                  Grid.Column="2" />
                                         <!--row 16-->
                                         <TextBlock Text="Άσθμα"
-                                                   Grid.Row="16"
+                                                   Grid.Row="10"
                                                    Margin="0 0 5 5"
                                                    Grid.Column="0" />
                                         <CheckBox IsChecked="{Binding Illness.Asthma}"
-                                                  Grid.Row="16"
+                                                  Grid.Row="10"
                                                   Grid.Column="1" />
-                                        <TextBlock Text="Κάνετε ομοιπαθητική?"
+                                        <TextBlock Text="Κάνετε ομοιπαθητική/Βελονισμό?"
                                                    Grid.Row="16"
                                                    Margin="10 0 5 5"
                                                    Grid.Column="2" />
@@ -1062,7 +1050,7 @@
                                                   Grid.Row="16"
                                                   Grid.Column="3" />
                                         <!--row 17-->
-                                        <TextBox Grid.Row="17"
+                                        <TextBox Grid.Row="11"
                                                  TextWrapping="Wrap"
                                                  Height="35"
                                                  Grid.ColumnSpan="2"
@@ -1080,25 +1068,49 @@
                                                  Grid.Column="2" />
                                         <!--row 18-->
                                         <!--row 19-->
-                                        <!--row 20-->
-                                        <TextBlock Text="Έχετε κάνει κάποια χειρουργική επέμβαση τα τελευταία 10 χρόνια?"
+                                        <TextBlock Text="Παίρνετε κάποιο φάρμακο αυτό το διάστημα?"
                                                    Grid.Row="20"
                                                    Grid.ColumnSpan="3"
                                                    Margin="0 0 5 5"
                                                    Grid.Column="0" />
-                                        <CheckBox IsChecked="{Binding Surgery}"
+                                        <CheckBox IsChecked="{Binding Medicine}"
                                                   Grid.Row="20"
+                                                  Name="medicine"
+                                                  Grid.Column="3"/>
+                                        <TextBlock Text="Λεπτομέριες:"
+                                                   Grid.Row="21"
+                                                   Grid.ColumnSpan="3"
+                                                   Margin="0 0 5 5"
+                                                   Visibility="{Binding IsChecked, ElementName=medicine, Converter={StaticResource booleanToVisibilityConverter}}"
+                                                   Grid.Column="0" />
+                                        <TextBox Grid.Row="21"
+                                                 Height="35"
+                                                 Width="260"
+                                                 Visibility="{Binding IsChecked, ElementName=medicine, Converter={StaticResource booleanToVisibilityConverter}}"
+                                                 TextWrapping="Wrap"
+                                                 Margin="0 0 5 0"
+                                                 Grid.ColumnSpan="3"
+                                                 Grid.Column="1"/>
+                                        <!--row 20-->
+                                        
+                                        <TextBlock Text="Έχετε κάνει κάποια χειρουργική επέμβαση τα τελευταία 10 χρόνια?"
+                                                   Grid.Row="22"
+                                                   Grid.ColumnSpan="3"
+                                                   Margin="0 0 5 5"
+                                                   Grid.Column="0" />
+                                        <CheckBox IsChecked="{Binding Surgery}"
+                                                  Grid.Row="22"
                                                   Name="surgery"
                                                   Grid.Column="3" />
                                         <!--row 11-->
                                         <TextBlock Text="Λεπτομέριες:"
-                                                   Grid.Row="21"
+                                                   Grid.Row="23"
                                                    Grid.ColumnSpan="3"
                                                    Margin="0 0 5 5"
                                                    Visibility="{Binding IsChecked, ElementName=surgery, Converter={StaticResource booleanToVisibilityConverter}}"
                                                    Grid.Column="0" />
                                         <TextBox Text="{Binding SurgeryInfo,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"
-                                                 Grid.Row="21"
+                                                 Grid.Row="23"
                                                  Width="260"
                                                  Visibility="{Binding IsChecked, ElementName=surgery, Converter={StaticResource booleanToVisibilityConverter}}"
                                                  TextWrapping="Wrap"

@@ -16,6 +16,28 @@ using System.Windows.Input;
 
 namespace BubbleStart.ViewModels
 {
+    public class CustomSorter : IComparer
+    {
+        #region Methods
+
+        public int Compare(object x, object y)
+        {
+            int digitsX = x.ToString().Length;
+            int digitsY = y.ToString().Length;
+            if (digitsX < digitsY)
+            {
+                return 1;
+            }
+            else if (digitsX > digitsY)
+            {
+                return -1;
+            }
+            return (int)x - (int)y;
+        }
+
+        #endregion Methods
+    }
+
     public class SearchCustomer_ViewModel : MyViewModelBase
     {
         #region Constructors
@@ -33,55 +55,20 @@ namespace BubbleStart.ViewModels
             CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
+            DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(); });
 
             //PaymentCommand.CanExecute((obj) => CanMakePayment(obj));
             // CreateNewCustomer();
-        }
-
-        private void Customers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (Customer customer in e.OldItems)
-                {
-                    //Removed items
-                    customer.PropertyChanged -= EntityViewModelPropertyChanged;
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (Customer customer in e.NewItems)
-                {
-                    customer.PropertyChanged += EntityViewModelPropertyChanged;
-                }
-            }
-        }
-
-        private void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            RaisePropertyChanged(nameof(SelectedCustomer));
-
-            if (e.PropertyName == "IsActiveColor")
-            {
-                Customers = new ObservableCollection<Customer>( Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
-                CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
-                CustomersCollectionView.Filter = CustomerFilter;
-                CustomersCollectionView.Refresh();
-            }
-        }
-
-        public bool Enabled => SelectedCustomer != null;
-
-        private bool CanSaveCustomer()
-        {
-            return SelectedCustomer != null && !string.IsNullOrEmpty(SelectedCustomer.Name) && !string.IsNullOrEmpty(SelectedCustomer.SureName) && !string.IsNullOrEmpty(SelectedCustomer.Tel);
         }
 
         #endregion Constructors
 
         #region Fields
 
+
         private ObservableCollection<Customer> _Customers;
+
+        private ICollectionView _CustomersCollectionView;
 
         private ObservableCollection<Customer> _CustomersPracticing;
 
@@ -95,6 +82,7 @@ namespace BubbleStart.ViewModels
 
         #region Properties
 
+      
         public RelayCommand<string> BodyPartSelected { get; set; }
 
         public GenericRepository Context { get; }
@@ -123,8 +111,6 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-        private ICollectionView _CustomersCollectionView;
 
         public ICollectionView CustomersCollectionView
         {
@@ -167,6 +153,14 @@ namespace BubbleStart.ViewModels
         }
 
         public ICollectionView CustomersPracticingCollectionView { get; set; }
+
+        public RelayCommand DeleteCustomerCommand { get; set; }
+
+        public bool Enabled => SelectedCustomer != null;
+
+        public RelayCommand OpenActiveCustomerManagementCommand { get; set; }
+
+        public RelayCommand OpenCustomerManagementCommand { get; set; }
 
         public RelayCommand SaveCustomerCommand { get; set; }
 
@@ -250,15 +244,29 @@ namespace BubbleStart.ViewModels
             await Context.SaveAsync();
         }
 
+        public async Task CustomerShowedUp()
+        {
+            if (SelectedCustomer != null)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                CustomersPracticing.Add(SelectedCustomer);
+                SelectedCustomer.ShowedUp(true);
+                await Context.SaveAsync();
+                Mouse.OverrideCursor = Cursors.Arrow;
+            }
+        }
+
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
             List<District> Districts = (await Context.GetAllAsync<District>()).OrderBy(d => d.Name).ToList();
+          
             Helpers.StaticResources.Districts.Clear();
             foreach (var item in Districts)
             {
                 Helpers.StaticResources.Districts.Add(item);
             }
-            OpenCustomerManagementCommand = new RelayCommand(OpenCustomerManagement);
+            OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
+            OpenActiveCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedPracticingCustomer); });
             Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()));
             foreach (var c in Customers)
             {
@@ -282,42 +290,6 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        private void OpenCustomerManagement()
-        {
-            if (SelectedCustomer != null)
-            {
-                if (Context.HasChanges())
-                {
-                    MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να συνεχίσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (result == MessageBoxResult.No)
-                    {
-                        return;
-                    }
-                }
-                if (Context.HasChanges())
-                {
-                    Context.RollBack();
-                    SelectedCustomer =  Context.GetById<Customer>(SelectedCustomer.Id);
-                }
-
-                SelectedCustomer.Context = Context;
-                Window window = new CustomerManagement
-                {
-                    DataContext = SelectedCustomer
-                };
-                Application.Current.MainWindow.Visibility = Visibility.Hidden;
-                window.ShowDialog();
-                if (Context.HasChanges())
-                {
-                    Context.RollBack();
-                    SelectedCustomer = Context.GetById<Customer>(SelectedCustomer.Id);
-                }
-                Application.Current.MainWindow.Visibility = Visibility.Visible;
-            }
-        }
-
-        public RelayCommand OpenCustomerManagementCommand { get; set; }
-
         public override Task ReloadAsync()
         {
             throw new NotImplementedException();
@@ -326,6 +298,11 @@ namespace BubbleStart.ViewModels
         private void BodyPartChanged(string selectedIndex)
         {
             _SelectedCustomer.Illness.SelectedIllnessPropertyName = selectedIndex;
+        }
+
+        private bool CanSaveCustomer()
+        {
+            return SelectedCustomer != null && !string.IsNullOrEmpty(SelectedCustomer.Name) && !string.IsNullOrEmpty(SelectedCustomer.SureName) && !string.IsNullOrEmpty(SelectedCustomer.Tel);
         }
 
         private void CreateNewCustomer()
@@ -346,154 +323,82 @@ namespace BubbleStart.ViewModels
             return customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm);
         }
 
-        private string ToEng(string searchTerm)
+        private void Customers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-
-            string toReturn = "";
-            foreach (char c in searchTerm.ToUpper())
+            if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                if (c < 134 || c > 255)
+                foreach (Customer customer in e.OldItems)
                 {
-                    toReturn += c;
-                }
-                else
-                {
-                    switch ((int)c)
-                    {
-                        case 164:
-                        case 134:
-                            toReturn += 'A';
-                            break;
-                        case 165:
-                            toReturn += 'B';
-                            break;
-                        case 166:
-                            toReturn += 'G';
-                            break;
-                        case 167:
-                            toReturn += 'D';
-                            break;
-                        case 168:
-                        case 141:
-                            toReturn += 'E';
-                            break;
-                        case 169:
-                            toReturn += 'Z';
-                            break;
-                        case 170:
-                            toReturn += 'I';
-                            break;
-                        case 172:
-                            toReturn += 'T';
-                            toReturn += 'H';
-                            break;
-
-                        default:
-                            break;
-                    }
+                    //Removed items
+                    customer.PropertyChanged -= EntityViewModelPropertyChanged;
                 }
             }
-            return toReturn;
-        }
-
-        private string ToGreek(string searchTerm)
-        {
-
-            string toReturn = "";
-            foreach (char c in searchTerm)
+            else if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                if (c < 65 || c > 90)
+                foreach (Customer customer in e.NewItems)
                 {
-                    toReturn += c;
-                }
-                else
-                {
-                    switch ((int)c)
-                    {
-
-                        case 65:
-                            toReturn += 'Α';
-                            break;
-
-                        case 66:
-                            toReturn += 'Β';
-                            break;
-                        case 68:
-                            toReturn += 'Δ';
-                            break;
-                        case 69:
-                            toReturn += 'Ε';
-                            break;
-                        case 70:
-                            toReturn += 'Φ';
-                            break;
-                        case 71:
-                            toReturn += 'Γ';
-                            break;
-                        case 72:
-                            toReturn += 'Η';
-                            break;
-                        case 73:
-                            toReturn += 'Ι';
-                            break;
-                        case 75:
-                            toReturn += 'Κ';
-                            break;
-                        case 76:
-                            toReturn += 'Λ';
-                            break;
-                        case 77:
-                            toReturn += 'Μ';
-                            break;
-                        case 78:
-                            toReturn += 'Ν';
-                            break;
-                        case 79:
-                            toReturn += 'Ο';
-                            break;
-                        case 80:
-                            toReturn += 'Π';
-                            break;
-                        case 82:
-                            toReturn += 'Ρ';
-                            break;
-                        case 83:
-                            toReturn += 'Σ';
-                            break;
-                        case 84:
-                            toReturn += 'Τ';
-                            break;
-                        case 86:
-                            toReturn += 'Β';
-                            break;
-                        case 88:
-                            toReturn += 'Χ';
-                            break;
-                        case 89:
-                            toReturn += 'Υ';
-                            break;
-                        case 90:
-                            toReturn += 'Ζ';
-                            break;
-
-                        default:
-                            toReturn += c;
-                            break;
-                    }
+                    customer.PropertyChanged += EntityViewModelPropertyChanged;
                 }
             }
-            return toReturn;
         }
 
-        public async Task CustomerShowedUp()
+        private async Task DeleteCustomer()
         {
-            if (SelectedCustomer != null)
+            Mouse.OverrideCursor = Cursors.Wait;
+            Context.Add(new Change($"Διαγράφηκε Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", (await Context.GetAllAsync<User>(u => u.Id == Helpers.StaticResources.User.Id)).FirstOrDefault()));
+            Context.Delete(SelectedCustomer);
+            Customers.Remove(SelectedCustomer);
+            await Context.SaveAsync();
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(SelectedCustomer));
+
+            if (e.PropertyName == "IsActiveColor")
             {
-                Mouse.OverrideCursor = Cursors.Wait;
-                CustomersPracticing.Add(SelectedCustomer);
-                SelectedCustomer.ShowedUp(true);
-                await Context.SaveAsync();
-                Mouse.OverrideCursor = Cursors.Arrow;
+                Customers = new ObservableCollection<Customer>(Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
+                CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
+                CustomersCollectionView.Filter = CustomerFilter;
+                CustomersCollectionView.Refresh();
+            }
+        }
+
+        private void OpenActiveCustomerManagement()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OpenCustomerManagement(Customer c)
+        {
+            if (c != null)
+            {
+                if (Context.HasChanges())
+                {
+                    MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να συνεχίσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+                }
+                if (Context.HasChanges())
+                {
+                    Context.RollBack();
+                }
+
+                c.Context = Context;
+                Window window = new CustomerManagement
+                {
+                    DataContext = c
+                };
+                Application.Current.MainWindow.Visibility = Visibility.Hidden;
+                window.ShowDialog();
+                if (Context.HasChanges())
+                {
+                    Context.RollBack();
+                }
+                Application.Current.MainWindow.Visibility = Visibility.Visible;
             }
         }
 
@@ -526,24 +431,168 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        #endregion Methods
-    }
-
-    public class CustomSorter : IComparer
-    {
-        public int Compare(object x, object y)
+        private string ToEng(string searchTerm)
         {
-            int digitsX = x.ToString().Length;
-            int digitsY = y.ToString().Length;
-            if (digitsX < digitsY)
+            string toReturn = "";
+            foreach (char c in searchTerm.ToUpper())
             {
-                return 1;
+                if (c < 134 || c > 255)
+                {
+                    toReturn += c;
+                }
+                else
+                {
+                    switch ((int)c)
+                    {
+                        case 164:
+                        case 134:
+                            toReturn += 'A';
+                            break;
+
+                        case 165:
+                            toReturn += 'B';
+                            break;
+
+                        case 166:
+                            toReturn += 'G';
+                            break;
+
+                        case 167:
+                            toReturn += 'D';
+                            break;
+
+                        case 168:
+                        case 141:
+                            toReturn += 'E';
+                            break;
+
+                        case 169:
+                            toReturn += 'Z';
+                            break;
+
+                        case 170:
+                            toReturn += 'I';
+                            break;
+
+                        case 172:
+                            toReturn += 'T';
+                            toReturn += 'H';
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
             }
-            else if (digitsX > digitsY)
-            {
-                return -1;
-            }
-            return (int)x - (int)y;
+            return toReturn;
         }
+
+        private string ToGreek(string searchTerm)
+        {
+            string toReturn = "";
+            foreach (char c in searchTerm)
+            {
+                if (c < 65 || c > 90)
+                {
+                    toReturn += c;
+                }
+                else
+                {
+                    switch ((int)c)
+                    {
+                        case 65:
+                            toReturn += 'Α';
+                            break;
+
+                        case 66:
+                            toReturn += 'Β';
+                            break;
+
+                        case 68:
+                            toReturn += 'Δ';
+                            break;
+
+                        case 69:
+                            toReturn += 'Ε';
+                            break;
+
+                        case 70:
+                            toReturn += 'Φ';
+                            break;
+
+                        case 71:
+                            toReturn += 'Γ';
+                            break;
+
+                        case 72:
+                            toReturn += 'Η';
+                            break;
+
+                        case 73:
+                            toReturn += 'Ι';
+                            break;
+
+                        case 75:
+                            toReturn += 'Κ';
+                            break;
+
+                        case 76:
+                            toReturn += 'Λ';
+                            break;
+
+                        case 77:
+                            toReturn += 'Μ';
+                            break;
+
+                        case 78:
+                            toReturn += 'Ν';
+                            break;
+
+                        case 79:
+                            toReturn += 'Ο';
+                            break;
+
+                        case 80:
+                            toReturn += 'Π';
+                            break;
+
+                        case 82:
+                            toReturn += 'Ρ';
+                            break;
+
+                        case 83:
+                            toReturn += 'Σ';
+                            break;
+
+                        case 84:
+                            toReturn += 'Τ';
+                            break;
+
+                        case 86:
+                            toReturn += 'Β';
+                            break;
+
+                        case 88:
+                            toReturn += 'Χ';
+                            break;
+
+                        case 89:
+                            toReturn += 'Υ';
+                            break;
+
+                        case 90:
+                            toReturn += 'Ζ';
+                            break;
+
+                        default:
+                            toReturn += c;
+                            break;
+                    }
+                }
+            }
+            return toReturn;
+        }
+
+        #endregion Methods
     }
 }

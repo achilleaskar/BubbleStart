@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BubbleStart.Model
 {
@@ -159,6 +160,9 @@ namespace BubbleStart.Model
 
         #region Methods
 
+        [NotMapped]
+        public decimal ShowUpPrice => Amount>0? Amount / Showups:0;
+
         public override string ToString()
         {
             switch (ProgramType)
@@ -184,5 +188,6 @@ namespace BubbleStart.Model
         }
 
         #endregion Methods
+
     }
 }

@@ -32,5 +32,10 @@ namespace BubbleStart.Views
                 }
             }
         }
+
+        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ((SearchCustomer_ViewModel)DataContext).OpenActiveCustomerManagementCommand.Execute(null);
+        }
     }
 }

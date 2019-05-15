@@ -34,6 +34,14 @@ namespace BubbleStart.Database
             return await Context.Payments.Where(p => p.Id == 67).FirstOrDefaultAsync();
         }
 
+        public async Task<List<Apointment>> GetApointmentsAsync(DateTime date)
+        {
+            DateTime tmpEndDate = date.AddDays(6);
+
+            return await Context.Apointments.Where(a => a.DateTime >= date && a.DateTime < tmpEndDate)
+                .Include(a=>a.Customer)
+                .ToListAsync();
+        }
 
         public TEntity GetById<TEntity>(int id) where TEntity : BaseModel
         {
@@ -100,7 +108,6 @@ namespace BubbleStart.Database
 
                         if (original != current)
                         {
-
                         }
                         Console.WriteLine("Property {0} changed from {1} to {2}",
                      propertyName,
@@ -186,7 +193,6 @@ namespace BubbleStart.Database
 
         public void RollBack()
         {
-
             foreach (var entry in Context.ChangeTracker.Entries())
             {
                 switch (entry.State)
@@ -196,6 +202,7 @@ namespace BubbleStart.Database
                         entry.State = EntityState.Modified; //Revert changes made to deleted entity.
                         entry.State = EntityState.Unchanged;
                         break;
+
                     case EntityState.Added:
                         entry.State = EntityState.Detached;
                         break;
@@ -225,6 +232,7 @@ namespace BubbleStart.Database
             var keys = new[] { stateEntry.OriginalValues[0], stateEntry.OriginalValues[1] };
             return keys.Any(key => objectContext.ObjectStateManager.GetObjectStateEntry(key).Entity == null);
         }
+
         internal async Task<IEnumerable<Payment>> GetAllPaymentsAsync(DateTime startDateCash, DateTime endDateCash)
         {
             try

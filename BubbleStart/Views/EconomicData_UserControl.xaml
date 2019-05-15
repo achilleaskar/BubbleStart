@@ -22,7 +22,8 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Έσοδα">
+        <GroupBox Header="Έσοδα"
+                  Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

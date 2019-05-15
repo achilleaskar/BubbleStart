@@ -73,6 +73,7 @@ namespace BubbleStart.ViewModels
         }
 
         private SearchCustomer_ViewModel _SearchCustomer_ViewModel;
+        private Apointments_ViewModel _Apointments_ViewModel;
 
         public SearchCustomer_ViewModel SearchCustomer_ViewModel
         {
@@ -116,6 +117,26 @@ namespace BubbleStart.ViewModels
 
         public string Username => StaticResources.User.Name;
 
+        public Apointments_ViewModel Apointments_ViewModel
+        {
+            get
+            {
+                return _Apointments_ViewModel;
+            }
+
+            set
+            {
+                if (_Apointments_ViewModel == value)
+                {
+                    return;
+                }
+
+                _Apointments_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
             //await RefreshAllData();
@@ -124,6 +145,8 @@ namespace BubbleStart.ViewModels
             await StartingRepository.GetAllAsync<ShowUp>();
             await SearchCustomer_ViewModel.LoadAsync();
             await EconomicData_ViewModel.LoadAsync();
+            Apointments_ViewModel = new Apointments_ViewModel();
+            await Apointments_ViewModel.LoadAsync();
         }
 
         public override async Task ReloadAsync()
