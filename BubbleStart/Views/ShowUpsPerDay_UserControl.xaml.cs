@@ -11,24 +11,24 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace BubbleStart.Views
 {
     /// <summary>
-    /// Interaction logic for FindCustomerWidnow.xaml
+    /// Interaction logic for ShowUpsPerDay_UserControl.xaml
     /// </summary>
-    public partial class FindCustomerWidnow : Window
+    public partial class ShowUpsPerDay_UserControl : UserControl
     {
-        public FindCustomerWidnow()
+        public ShowUpsPerDay_UserControl()
         {
             InitializeComponent();
         }
 
-        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DataContext is CustomersWindow_Viewmodel vm && (vm.IsGogoChecked || vm.IsGymnastChecked))
-                Close();
+            ((ShowUpsPerDay_ViewModel)DataContext).OpenActiveCustomerManagementCommand.Execute(null);
         }
     }
 }

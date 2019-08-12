@@ -14,6 +14,7 @@
              d:DesignWidth="1200">
     <UserControl.Resources>
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
+        <Converters:BoolToShowedUp_Converter x:Key="BoolToShowedUp_Converter" />
     </UserControl.Resources>
     <TabControl>
         <Grid>
@@ -105,41 +106,85 @@
             </GroupBox>
             <TabControl Grid.Column="1">
                 <TabItem Header="Τρέχουσα Κατάσταση">
-                    <DataGrid ItemsSource="{Binding CustomersPracticing}"
-                              SelectedItem="{Binding SelectedPracticingCustomer}"
-                              CanUserAddRows="False"
-                              VirtualizingPanel.VirtualizationMode="Standard"
-                              IsReadOnly="True"
-                              CanUserDeleteRows="False"
-                              AutoGenerateColumns="False">
-                        <DataGrid.RowStyle>
-                            <Style TargetType="{x:Type DataGridRow}">
-                                <EventSetter Event="MouseDoubleClick"
-                                             Handler="DataGridRow_MouseDoubleClick" />
-                            </Style>
-                        </DataGrid.RowStyle>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Επίθετο"
-                                                Binding="{Binding SureName}" />
-                            <DataGridTextColumn Header="Όνομα"
-                                                Binding="{Binding Name}" />
-                            <DataGridTextColumn Header="Ηλικία"
-                                                Binding="{Binding Age}" />
-                            <DataGridTextColumn Header="Διάρκεια"
-                                                Width="60"
-                                                Binding="{Binding Duration, FallbackValue=00:00, StringFormat=\{0:hh\}:\{0:mm\}}" />
-                            <DataGridTemplateColumn Header="Αποχώρηση">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Content="Τέλος"
-                                                HorizontalAlignment="Center"
-                                                Margin="5 0"
-                                                Command="{Binding DataContext.CustomerLeftCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <StackPanel Orientation="Horizontal">
+                        <DataGrid ItemsSource="{Binding CustomersPracticing}"
+                                  SelectedItem="{Binding SelectedPracticingCustomer}"
+                                  CanUserAddRows="False"
+                                  VirtualizingPanel.VirtualizationMode="Standard"
+                                  IsReadOnly="True"
+                                  CanUserDeleteRows="False"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="{x:Type DataGridRow}">
+                                    <EventSetter Event="MouseDoubleClick"
+                                                 Handler="DataGridRow_MouseDoubleClick" />
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Επίθετο"
+                                                    Binding="{Binding SureName}" />
+                                <DataGridTextColumn Header="Όνομα"
+                                                    Binding="{Binding Name}" />
+                                <DataGridTextColumn Header="Ηλικία"
+                                                    Binding="{Binding Age}" />
+                                <DataGridTextColumn Header="Διάρκεια"
+                                                    Width="60"
+                                                    Binding="{Binding Duration, FallbackValue=00:00, StringFormat=\{0:hh\}:\{0:mm\}}" />
+                                <DataGridTemplateColumn Header="Αποχώρηση">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Τέλος"
+                                                    HorizontalAlignment="Center"
+                                                    Margin="5 0"
+                                                    Command="{Binding DataContext.CustomerLeftCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <GroupBox Margin="20 0 0 0"
+                                  Header="Ραντεβού Ημέρας">
+                            <DataGrid ItemsSource="{Binding TodaysApointments}"
+                                      CanUserAddRows="False"
+                                      VirtualizingPanel.VirtualizationMode="Standard"
+                                      IsReadOnly="True"
+                                      SelectedItem="{Binding SelectedApointment}"
+                                      CanUserDeleteRows="False"
+                                      AutoGenerateColumns="False">
+                                <DataGrid.Resources>
+                                    <ContextMenu x:Key="appointmentsContextMenu"                                                 >
+                                        <MenuItem Header="Ακύρωση Ραντεβού"
+                                                  Command="{Binding DataContext.CancelApointmentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    </ContextMenu>
+                                </DataGrid.Resources>
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ShowedUpToday}"
+                                                         Value="true">
+                                                <Setter Property="Background"
+                                                        Value="LightGreen" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                        <EventSetter Event="MouseDoubleClick"
+                                                     Handler="DataGridRow_MouseDoubleClickSide" />
+                                        <Setter Property="ContextMenu"
+                                                Value="{StaticResource appointmentsContextMenu}" />
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Όνομα"
+                                                        Binding="{Binding Name}" />
+                                    <DataGridTextColumn Header="Επίθετο"
+                                                        Binding="{Binding SureName}" />
+                                    <DataGridTextColumn Header="Ηλικία"
+                                                        Binding="{Binding Age}" />
+                                    <DataGridTextColumn Header="Παρουσία"
+                                                        Binding="{Binding ShowedUpToday,Converter={StaticResource BoolToShowedUp_Converter}}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </GroupBox>
+                    </StackPanel>
                 </TabItem>
                 <TabItem Header="Λεπτομέριες Πελάτη">
                     <views:UserDetail DataContext="{Binding SelectedCustomer}" />

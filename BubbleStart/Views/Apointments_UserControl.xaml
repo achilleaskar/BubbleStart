@@ -11,150 +11,285 @@
              d:DataContext="{d:DesignInstance {x:Type viewmodels:Apointments_ViewModel}}"
              mc:Ignorable="d"
              Background="White"
+             FontSize="11"
+             x:Name="window"
              d:DesignHeight="650"
              d:DesignWidth="1200">
     <UserControl.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
+        <Converters:AppointmentShowedUptoColorConverter x:Key="appointmentShowedUptoColorConverter" />
     </UserControl.Resources>
-    <GroupBox Header="Πρόγραμμα Εβδομάδας">
-        <Grid>
+    <GroupBox Header="Πρόγραμμα Εβδομάδας"
+              HorizontalAlignment="Center">
+        <Grid Margin=" 0 -4 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center">
-                <Button  Margin="30 0"
-                        Command="{Binding PreviousWeekCommand}">
-                    <iconPacks:PackIconFontAwesome Kind="ArrowCircleLeftSolid" />
-                </Button>
-                <Button Margin="30 0"
-                        Command="{Binding NextWeekCommand}">
-                    <iconPacks:PackIconFontAwesome Kind="ArrowCircleRightSolid" />
-                </Button>
-            </StackPanel>
-            <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Auto"
-                          Grid.Row="1">
-                <Border BorderBrush="Gray"
-                        BorderThickness="0 0 1 1"
-                        VerticalAlignment="Top"
-                        HorizontalAlignment="Left">
-                    <StackPanel>
-                        <ItemsControl ItemsSource="{Binding Days[0].Hours}"
-                                      VerticalAlignment="Top"
-                                      Margin="80 0 0 0">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Height="Auto"
-                                            BorderThickness="1 1 0 0"
-                                            BorderBrush="Gray"
-                                            Width="160">
-                                        <Label   VerticalAlignment="Center"
-                                                 HorizontalAlignment="Center"
-                                                 Content="{Binding Time,ConverterParameter='HH:mm', Converter={StaticResource DateTimeToString}}" />
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <StackPanel Orientation="Horizontal">
-                            <ItemsControl ItemsSource="{Binding Days }"
-                                          HorizontalAlignment="Left">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Height="100"
-                                                BorderThickness="1 1 0 0"
-                                                BorderBrush="Gray"
-                                                Width="80">
-                                            <StackPanel HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center">
-                                                <Label Content="{Binding Date,ConverterParameter='dddd', Converter={StaticResource DateTimeToString}}"
-                                                       HorizontalAlignment="Center"
-                                                       Padding="0" />
-                                                <Label Content="{Binding Date,ConverterParameter='dd/MM', Converter={StaticResource DateTimeToString}}"
-                                                       HorizontalAlignment="Center" />
-                                            </StackPanel>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <!-- to pragmatiko itemscontrol-->
-                            <ItemsControl ItemsSource="{Binding Days}"
-                                          VerticalAlignment="Top">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <ItemsControl ItemsSource="{Binding Hours}"
-                                                      HorizontalAlignment="Left">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel Orientation="Horizontal" />
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+            <Grid Margin="0 0 0 2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                    <ComboBox Width="70"
+                              SelectedIndex="{Binding RoomIndex}"
+                              Margin=" 5 0 0 0">
+                        <ComboBoxItem Content="Όλες" />
+                        <ComboBoxItem Content="Functional" />
+                        <ComboBoxItem Content="Reformer" />
+                    </ComboBox>
+                    <ComboBox Width="70"
+                              SelectedIndex="{Binding GymIndex}"
+                              Margin="5 0">
+                        <ComboBoxItem Content="Όλοι" />
+                        <ComboBoxItem Content="Γωγώ" />
+                        <ComboBoxItem Content="Γυμναστής" />
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <Button  Margin="25 0"
+                             Command="{Binding PreviousWeekCommand}">
+                        <iconPacks:PackIconFontAwesome Kind="ArrowCircleLeftSolid" />
+                    </Button>
+                    <Button Margin="25 0"
+                            Command="{Binding NextWeekCommand}">
+                        <iconPacks:PackIconFontAwesome Kind="ArrowCircleRightSolid" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <ItemsControl ItemsSource="{Binding Days[0].Hours}"
+                              VerticalAlignment="Top"
+                              Margin="38 0 0 0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Height="Auto"
+                                    BorderThickness="1 1 0 0"
+                                    BorderBrush="Gray"
+                                    Width="93">
+                                <Label   VerticalAlignment="Center"
+                                         HorizontalAlignment="Center"
+                                         Content="{Binding Time,ConverterParameter='HH:mm', Converter={StaticResource DateTimeToString}}" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              Grid.Row="1">
+                    <Border BorderBrush="Gray"
+                            BorderThickness="0 0 1 1"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ItemsControl ItemsSource="{Binding Days }"
+                                              HorizontalAlignment="Left">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border 
+                                                    BorderThickness="1 1 0 0"
+                                                    BorderBrush="Gray"
+                                                    Width="38">
+                                                <Grid HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Stretch">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition />
+                                                        <ColumnDefinition />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Content="{Binding Date,ConverterParameter='ddd dd/MM', Converter={StaticResource DateTimeToString}}"
+                                                           HorizontalAlignment="Center"
+                                                           Width="70"
+                                                           Grid.RowSpan="2"
+                                                           HorizontalContentAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Padding="0">
+                                                        <Label.LayoutTransform>
+                                                            <RotateTransform Angle="-90" />
+                                                        </Label.LayoutTransform>
+                                                    </Label>
                                                     <Border BorderBrush="Gray"
-                                                            Width="160"
+                                                            Grid.Row="0"
+                                                            Visibility="{Binding DataContext.FunctionalVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                            Grid.Column="1" Height="100"
+                                                            BorderThickness="1 0 0 0">
+                                                        <TextBlock Text="Functional"
+                                                                   VerticalAlignment="Center">
+                                                            <TextBlock.LayoutTransform>
+                                                                <RotateTransform Angle="-90" />
+                                                            </TextBlock.LayoutTransform></TextBlock>
+                                                    </Border>
+                                                    <Border BorderBrush="Gray"
+                                                            Grid.Row="1"
                                                             Height="100"
-                                                            BorderThickness="1 1 0 0">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*" />
-                                                                <ColumnDefinition Width="Auto" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <ListBox BorderThickness="0"
-                                                                     SelectedItem="{Binding SelectedApointment}"
-                                                                     ItemsSource="{Binding Apointments}">
-                                                                <ListBox.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <StackPanel Orientation="Horizontal">
-                                                                            <TextBlock Text="{Binding Customer}" />
-                                                                        </StackPanel>
-                                                                    </DataTemplate>
-                                                                </ListBox.ItemTemplate>
-                                                            </ListBox>
-                                                            <Border Grid.Column="1"
-                                                                    BorderBrush="Black"
-                                                                    BorderThickness="1 0 0 0">
+                                                            Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                            Grid.Column="1"
+                                                            Background="BlanchedAlmond"
+                                                            BorderThickness="1 0 0 0">
+                                                        <TextBlock Text="Reformer" VerticalAlignment="Center">
+                                                            <TextBlock.LayoutTransform>
+                                                                <RotateTransform Angle="-90" />
+                                                            </TextBlock.LayoutTransform></TextBlock>
+                                                    </Border>
+                                                    <!--<Label Content="{Binding Date,ConverterParameter='dd/MM', Converter={StaticResource DateTimeToString}}"
+                                                           HorizontalAlignment="Center" />-->
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <!-- to pragmatiko itemscontrol-->
+                                <ItemsControl ItemsSource="{Binding Days}"
+                                              VerticalAlignment="Top">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <ItemsControl ItemsSource="{Binding Hours}"
+                                                              Visibility="{Binding DataContext.FunctionalVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                              HorizontalAlignment="Left">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <StackPanel Orientation="Horizontal" />
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderBrush="Gray"
+                                                                    Width="93"
+                                                                    Height="100"
+                                                                    BorderThickness="1 1 0 0">
                                                                 <Grid>
-                                                                    <Button Content="+"
-                                                                            Width="15"
-                                                                            Command="{Binding AddApointmentCommand}"
-                                                                            Margin="2 5"
-                                                                            VerticalAlignment="Top" />
-                                                                    <Button Content="-"
-                                                                            Width="15"
-                                                                            Command="{Binding DeleteApointmentCommand}"
-                                                                            Margin="2 5"
-                                                                            VerticalAlignment="Bottom" />
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="*" />
+                                                                        <RowDefinition Height="Auto" />
+                                                                    </Grid.RowDefinitions>
+                                                                    <ListBox BorderThickness="0"
+                                                                             SelectedItem="{Binding SelectedApointmentFunctional}"
+                                                                             ItemsSource="{Binding AppointmentsFunctional}">
+                                                                        <ListBox.Resources></ListBox.Resources>
+                                                                        <ListBox.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Text="{Binding Customer}"
+                                                                                               Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}" />
+                                                                                </StackPanel>
+                                                                            </DataTemplate>
+                                                                        </ListBox.ItemTemplate>
+                                                                    </ListBox>
+                                                                    <Border Grid.Row="1"
+                                                                            BorderBrush="Black"
+                                                                            BorderThickness="0 1 0 0">
+                                                                        <Grid>
+                                                                            <Button Content="+"
+                                                                                    Width="14"
+                                                                                    Command="{Binding AddApointmentCommand}"
+                                                                                    CommandParameter="0"
+                                                                                    Margin="5 0"
+                                                                                    HorizontalAlignment="Left" />
+                                                                            <Button Content="-"
+                                                                                    Width="14"
+                                                                                    Command="{Binding DeleteFunctionalApointmentCommand}"
+                                                                                    Margin="5 0"
+                                                                                    HorizontalAlignment="Right" />
+                                                                        </Grid>
+                                                                    </Border>
                                                                 </Grid>
                                                             </Border>
-                                                        </Grid>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <ItemsControl ItemsSource="{Binding Hours}"
+                                                              Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                              HorizontalAlignment="Left">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <StackPanel Orientation="Horizontal" />
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderBrush="Gray"
+                                                                    Width="93"
+                                                                    Height="100"
+                                                                    BorderThickness="1 1 0 0">
+                                                                <Grid>
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="*" />
+                                                                        <RowDefinition Height="Auto" />
+                                                                    </Grid.RowDefinitions>
+                                                                    <ListBox BorderThickness="0"
+                                                                             Background="BlanchedAlmond"
+                                                                             SelectedItem="{Binding SelectedApointmentReformer}"
+                                                                             ItemsSource="{Binding AppointmentsReformer}">
+                                                                        <ListBox.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Text="{Binding Customer}"
+                                                                                               Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}" />
+                                                                                </StackPanel>
+                                                                            </DataTemplate>
+                                                                        </ListBox.ItemTemplate>
+                                                                    </ListBox>
+                                                                    <Border Grid.Row="1"
+                                                                            Background="BlanchedAlmond"
+                                                                            BorderBrush="Black"
+                                                                            BorderThickness="0 1 0 0">
+                                                                        <Grid>
+                                                                            <Button Content="+"
+                                                                                    Width="14"
+                                                                                    Command="{Binding AddApointmentCommand}"
+                                                                                    CommandParameter="1"
+                                                                                    Margin="5 0"
+                                                                                    HorizontalAlignment="Left" />
+                                                                            <Button Content="-"
+                                                                                    Width="14"
+                                                                                    Command="{Binding DeleteReformerApointmentCommand }"
+                                                                                    Margin="5 0"
+                                                                                    HorizontalAlignment="Right" />
+                                                                        </Grid>
+                                                                    </Border>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Border>
-            </ScrollViewer>
+                    </Border>
+                </ScrollViewer>
+            </Grid>
         </Grid>
     </GroupBox>
 </UserControl>

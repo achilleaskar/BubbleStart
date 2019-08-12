@@ -24,8 +24,40 @@ namespace BubbleStart.ViewModels
             DeleteExpenseCommand = new RelayCommand(async () => { await DeleteExpense(); });
         }
 
+        private void DailyPayments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            CalculateAmounts();
 
+        }
 
+        public void CalculateAmounts()
+        {
+            Sum = 0;
+            if (DailyPayments != null)
+            {
+                foreach (var item in DailyPayments)
+                {
+                    Sum += item.Amount;
+                }
+            }
+
+            ExpensesSum = 0;
+            if (Expenses != null)
+            {
+                foreach (var item in Expenses)
+                {
+                    ExpensesSum += item.Amount;
+                }
+            }
+            Cleanse = Sum - ExpensesSum;
+        }
+
+        private void Expenses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            CalculateAmounts();
+        }
+
+        
 
         private Expense _SelectedExpense;
 
@@ -50,7 +82,7 @@ namespace BubbleStart.ViewModels
         }
         private async Task DeleteExpense()
         {
-            Context.Add(new Change($"Διαγράφηκε ΕΞΟΔΟ {SelectedExpense.Amount}€ που είχε περαστεί {SelectedExpense.Date.ToString("ddd dd/MM/yy")} απο τον χρήστη {SelectedExpense.User.UserName}", (await Context.GetAllAsync<User>(u => u.Id == Helpers.StaticResources.User.Id)).FirstOrDefault()));
+            Context.Add(new Change($"Διαγράφηκε ΕΞΟΔΟ {SelectedExpense.Amount}€ που είχε περαστεί {SelectedExpense.Date.ToString("ddd dd/MM/yy")} απο τον χρήστη {SelectedExpense.User.UserName}", Context.GetById<User>(Helpers.StaticResources.User.Id)));
             Context.Delete(SelectedExpense);
             await Context.SaveAsync();
             Expenses.Remove(SelectedExpense);
@@ -90,6 +122,8 @@ namespace BubbleStart.ViewModels
                 }
 
                 _DailyPayments = value;
+                DailyPayments.CollectionChanged += DailyPayments_CollectionChanged;
+
                 RaisePropertyChanged();
             }
         }
@@ -157,6 +191,8 @@ namespace BubbleStart.ViewModels
                 }
 
                 _Expenses = value;
+            Expenses.CollectionChanged += Expenses_CollectionChanged;
+
                 RaisePropertyChanged();
             }
         }
@@ -231,6 +267,54 @@ namespace BubbleStart.ViewModels
             }
         }
 
+
+
+
+        private decimal _Cleanse;
+
+
+        public decimal Cleanse
+        {
+            get
+            {
+                return _Cleanse;
+            }
+
+            set
+            {
+                if (_Cleanse == value)
+                {
+                    return;
+                }
+
+                _Cleanse = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private decimal _ExpensesSum;
+
+
+        public decimal ExpensesSum
+        {
+            get
+            {
+                return _ExpensesSum;
+            }
+
+            set
+            {
+                if (_ExpensesSum == value)
+                {
+                    return;
+                }
+
+                _ExpensesSum = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public decimal Sum
         {
             get
@@ -271,9 +355,10 @@ namespace BubbleStart.ViewModels
 
         private async Task RegisterExpense()
         {
+            NewExpense.User = Context.GetById<User>(Helpers.StaticResources.User.Id);
             Context.Add(NewExpense);
             await Context.SaveAsync();
-            if (NewExpense.Date>=StartDateExpenses && NewExpense.Date<EndDateExpenses.AddDays(1))
+            if (NewExpense.Date >= StartDateExpenses && NewExpense.Date < EndDateExpenses.AddDays(1))
             {
                 Expenses.Add(NewExpense);
             }
@@ -283,19 +368,19 @@ namespace BubbleStart.ViewModels
 
         private async Task ShowCashData()
         {
-            Sum = 0;
-            DailyPayments = new ObservableCollection<Payment>(await Context.GetAllPaymentsAsync(StartDateCash, EndDateCash));
-            foreach (var p in DailyPayments)
-            {
-                Sum += p.Amount;
-            }
+           
+            DailyPayments = new ObservableCollection<Payment>((await Context.GetAllPaymentsAsync(StartDateCash, EndDateCash)).OrderBy(a=>a.Date));
+            CalculateAmounts();
+
         }
 
         private async Task ShowExpensesData()
         {
             DateTime enddate = EndDateExpenses.AddDays(1);
-            Expenses = new ObservableCollection<Expense>(await Context.GetAllAsync<Expense>(e => e.Date >= StartDateExpenses && e.Date < enddate));
+            Expenses = new ObservableCollection<Expense>((await Context.GetAllExpensesAsync(e => e.Date >= StartDateExpenses && e.Date < enddate)).OrderBy(a => a.Date));
             NewExpense = new Expense();
+            CalculateAmounts();
+
         }
 
         #endregion Methods

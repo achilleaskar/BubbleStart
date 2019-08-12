@@ -18,6 +18,7 @@ namespace BubbleStart.ViewModels
 {
     public class CustomSorter : IComparer
     {
+
         #region Methods
 
         public int Compare(object x, object y)
@@ -36,15 +37,22 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Methods
+
     }
 
     public class SearchCustomer_ViewModel : MyViewModelBase
     {
+
         #region Constructors
 
         public SearchCustomer_ViewModel()
         {
         }
+
+
+
+
+
 
         public SearchCustomer_ViewModel(GenericRepository context)
         {
@@ -56,35 +64,40 @@ namespace BubbleStart.ViewModels
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
             DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(); });
-
+            CancelApointmentCommand = new RelayCommand(async () => { await CancelApointment(); });
             //PaymentCommand.CanExecute((obj) => CanMakePayment(obj));
             // CreateNewCustomer();
+        }
+
+        private async Task CancelApointment()
+        {
+            if (SelectedApointment!=null)
+            {
+                Context.Delete(SelectedApointment.Apointments.Where(a => a.DateTime.Date == DateTime.Today.Date).FirstOrDefault());
+                await Context.SaveAsync();
+                TodaysApointments.Remove(SelectedApointment);
+            }
         }
 
         #endregion Constructors
 
         #region Fields
 
-
         private ObservableCollection<Customer> _Customers;
-
         private ICollectionView _CustomersCollectionView;
-
         private ObservableCollection<Customer> _CustomersPracticing;
-
         private string _SearchTerm;
-
+        private Customer _SelectedApointment;
         private Customer _SelectedCustomer;
-
         private Customer _SelectedPracticingCustomer;
+        private ObservableCollection<Customer> _TodaysApointments;
 
         #endregion Fields
 
         #region Properties
 
-      
         public RelayCommand<string> BodyPartSelected { get; set; }
-
+        public RelayCommand CancelApointmentCommand { get; set; }
         public GenericRepository Context { get; }
 
         public RelayCommand CreateNewCustomerCommand { get; set; }
@@ -159,6 +172,7 @@ namespace BubbleStart.ViewModels
         public bool Enabled => SelectedCustomer != null;
 
         public RelayCommand OpenActiveCustomerManagementCommand { get; set; }
+        public RelayCommand OpenActiveCustomerSideManagementCommand { get; set; }
 
         public RelayCommand OpenCustomerManagementCommand { get; set; }
 
@@ -180,6 +194,25 @@ namespace BubbleStart.ViewModels
                 _SearchTerm = value;
                 if (CustomersCollectionView != null)
                     CustomersCollectionView.Refresh();
+                RaisePropertyChanged();
+            }
+        }
+
+        public Customer SelectedApointment
+        {
+            get
+            {
+                return _SelectedApointment;
+            }
+
+            set
+            {
+                if (_SelectedApointment == value)
+                {
+                    return;
+                }
+
+                _SelectedApointment = value;
                 RaisePropertyChanged();
             }
         }
@@ -211,6 +244,29 @@ namespace BubbleStart.ViewModels
             }
         }
 
+
+
+        private Customer _SelectedSideCustomer;
+
+
+        public Customer SelectedSideCustomer
+        {
+            get
+            {
+                return _SelectedSideCustomer;
+            }
+
+            set
+            {
+                if (_SelectedSideCustomer == value)
+                {
+                    return;
+                }
+
+                _SelectedSideCustomer = value;
+                RaisePropertyChanged();
+            }
+        }
         public Customer SelectedPracticingCustomer
         {
             get
@@ -231,6 +287,25 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand ShowedUpCommand { get; set; }
+
+        public ObservableCollection<Customer> TodaysApointments
+        {
+            get
+            {
+                return _TodaysApointments;
+            }
+
+            set
+            {
+                if (_TodaysApointments == value)
+                {
+                    return;
+                }
+
+                _TodaysApointments = value;
+                RaisePropertyChanged();
+            }
+        }
 
         #endregion Properties
 
@@ -259,35 +334,46 @@ namespace BubbleStart.ViewModels
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
             List<District> Districts = (await Context.GetAllAsync<District>()).OrderBy(d => d.Name).ToList();
-          
+            TodaysApointments = new ObservableCollection<Customer>();
             Helpers.StaticResources.Districts.Clear();
             foreach (var item in Districts)
             {
                 Helpers.StaticResources.Districts.Add(item);
             }
+
             OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
             OpenActiveCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedPracticingCustomer); });
+            OpenActiveCustomerSideManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedApointment); });
+
+            CustomersPracticing.Clear();
+            var u = (await Context.GetAllAsync<User>());
             Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()));
+            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
+            CustomersCollectionView.Filter = CustomerFilter;
+
+           
+          
             foreach (var c in Customers)
             {
                 c.PropertyChanged += EntityViewModelPropertyChanged;
-            }
-            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
-            CustomersCollectionView.Filter = CustomerFilter;
-            CustomersPracticing.Clear();
-            foreach (var item in Customers)
-            {
-                item.SelectProperProgram();
-                if (item.LastShowUp != null && item.LastShowUp.Left < item.LastShowUp.Arrived && item.LastShowUp.Left.Year != 1234)
+                c.Loaded = true;
+                c.SetColors();
+                await SortPayments(c);
+
+                c.SelectProperProgram();
+                if (c.LastShowUp != null && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
                 {
-                    item.IsPracticing = true;
-                    CustomersPracticing.Add(item);
+                    c.IsPracticing = true;
+                    CustomersPracticing.Add(c);
+                }
+                c.CalculateRemainingAmount();
+                if (c.Apointments.Any(a => a.DateTime.Date == DateTime.Today))
+                {
+                    TodaysApointments.Add(c);
                 }
             }
-            foreach (var c in Customers)
-            {
-                c.CalculateRemainingAmount();
-            }
+            await Context.SaveAsync();
+
         }
 
         public override Task ReloadAsync()
@@ -345,7 +431,7 @@ namespace BubbleStart.ViewModels
         private async Task DeleteCustomer()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            Context.Add(new Change($"Διαγράφηκε Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", (await Context.GetAllAsync<User>(u => u.Id == Helpers.StaticResources.User.Id)).FirstOrDefault()));
+            Context.Add(new Change($"Διαγράφηκε Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", Context.GetById<User>(Helpers.StaticResources.User.Id)));
             Context.Delete(SelectedCustomer);
             Customers.Remove(SelectedCustomer);
             await Context.SaveAsync();
@@ -431,6 +517,16 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
+        private async Task SortPayments(Customer c)
+        {
+            foreach (Program program in c.Programs)
+            {
+                if (c.Payments.Any(p => p.Amount == program.Amount && p.Date == program.DayOfIssue))
+                {
+                    program.Paid = true;
+                }
+            }
+        }
         private string ToEng(string searchTerm)
         {
             string toReturn = "";
@@ -594,5 +690,6 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Methods
+
     }
 }

@@ -1,7 +1,9 @@
-﻿using BubbleStart.Model;
+﻿using BubbleStart.Database;
+using BubbleStart.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
@@ -11,9 +13,82 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-        public CustomersWindow_Viewmodel(Database.GenericRepository context)
+        public CustomersWindow_Viewmodel(GenericRepository context)
         {
             Context = context;
+        }
+
+
+
+
+
+        private bool _IsGogoChecked = true;
+
+
+        public bool IsGogoChecked
+        {
+            get
+            {
+                return _IsGogoChecked;
+            }
+
+            set
+            {
+                if (_IsGogoChecked == value)
+                {
+                    return;
+                }
+
+                _IsGogoChecked = value;
+                SelectedPerson = 1;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _IsGymnastChecked;
+
+
+        public bool IsGymnastChecked
+        {
+            get
+            {
+                return _IsGymnastChecked;
+            }
+
+            set
+            {
+                if (_IsGymnastChecked == value)
+                {
+                    return;
+                }
+
+                _IsGymnastChecked = value;
+                SelectedPerson = 2;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private int _SelectedPerson;
+
+
+        public int SelectedPerson
+        {
+            get
+            {
+                return _SelectedPerson;
+            }
+
+            set
+            {
+                if (_SelectedPerson == value)
+                {
+                    return;
+                }
+
+                _SelectedPerson = value;
+                RaisePropertyChanged();
+            }
         }
 
         #endregion Constructors
@@ -118,7 +193,7 @@ namespace BubbleStart.ViewModels
 
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
-            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()));
+            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsyncb()).OrderBy(n=>n.Name));
 
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;

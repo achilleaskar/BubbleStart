@@ -10,14 +10,34 @@ namespace BubbleStart.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            decimal decimalType = (decimal)value;
-            return decimalType.ToString()+" €";
+            decimal decimalValue = (decimal)value;
+
+            var decimalString = decimalValue.ToString();
+            string s = decimalString.IndexOfAny(new char[] { ',', '.' }) >= 0 ? decimalString.TrimEnd('0').TrimEnd('0').TrimEnd('.').TrimEnd(',') : decimalString;
+            int indexofcomma = s.IndexOf(',');
+            if (indexofcomma <= 0)
+            {
+                indexofcomma = s.Length;
+            }
+            if (indexofcomma > 3)
+            {
+                int firstDot = indexofcomma - 3;
+                while (firstDot > 0)
+                {
+                    s = s.Insert(firstDot, ".");
+                    firstDot -= 3;
+                }
+
+            }
+
+            return s + " €";
+            //return decimalValue > 0 ? decimalValue.ToString() + " €" : "0 €";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string strValue = (value as string).Replace(',', '.').Replace("€","").Replace(" ","");
-            if (!string.IsNullOrEmpty(strValue) && strValue[strValue.Length - 1] != '.' && decimal.TryParse(strValue, NumberStyles.Any, new CultureInfo("en-US"), out var tmpdecimal))
+            string strValue = (value as string).Replace(',', '.').Replace("€", "").Replace(" ", "");
+            if (!string.IsNullOrEmpty(strValue) && !strValue.EndsWith(".0") && strValue[strValue.Length - 1] != '.' && decimal.TryParse(strValue, NumberStyles.Any, new CultureInfo("en-US"), out var tmpdecimal))
             {
                 return tmpdecimal;
             }

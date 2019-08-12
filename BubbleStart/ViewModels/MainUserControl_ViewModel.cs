@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace BubbleStart.ViewModels
 {
@@ -35,12 +36,14 @@ namespace BubbleStart.ViewModels
                 }
                 if (result == MessageBoxResult.Yes)
                 {
+                    Mouse.OverrideCursor = Cursors.Wait;
                     StartingRepository = new GenericRepository();
                     SearchCustomer_ViewModel = new SearchCustomer_ViewModel(StartingRepository);
                     await SearchCustomer_ViewModel.LoadAsync();
                     EconomicData_ViewModel = new EconomicData_ViewModel(StartingRepository);
                     await EconomicData_ViewModel.LoadAsync();
-                    StaticResources.User = (await StartingRepository.GetAllAsync<User>(c => c.Id == StaticResources.User.Id)).FirstOrDefault();
+                    StaticResources.User = StartingRepository.GetById<User>(StaticResources.User.Id);
+                    Mouse.OverrideCursor = Cursors.Arrow;
                 }
             }
         }
@@ -137,6 +140,31 @@ namespace BubbleStart.ViewModels
         }
 
 
+
+
+
+        private ShowUpsPerDay_ViewModel _ShowUpsPerDay_ViewModel;
+
+
+        public ShowUpsPerDay_ViewModel ShowUpsPerDay_ViewModel
+        {
+            get
+            {
+                return _ShowUpsPerDay_ViewModel;
+            }
+
+            set
+            {
+                if (_ShowUpsPerDay_ViewModel == value)
+                {
+                    return;
+                }
+
+                _ShowUpsPerDay_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
             //await RefreshAllData();
@@ -146,6 +174,7 @@ namespace BubbleStart.ViewModels
             await SearchCustomer_ViewModel.LoadAsync();
             await EconomicData_ViewModel.LoadAsync();
             Apointments_ViewModel = new Apointments_ViewModel();
+            ShowUpsPerDay_ViewModel = new ShowUpsPerDay_ViewModel();
             await Apointments_ViewModel.LoadAsync();
         }
 

@@ -8,7 +8,6 @@ namespace BubbleStart.Model
         public Expense()
         {
             Date = DateTime.Now;
-            User = Helpers.StaticResources.User;
         }
         #region Fields
 

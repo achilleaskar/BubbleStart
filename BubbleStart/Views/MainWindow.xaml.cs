@@ -23,7 +23,7 @@ namespace BubbleStart.Views
             _viewModel = viewModel;
             DataContext = _viewModel;
             StartingRepository = new GenericRepository();
-            _viewModel.LoadAsync(StartingRepository).Wait();
+            _viewModel.LoadAsync(StartingRepository).ConfigureAwait(true);
         }
 
         private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)

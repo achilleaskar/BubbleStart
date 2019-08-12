@@ -62,12 +62,15 @@
                         <DataGridTextColumn Header="Ποσό"
                                             Width="60"
                                             Binding="{Binding Amount,StringFormat=c2}" />
+                        <DataGridTextColumn Header="Ημερομηνία"
+                                            MaxWidth="120"
+                                            Binding="{Binding Date, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel Orientation="Horizontal"
                             Grid.Row="2">
-                    <Label Content="Σύνολο:" />
-                    <Label Content="{Binding Sum}" />
+                    <Label Content="Σύνολο Εσόδων:" />
+                    <Label Content="{Binding Sum, Converter={StaticResource FtoSConverter}}" />
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -80,7 +83,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                     <StackPanel>
                         <TextBlock Text="Aπό:" />
                         <DatePicker VerticalAlignment="Center"
@@ -98,6 +102,7 @@
                 </StackPanel>
                 <DataGrid ItemsSource="{Binding Expenses}"
                           Grid.Row="1"
+                          Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                           CanUserAddRows="False"
                           SelectedItem="{Binding SelectedExpense}"
                           IsReadOnly="True"
@@ -126,7 +131,7 @@
                                             Binding="{Binding Date, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
                         <DataGridTextColumn Header="Χρήστης"
                                             MaxWidth="120"
-                                            Binding="{Binding User.UserName}" />
+                                            Binding="{Binding User.Name}" />
                         <DataGridTemplateColumn Header="Αιτιολογία"
                                                 Width="220">
                             <DataGridTemplateColumn.CellTemplate>
@@ -189,8 +194,13 @@
                 </GroupBox>
                 <StackPanel Orientation="Horizontal"
                             Grid.Row="3">
-                    <Label Content="Σύνολο:" />
-                    <Label Content="{Binding Sum}" />
+                    <Label Content="Σύνολο Εξόδων:" />
+                    <Label Content="{Binding ExpensesSum, Converter={StaticResource FtoSConverter}}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                            Grid.Row="3">
+                    <Label Content="Ταμείο:" />
+                    <Label Content="{Binding Cleanse, Converter={StaticResource FtoSConverter}}"  />
                 </StackPanel>
             </Grid>
         </GroupBox>

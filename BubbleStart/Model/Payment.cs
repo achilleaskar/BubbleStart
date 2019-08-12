@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Windows.Media;
 
 namespace BubbleStart.Model
 {
@@ -12,7 +13,27 @@ namespace BubbleStart.Model
             Date = DateTime.Now;
             
         }
+        private SolidColorBrush _Color;
 
+        [NotMapped]
+        public SolidColorBrush Color
+        {
+            get
+            {
+                return _Color;
+            }
+
+            set
+            {
+                if (_Color == value)
+                {
+                    return;
+                }
+
+                _Color = value;
+                RaisePropertyChanged();
+            }
+        }
         #region Fields
 
         private decimal _Amount;

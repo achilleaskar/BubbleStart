@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Windows.Media;
 
 namespace BubbleStart.Model
 {
@@ -9,8 +10,11 @@ namespace BubbleStart.Model
         #region Fields
 
         private decimal _Amount;
+        private SolidColorBrush _Color;
         private DateTime _DayOfIssue;
         private int _Months;
+        private bool _Paid;
+        private bool _PaidCol;
         private ProgramTypes _ProgramType;
         private int _Showups;
         private DateTime _StartDay;
@@ -26,7 +30,8 @@ namespace BubbleStart.Model
             Functional,
             PilatesFunctional,
             freeUse,
-            MedicalExersise
+            MedicalExersise,
+            dokimastiko
         }
 
         #endregion Enums
@@ -48,6 +53,26 @@ namespace BubbleStart.Model
                 }
 
                 _Amount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [NotMapped]
+        public SolidColorBrush Color
+        {
+            get
+            {
+                return _Color;
+            }
+
+            set
+            {
+                if (_Color == value)
+                {
+                    return;
+                }
+
+                _Color = value;
                 RaisePropertyChanged();
             }
         }
@@ -94,6 +119,45 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        public bool Paid
+        {
+            get
+            {
+                return _Paid;
+            }
+
+            set
+            {
+                if (_Paid == value)
+                {
+                    return;
+                }
+
+                _Paid = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [NotMapped]
+        public bool PaidCol
+        {
+            get
+            {
+                return _PaidCol;
+            }
+
+            set
+            {
+                if (_PaidCol == value)
+                {
+                    return;
+                }
+
+                _PaidCol = value;
+                RaisePropertyChanged();
+            }
+        }
         public ProgramTypes ProgramType
         {
             get
@@ -112,6 +176,9 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        [NotMapped]
+        public decimal ShowUpPrice => Amount > 0 ? Amount / Showups : 0;
 
         public int Showups
         {
@@ -160,9 +227,6 @@ namespace BubbleStart.Model
 
         #region Methods
 
-        [NotMapped]
-        public decimal ShowUpPrice => Amount>0? Amount / Showups:0;
-
         public override string ToString()
         {
             switch (ProgramType)
@@ -181,8 +245,11 @@ namespace BubbleStart.Model
 
                 case ProgramTypes.freeUse:
                     return "Ελέυθερη Χρήση";
+
                 case ProgramTypes.MedicalExersise:
                     return "Medical Exercise";
+                case ProgramTypes.dokimastiko:
+                    return "Δοκιμαστικό";
             }
             return "Ανενεργό";
         }

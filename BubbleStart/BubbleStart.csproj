@@ -163,10 +163,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AttachedProperties\PasswordBoxMVVMAttachedProperties.cs" />
+    <Compile Include="Converters\AppointmentShowedUptoColorConverter.cs" />
     <Compile Include="Converters\BMItoColorConverter.cs" />
+    <Compile Include="Converters\BoolToPaidConverter.cs" />
+    <Compile Include="Converters\BoolToShowedUp_Converter.cs" />
     <Compile Include="Converters\ContentToColorConverter.cs" />
     <Compile Include="Converters\DateTimeToString.cs" />
     <Compile Include="Converters\FloadToStringValueConverter.cs" />
+    <Compile Include="Converters\GymToColorConverter.cs" />
     <Compile Include="Converters\IsCustomerNullToBoolConverter.cs" />
     <Compile Include="Converters\MeetingsToColorConverter.cs" />
     <Compile Include="Converters\UserToVisibility.cs" />
@@ -315,6 +319,22 @@
     <Compile Include="Migrations\201905121636429_teleftaio.Designer.cs">
       <DependentUpon>201905121636429_teleftaio.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905282028016_528.cs" />
+    <Compile Include="Migrations\201905282028016_528.Designer.cs">
+      <DependentUpon>201905282028016_528.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906190948568_ef6.cs" />
+    <Compile Include="Migrations\201906190948568_ef6.Designer.cs">
+      <DependentUpon>201906190948568_ef6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906300912561_kyriakh.cs" />
+    <Compile Include="Migrations\201906300912561_kyriakh.Designer.cs">
+      <DependentUpon>201906300912561_kyriakh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201908120756544_812.cs" />
+    <Compile Include="Migrations\201908120756544_812.Designer.cs">
+      <DependentUpon>201908120756544_812.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Apointment.cs" />
     <Compile Include="Model\BaseModel.cs" />
@@ -341,6 +361,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MyViewModelBase.cs" />
     <Compile Include="ViewModels\SearchCustomer_ViewModel.cs" />
+    <Compile Include="ViewModels\ShowUpsPerDay_ViewModel.cs" />
     <Compile Include="ViewModels\UsersManagement_viewModel.cs" />
     <Compile Include="ViewModels\CustomersWindow_Viewmodel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
@@ -371,6 +392,9 @@
     </Compile>
     <Compile Include="Views\SearchCustomers.xaml.cs">
       <DependentUpon>SearchCustomers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShowUpsPerDay_UserControl.xaml.cs">
+      <DependentUpon>ShowUpsPerDay_UserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UserDetail.xaml.cs">
       <DependentUpon>UserDetail.xaml</DependentUpon>
@@ -499,6 +523,18 @@
     <EmbeddedResource Include="Migrations\201905121636429_teleftaio.resx">
       <DependentUpon>201905121636429_teleftaio.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905282028016_528.resx">
+      <DependentUpon>201905282028016_528.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906190948568_ef6.resx">
+      <DependentUpon>201906190948568_ef6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906300912561_kyriakh.resx">
+      <DependentUpon>201906300912561_kyriakh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908120756544_812.resx">
+      <DependentUpon>201908120756544_812.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -553,6 +589,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ShowUpsPerDay_UserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\UserDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -589,7 +629,7 @@
       <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
     </GetAssemblyIdentity>
     <Exec Command="nuget pack MyApp.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
-    <Exec Command="squirrel --releasify BubbleStart\$(OutDir)BubbleStart.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
+    <Exec Command="squirrel --releasify $(OutDir)BubbleStart.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg --no-msi" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

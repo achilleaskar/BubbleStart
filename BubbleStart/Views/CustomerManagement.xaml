@@ -18,6 +18,7 @@
     <Window.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:FloadToStringValueConverter x:Key="FtoSConverter" />
+        <Converters:BoolToPaidConverter x:Key="BoolToShowedUp_Converter" />
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
     </Window.Resources>
     <ScrollViewer>
@@ -31,6 +32,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -64,9 +66,16 @@
                                Grid.Column="1"
                                Margin="0,1" />
                     <Label Content="Τηλέφωνο:"
-                           Grid.Row="3"
+                           Grid.Row="2"
                            Grid.Column="0" />
                     <TextBlock Text="{Binding Tel}"
+                               Grid.Row="2"
+                               Grid.Column="1"
+                               Margin="0,4" />
+                    <Label Content="Υπέγραψε:"
+                           Grid.Row="3"
+                           Grid.Column="0" />
+                    <CheckBox IsChecked="{Binding Signed}"
                                Grid.Row="3"
                                Grid.Column="1"
                                Margin="0,4" />
@@ -143,6 +152,7 @@
                                         <ComboBoxItem Content="Pilates &amp; Functional" />
                                         <ComboBoxItem Content="Ελέυθερη Χρήση" />
                                         <ComboBoxItem Content="Medical Exercise" />
+                                        <ComboBoxItem Content="Δοκιμαστικό" />
                                     </ComboBox>
                                 </StackPanel>
                                 <StackPanel Grid.Row="0"
@@ -185,7 +195,7 @@
                                             VerticalAlignment="Bottom">
                                     <TextBlock Text="Τιμή Συν.:"
                                                HorizontalAlignment="Left" />
-                                    <TextBox Text="{Binding ShowUpPrice,Converter={StaticResource FtoSConverter}, StringFormat=c1, UpdateSourceTrigger=PropertyChanged}"
+                                    <TextBox Text="{Binding ShowUpPrice,Converter={StaticResource FtoSConverter}, UpdateSourceTrigger=PropertyChanged}"
                                              Height="20"
                                              Width="40" />
                                 </StackPanel>
@@ -193,7 +203,7 @@
                                             VerticalAlignment="Bottom">
                                     <TextBlock Text="Σύνολο:"
                                                HorizontalAlignment="Left" />
-                                    <TextBox Text="{Binding ProgramPrice,Converter={StaticResource FtoSConverter}, StringFormat=c1, UpdateSourceTrigger=PropertyChanged}"
+                                    <TextBox Text="{Binding ProgramPrice,Converter={StaticResource FtoSConverter}, UpdateSourceTrigger=PropertyChanged}"
                                              Height="20"
                                              Width="36" />
                                 </StackPanel>
@@ -283,7 +293,7 @@
                     <!--
                         </Grid>
                     </GroupBox>-->
-                    <GroupBox Grid.Row="11"
+                    <GroupBox Grid.Row="10"
                               Width=" 330"
                               Grid.ColumnSpan="2"
                               HorizontalAlignment="Left"
@@ -298,8 +308,8 @@
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Header="Προγράμματα"
-                              Width=" 440"
-                              Grid.Row="13"
+                              Width=" 500"
+                              Grid.Row="11"
                               HorizontalAlignment="Left"
                               Grid.ColumnSpan="2">
                         <DataGrid ItemsSource="{Binding ProgramsColelctionView}"
@@ -332,16 +342,41 @@
                                 <DataGridTextColumn Header="Τύπος"
                                                     IsReadOnly="True"
                                                     Binding="{Binding }" />
-                                <DataGridTextColumn Header="Συνεδρίες"
+                                <DataGridTextColumn Header="Συν."
                                                     Binding="{Binding Showups}" />
                                 <DataGridTextColumn Header="Μήνες"
-                                                    Binding="{Binding Months}" /> 
+                                                    Binding="{Binding Months}" />
                                 <DataGridTextColumn Header="Τιμή Συν."
                                                     Binding="{Binding ShowUpPrice,StringFormat=c}" />
                                 <DataGridTextColumn Header="Σύνολο"
                                                     Binding="{Binding Amount,StringFormat=c}" />
                                 <DataGridTextColumn Header="Αγορά"
                                                     Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yyyy', Converter={StaticResource DateTimeToString}}" />
+                                <DataGridTemplateColumn Header="Πλήρωμή">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border>
+                                                <TextBlock Text="{Binding Paid, Converter={StaticResource BoolToShowedUp_Converter}}">
+                                                    <TextBlock.Style>
+                                                        <Style>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding PaidCol}"
+                                                                             Value="true">
+                                                                    <Setter Property="TextBlock.Background"
+                                                                            Value="LightGreen" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding PaidCol}"
+                                                                             Value="false">
+                                                                    <Setter Property="TextBlock.Background"
+                                                                            Value="#FFE67979" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style></TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
@@ -383,6 +418,8 @@
                                            BasedOn="{StaticResource {x:Type DataGridRow}}">
                                         <Setter Property="ContextMenu"
                                                 Value="{StaticResource ShowUpsSubMenu}" />
+                                        <Setter Property="Background"
+                                                Value="{Binding Color}" />
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
@@ -422,6 +459,8 @@
                                            BasedOn="{StaticResource {x:Type DataGridRow}}">
                                         <Setter Property="ContextMenu"
                                                 Value="{StaticResource PaymentsSubMenu}" />
+                                        <Setter Property="Background"
+                                                Value="{Binding Color}" />
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>

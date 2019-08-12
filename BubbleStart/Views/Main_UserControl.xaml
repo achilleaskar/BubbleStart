@@ -18,6 +18,7 @@
         <DataTemplate DataType="{x:Type viewmodels:EconomicData_ViewModel}">
             <views:EconomicData_UserControl />
         </DataTemplate>
+      
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -83,6 +84,9 @@
                 </TabItem>
                 <TabItem Header="Πρόγραμμα">
                     <views:Apointments_UserControl DataContext="{Binding Apointments_ViewModel}" />
+                </TabItem>
+                <TabItem Header="Παρουσίες">
+                    <views:ShowUpsPerDay_UserControl DataContext="{Binding ShowUpsPerDay_ViewModel }" />
                 </TabItem>
             </TabControl>
         </Grid>

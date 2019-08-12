@@ -5,9 +5,11 @@ using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace BubbleStart.ViewModels
@@ -22,6 +24,112 @@ namespace BubbleStart.ViewModels
             Context = new GenericRepository();
             NextWeekCommand = new RelayCommand(async () => { await NextWeek(); });
             PreviousWeekCommand = new RelayCommand(async () => { await PreviousWeek(); });
+            ReformerVisible = FunctionalVisible = true;
+        }
+
+        private int _GymIndex;
+
+        public int GymIndex
+        {
+            get
+            {
+                return _GymIndex;
+            }
+
+            set
+            {
+                if (_GymIndex == value)
+                {
+                    return;
+                }
+
+                _GymIndex = value;
+                RaisePropertyChanged();
+                foreach (var day in Days)
+                {
+                    foreach (var hour in day.Hours)
+                    {
+                        hour.GymIndex = value;
+                    }
+                }
+            }
+        }
+
+        private int _RoomIndex;
+
+        public int RoomIndex
+        {
+            get
+            {
+                return _RoomIndex;
+            }
+
+            set
+            {
+                if (_RoomIndex == value)
+                {
+                    return;
+                }
+
+                _RoomIndex = value;
+                RaisePropertyChanged();
+                if (RoomIndex == 0)
+                {
+                    FunctionalVisible = ReformerVisible = true;
+                }
+                else if (RoomIndex == 1)
+                {
+                    FunctionalVisible = true;
+                    ReformerVisible = false;
+                }
+                else
+                {
+                    FunctionalVisible = false;
+                    ReformerVisible = true;
+                }
+            }
+        }
+
+        private bool _ReformerVisible;
+
+        public bool ReformerVisible
+        {
+            get
+            {
+                return _ReformerVisible;
+            }
+
+            set
+            {
+                if (_ReformerVisible == value)
+                {
+                    return;
+                }
+
+                _ReformerVisible = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _FunctionalVisible;
+
+        public bool FunctionalVisible
+        {
+            get
+            {
+                return _FunctionalVisible;
+            }
+
+            set
+            {
+                if (_FunctionalVisible == value)
+                {
+                    return;
+                }
+
+                _FunctionalVisible = value;
+                RaisePropertyChanged();
+            }
         }
 
         private async Task PreviousWeek()
@@ -104,7 +212,7 @@ namespace BubbleStart.ViewModels
             List<Apointment> apointments = (await Context.GetApointmentsAsync(StartDate)).ToList();
             DateTime tmpDate = StartDate;
             Days.Clear();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             {
                 Days.Add(new Day(Context, tmpDate));
                 tmpDate = tmpDate.AddDays(1);
@@ -116,7 +224,10 @@ namespace BubbleStart.ViewModels
                 numOfDay = ((int)ap.DateTime.DayOfWeek + 6) % 7;
                 if (numOfDay < 5 && ap.DateTime.Hour >= 8 || ap.DateTime.Hour <= 20)
                 {
-                    Days[numOfDay].Hours[ap.DateTime.Hour - 8].Apointments.Add(ap);
+                    if (ap.Room == 0)
+                        Days[numOfDay].Hours[ap.DateTime.Hour - 8].AppointmentsFunctional.Add(ap);
+                    else
+                        Days[numOfDay].Hours[ap.DateTime.Hour - 8].AppointmentsReformer.Add(ap);
                 }
                 else
                 {
@@ -161,7 +272,8 @@ namespace BubbleStart.ViewModels
                 new Hour(new DateTime(Date.Year,Date.Month,Date.Day,17,0,0),context),
                 new Hour(new DateTime(Date.Year,Date.Month,Date.Day,18,0,0),context),
                 new Hour(new DateTime(Date.Year,Date.Month,Date.Day,19,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,20,0,0),context)
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,20,0,0),context),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,21,0,0),context)
             };
             Context = context;
         }
@@ -229,48 +341,170 @@ namespace BubbleStart.ViewModels
         public Hour(DateTime time, GenericRepository context)
         {
             Time = time;
-            AddApointmentCommand = new RelayCommand(async () => { await AddApointment(); });
-            DeleteApointmentCommand = new RelayCommand(async () => { await DeleteApointment(); }, CanDeleteApointment);
+            AddApointmentCommand = new RelayCommand<int>(async (obj) => { await AddApointment(obj); });
+            DeleteFunctionalApointmentCommand = new RelayCommand(async () => { await DeleteApointment(0); }, CanDeleteFunctionalApointment);
+            DeleteReformerApointmentCommand = new RelayCommand(async () => { await DeleteApointment(1); }, CanDeleteReformerApointment);
             Context = context;
-            Apointments = new ObservableCollection<Apointment>();
+            AppointmentsFunctional = new ObservableCollection<Apointment>();
+            AppointmentsReformer = new ObservableCollection<Apointment>();
+        }
+
+        private bool CanDeleteReformerApointment()
+        {
+            return SelectedApointmentReformer != null;
         }
 
         #endregion Constructors
 
         #region Fields
 
-        private ObservableCollection<Apointment> _Apointments;
+        private ObservableCollection<Apointment> _ApointmentsFunctional;
 
         #endregion Fields
 
         #region Properties
 
-        public RelayCommand AddApointmentCommand { get; set; }
+        public RelayCommand<int> AddApointmentCommand { get; set; }
 
-        public ObservableCollection<Apointment> Apointments
+        public ObservableCollection<Apointment> AppointmentsFunctional
         {
             get
             {
-                return _Apointments;
+                return _ApointmentsFunctional;
             }
 
             set
             {
-                if (_Apointments == value)
+                if (_ApointmentsFunctional == value)
                 {
                     return;
                 }
 
-                _Apointments = value;
+                _ApointmentsFunctional = value;
                 RaisePropertyChanged();
+                FunctionalCV = (CollectionView)CollectionViewSource.GetDefaultView(_ApointmentsFunctional);
+                FunctionalCV.Filter = AppointmensFilter;
+                FunctionalCV.Refresh();
+            }
+        }
+
+
+
+
+
+
+        private ICollectionView _ReformerCV;
+
+
+        public ICollectionView ReformerCV
+        {
+            get
+            {
+                return _ReformerCV;
+            }
+
+            set
+            {
+                if (_ReformerCV == value)
+                {
+                    return;
+                }
+
+                _ReformerCV = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+        private ICollectionView _FunctionalCV;
+
+
+        public ICollectionView FunctionalCV
+        {
+            get
+            {
+                return _FunctionalCV;
+            }
+
+            set
+            {
+                if (_FunctionalCV == value)
+                {
+                    return;
+                }
+
+                _FunctionalCV = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+       
+
+        private bool AppointmensFilter(object obj)
+        {
+            if (obj is Apointment a && (GymIndex == 0 || (GymIndex == a.Person+1)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private int _GymIndex;
+
+        public int GymIndex
+        {
+            get
+            {
+                return _GymIndex;
+            }
+
+            set
+            {
+                if (_GymIndex == value)
+                {
+                    return;
+                }
+
+                _GymIndex = value;
+                RaisePropertyChanged();
+                FunctionalCV.Refresh();
+                ReformerCV.Refresh();
+            }
+        }
+
+        private ObservableCollection<Apointment> _AppointmentsReformer;
+
+        public ObservableCollection<Apointment> AppointmentsReformer
+        {
+            get
+            {
+                return _AppointmentsReformer;
+            }
+
+            set
+            {
+                if (_AppointmentsReformer == value)
+                {
+                    return;
+                }
+
+                _AppointmentsReformer = value;
+                RaisePropertyChanged();
+                ReformerCV = (CollectionView)CollectionViewSource.GetDefaultView(_AppointmentsReformer);
+                ReformerCV.Filter = AppointmensFilter;
+                ReformerCV.Refresh();
             }
         }
 
         public GenericRepository Context { get; }
 
-        public RelayCommand DeleteApointmentCommand { get; set; }
+        public RelayCommand DeleteFunctionalApointmentCommand { get; set; }
+        public RelayCommand DeleteReformerApointmentCommand { get; set; }
 
-        public Apointment SelectedApointment { get; set; }
+        public Apointment SelectedApointmentFunctional { get; set; }
+        public Apointment SelectedApointmentReformer { get; set; }
 
         public DateTime Time { get; set; }
 
@@ -278,7 +512,7 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
-        private async Task AddApointment()
+        private async Task AddApointment(int type)
         {
             CustomersWindow_Viewmodel vm = new CustomersWindow_Viewmodel(Context);
             await vm.LoadAsync();
@@ -287,26 +521,41 @@ namespace BubbleStart.ViewModels
                 DataContext = vm
             };
             window.ShowDialog();
-            Apointment ap = new Apointment { Customer = vm.SelectedCustomer, DateTime = Time };
+            Apointment ap = new Apointment { Customer = vm.SelectedCustomer, DateTime = Time, Person = vm.SelectedPerson, Room = type };
             if (vm.SelectedCustomer != null)
             {
                 Context.Add(ap);
                 await Context.SaveAsync();
-                Apointments.Add(ap);
+                if (type == 0)
+                {
+                    AppointmentsFunctional.Add(ap);
+                }
+                else
+                {
+                    AppointmentsReformer.Add(ap);
+                }
             }
         }
 
-        private bool CanDeleteApointment()
+        private bool CanDeleteFunctionalApointment()
         {
-            return SelectedApointment != null;
+            return SelectedApointmentFunctional != null;
         }
 
-        private async Task DeleteApointment()
+        private async Task DeleteApointment(int type)
         {
             Mouse.OverrideCursor = Cursors.Wait;
 
-            Context.Delete(SelectedApointment);
-            Apointments.Remove(SelectedApointment);
+            if (type == 0)
+            {
+                Context.Delete(SelectedApointmentFunctional);
+                AppointmentsFunctional.Remove(SelectedApointmentFunctional);
+            }
+            else
+            {
+                Context.Delete(SelectedApointmentReformer);
+                AppointmentsReformer.Remove(SelectedApointmentReformer);
+            }
             await Context.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
         }

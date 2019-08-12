@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
@@ -16,7 +17,7 @@ namespace BubbleStart.Database
         public GenericRepository()
         {
             this.Context = new MainDatabase();
-            Context.Database.Log = Console.Write;
+            //Context.Database.Log = Console.Write;
         }
 
         public void Dispose()
@@ -29,6 +30,15 @@ namespace BubbleStart.Database
             return await Context.Users.Where(u => u.UserName == userName).FirstOrDefaultAsync();
         }
 
+        internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate)
+        {
+            return await Context.ShowUps
+           .Where(s => s.Arrived >= StartDate && s.Arrived <= EndDate)
+           .Include(s => s.Customer)
+           .OrderBy(s => s.Arrived)
+           .ToListAsync();
+        }
+
         public async Task<Payment> Gettest()
         {
             return await Context.Payments.Where(p => p.Id == 67).FirstOrDefaultAsync();
@@ -39,7 +49,8 @@ namespace BubbleStart.Database
             DateTime tmpEndDate = date.AddDays(6);
 
             return await Context.Apointments.Where(a => a.DateTime >= date && a.DateTime < tmpEndDate)
-                .Include(a=>a.Customer)
+                .Include(a => a.Customer)
+                .Include(a => a.Customer.ShowUps)
                 .ToListAsync();
         }
 
@@ -224,7 +235,7 @@ namespace BubbleStart.Database
                 relationship.ChangeState(EntityState.Unchanged);
         }
 
-        private bool RelationshipContainsKeyEntry(System.Data.Entity.Core.Objects.ObjectStateEntry stateEntry)
+        private bool RelationshipContainsKeyEntry(ObjectStateEntry stateEntry)
         {
             //prevent exception: "Cannot change state of a relationship if one of the ends of the relationship is a KeyEntry"
             //I haven't been able to find the conditions under which this happens, but it sometimes does.
@@ -249,6 +260,13 @@ namespace BubbleStart.Database
             }
             finally
             { }
+        }
+
+        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp)
+        {
+            return await Context.Expenses.Where(filterp)
+                .Include(e => e.User)
+                .ToListAsync();
         }
 
         public void Add<TEntity>(TEntity model) where TEntity : BaseModel
@@ -277,12 +295,29 @@ namespace BubbleStart.Database
             try
             {
                 var x = await Context.Set<Customer>()
+                        .Include(f => f.Programs)
+                        .Include(g => g.Payments)
                         .Include(c => c.Illness)
                         .Include(d => d.WeightHistory)
                         .Include(e => e.ShowUps)
-                        .Include(f => f.Programs)
-                        .Include(g => g.Payments)
                         .Include(h => h.Changes)
+                        .Include(a => a.Apointments)
+                        .ToListAsync();
+                return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            finally
+            { }
+        }
+
+        public async Task<IEnumerable<Customer>> LoadAllCustomersAsyncb()
+        {
+            try
+            {
+                var x = await Context.Set<Customer>()
                         .ToListAsync();
                 return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
             }

@@ -6,6 +6,54 @@ namespace BubbleStart.Model
     {
         private DateTime _DateTime;
 
+
+
+
+        private int _room;
+
+
+
+
+        private int _person;
+
+
+        public int Person
+        {
+            get
+            {
+                return _person;
+            }
+
+            set
+            {
+                if (_person == value)
+                {
+                    return;
+                }
+
+                _person = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int Room
+        {
+            get
+            {
+                return _room;
+            }
+
+            set
+            {
+                if (_room == value)
+                {
+                    return;
+                }
+
+                _room = value;
+                RaisePropertyChanged();
+            }
+        }
         public DateTime DateTime
         {
             get

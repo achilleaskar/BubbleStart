@@ -15,6 +15,7 @@ namespace BubbleStart.Database
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Apointment> Apointments { get; set; }
         public DbSet<Program> Programs { get; set; }
+        public DbSet<ShowUp> ShowUps { get; set; }
         public DbSet<Payment> Payments { get; set; }
 
         public MainDatabase() : base("BubbleDatabase")
@@ -26,6 +27,11 @@ namespace BubbleStart.Database
         {
             modelBuilder.Properties<string>()
                 .Configure(s => s.HasMaxLength(200).HasColumnType("varchar"));
+            modelBuilder.Properties().Where(x => x.PropertyType == typeof(bool))
+             .Configure(x => x.HasColumnType("bit"));
+            //modelBuilder.Entity<ShowUp>()
+            //        .Property(p => p.Arrive)
+            //        .HasColumnType("bit");
             base.OnModelCreating(modelBuilder);
         }
     }
