@@ -1,5 +1,7 @@
 ﻿using BubbleStart.Database;
+using BubbleStart.Messages;
 using BubbleStart.Model;
+using GalaSoft.MvvmLight.CommandWpf;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,82 +15,12 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-        public CustomersWindow_Viewmodel(GenericRepository context)
+        public CustomersWindow_Viewmodel(GenericRepository context, int type, Hour hour)
         {
             Context = context;
-        }
-
-
-
-
-
-        private bool _IsGogoChecked = true;
-
-
-        public bool IsGogoChecked
-        {
-            get
-            {
-                return _IsGogoChecked;
-            }
-
-            set
-            {
-                if (_IsGogoChecked == value)
-                {
-                    return;
-                }
-
-                _IsGogoChecked = value;
-                SelectedPerson = 1;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _IsGymnastChecked;
-
-
-        public bool IsGymnastChecked
-        {
-            get
-            {
-                return _IsGymnastChecked;
-            }
-
-            set
-            {
-                if (_IsGymnastChecked == value)
-                {
-                    return;
-                }
-
-                _IsGymnastChecked = value;
-                SelectedPerson = 2;
-                RaisePropertyChanged();
-            }
-        }
-
-
-        private int _SelectedPerson;
-
-
-        public int SelectedPerson
-        {
-            get
-            {
-                return _SelectedPerson;
-            }
-
-            set
-            {
-                if (_SelectedPerson == value)
-                {
-                    return;
-                }
-
-                _SelectedPerson = value;
-                RaisePropertyChanged();
-            }
+            Type = type;
+            Hour = hour;
+            AddCustomerCommand = new RelayCommand(async () => { await AddCustomer(); });
         }
 
         #endregion Constructors
@@ -99,15 +31,23 @@ namespace BubbleStart.ViewModels
 
         private ICollectionView _CustomersCollectionView;
 
+        private bool _IsGogoChecked = true;
+
+        private bool _IsGymnastChecked;
+
         private string _SearchTerm;
 
         private Customer _SelectedCustomer;
+
+        private int _SelectedPerson;
 
         #endregion Fields
 
         #region Properties
 
-        public Database.GenericRepository Context { get; }
+        public RelayCommand AddCustomerCommand { get; set; }
+
+        public GenericRepository Context { get; }
 
         public ObservableCollection<Customer> Customers
         {
@@ -144,6 +84,72 @@ namespace BubbleStart.ViewModels
                 }
 
                 _CustomersCollectionView = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool IsGogoChecked
+        {
+            get
+            {
+                return _IsGogoChecked;
+            }
+
+            set
+            {
+                if (_IsGogoChecked == value)
+                {
+                    return;
+                }
+
+                _IsGogoChecked = value;
+                SelectedPerson = 1;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private bool _IsDimitrisChecked;
+
+
+        public bool IsDimitrisChecked
+        {
+            get
+            {
+                return _IsDimitrisChecked;
+            }
+
+            set
+            {
+                if (_IsDimitrisChecked == value)
+                {
+                    return;
+                }
+
+                _IsDimitrisChecked = value;
+                SelectedPerson = 2;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool IsYogaChecked
+        {
+            get
+            {
+                return _IsGymnastChecked;
+            }
+
+            set
+            {
+                if (_IsGymnastChecked == value)
+                {
+                    return;
+                }
+
+                _IsGymnastChecked = value;
+                SelectedPerson = 2;
                 RaisePropertyChanged();
             }
         }
@@ -187,13 +193,35 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public int SelectedPerson
+        {
+            get
+            {
+                return _SelectedPerson;
+            }
+
+            set
+            {
+                if (_SelectedPerson == value)
+                {
+                    return;
+                }
+
+                _SelectedPerson = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int Type { get; }
+        public Hour Hour { get; }
+
         #endregion Properties
 
         #region Methods
 
         public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
         {
-            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsyncb()).OrderBy(n=>n.Name));
+            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsyncb()).OrderBy(n => n.Name));
 
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;
@@ -202,6 +230,11 @@ namespace BubbleStart.ViewModels
         public override Task ReloadAsync()
         {
             throw new NotImplementedException();
+        }
+
+        private async Task AddCustomer()
+        {
+            await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Type);
         }
 
         private bool CustomerFilter(object item)

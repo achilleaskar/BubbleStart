@@ -18,7 +18,6 @@ namespace BubbleStart.ViewModels
 {
     public class CustomSorter : IComparer
     {
-
         #region Methods
 
         public int Compare(object x, object y)
@@ -37,22 +36,15 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Methods
-
     }
 
     public class SearchCustomer_ViewModel : MyViewModelBase
     {
-
         #region Constructors
 
         public SearchCustomer_ViewModel()
         {
         }
-
-
-
-
-
 
         public SearchCustomer_ViewModel(GenericRepository context)
         {
@@ -69,27 +61,26 @@ namespace BubbleStart.ViewModels
             // CreateNewCustomer();
         }
 
-        private async Task CancelApointment()
-        {
-            if (SelectedApointment!=null)
-            {
-                Context.Delete(SelectedApointment.Apointments.Where(a => a.DateTime.Date == DateTime.Today.Date).FirstOrDefault());
-                await Context.SaveAsync();
-                TodaysApointments.Remove(SelectedApointment);
-            }
-        }
-
         #endregion Constructors
 
         #region Fields
 
         private ObservableCollection<Customer> _Customers;
+
         private ICollectionView _CustomersCollectionView;
+
         private ObservableCollection<Customer> _CustomersPracticing;
+
         private string _SearchTerm;
+
         private Customer _SelectedApointment;
+
         private Customer _SelectedCustomer;
+
         private Customer _SelectedPracticingCustomer;
+
+        private Customer _SelectedSideCustomer;
+
         private ObservableCollection<Customer> _TodaysApointments;
 
         #endregion Fields
@@ -97,7 +88,9 @@ namespace BubbleStart.ViewModels
         #region Properties
 
         public RelayCommand<string> BodyPartSelected { get; set; }
+
         public RelayCommand CancelApointmentCommand { get; set; }
+
         public GenericRepository Context { get; }
 
         public RelayCommand CreateNewCustomerCommand { get; set; }
@@ -172,6 +165,7 @@ namespace BubbleStart.ViewModels
         public bool Enabled => SelectedCustomer != null;
 
         public RelayCommand OpenActiveCustomerManagementCommand { get; set; }
+
         public RelayCommand OpenActiveCustomerSideManagementCommand { get; set; }
 
         public RelayCommand OpenCustomerManagementCommand { get; set; }
@@ -244,10 +238,24 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public Customer SelectedPracticingCustomer
+        {
+            get
+            {
+                return _SelectedPracticingCustomer;
+            }
 
+            set
+            {
+                if (_SelectedPracticingCustomer == value)
+                {
+                    return;
+                }
 
-        private Customer _SelectedSideCustomer;
-
+                _SelectedPracticingCustomer = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public Customer SelectedSideCustomer
         {
@@ -264,24 +272,6 @@ namespace BubbleStart.ViewModels
                 }
 
                 _SelectedSideCustomer = value;
-                RaisePropertyChanged();
-            }
-        }
-        public Customer SelectedPracticingCustomer
-        {
-            get
-            {
-                return _SelectedPracticingCustomer;
-            }
-
-            set
-            {
-                if (_SelectedPracticingCustomer == value)
-                {
-                    return;
-                }
-
-                _SelectedPracticingCustomer = value;
                 RaisePropertyChanged();
             }
         }
@@ -351,14 +341,12 @@ namespace BubbleStart.ViewModels
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;
 
-           
-          
             foreach (var c in Customers)
             {
                 c.PropertyChanged += EntityViewModelPropertyChanged;
                 c.Loaded = true;
                 c.SetColors();
-                await SortPayments(c);
+                SortPayments(c);
 
                 c.SelectProperProgram();
                 if (c.LastShowUp != null && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
@@ -373,7 +361,6 @@ namespace BubbleStart.ViewModels
                 }
             }
             await Context.SaveAsync();
-
         }
 
         public override Task ReloadAsync()
@@ -384,6 +371,16 @@ namespace BubbleStart.ViewModels
         private void BodyPartChanged(string selectedIndex)
         {
             _SelectedCustomer.Illness.SelectedIllnessPropertyName = selectedIndex;
+        }
+
+        private async Task CancelApointment()
+        {
+            if (SelectedApointment != null)
+            {
+                Context.Delete(SelectedApointment.Apointments.Where(a => a.DateTime.Date == DateTime.Today.Date).FirstOrDefault());
+                await Context.SaveAsync();
+                TodaysApointments.Remove(SelectedApointment);
+            }
         }
 
         private bool CanSaveCustomer()
@@ -517,7 +514,7 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        private async Task SortPayments(Customer c)
+        private void SortPayments(Customer c)
         {
             foreach (Program program in c.Programs)
             {
@@ -527,6 +524,7 @@ namespace BubbleStart.ViewModels
                 }
             }
         }
+
         private string ToEng(string searchTerm)
         {
             string toReturn = "";
@@ -690,6 +688,5 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Methods
-
     }
 }

@@ -40,6 +40,30 @@ namespace BubbleStart.Model
             }
         }
 
+
+
+
+        private Program _Prog;
+
+        [NotMapped]
+        public Program Prog
+        {
+            get
+            {
+                return _Prog;
+            }
+
+            set
+            {
+                if (_Prog == value)
+                {
+                    return;
+                }
+
+                _Prog = value;
+                RaisePropertyChanged();
+            }
+        }
         public DateTime Arrived
         {
             get

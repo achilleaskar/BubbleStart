@@ -6,7 +6,23 @@ namespace BubbleStart.Model
     {
         private DateTime _DateTime;
 
-
+        public string PersonName
+        {
+            get
+            {
+                switch (Person)
+                {
+                    case 0:
+                        return "Γεωργία";
+                    case 1:
+                        return "Yoga";
+                    case 2:
+                        return "Dimitris";
+                    default:
+                        return"";
+                }
+            }
+        }
 
 
         private int _room;

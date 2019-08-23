@@ -335,6 +335,14 @@
     <Compile Include="Migrations\201908120756544_812.Designer.cs">
       <DependentUpon>201908120756544_812.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201908121227526_8122.cs" />
+    <Compile Include="Migrations\201908121227526_8122.Designer.cs">
+      <DependentUpon>201908121227526_8122.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201908132016588_1115.cs" />
+    <Compile Include="Migrations\201908132016588_1115.Designer.cs">
+      <DependentUpon>201908132016588_1115.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Apointment.cs" />
     <Compile Include="Model\BaseModel.cs" />
@@ -534,6 +542,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908120756544_812.resx">
       <DependentUpon>201908120756544_812.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908121227526_8122.resx">
+      <DependentUpon>201908121227526_8122.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908132016588_1115.resx">
+      <DependentUpon>201908132016588_1115.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

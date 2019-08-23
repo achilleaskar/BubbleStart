@@ -20,16 +20,21 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <GroupBox Header="Γυμανστής">
-                    
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
                         <RadioButton Content="Γωγώ"
                                      IsChecked="{Binding IsGogoChecked}"
                                      GroupName="Options1" />
-                    <RadioButton Content="Γυμναστής"
-                                     IsChecked="{Binding IsGymnastChecked}"
+                        <RadioButton Content="Δημήτρης"
+                                     IsChecked="{Binding IsDimitrisChecked}"
+                                     GroupName="Options1"
+                                     Margin="5 0" /> 
+                        <RadioButton Content="Yoga"
+                                     IsChecked="{Binding IsYogaChecked}"
                                      GroupName="Options1"
                                      Margin="5 0" />
-                </StackPanel>
+                    </StackPanel>
                 </GroupBox>
                 <TextBlock Grid.Row="1"
                            Text="Λέξη Κλειδί:" />

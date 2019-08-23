@@ -3,6 +3,7 @@ using BubbleStart.Messages;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -102,16 +103,24 @@ namespace BubbleStart.ViewModels
 
         public async Task LoadAsync(GenericRepository startingRepository)
         {
-            StartingRepository = startingRepository;
+            try
+            {
+                StartingRepository = startingRepository;
 #if DEBUG
-            Helpers.StaticResources.User = (await StartingRepository.GetAllAsync<User>(u => u.Id == 3)).First();
-            RaisePropertyChanged(nameof(MenuVisibility));
+                Helpers.StaticResources.User = (await StartingRepository.GetAllAsync<User>(u => u.Id == 3)).First();
+                RaisePropertyChanged(nameof(MenuVisibility));
 #endif
-            if (Helpers.StaticResources.User == null)
-                SelectedViewmodel = new LoginViewModel(StartingRepository);//TODO
-            else
-                SelectedViewmodel = new MainUserControl_ViewModel(StartingRepository);//TODO
-            await SelectedViewmodel.LoadAsync();
+                if (Helpers.StaticResources.User == null)
+                    SelectedViewmodel = new LoginViewModel(StartingRepository);//TODO
+                else
+                    SelectedViewmodel = new MainUserControl_ViewModel(StartingRepository);//TODO
+                await SelectedViewmodel.LoadAsync();
+            }
+            catch (Exception ex)
+            {
+
+                MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
+            }
         }
     }
 }

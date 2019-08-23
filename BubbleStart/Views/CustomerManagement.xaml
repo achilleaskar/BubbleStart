@@ -398,7 +398,7 @@
                             <DataGrid ItemsSource="{Binding ShowUpsCollectionView}"
                                       SelectedItem="{Binding SelectedShowUp}"
                                       CanUserAddRows="False"
-                                      MaxHeight="600"
+                                      MaxHeight="400"
                                       Padding="5"
                                       CanUserDeleteRows="False"
                                       VirtualizingPanel.VirtualizationMode="Standard"
@@ -419,7 +419,7 @@
                                         <Setter Property="ContextMenu"
                                                 Value="{StaticResource ShowUpsSubMenu}" />
                                         <Setter Property="Background"
-                                                Value="{Binding Color}" />
+                                                Value="{Binding Prog.Color}" />
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
@@ -430,7 +430,7 @@
                         </GroupBox>
                         <GroupBox Header="Πληρωμές"
                                   Grid.Column="1"
-                                  Width="165"
+                                  Width="165" MaxHeight="400"
                                   Grid.RowSpan="30"
                                   VerticalAlignment="Top"
                                   Padding="5"
@@ -486,9 +486,9 @@
                                     <DataGridTextColumn Header="Ημερομηνία"
                                                         Binding="{Binding Date,ConverterParameter='dd/MM/yyyy', Converter={StaticResource DateTimeToString}}" />
                                     <DataGridTextColumn Header="Χρήστης"
-                                                        Binding="{Binding User.UserName}" />
+                                                        Binding="{Binding User.Name}" />
                                     <DataGridTemplateColumn Header="Πρόβλημα"
-                                                            Width="220">
+                                                            Width="300">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock Width="Auto"

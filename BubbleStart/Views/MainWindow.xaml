@@ -7,7 +7,7 @@
         Loaded="MainWindow_OnLoaded"
         mc:Ignorable="d"
         FontSize="13"
-        Height="815"
+        Height="795"
         Language="el-Gr"
         Width="1366"
         Closed="Window_Closed"

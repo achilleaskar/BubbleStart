@@ -15,8 +15,13 @@ namespace BubbleStart.Converters
         {
             if (value is Apointment a)
             {
-                if (a.DateTime.Date <= DateTime.Today && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date))
+                if (a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date))
                     return new SolidColorBrush(Colors.Red);
+                else if (a.Person == 1)
+                    return new SolidColorBrush(Colors.Orange);
+                else if (a.Person == 2)
+                    return new SolidColorBrush(Colors.White);
+
             }
             return new SolidColorBrush(Colors.Transparent);
         }

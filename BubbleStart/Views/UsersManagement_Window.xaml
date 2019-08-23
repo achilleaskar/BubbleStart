@@ -99,10 +99,8 @@
                           Grid.Column="1">
                     <ComboBoxItem>Δημιουργός</ComboBoxItem>
                     <ComboBoxItem>Διαχειριστής</ComboBoxItem>
-                    <ComboBoxItem>Διαχειριστής Γραφείου</ComboBoxItem>
+                    <ComboBoxItem>Υπεύθυνος</ComboBoxItem>                   
                     <ComboBoxItem>Πωλητής</ComboBoxItem>
-                    <ComboBoxItem>Συνεργάτης</ComboBoxItem>
-                    <ComboBoxItem>Only See</ComboBoxItem>
                 </ComboBox>
                 <StackPanel Orientation="Vertical"
                             Grid.Row="8"

@@ -32,6 +32,9 @@ namespace BubbleStart.Database
             //modelBuilder.Entity<ShowUp>()
             //        .Property(p => p.Arrive)
             //        .HasColumnType("bit");
+            //modelBuilder.Entity<Illness>()
+            //   .HasRequired(s => s.Customer)
+            //   .WithRequiredPrincipal(ad => ad.Illness);
             base.OnModelCreating(modelBuilder);
         }
     }

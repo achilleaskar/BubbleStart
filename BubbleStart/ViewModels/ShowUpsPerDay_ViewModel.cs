@@ -84,10 +84,10 @@ namespace BubbleStart.ViewModels
         private async Task ShowShowUps()
         {
 
-             Context = new GenericRepository();
+            Context = new GenericRepository();
 
 
-                DailyShowUps = new ObservableCollection<ShowUp>((await Context.GetAllShowUpsInRangeAsyncsAsync(StartDate, EndDate.AddDays(1))));
+            DailyShowUps = new ObservableCollection<ShowUp>((await Context.GetAllShowUpsInRangeAsyncsAsync(StartDate, EndDate.AddDays(1))));
 
         }
 
@@ -162,10 +162,7 @@ namespace BubbleStart.ViewModels
                 }
 
                 _StartDate = value;
-                if (StartDate > EndDate)
-                {
-                    EndDate = StartDate;
-                }
+                EndDate = StartDate;
                 RaisePropertyChanged();
             }
         }

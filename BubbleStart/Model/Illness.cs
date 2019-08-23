@@ -9,7 +9,6 @@ namespace BubbleStart.Model
     public class Illness : BaseModel
     {
         #region Fields
-
         private string _afxenas;
 
         private string _agonasA;

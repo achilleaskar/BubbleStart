@@ -33,7 +33,7 @@ namespace BubbleStart.Database
         internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate)
         {
             return await Context.ShowUps
-           .Where(s => s.Arrived >= StartDate && s.Arrived <= EndDate)
+           .Where(s => s.Arrived >= StartDate && s.Arrived < EndDate)
            .Include(s => s.Customer)
            .OrderBy(s => s.Arrived)
            .ToListAsync();
@@ -146,59 +146,59 @@ namespace BubbleStart.Database
 
         public async Task SaveAsync()
         {
-            //var AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
+            var AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
 
-            //AddedEntities.ForEach(E =>
-            //{
-            //    if (E.CurrentValues.PropertyNames.Contains("CreatedDate"))
-            //    {
-            //        E.Property("CreatedDate").CurrentValue = DateTime.Now;
-            //    }
-            //});
+            AddedEntities.ForEach(E =>
+            {
+                if (E.CurrentValues.PropertyNames.Contains("CreatedDate"))
+                {
+                    E.Property("CreatedDate").CurrentValue = DateTime.Now;
+                }
+            });
 
-            //var EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
+            var EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
 
-            //EditedEntities.ForEach(E =>
-            //{
-            //    if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
-            //    {
-            //        //   E.Property("ModifiedDate").CurrentValue = DateTime.Now;
-            //    }
-            //});
+            EditedEntities.ForEach(E =>
+            {
+                if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
+                {
+                    //   E.Property("ModifiedDate").CurrentValue = DateTime.Now;
+                }
+            });
 
-            //var changes = from e in Context.ChangeTracker.Entries()
-            //              where e.State != EntityState.Unchanged
-            //              select e;
+            var changes = from e in Context.ChangeTracker.Entries()
+                          where e.State != EntityState.Unchanged
+                          select e;
 
-            //foreach (var change in changes)
-            //{
-            //    if (change.State == EntityState.Added)
-            //    {
-            //        // Log Added
-            //    }
-            //    else if (change.State == EntityState.Modified)
-            //    {
-            //        // Log Modified
-            //        var item = change.Entity;
-            //        var originalValues = Context.Entry(item).OriginalValues;
-            //        var currentValues = Context.Entry(item).CurrentValues;
+            foreach (var change in changes)
+            {
+                if (change.State == EntityState.Added)
+                {
+                    // Log Added
+                }
+                else if (change.State == EntityState.Modified)
+                {
+                    // Log Modified
+                    var item = change.Entity;
+                    var originalValues = Context.Entry(item).OriginalValues;
+                    var currentValues = Context.Entry(item).CurrentValues;
 
-            //        foreach (string propertyName in originalValues.PropertyNames)
-            //        {
-            //            var original = originalValues[propertyName];
-            //            var current = currentValues[propertyName];
+                    foreach (string propertyName in originalValues.PropertyNames)
+                    {
+                        var original = originalValues[propertyName];
+                        var current = currentValues[propertyName];
 
-            //            Console.WriteLine("Property {0} changed from {1} to {2}",
-            //         propertyName,
-            //         originalValues[propertyName],
-            //         currentValues[propertyName]);
-            //        }
-            //    }
-            //    else if (change.State == EntityState.Deleted)
-            //    {
-            //        // log deleted
-            //    }
-            //}
+                        Console.WriteLine("Property {0} changed from {1} to {2}",
+                     propertyName,
+                     originalValues[propertyName],
+                     currentValues[propertyName]);
+                    }
+                }
+                else if (change.State == EntityState.Deleted)
+                {
+                    // log deleted
+                }
+            }
             await Context.SaveChangesAsync();
         }
 
@@ -318,7 +318,8 @@ namespace BubbleStart.Database
             try
             {
                 var x = await Context.Set<Customer>()
-                        .ToListAsync();
+                    .Include(z => z.Illness)
+                    .ToListAsync();
                 return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
             }
             catch (Exception)

@@ -1,7 +1,9 @@
 ﻿using BubbleStart.Database;
+using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,6 +27,7 @@ namespace BubbleStart.ViewModels
             NextWeekCommand = new RelayCommand(async () => { await NextWeek(); });
             PreviousWeekCommand = new RelayCommand(async () => { await PreviousWeek(); });
             ReformerVisible = FunctionalVisible = true;
+
         }
 
         private int _GymIndex;
@@ -440,11 +443,11 @@ namespace BubbleStart.ViewModels
         }
 
 
-       
+
 
         private bool AppointmensFilter(object obj)
         {
-            if (obj is Apointment a && (GymIndex == 0 || (GymIndex == a.Person+1)))
+            if (obj is Apointment a && (GymIndex == 0 || (GymIndex == a.Person + 1)))
             {
                 return true;
             }
@@ -512,29 +515,43 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
+
+        public async Task AddCustomer(Customer customer, int selectedPerson, int type)
+        {
+            if (customer != null)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type };
+                Context.Add(ap);
+                if (!AppointmentsFunctional.Any(a => a.Customer.Id == ap.Customer.Id) && !AppointmentsReformer.Any(api => api.Customer.Id == ap.Customer.Id))
+                {
+                    if (type == 0)
+                    {
+
+                        AppointmentsFunctional.Add(ap);
+                    }
+                    else
+                    {
+                        AppointmentsReformer.Add(ap);
+                    }
+                    await Context.SaveAsync();
+                }
+                Mouse.OverrideCursor = Cursors.Arrow;
+            }
+        }
+
         private async Task AddApointment(int type)
         {
-            CustomersWindow_Viewmodel vm = new CustomersWindow_Viewmodel(Context);
+            CustomersWindow_Viewmodel vm = new CustomersWindow_Viewmodel(Context, type, this);
             await vm.LoadAsync();
             Window window = new FindCustomerWidnow
             {
                 DataContext = vm
             };
             window.ShowDialog();
-            Apointment ap = new Apointment { Customer = vm.SelectedCustomer, DateTime = Time, Person = vm.SelectedPerson, Room = type };
-            if (vm.SelectedCustomer != null)
-            {
-                Context.Add(ap);
-                await Context.SaveAsync();
-                if (type == 0)
-                {
-                    AppointmentsFunctional.Add(ap);
-                }
-                else
-                {
-                    AppointmentsReformer.Add(ap);
-                }
-            }
+
+
+
         }
 
         private bool CanDeleteFunctionalApointment()

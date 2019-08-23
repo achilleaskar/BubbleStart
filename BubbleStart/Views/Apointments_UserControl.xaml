@@ -8,6 +8,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:views="clr-namespace:BubbleStart.Views"
              xmlns:Converters="clr-namespace:BubbleStart.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              d:DataContext="{d:DesignInstance {x:Type viewmodels:Apointments_ViewModel}}"
              mc:Ignorable="d"
              Background="White"
@@ -18,6 +19,7 @@
     <UserControl.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:AppointmentShowedUptoColorConverter x:Key="appointmentShowedUptoColorConverter" />
+       
     </UserControl.Resources>
     <GroupBox Header="Πρόγραμμα Εβδομάδας"
               HorizontalAlignment="Center">
@@ -62,36 +64,42 @@
                     </Button>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <ItemsControl ItemsSource="{Binding Days[0].Hours}"
-                              VerticalAlignment="Top"
-                              Margin="38 0 0 0">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Height="Auto"
-                                    BorderThickness="1 1 0 0"
-                                    BorderBrush="Gray"
-                                    Width="93">
-                                <Label   VerticalAlignment="Center"
-                                         HorizontalAlignment="Center"
-                                         Content="{Binding Time,ConverterParameter='HH:mm', Converter={StaticResource DateTimeToString}}" />
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Auto"
-                              Grid.Row="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto"
+                          Grid.Row="1">
+                <Grid>
+                    <Grid.Resources>
+                        <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">12</sys:Double>
+                        <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">12</sys:Double>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <ItemsControl ItemsSource="{Binding Days[0].Hours}"
+                                  VerticalAlignment="Top"
+                                  Margin="38 0 0 0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Height="Auto"
+                                        BorderThickness="1 1 0 0"
+                                        BorderBrush="Gray"
+                                        Width="91">
+                                    <Label   VerticalAlignment="Center"
+                                             HorizontalAlignment="Center"
+                                             Content="{Binding Time,ConverterParameter='HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
                     <Border BorderBrush="Gray"
+                            Grid.Row="1"
                             BorderThickness="0 0 1 1"
                             VerticalAlignment="Top"
                             HorizontalAlignment="Left">
@@ -106,15 +114,14 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border 
-                                                    BorderThickness="1 1 0 0"
+                                            <Border BorderThickness="1 1 0 0"
                                                     BorderBrush="Gray"
                                                     Width="38">
                                                 <Grid HorizontalAlignment="Stretch"
                                                       VerticalAlignment="Stretch">
                                                     <Grid.RowDefinitions>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
                                                     </Grid.RowDefinitions>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition />
@@ -134,7 +141,9 @@
                                                     <Border BorderBrush="Gray"
                                                             Grid.Row="0"
                                                             Visibility="{Binding DataContext.FunctionalVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
-                                                            Grid.Column="1" Height="100"
+                                                            Grid.Column="1"
+                                                            Height="100"
+                                                            Background="LightYellow"
                                                             BorderThickness="1 0 0 0">
                                                         <TextBlock Text="Functional"
                                                                    VerticalAlignment="Center">
@@ -149,7 +158,8 @@
                                                             Grid.Column="1"
                                                             Background="BlanchedAlmond"
                                                             BorderThickness="1 0 0 0">
-                                                        <TextBlock Text="Reformer" VerticalAlignment="Center">
+                                                        <TextBlock Text="Reformer"
+                                                                   VerticalAlignment="Center">
                                                             <TextBlock.LayoutTransform>
                                                                 <RotateTransform Angle="-90" />
                                                             </TextBlock.LayoutTransform></TextBlock>
@@ -183,7 +193,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <Border BorderBrush="Gray"
-                                                                    Width="93"
+                                                                    Width="91"
                                                                     Height="100"
                                                                     BorderThickness="1 1 0 0">
                                                                 <Grid>
@@ -192,6 +202,7 @@
                                                                         <RowDefinition Height="Auto" />
                                                                     </Grid.RowDefinitions>
                                                                     <ListBox BorderThickness="0"
+                                                                             Background="LightYellow"
                                                                              SelectedItem="{Binding SelectedApointmentFunctional}"
                                                                              ItemsSource="{Binding AppointmentsFunctional}">
                                                                         <ListBox.Resources></ListBox.Resources>
@@ -199,13 +210,19 @@
                                                                             <DataTemplate>
                                                                                 <StackPanel Orientation="Horizontal">
                                                                                     <TextBlock Text="{Binding Customer}"
-                                                                                               Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}" />
+                                                                                               Padding="1"
+                                                                                               Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}">
+                                                                                        <TextBlock.ToolTip>
+                                                                                            <TextBlock Text="{Binding PersonName}" />
+                                                                                        </TextBlock.ToolTip>
+                                                                                    </TextBlock>
                                                                                 </StackPanel>
                                                                             </DataTemplate>
                                                                         </ListBox.ItemTemplate>
                                                                     </ListBox>
                                                                     <Border Grid.Row="1"
                                                                             BorderBrush="Black"
+                                                                            Background="LightYellow"
                                                                             BorderThickness="0 1 0 0">
                                                                         <Grid>
                                                                             <Button Content="+"
@@ -237,7 +254,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <Border BorderBrush="Gray"
-                                                                    Width="93"
+                                                                    Width="91"
                                                                     Height="100"
                                                                     BorderThickness="1 1 0 0">
                                                                 <Grid>
@@ -252,7 +269,7 @@
                                                                         <ListBox.ItemTemplate>
                                                                             <DataTemplate>
                                                                                 <StackPanel Orientation="Horizontal">
-                                                                                    <TextBlock Text="{Binding Customer}"
+                                                                                    <TextBlock Text="{Binding Customer}" Padding="1"
                                                                                                Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}" />
                                                                                 </StackPanel>
                                                                             </DataTemplate>
@@ -288,8 +305,8 @@
                             </StackPanel>
                         </StackPanel>
                     </Border>
-                </ScrollViewer>
-            </Grid>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </GroupBox>
 </UserControl>
