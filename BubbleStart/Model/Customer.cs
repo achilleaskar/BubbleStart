@@ -1765,7 +1765,8 @@ namespace BubbleStart.Model
                             }
                             else
                             {
-                                showUp.Color = new SolidColorBrush(Colors.White);
+                                showUp.Prog = new Program { Color = new SolidColorBrush(Colors.White) };
+                                continue;
                             }
                         }
                         showUp.Prog = selProg;
