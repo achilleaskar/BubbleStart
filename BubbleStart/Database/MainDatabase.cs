@@ -1,5 +1,7 @@
 ﻿using BubbleStart.Model;
+using EntityFramework.DynamicFilters;
 using MySql.Data.Entity;
+using System;
 using System.Data.Entity;
 
 namespace BubbleStart.Database
@@ -21,12 +23,23 @@ namespace BubbleStart.Database
         public MainDatabase() : base("BubbleDatabase")
         {
             Configuration.ValidateOnSaveEnabled = false;
+            Configuration.LazyLoadingEnabled = false;
         }
+
+        public DateTime Limit { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            if (DateTime.Today.Month > 7 && DateTime.Today.Day >= 20)
+            {
+                Limit = new DateTime(DateTime.Today.Year, 8, 20);
+            }
+            else
+            {
+                Limit = new DateTime(DateTime.Today.Year - 1, 8, 20);
+            }
             modelBuilder.Properties<string>()
-                .Configure(s => s.HasMaxLength(200).HasColumnType("varchar"));
+            .Configure(s => s.HasMaxLength(200).HasColumnType("varchar"));
             modelBuilder.Properties().Where(x => x.PropertyType == typeof(bool))
              .Configure(x => x.HasColumnType("bit"));
             //modelBuilder.Entity<ShowUp>()
@@ -36,6 +49,7 @@ namespace BubbleStart.Database
             //   .HasRequired(s => s.Customer)
             //   .WithRequiredPrincipal(ad => ad.Illness);
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Filter("Arrived", (ShowUp s) => s.Arrived >= Limit);
         }
     }
 }

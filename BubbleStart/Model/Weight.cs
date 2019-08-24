@@ -80,6 +80,10 @@ namespace BubbleStart.Model
         {
             get
             {
+                if (_WeightValue>1000)
+                {
+                    return _WeightValue / 100;
+                }
                 return _WeightValue;
             }
 

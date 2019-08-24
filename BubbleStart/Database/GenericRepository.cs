@@ -13,10 +13,21 @@ namespace BubbleStart.Database
     public class GenericRepository : IDisposable
     {
         protected readonly MainDatabase Context;
+        protected readonly DateTime Limit;
+
 
         public GenericRepository()
         {
             this.Context = new MainDatabase();
+            if (DateTime.Today.Month > 7 && DateTime.Today.Day >= 20)
+            {
+                Limit = new DateTime(DateTime.Today.Year, 8, 20);
+            }
+            else
+            {
+                Limit = new DateTime(DateTime.Today.Year - 1, 8, 20);
+
+            }
             //Context.Database.Log = Console.Write;
         }
 
@@ -33,7 +44,7 @@ namespace BubbleStart.Database
         internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate)
         {
             return await Context.ShowUps
-           .Where(s => s.Arrived >= StartDate && s.Arrived < EndDate)
+           .Where(s => s.Arrived >= StartDate && s.Arrived < EndDate && s.Arrived >= Limit)
            .Include(s => s.Customer)
            .OrderBy(s => s.Arrived)
            .ToListAsync();
@@ -48,7 +59,7 @@ namespace BubbleStart.Database
         {
             DateTime tmpEndDate = date.AddDays(6);
 
-            return await Context.Apointments.Where(a => a.DateTime >= date && a.DateTime < tmpEndDate)
+            return await Context.Apointments.Where(a => a.DateTime >= date && a.DateTime < tmpEndDate && a.DateTime >= Limit)
                 .Include(a => a.Customer)
                 .Include(a => a.Customer.ShowUps)
                 .ToListAsync();
@@ -250,7 +261,7 @@ namespace BubbleStart.Database
             {
                 endDateCash = endDateCash.AddDays(1);
                 return await Context.Set<Payment>()
-                    .Where(p => p.Date >= startDateCash && p.Date < endDateCash)
+                    .Where(p => p.Date >= startDateCash && p.Date < endDateCash && p.Date >= Limit)
                         .Include(p => p.Customer)
                         .ToListAsync();
             }
@@ -264,7 +275,7 @@ namespace BubbleStart.Database
 
         internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp)
         {
-            return await Context.Expenses.Where(filterp)
+            return await Context.Expenses.Where(e => e.Date >= Limit).Where(filterp)
                 .Include(e => e.User)
                 .ToListAsync();
         }
@@ -294,11 +305,24 @@ namespace BubbleStart.Database
         {
             try
             {
+                //var x = (await Context.Set<Customer>().Select(c => new
+                //{
+                //    c,
+                //    Programs = c.Programs.Where(p => p.StartDay >= Limit),
+                //    Payments = c.Payments.Where(p1 => p1.Date >= Limit),
+                //    c.WeightHistory,
+                //    c.Illness,
+                //    ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
+                //    Changes = c.Changes.Where(p3 => p3.Date >= Limit),
+                //    Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
+                //}).ToListAsync());
+
+
                 var x = await Context.Set<Customer>()
                         .Include(f => f.Programs)
                         .Include(g => g.Payments)
-                        .Include(c => c.Illness)
                         .Include(d => d.WeightHistory)
+                        .Include(c => c.Illness)
                         .Include(e => e.ShowUps)
                         .Include(h => h.Changes)
                         .Include(a => a.Apointments)

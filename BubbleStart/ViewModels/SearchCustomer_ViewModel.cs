@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Database;
+using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -343,21 +344,29 @@ namespace BubbleStart.ViewModels
 
             foreach (var c in Customers)
             {
-                c.PropertyChanged += EntityViewModelPropertyChanged;
-                c.Loaded = true;
-                c.SetColors();
-                SortPayments(c);
+                
+                try
+                {
+                    c.PropertyChanged += EntityViewModelPropertyChanged;
+                    c.Loaded = true;
+                    c.SetColors();
+                    SortPayments(c);
 
-                c.SelectProperProgram();
-                if (c.LastShowUp != null && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
-                {
-                    c.IsPracticing = true;
-                    CustomersPracticing.Add(c);
+                    c.SelectProperProgram();
+                    if (c.LastShowUp != null && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
+                    {
+                        c.IsPracticing = true;
+                        CustomersPracticing.Add(c);
+                    }
+                    c.CalculateRemainingAmount();
+                    if (c.Apointments.Any(a => a.DateTime.Date == DateTime.Today))
+                    {
+                        TodaysApointments.Add(c);
+                    }
                 }
-                c.CalculateRemainingAmount();
-                if (c.Apointments.Any(a => a.DateTime.Date == DateTime.Today))
+                catch (Exception ex)
                 {
-                    TodaysApointments.Add(c);
+                    MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
                 }
             }
             await Context.SaveAsync();

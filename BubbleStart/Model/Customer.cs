@@ -1027,6 +1027,7 @@ namespace BubbleStart.Model
                 Payments.CollectionChanged += PaymentsCollectionChanged;
                 PaymentsCollectionView = (CollectionView)CollectionViewSource.GetDefaultView(Payments);
                 PaymentsCollectionView.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Descending));
+                PaymentsCollectionView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
                 RaisePropertyChanged();
             }
         }
@@ -1717,6 +1718,7 @@ namespace BubbleStart.Model
 
         public void SelectProperProgram()
         {
+            SelectedProgram = null;
             foreach (var p in Programs)
             {
                 if (p.StartDay <= DateTime.Today && DateTime.Today < p.StartDay.AddMonths(p.Months).AddDays(5) && GetRemainingDays(p) > 0)
@@ -1732,16 +1734,12 @@ namespace BubbleStart.Model
             {
                 if (Programs != null && ShowUps != null && ShowUps.Count > 0 && Programs.Count > 0)
                 {
-                    if (Id==1)
-                    {
-
-                    }
                     Program selProg;
                     int group = 0;
                     int cntr = 1;
                     int progIndex = 0;
                     var programsReversed = Programs.OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
-                   
+
                     selProg = programsReversed[progIndex];
                     selProg.Color = new SolidColorBrush(Colors.LightGreen);
                     foreach (ShowUp showUp in ShowUps.OrderBy(s => s.Arrived).ThenBy(s => s.Id))

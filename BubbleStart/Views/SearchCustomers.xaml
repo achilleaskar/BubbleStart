@@ -15,6 +15,7 @@
     <UserControl.Resources>
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
         <Converters:BoolToShowedUp_Converter x:Key="BoolToShowedUp_Converter" />
+        <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
     </UserControl.Resources>
     <TabControl>
         <Grid>
@@ -68,6 +69,8 @@
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
+                            <DataGridTextColumn Header="#"
+                                                Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource  RowToIndexConverter}}" />
                             <DataGridTextColumn Header="Όνομα"
                                                 Width="120"
                                                 Binding="{Binding Name}" />
