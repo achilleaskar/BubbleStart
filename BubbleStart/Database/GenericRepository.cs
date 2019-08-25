@@ -305,28 +305,28 @@ namespace BubbleStart.Database
         {
             try
             {
-                //var x = (await Context.Set<Customer>().Select(c => new
-                //{
-                //    c,
-                //    Programs = c.Programs.Where(p => p.StartDay >= Limit),
-                //    Payments = c.Payments.Where(p1 => p1.Date >= Limit),
-                //    c.WeightHistory,
-                //    c.Illness,
-                //    ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
-                //    Changes = c.Changes.Where(p3 => p3.Date >= Limit),
-                //    Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
-                //}).ToListAsync());
+                var x = (await Context.Set<Customer>().Select(c => new
+                {
+                    c,
+                    Programs = c.Programs.Where(p => p.StartDay >= Limit),
+                    Payments = c.Payments.Where(p1 => p1.Date >= Limit),
+                    c.WeightHistory,
+                    c.Illness,
+                    ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
+                    Changes = c.Changes.Where(p3 => p3.Date >= Limit),
+                    Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
+                }).ToListAsync()).Select(x1=>x1.c).ToList();
 
 
-                var x = await Context.Set<Customer>()
-                        .Include(f => f.Programs)
-                        .Include(g => g.Payments)
-                        .Include(d => d.WeightHistory)
-                        .Include(c => c.Illness)
-                        .Include(e => e.ShowUps)
-                        .Include(h => h.Changes)
-                        .Include(a => a.Apointments)
-                        .ToListAsync();
+                //var x = await Context.Set<Customer>()
+                //        .Include(f => f.Programs)
+                //        .Include(g => g.Payments)
+                //        .Include(d => d.WeightHistory)
+                //        .Include(c => c.Illness)
+                //       // .Include(e => e.ShowUps)
+                //        .Include(h => h.Changes)
+                //        .Include(a => a.Apointments)
+                //        .ToListAsync();
                 return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
             }
             catch (Exception ex)

@@ -19,10 +19,10 @@
     <UserControl.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:AppointmentShowedUptoColorConverter x:Key="appointmentShowedUptoColorConverter" />
-       
+
     </UserControl.Resources>
     <GroupBox Header="Πρόγραμμα Εβδομάδας"
-              HorizontalAlignment="Center">
+              HorizontalAlignment="Left">
         <Grid Margin=" 0 -4 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -76,28 +76,35 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <ItemsControl ItemsSource="{Binding Days[0].Hours}"
-                                  VerticalAlignment="Top"
-                                  Margin="38 0 0 0">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Height="Auto"
-                                        BorderThickness="1 1 0 0"
-                                        BorderBrush="Gray"
-                                        Width="91">
-                                    <Label   VerticalAlignment="Center"
-                                             HorizontalAlignment="Center"
-                                             Content="{Binding Time,ConverterParameter='HH:mm', Converter={StaticResource DateTimeToString}}" />
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <Border BorderThickness="0 0 1 0"
+                           
+                            BorderBrush="Gray">
 
+                        <Grid>
+
+                            <ItemsControl ItemsSource="{Binding Days[0].Hours}"
+                                          VerticalAlignment="Top"
+                                          Margin="38 0 0 0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Height="Auto"
+                                                BorderThickness="1 1 0 0"
+                                                BorderBrush="Gray"
+                                                Width="92">
+                                            <Label   VerticalAlignment="Center"
+                                                     HorizontalAlignment="Center"
+                                                     Content="{Binding Time,ConverterParameter='HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </Border>
                     <Border BorderBrush="Gray"
                             Grid.Row="1"
                             BorderThickness="0 0 1 1"
@@ -193,7 +200,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <Border BorderBrush="Gray"
-                                                                    Width="91"
+                                                                    Width="92"
                                                                     Height="100"
                                                                     BorderThickness="1 1 0 0">
                                                                 <Grid>
@@ -254,7 +261,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <Border BorderBrush="Gray"
-                                                                    Width="91"
+                                                                    Width="92"
                                                                     Height="100"
                                                                     BorderThickness="1 1 0 0">
                                                                 <Grid>
@@ -269,7 +276,8 @@
                                                                         <ListBox.ItemTemplate>
                                                                             <DataTemplate>
                                                                                 <StackPanel Orientation="Horizontal">
-                                                                                    <TextBlock Text="{Binding Customer}" Padding="1"
+                                                                                    <TextBlock Text="{Binding Customer}"
+                                                                                               Padding="1"
                                                                                                Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}" />
                                                                                 </StackPanel>
                                                                             </DataTemplate>
