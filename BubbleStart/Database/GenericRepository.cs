@@ -82,6 +82,30 @@ namespace BubbleStart.Database
             }
         }
 
+
+
+        public async Task<Customer> GetFullCustomerById(int id)
+        {
+            try
+            {
+                return await Context.Set<Customer>().Where(c => c.Id == id)
+                        .Include(f => f.Programs)
+                        .Include(g => g.Payments)
+                        .Include(d => d.WeightHistory)
+                        .Include(c => c.Illness)
+                        .Include(e => e.ShowUps)
+                        .Include(h => h.Changes)
+                        .Include(a => a.Apointments)
+                        .FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            finally
+            { }
+        }
+
         public bool HasChanges()
         {
             //var AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
@@ -315,7 +339,7 @@ namespace BubbleStart.Database
                     ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
                     Changes = c.Changes.Where(p3 => p3.Date >= Limit),
                     Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
-                }).ToListAsync()).Select(x1=>x1.c).ToList();
+                }).ToListAsync()).Select(x1 => x1.c).ToList();
 
 
                 //var x = await Context.Set<Customer>()

@@ -386,6 +386,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -471,9 +472,10 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                         </GroupBox>
+                        <Button Content="Παλιά" Command="{Binding ShowPreviusDataCommand}" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center"/>
                         <GroupBox Grid.Row="1"
                                   Margin="5 0 0 0"
-                                  Grid.ColumnSpan="2"
+                                  Grid.ColumnSpan="3"
                                   Header="Αλλαγές">
                             <DataGrid ItemsSource="{Binding Changes}"
                                       VerticalAlignment="Bottom"

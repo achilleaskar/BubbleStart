@@ -31,6 +31,7 @@ namespace BubbleStart.Model
             Changes = new ObservableCollection<Change>();
             Apointments = new ObservableCollection<Apointment>();
             WeightHistory.CollectionChanged += WeigthsChanged;
+            ShowPreviusDataCommand = new RelayCommand(async () => { await ShowPreviewsData(); });
             DispatcherTimer timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMinutes(1)
@@ -47,6 +48,13 @@ namespace BubbleStart.Model
             OldShowUpDate = DateOfPayment = DateOfIssue = StartDate = DateTime.Today;
             DisableCustomerCommand = new RelayCommand(DisableCustomer);
             ProgramTypeIndex = -1;
+        }
+
+        private async Task ShowPreviewsData()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            await Context.GetFullCustomerById(Id);
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private void DisableCustomer()
@@ -247,7 +255,10 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public RelayCommand AddOldShowUpCommand { get; set; }
+        public RelayCommand AddOldShowUpCommand { get;  }
+
+        [NotMapped]
+        public RelayCommand ShowPreviusDataCommand { get;  }
 
         public string Address
         {
