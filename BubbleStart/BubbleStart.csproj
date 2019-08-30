@@ -347,10 +347,6 @@
     <Compile Include="Migrations\201908132016588_1115.Designer.cs">
       <DependentUpon>201908132016588_1115.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201908240029055_1234.cs" />
-    <Compile Include="Migrations\201908240029055_1234.Designer.cs">
-      <DependentUpon>201908240029055_1234.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Apointment.cs" />
     <Compile Include="Model\BaseModel.cs" />
@@ -556,9 +552,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908132016588_1115.resx">
       <DependentUpon>201908132016588_1115.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201908240029055_1234.resx">
-      <DependentUpon>201908240029055_1234.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

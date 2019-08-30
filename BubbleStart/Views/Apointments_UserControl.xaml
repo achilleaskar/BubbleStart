@@ -95,7 +95,7 @@
                                         <Border Height="Auto"
                                                 BorderThickness="1 1 0 0"
                                                 BorderBrush="Gray"
-                                                Width="92">
+                                                Width="89">
                                             <Label   VerticalAlignment="Center"
                                                      HorizontalAlignment="Center"
                                                      Content="{Binding Time,ConverterParameter='HH:mm', Converter={StaticResource DateTimeToString}}" />
@@ -160,7 +160,7 @@
                                                     </Border>
                                                     <Border BorderBrush="Gray"
                                                             Grid.Row="1"
-                                                            Height="100"
+                                                            Height="99"
                                                             Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                             Grid.Column="1"
                                                             Background="BlanchedAlmond"
@@ -188,7 +188,11 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <StackPanel>
+                                            <StackPanel 
+                                                Background="LightYellow">
+                                                <Border BorderBrush="Gray" HorizontalAlignment="Left"
+                                                        BorderThickness="0 0 1 0">
+                                                    
                                                 <ItemsControl ItemsSource="{Binding Hours}"
                                                               Visibility="{Binding DataContext.FunctionalVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                               HorizontalAlignment="Left">
@@ -200,7 +204,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <Border BorderBrush="Gray"
-                                                                    Width="92"
+                                                                    Width="89"
                                                                     Height="100"
                                                                     BorderThickness="1 1 0 0">
                                                                 <Grid>
@@ -250,7 +254,13 @@
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
-                                                <ItemsControl ItemsSource="{Binding Hours}"
+                                                </Border>
+
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Rectangle Height="100"
+                                                               Width="44"
+                                                               Fill="BlanchedAlmond" />
+                                                    <ItemsControl ItemsSource="{Binding Hours}"
                                                               Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                               HorizontalAlignment="Left">
                                                     <ItemsControl.ItemsPanel>
@@ -261,7 +271,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <Border BorderBrush="Gray"
-                                                                    Width="92"
+                                                                    Width="89"
                                                                     Height="100"
                                                                     BorderThickness="1 1 0 0">
                                                                 <Grid>
@@ -306,6 +316,8 @@
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
+                                                </StackPanel>
+
                                             </StackPanel>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
