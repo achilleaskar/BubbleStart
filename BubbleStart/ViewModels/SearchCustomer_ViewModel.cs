@@ -17,28 +17,6 @@ using System.Windows.Input;
 
 namespace BubbleStart.ViewModels
 {
-    public class CustomSorter : IComparer
-    {
-        #region Methods
-
-        public int Compare(object x, object y)
-        {
-            int digitsX = x.ToString().Length;
-            int digitsY = y.ToString().Length;
-            if (digitsX < digitsY)
-            {
-                return 1;
-            }
-            else if (digitsX > digitsY)
-            {
-                return -1;
-            }
-            return (int)x - (int)y;
-        }
-
-        #endregion Methods
-    }
-
     public class SearchCustomer_ViewModel : MyViewModelBase
     {
         #region Constructors

@@ -18,6 +18,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <GroupBox Header="Γυμανστής">
 
@@ -72,6 +73,14 @@
                                             Binding="{Binding Age}" />
                     </DataGrid.Columns>
                 </DataGrid>
+                <StackPanel Grid.Row="4" Orientation="Horizontal">
+                    <Button Content="Προσθήκη για πάντα"
+                            Margin="5" CommandParameter="1"
+                            Command="{Binding AddCustomerCommand}"/>
+                    <Button Content="Διαγραφή επόμενων"
+                            Margin="0 5 5 5" 
+                            Command="{Binding AddCustomerCommand}" CommandParameter="2" />
+                </StackPanel>
             </Grid>
         </GroupBox>
     </Grid>

@@ -55,6 +55,12 @@ namespace BubbleStart.Database
             return await Context.Payments.Where(p => p.Id == 67).FirstOrDefaultAsync();
         }
 
+        public async Task DeleteFromThis(Customer c, DateTime date)
+        {
+            var todel = await Context.Apointments.Where(p => p.Customer.Id == c.Id && p.DateTime >= date).ToListAsync();
+            Context.Apointments.RemoveRange(todel);
+        }
+
         public async Task<List<Apointment>> GetApointmentsAsync(DateTime date)
         {
             DateTime tmpEndDate = date.AddDays(6);
@@ -367,6 +373,7 @@ namespace BubbleStart.Database
             {
                 var x = await Context.Set<Customer>()
                     .Include(z => z.Illness)
+                    .Include(z => z.ShowUps)
                     .ToListAsync();
                 return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
             }

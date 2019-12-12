@@ -1,9 +1,7 @@
 ﻿using BubbleStart.Database;
-using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,7 +25,6 @@ namespace BubbleStart.ViewModels
             NextWeekCommand = new RelayCommand(async () => { await NextWeek(); });
             PreviousWeekCommand = new RelayCommand(async () => { await PreviousWeek(); });
             ReformerVisible = FunctionalVisible = true;
-
         }
 
         private int _GymIndex;
@@ -391,13 +388,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
-
-
         private ICollectionView _ReformerCV;
-
 
         public ICollectionView ReformerCV
         {
@@ -418,10 +409,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
         private ICollectionView _FunctionalCV;
-
 
         public ICollectionView FunctionalCV
         {
@@ -441,9 +429,6 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-
-
 
         private bool AppointmensFilter(object obj)
         {
@@ -515,27 +500,34 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
-
-        public async Task AddCustomer(Customer customer, int selectedPerson, int type)
+        public async Task AddCustomer(Customer customer, int selectedPerson, int type, bool forever = false)
         {
             if (customer != null)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type };
                 Context.Add(ap);
+                if (forever)
+                {
+                    DateTime tmpdate = Time;
+                    while (Time.Month != 8)
+                    {
+                        Time = Time.AddDays(7);
+                        Context.Add(new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type });
+                    }
+                }
                 if (!AppointmentsFunctional.Any(a => a.Customer.Id == ap.Customer.Id) && !AppointmentsReformer.Any(api => api.Customer.Id == ap.Customer.Id))
                 {
                     if (type == 0)
                     {
-
                         AppointmentsFunctional.Add(ap);
                     }
                     else
                     {
                         AppointmentsReformer.Add(ap);
                     }
-                    await Context.SaveAsync();
                 }
+                await Context.SaveAsync();
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
         }
@@ -549,9 +541,6 @@ namespace BubbleStart.ViewModels
                 DataContext = vm
             };
             window.ShowDialog();
-
-
-
         }
 
         private bool CanDeleteFunctionalApointment()

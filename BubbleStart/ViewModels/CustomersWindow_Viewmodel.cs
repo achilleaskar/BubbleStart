@@ -1,5 +1,4 @@
 ﻿using BubbleStart.Database;
-using BubbleStart.Messages;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
@@ -20,7 +19,14 @@ namespace BubbleStart.ViewModels
             Context = context;
             Type = type;
             Hour = hour;
-            AddCustomerCommand = new RelayCommand(async () => { await AddCustomer(); });
+            AddCustomerCommand = new RelayCommand<string>(async (obj) => { await AddCustomer(obj); }, CanAdd);
+        }
+
+        private bool Busy;
+
+        private bool CanAdd(object p)
+        {
+            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked);
         }
 
         #endregion Constructors
@@ -45,7 +51,7 @@ namespace BubbleStart.ViewModels
 
         #region Properties
 
-        public RelayCommand AddCustomerCommand { get; set; }
+        public RelayCommand<string> AddCustomerCommand { get; set; }
 
         public GenericRepository Context { get; }
 
@@ -108,11 +114,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private bool _IsDimitrisChecked;
-
 
         public bool IsDimitrisChecked
         {
@@ -232,9 +234,23 @@ namespace BubbleStart.ViewModels
             throw new NotImplementedException();
         }
 
-        private async Task AddCustomer()
+        private async Task AddCustomer(string p)
         {
-            await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Type);
+            Busy = true;
+            if (p == "2")
+            {
+                if (Hour.AppointmentsFunctional.Any(q => q.Customer.Id == SelectedCustomer.Id))
+                    Hour.AppointmentsFunctional.Remove(Hour.AppointmentsFunctional.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
+                if (Hour.AppointmentsReformer.Any(q => q.Customer.Id == SelectedCustomer.Id))
+                    Hour.AppointmentsReformer.Remove(Hour.AppointmentsReformer.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
+                await Context.DeleteFromThis(SelectedCustomer, Hour.Time);
+                await Context.SaveAsync();
+            }
+            else
+            {
+                await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Type, p == "1");
+            }
+            Busy = false;
         }
 
         private bool CustomerFilter(object item)

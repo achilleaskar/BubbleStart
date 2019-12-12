@@ -17,11 +17,12 @@ namespace BubbleStart.Converters
             {
                 if (a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date))
                     return new SolidColorBrush(Colors.Red);
+                else if (a.Person == 0)
+                    return new SolidColorBrush(Colors.LimeGreen);
                 else if (a.Person == 1)
                     return new SolidColorBrush(Colors.Orange);
                 else if (a.Person == 2)
-                    return new SolidColorBrush(Colors.White);
-
+                    return new SolidColorBrush(Colors.LightBlue);
             }
             return new SolidColorBrush(Colors.Transparent);
         }

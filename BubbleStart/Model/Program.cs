@@ -6,7 +6,6 @@ namespace BubbleStart.Model
 {
     public class Program : BaseModel
     {
-
         #region Fields
 
         private decimal _Amount;
@@ -31,7 +30,14 @@ namespace BubbleStart.Model
             PilatesFunctional,
             freeUse,
             MedicalExersise,
-            dokimastiko
+            dokimastiko,
+            yoga,
+            aerial,
+            masasRel30,
+            masazRel50,
+            masazTher30,
+            masazTher50,
+            blackfriday
         }
 
         #endregion Enums
@@ -158,6 +164,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         public ProgramTypes ProgramType
         {
             get
@@ -248,13 +255,33 @@ namespace BubbleStart.Model
 
                 case ProgramTypes.MedicalExersise:
                     return "Medical Exercise";
+
                 case ProgramTypes.dokimastiko:
                     return "Δοκιμαστικό";
+
+                case ProgramTypes.yoga:
+                    return "Yoga";
+
+                case ProgramTypes.aerial:
+                    return "Aerial Yoga";
+
+                case ProgramTypes.masasRel30:
+                    return "Μασάζ Χαλαρωτικό 30'";
+
+                case ProgramTypes.masazRel50:
+                    return "Μασάζ Χαλαρωτικό 50'";
+
+                case ProgramTypes.masazTher30:
+                    return "Μασάζ Θεραπευτικό 30'";
+
+                case ProgramTypes.masazTher50:
+                    return "Μασάζ Θεραπευτικό 50'";
+                case ProgramTypes.blackfriday:
+                    return "Black Friday Deal'";
             }
             return "Ανενεργό";
         }
 
         #endregion Methods
-
     }
 }

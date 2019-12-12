@@ -17,7 +17,6 @@
         <Converters:BoolToShowedUp_Converter x:Key="BoolToShowedUp_Converter" />
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
     </UserControl.Resources>
-    <TabControl>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -201,5 +200,4 @@
                 </TabItem>
             </TabControl>
         </Grid>
-    </TabControl>
 </UserControl>

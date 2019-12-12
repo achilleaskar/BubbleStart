@@ -10,6 +10,10 @@ namespace BubbleStart.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is DateTime valu && Equals(parameter, "hhh"))
+            {
+                return valu.AddMinutes(30).ToString("HH:mm");
+            }
             if (value is DateTime val && parameter is string par)
             {
                 return val.ToString(par);

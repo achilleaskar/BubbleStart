@@ -15,11 +15,11 @@ namespace BubbleStart.Model
                     case 0:
                         return "Γεωργία";
                     case 1:
-                        return "Yoga";
-                    case 2:
                         return "Dimitris";
+                    case 2:
+                        return "Yoga";
                     default:
-                        return"";
+                        return "";
                 }
             }
         }

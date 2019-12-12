@@ -27,8 +27,8 @@ namespace BubbleStart.Views
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (DataContext is CustomersWindow_Viewmodel vm && (vm.IsGogoChecked || vm.IsYogaChecked||vm.IsDimitrisChecked))
-                vm.AddCustomerCommand.Execute(null);
+            if (DataContext is CustomersWindow_Viewmodel vm && vm.AddCustomerCommand.CanExecute(null))
+                vm.AddCustomerCommand.Execute(0);
         }
     }
 }

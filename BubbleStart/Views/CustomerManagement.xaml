@@ -76,9 +76,9 @@
                            Grid.Row="3"
                            Grid.Column="0" />
                     <CheckBox IsChecked="{Binding Signed}"
-                               Grid.Row="3"
-                               Grid.Column="1"
-                               Margin="0,4" />
+                              Grid.Row="3"
+                              Grid.Column="1"
+                              Margin="0,4" />
                     <Separator Grid.Row="4"
                                Grid.ColumnSpan="2" />
                     <Label Content="Ενεργή συνδρομή:"
@@ -153,6 +153,13 @@
                                         <ComboBoxItem Content="Ελέυθερη Χρήση" />
                                         <ComboBoxItem Content="Medical Exercise" />
                                         <ComboBoxItem Content="Δοκιμαστικό" />
+                                        <ComboBoxItem Content="Yoga" />
+                                        <ComboBoxItem Content="Aerial Yoga" />
+                                        <ComboBoxItem Content="Μασάζ χαλαρωτικό 30'" />
+                                        <ComboBoxItem Content="Μασάζ χαλαρωτικό 50'" />
+                                        <ComboBoxItem Content="Μασάζ Θεραπευτικό 30'" />
+                                        <ComboBoxItem Content="Μασάζ Θεραπευτικό 50'" />
+                                        <ComboBoxItem Content="Black Friday Deal" />
                                     </ComboBox>
                                 </StackPanel>
                                 <StackPanel Grid.Row="0"
@@ -431,7 +438,8 @@
                         </GroupBox>
                         <GroupBox Header="Πληρωμές"
                                   Grid.Column="1"
-                                  Width="165" MaxHeight="400"
+                                  Width="165"
+                                  MaxHeight="400"
                                   Grid.RowSpan="30"
                                   VerticalAlignment="Top"
                                   Padding="5"
@@ -472,7 +480,11 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                         </GroupBox>
-                        <Button Content="Παλιά" Command="{Binding ShowPreviusDataCommand}" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                        <Button Content="Παλιά"
+                                Command="{Binding ShowPreviusDataCommand}"
+                                Grid.Column="2"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Center" />
                         <GroupBox Grid.Row="1"
                                   Margin="5 0 0 0"
                                   Grid.ColumnSpan="3"
