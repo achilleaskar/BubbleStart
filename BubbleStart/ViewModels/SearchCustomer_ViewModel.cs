@@ -1,11 +1,10 @@
-﻿using BubbleStart.Database;
+﻿using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -25,9 +24,9 @@ namespace BubbleStart.ViewModels
         {
         }
 
-        public SearchCustomer_ViewModel(GenericRepository context)
+        public SearchCustomer_ViewModel(BasicDataManager basicDataManager)
         {
-            Context = context;
+            BasicDataManager = basicDataManager;
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
             SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); }, CanSaveCustomer);
             ShowedUpCommand = new RelayCommand(async () => { await CustomerShowedUp(); });
@@ -36,8 +35,10 @@ namespace BubbleStart.ViewModels
             CustomersPracticing = new ObservableCollection<Customer>();
             DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(); });
             CancelApointmentCommand = new RelayCommand(async () => { await CancelApointment(); });
-            //PaymentCommand.CanExecute((obj) => CanMakePayment(obj));
-            // CreateNewCustomer();
+            OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
+            OpenActiveCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedPracticingCustomer); });
+            OpenActiveCustomerSideManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedApointment); });
+            Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
         }
 
         #endregion Constructors
@@ -69,8 +70,6 @@ namespace BubbleStart.ViewModels
         public RelayCommand<string> BodyPartSelected { get; set; }
 
         public RelayCommand CancelApointmentCommand { get; set; }
-
-        public GenericRepository Context { get; }
 
         public RelayCommand CreateNewCustomerCommand { get; set; }
 
@@ -276,6 +275,8 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public BasicDataManager BasicDataManager { get; }
+
         #endregion Properties
 
         #region Methods
@@ -285,74 +286,17 @@ namespace BubbleStart.ViewModels
             SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
             SelectedPracticingCustomer.IsPracticing = false;
             CustomersPracticing.Remove(SelectedPracticingCustomer);
-            await Context.SaveAsync();
+            await BasicDataManager.SaveAsync();
         }
 
         public async Task CustomerShowedUp()
         {
             if (SelectedCustomer != null)
             {
-                Mouse.OverrideCursor = Cursors.Wait;
                 CustomersPracticing.Add(SelectedCustomer);
                 SelectedCustomer.ShowedUp(true);
-                await Context.SaveAsync();
-                Mouse.OverrideCursor = Cursors.Arrow;
+                await BasicDataManager.SaveAsync();
             }
-        }
-
-        public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
-        {
-            List<District> Districts = (await Context.GetAllAsync<District>()).OrderBy(d => d.Name).ToList();
-            TodaysApointments = new ObservableCollection<Customer>();
-            Helpers.StaticResources.Districts.Clear();
-            foreach (var item in Districts)
-            {
-                Helpers.StaticResources.Districts.Add(item);
-            }
-
-            OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
-            OpenActiveCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedPracticingCustomer); });
-            OpenActiveCustomerSideManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedApointment); });
-
-            CustomersPracticing.Clear();
-            var u = (await Context.GetAllAsync<User>());
-            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()));
-            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
-            CustomersCollectionView.Filter = CustomerFilter;
-
-            foreach (var c in Customers)
-            {
-                
-                try
-                {
-                    c.PropertyChanged += EntityViewModelPropertyChanged;
-                    c.Loaded = true;
-                    c.SetColors();
-                    SortPayments(c);
-
-                    c.SelectProperProgram();
-                    if (c.LastShowUp != null && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
-                    {
-                        c.IsPracticing = true;
-                        CustomersPracticing.Add(c);
-                    }
-                    c.CalculateRemainingAmount();
-                    if (c.Apointments.Any(a => a.DateTime.Date == DateTime.Today))
-                    {
-                        TodaysApointments.Add(c);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
-                }
-            }
-            await Context.SaveAsync();
-        }
-
-        public override Task ReloadAsync()
-        {
-            throw new NotImplementedException();
         }
 
         private void BodyPartChanged(string selectedIndex)
@@ -364,8 +308,8 @@ namespace BubbleStart.ViewModels
         {
             if (SelectedApointment != null)
             {
-                Context.Delete(SelectedApointment.Apointments.Where(a => a.DateTime.Date == DateTime.Today.Date).FirstOrDefault());
-                await Context.SaveAsync();
+                BasicDataManager.Delete(SelectedApointment.Apointments.Where(a => a.DateTime.Date == DateTime.Today.Date).FirstOrDefault());
+                await BasicDataManager.SaveAsync();
                 TodaysApointments.Remove(SelectedApointment);
             }
         }
@@ -393,7 +337,7 @@ namespace BubbleStart.ViewModels
             return customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm);
         }
 
-        private void Customers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Customers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -414,101 +358,63 @@ namespace BubbleStart.ViewModels
 
         private async Task DeleteCustomer()
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            Context.Add(new Change($"Διαγράφηκε Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", Context.GetById<User>(Helpers.StaticResources.User.Id)));
-            Context.Delete(SelectedCustomer);
+            BasicDataManager.Add(new Change($"Διαγράφηκε Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", StaticResources.User));
+            BasicDataManager.Delete(SelectedCustomer);
             Customers.Remove(SelectedCustomer);
-            await Context.SaveAsync();
-            Mouse.OverrideCursor = Cursors.Arrow;
+            await BasicDataManager.SaveAsync();
         }
 
         private void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            RaisePropertyChanged(nameof(SelectedCustomer));
+            // RaisePropertyChanged(nameof(SelectedCustomer));
 
-            if (e.PropertyName == "IsActiveColor")
-            {
-                Customers = new ObservableCollection<Customer>(Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
-                CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
-                CustomersCollectionView.Filter = CustomerFilter;
-                CustomersCollectionView.Refresh();
-            }
-        }
+            //if (e.PropertyName == "IsActiveColor")
+            //{
+            //    Customers = new ObservableCollection<Customer>(Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
 
-        private void OpenActiveCustomerManagement()
-        {
-            throw new NotImplementedException();
+            //}
         }
 
         private void OpenCustomerManagement(Customer c)
         {
             if (c != null)
             {
-                if (Context.HasChanges())
-                {
-                    MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να συνεχίσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    if (result == MessageBoxResult.No)
-                    {
-                        return;
-                    }
-                }
-                if (Context.HasChanges())
-                {
-                    Context.RollBack();
-                }
+                //if (BasicDataManager.HasChanges())
+                //{
+                //    MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να συνεχίσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                //    if (result == MessageBoxResult.No)
+                //    {
+                //        return;
+                //    }
+                //    BasicDataManager.RollBack();
+                //}
 
-                c.Context = Context;
+                c.BasicDataManager = BasicDataManager;
                 Window window = new CustomerManagement
                 {
                     DataContext = c
                 };
-                Application.Current.MainWindow.Visibility = Visibility.Hidden;
-                window.ShowDialog();
-                if (Context.HasChanges())
-                {
-                    Context.RollBack();
-                }
-                Application.Current.MainWindow.Visibility = Visibility.Visible;
+                Messenger.Default.Send(new OpenChildWindowCommand(window));
             }
         }
 
         private async Task SaveCustomer()
         {
-            Mouse.OverrideCursor = Cursors.Wait;
             if (SelectedCustomer != null)
             {
-                //if (SelectedCustomer.NewWeight > 0)
-                //{
-                //    SelectedCustomer.WeightHistory.Add(new Weight { WeightValue = SelectedCustomer.NewWeight });
-                //    SelectedCustomer.NewWeight = 0;
-                //}
-                if (!string.IsNullOrEmpty(SelectedCustomer.DistrictText) && !Helpers.StaticResources.Districts.Any(d => d.Name == SelectedCustomer.DistrictText))
+                if (!string.IsNullOrEmpty(SelectedCustomer.DistrictText) && !BasicDataManager.Districts.Any(d => d.Name == SelectedCustomer.DistrictText))
                 {
-                    Context.Add(new District { Name = SelectedCustomer.DistrictText });
+                    var d = new District { Name = SelectedCustomer.DistrictText };
+                    BasicDataManager.Add(d);
+                    BasicDataManager.Districts.Add(d);
                 }
-                if (SelectedCustomer.Id > 0)
+                if (SelectedCustomer.Id == 0)
                 {
-                    await Context.SaveAsync();
-                }
-                else
-                {
-                    Context.Add(SelectedCustomer);
+                    BasicDataManager.Add(SelectedCustomer);
                     Customers.Add(SelectedCustomer);
-                    await Context.SaveAsync();
                 }
+                await BasicDataManager.SaveAsync();
                 SelectedCustomer.RaisePropertyChanged(nameof(Customer.BMI));
-            }
-            Mouse.OverrideCursor = Cursors.Arrow;
-        }
-
-        private void SortPayments(Customer c)
-        {
-            foreach (Program program in c.Programs)
-            {
-                if (c.Payments.Any(p => p.Amount == program.Amount && p.Date == program.DayOfIssue))
-                {
-                    program.Paid = true;
-                }
             }
         }
 
@@ -672,6 +578,46 @@ namespace BubbleStart.ViewModels
                 }
             }
             return toReturn;
+        }
+
+        public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
+        {
+            TodaysApointments = new ObservableCollection<Customer>() ;
+            Customers = new ObservableCollection<Customer>(BasicDataManager.Customers);
+            CustomersPracticing.Clear();
+            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
+            CustomersCollectionView.Filter = CustomerFilter;
+
+            foreach (var c in Customers)
+            {
+                try
+                {
+                    c.PropertyChanged += EntityViewModelPropertyChanged;
+                    c.Loaded = true;
+                    c.SetColors();
+                    c.SelectProperProgram();
+                    if (c.LastShowUp != null && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
+                    {
+                        c.IsPracticing = true;
+                        CustomersPracticing.Add(c);
+                    }
+                    c.CalculateRemainingAmount();
+                    if (c.Apointments.Any(a => a.DateTime.Date == DateTime.Today))
+                    {
+                        TodaysApointments.Add(c);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
+                }
+            }
+            CustomersCollectionView.Refresh();
+        }
+
+        public override void Reload()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion Methods

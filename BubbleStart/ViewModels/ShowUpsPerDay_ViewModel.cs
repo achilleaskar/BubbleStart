@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Database;
+using BubbleStart.Helpers;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight;
@@ -15,18 +16,19 @@ namespace BubbleStart.ViewModels
 {
     public class ShowUpsPerDay_ViewModel : ViewModelBase
     {
-        public ShowUpsPerDay_ViewModel()
+        public ShowUpsPerDay_ViewModel(BasicDataManager basicDataManager)
         {
             ShowShowUpsCommand = new RelayCommand(async () => { await ShowShowUps(); });
             StartDate = EndDate = DateTime.Today;
             OpenActiveCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedShowUp.Customer); });
+            BasicDataManager = basicDataManager;
         }
 
         private void OpenCustomerManagement(Customer c)
         {
             if (c != null)
             {
-                if (Context.HasChanges())
+                if (BasicDataManager.HasChanges())
                 {
                     MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να συνεχίσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     if (result == MessageBoxResult.No)
@@ -34,27 +36,22 @@ namespace BubbleStart.ViewModels
                         return;
                     }
                 }
-                if (Context.HasChanges())
+                if (BasicDataManager.HasChanges())
                 {
-                    Context.RollBack();
+                    BasicDataManager.RollBack();
                 }
 
-                c.Context = Context;
+                c.BasicDataManager = BasicDataManager;
                 Window window = new CustomerManagement
                 {
                     DataContext = c
                 };
                 Application.Current.MainWindow.Visibility = Visibility.Hidden;
                 window.ShowDialog();
-                if (Context.HasChanges())
-                {
-                    Context.RollBack();
-                }
                 Application.Current.MainWindow.Visibility = Visibility.Visible;
             }
         }
 
-        GenericRepository Context;
 
 
 
@@ -84,10 +81,9 @@ namespace BubbleStart.ViewModels
         private async Task ShowShowUps()
         {
 
-            Context = new GenericRepository();
 
 
-            DailyShowUps = new ObservableCollection<ShowUp>((await Context.GetAllShowUpsInRangeAsyncsAsync(StartDate, EndDate.AddDays(1))));
+            DailyShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(StartDate, EndDate.AddDays(1))));
 
         }
 
@@ -168,5 +164,6 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand OpenActiveCustomerManagementCommand { get; internal set; }
+        public BasicDataManager BasicDataManager { get; }
     }
 }

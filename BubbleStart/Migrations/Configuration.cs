@@ -1,16 +1,16 @@
 namespace BubbleStart.Migrations
 {
+    using BubbleStart.Database;
     using System.Data.Entity.Migrations;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<BubbleStart.Database.MainDatabase>
+    internal sealed class Configuration : DbMigrationsConfiguration<MainDatabase>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-           
         }
 
-        protected override void Seed(BubbleStart.Database.MainDatabase context)
+        protected override void Seed(MainDatabase context)
         {
             //  This method will be called after migrating to the latest version.
 

@@ -1,7 +1,10 @@
 ﻿using BubbleStart.Database;
+using BubbleStart.Helpers;
+using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,18 +19,82 @@ namespace BubbleStart.ViewModels
 {
     public class Apointments_ViewModel : MyViewModelBase
     {
+
         #region Constructors
 
-        public Apointments_ViewModel()
+        public Apointments_ViewModel(Helpers.BasicDataManager basicDataManager)
         {
             Days = new ObservableCollection<Day>();
-            Context = new GenericRepository();
             NextWeekCommand = new RelayCommand(async () => { await NextWeek(); });
             PreviousWeekCommand = new RelayCommand(async () => { await PreviousWeek(); });
+            ShowProgramCommand = new RelayCommand(async () => { await CreateProgram(); });
             ReformerVisible = FunctionalVisible = true;
+            BasicDataManager = basicDataManager;
+            Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+
         }
 
+        public bool HasDays => Days != null && Days.Count > 0;
+
+        public RelayCommand ShowProgramCommand { get; set; }
+
+        #endregion Constructors
+
+        #region Fields
+
+        private ObservableCollection<Day> _Days;
+        private bool _FunctionalVisible;
         private int _GymIndex;
+
+        private bool _ReformerVisible;
+
+        private int _RoomIndex;
+
+        private DateTime _StartDate;
+
+        #endregion Fields
+
+        #region Properties
+
+        public BasicDataManager BasicDataManager { get; }
+
+        public ObservableCollection<Day> Days
+        {
+            get
+            {
+                return _Days;
+            }
+
+            set
+            {
+                if (_Days == value)
+                {
+                    return;
+                }
+
+                _Days = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool FunctionalVisible
+        {
+            get
+            {
+                return _FunctionalVisible;
+            }
+
+            set
+            {
+                if (_FunctionalVisible == value)
+                {
+                    return;
+                }
+
+                _FunctionalVisible = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public int GymIndex
         {
@@ -54,8 +121,28 @@ namespace BubbleStart.ViewModels
                 }
             }
         }
+        public RelayCommand NextWeekCommand { get; set; }
 
-        private int _RoomIndex;
+        public RelayCommand PreviousWeekCommand { get; set; }
+
+        public bool ReformerVisible
+        {
+            get
+            {
+                return _ReformerVisible;
+            }
+
+            set
+            {
+                if (_ReformerVisible == value)
+                {
+                    return;
+                }
+
+                _ReformerVisible = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public int RoomIndex
         {
@@ -89,101 +176,6 @@ namespace BubbleStart.ViewModels
                 }
             }
         }
-
-        private bool _ReformerVisible;
-
-        public bool ReformerVisible
-        {
-            get
-            {
-                return _ReformerVisible;
-            }
-
-            set
-            {
-                if (_ReformerVisible == value)
-                {
-                    return;
-                }
-
-                _ReformerVisible = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _FunctionalVisible;
-
-        public bool FunctionalVisible
-        {
-            get
-            {
-                return _FunctionalVisible;
-            }
-
-            set
-            {
-                if (_FunctionalVisible == value)
-                {
-                    return;
-                }
-
-                _FunctionalVisible = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private async Task PreviousWeek()
-        {
-            Mouse.OverrideCursor = Cursors.Wait;
-            StartDate = StartDate.AddDays(-7);
-            await CreateProgram();
-            Mouse.OverrideCursor = Cursors.Arrow;
-        }
-
-        private async Task NextWeek()
-        {
-            Mouse.OverrideCursor = Cursors.Wait;
-            StartDate = StartDate.AddDays(7);
-            await CreateProgram();
-            Mouse.OverrideCursor = Cursors.Arrow;
-        }
-
-        #endregion Constructors
-
-        #region Fields
-
-        private ObservableCollection<Day> _Days;
-
-        private DateTime _StartDate;
-
-        #endregion Fields
-
-        #region Properties
-
-        public RelayCommand PreviousWeekCommand { get; set; }
-        public RelayCommand NextWeekCommand { get; set; }
-
-        public GenericRepository Context { get; }
-
-        public ObservableCollection<Day> Days
-        {
-            get
-            {
-                return _Days;
-            }
-
-            set
-            {
-                if (_Days == value)
-                {
-                    return;
-                }
-
-                _Days = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public DateTime StartDate
         {
             get
@@ -209,12 +201,12 @@ namespace BubbleStart.ViewModels
 
         public async Task CreateProgram()
         {
-            List<Apointment> apointments = (await Context.GetApointmentsAsync(StartDate)).ToList();
+            List<Apointment> apointments = (await BasicDataManager.Context.GetApointmentsAsync(StartDate)).ToList();
             DateTime tmpDate = StartDate;
             Days.Clear();
             for (int i = 0; i < 6; i++)
             {
-                Days.Add(new Day(Context, tmpDate));
+                Days.Add(new Day(BasicDataManager, tmpDate));
                 tmpDate = tmpDate.AddDays(1);
             }
 
@@ -234,18 +226,35 @@ namespace BubbleStart.ViewModels
                     MessageBox.Show("Ραντεβού εκτός εβδομάδας");
                 }
             }
+            RaisePropertyChanged(nameof(HasDays));
             RaisePropertyChanged(nameof(Days));
         }
 
-        public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
+        public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             StartDate = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek + 6) % 7);
-            await CreateProgram();
         }
 
-        public override Task ReloadAsync()
+        public override void Reload()
         {
             throw new NotImplementedException();
+        }
+
+
+        private async Task NextWeek()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            StartDate = StartDate.AddDays(7);
+            await CreateProgram();
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private async Task PreviousWeek()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            StartDate = StartDate.AddDays(-7);
+            await CreateProgram();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         #endregion Methods
@@ -253,29 +262,29 @@ namespace BubbleStart.ViewModels
 
     public class Day : BaseModel
     {
+
         #region Constructors
 
-        public Day(GenericRepository context, DateTime date)
+        public Day(BasicDataManager basicDataManager, DateTime date)
         {
             Date = date;
             Hours = new ObservableCollection<Hour>
             {
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,8,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,9,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,10,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,11,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,12,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,13,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,14,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,15,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,16,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,17,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,18,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,19,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,20,0,0),context),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,21,0,0),context)
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,8,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,9,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,10,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,11,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,12,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,13,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,14,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,15,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,16,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,17,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,18,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,19,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,20,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,21,0,0),basicDataManager)
             };
-            Context = context;
         }
 
         #endregion Constructors
@@ -288,8 +297,6 @@ namespace BubbleStart.ViewModels
         #endregion Fields
 
         #region Properties
-
-        public GenericRepository Context { get; }
 
         public DateTime Date
         {
@@ -332,26 +339,23 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Properties
+
     }
 
     public class Hour : BaseModel
     {
+
         #region Constructors
 
-        public Hour(DateTime time, GenericRepository context)
+        public Hour(DateTime time, BasicDataManager basicDataManager)
         {
             Time = time;
-            AddApointmentCommand = new RelayCommand<int>(async (obj) => { await AddApointment(obj); });
+            BasicDataManager = basicDataManager;
+            AddApointmentCommand = new RelayCommand<int>(AddApointment);
             DeleteFunctionalApointmentCommand = new RelayCommand(async () => { await DeleteApointment(0); }, CanDeleteFunctionalApointment);
             DeleteReformerApointmentCommand = new RelayCommand(async () => { await DeleteApointment(1); }, CanDeleteReformerApointment);
-            Context = context;
             AppointmentsFunctional = new ObservableCollection<Apointment>();
             AppointmentsReformer = new ObservableCollection<Apointment>();
-        }
-
-        private bool CanDeleteReformerApointment()
-        {
-            return SelectedApointmentReformer != null;
         }
 
         #endregion Constructors
@@ -359,6 +363,14 @@ namespace BubbleStart.ViewModels
         #region Fields
 
         private ObservableCollection<Apointment> _ApointmentsFunctional;
+
+        private ObservableCollection<Apointment> _AppointmentsReformer;
+
+        private ICollectionView _FunctionalCV;
+
+        private int _GymIndex;
+
+        private ICollectionView _ReformerCV;
 
         #endregion Fields
 
@@ -388,82 +400,6 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        private ICollectionView _ReformerCV;
-
-        public ICollectionView ReformerCV
-        {
-            get
-            {
-                return _ReformerCV;
-            }
-
-            set
-            {
-                if (_ReformerCV == value)
-                {
-                    return;
-                }
-
-                _ReformerCV = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ICollectionView _FunctionalCV;
-
-        public ICollectionView FunctionalCV
-        {
-            get
-            {
-                return _FunctionalCV;
-            }
-
-            set
-            {
-                if (_FunctionalCV == value)
-                {
-                    return;
-                }
-
-                _FunctionalCV = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool AppointmensFilter(object obj)
-        {
-            if (obj is Apointment a && (GymIndex == 0 || (GymIndex == a.Person + 1)))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private int _GymIndex;
-
-        public int GymIndex
-        {
-            get
-            {
-                return _GymIndex;
-            }
-
-            set
-            {
-                if (_GymIndex == value)
-                {
-                    return;
-                }
-
-                _GymIndex = value;
-                RaisePropertyChanged();
-                FunctionalCV.Refresh();
-                ReformerCV.Refresh();
-            }
-        }
-
-        private ObservableCollection<Apointment> _AppointmentsReformer;
-
         public ObservableCollection<Apointment> AppointmentsReformer
         {
             get
@@ -486,15 +422,75 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public GenericRepository Context { get; }
-
         public RelayCommand DeleteFunctionalApointmentCommand { get; set; }
+
         public RelayCommand DeleteReformerApointmentCommand { get; set; }
 
+        public ICollectionView FunctionalCV
+        {
+            get
+            {
+                return _FunctionalCV;
+            }
+
+            set
+            {
+                if (_FunctionalCV == value)
+                {
+                    return;
+                }
+
+                _FunctionalCV = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int GymIndex
+        {
+            get
+            {
+                return _GymIndex;
+            }
+
+            set
+            {
+                if (_GymIndex == value)
+                {
+                    return;
+                }
+
+                _GymIndex = value;
+                RaisePropertyChanged();
+                FunctionalCV.Refresh();
+                ReformerCV.Refresh();
+            }
+        }
+
+        public ICollectionView ReformerCV
+        {
+            get
+            {
+                return _ReformerCV;
+            }
+
+            set
+            {
+                if (_ReformerCV == value)
+                {
+                    return;
+                }
+
+                _ReformerCV = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public Apointment SelectedApointmentFunctional { get; set; }
+
         public Apointment SelectedApointmentReformer { get; set; }
 
         public DateTime Time { get; set; }
+        public BasicDataManager BasicDataManager { get; }
 
         #endregion Properties
 
@@ -506,14 +502,13 @@ namespace BubbleStart.ViewModels
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type };
-                Context.Add(ap);
                 if (forever)
                 {
                     DateTime tmpdate = Time;
                     while (Time.Month != 8)
                     {
                         Time = Time.AddDays(7);
-                        Context.Add(new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type });
+                        BasicDataManager.Add(new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type });
                     }
                 }
                 if (!AppointmentsFunctional.Any(a => a.Customer.Id == ap.Customer.Id) && !AppointmentsReformer.Any(api => api.Customer.Id == ap.Customer.Id))
@@ -521,21 +516,25 @@ namespace BubbleStart.ViewModels
                     if (type == 0)
                     {
                         AppointmentsFunctional.Add(ap);
+                        BasicDataManager.Add(ap);
+
                     }
                     else
                     {
                         AppointmentsReformer.Add(ap);
+                        BasicDataManager.Add(ap);
+
                     }
                 }
-                await Context.SaveAsync();
+                await BasicDataManager.SaveAsync();
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
         }
 
-        private async Task AddApointment(int type)
+        private void AddApointment(int type)
         {
-            CustomersWindow_Viewmodel vm = new CustomersWindow_Viewmodel(Context, type, this);
-            await vm.LoadAsync();
+            CustomersWindow_Viewmodel vm = new CustomersWindow_Viewmodel(BasicDataManager, type, this);
+            vm.Load();
             Window window = new FindCustomerWidnow
             {
                 DataContext = vm
@@ -543,29 +542,43 @@ namespace BubbleStart.ViewModels
             window.ShowDialog();
         }
 
+        private bool AppointmensFilter(object obj)
+        {
+            if (obj is Apointment a && (GymIndex == 0 || (GymIndex == a.Person + 1)))
+            {
+                return true;
+            }
+            return false;
+        }
+
         private bool CanDeleteFunctionalApointment()
         {
             return SelectedApointmentFunctional != null;
         }
 
+        private bool CanDeleteReformerApointment()
+        {
+            return SelectedApointmentReformer != null;
+        }
         private async Task DeleteApointment(int type)
         {
             Mouse.OverrideCursor = Cursors.Wait;
 
             if (type == 0)
             {
-                Context.Delete(SelectedApointmentFunctional);
+                BasicDataManager.Delete(SelectedApointmentFunctional);
                 AppointmentsFunctional.Remove(SelectedApointmentFunctional);
             }
             else
             {
-                Context.Delete(SelectedApointmentReformer);
+                BasicDataManager.Delete(SelectedApointmentReformer);
                 AppointmentsReformer.Remove(SelectedApointmentReformer);
             }
-            await Context.SaveAsync();
+            await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         #endregion Methods
+
     }
 }

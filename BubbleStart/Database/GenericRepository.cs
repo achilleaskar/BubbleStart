@@ -19,6 +19,7 @@ namespace BubbleStart.Database
         public GenericRepository()
         {
             this.Context = new MainDatabase();
+
             if (DateTime.Today.Month > 7 && DateTime.Today.Day >= 20)
             {
                 Limit = new DateTime(DateTime.Today.Year, 8, 20);
@@ -30,10 +31,21 @@ namespace BubbleStart.Database
             }
             //Context.Database.Log = Console.Write;
         }
-
+        protected virtual void Dispose(bool b)
+        {
+            if (b)
+            {
+                Context.Dispose();
+                GC.SuppressFinalize(this);
+                return;
+            }
+        }
         public void Dispose()
         {
-            throw new NotImplementedException();
+            // Dispose of unmanaged resources.
+            Dispose(true);
+            // Suppress finalization.
+            GC.SuppressFinalize(this);
         }
 
         public async Task<User> FindUserAsync(string userName)
@@ -134,45 +146,45 @@ namespace BubbleStart.Database
             //    }
             //});
 
-            var changes = from e in Context.ChangeTracker.Entries()
-                          where e.State.HasFlag(EntityState.Added) ||
-                              e.State.HasFlag(EntityState.Modified) ||
-                              e.State.HasFlag(EntityState.Deleted)
-                          select e;
+            //var changes = from e in Context.ChangeTracker.Entries()
+            //              where e.State.HasFlag(EntityState.Added) ||
+            //                  e.State.HasFlag(EntityState.Modified) ||
+            //                  e.State.HasFlag(EntityState.Deleted)
+            //              select e;
 
-            foreach (var change in changes)
-            {
-                if (change.State == EntityState.Added)
-                {
-                    // Log Added
-                }
-                else if (change.State == EntityState.Modified)
-                {
-                    // Log Modified
-                    var item = change.Entity;
-                    var originalValues = Context.Entry(item).OriginalValues;
-                    var currentValues = Context.Entry(item).CurrentValues;
+            //foreach (var change in changes)
+            //{
+            //    if (change.State == EntityState.Added)
+            //    {
+            //        // Log Added
+            //    }
+            //    else if (change.State == EntityState.Modified)
+            //    {
+            //        // Log Modified
+            //        var item = change.Entity;
+            //        var originalValues = Context.Entry(item).OriginalValues;
+            //        var currentValues = Context.Entry(item).CurrentValues;
 
-                    foreach (string propertyName in originalValues.PropertyNames)
-                    {
-                        var original = originalValues[propertyName];
-                        var current = currentValues[propertyName];
+            //        foreach (string propertyName in originalValues.PropertyNames)
+            //        {
+            //            var original = originalValues[propertyName];
+            //            var current = currentValues[propertyName];
 
-                        if (original != current)
-                        {
-                        }
-                        Console.WriteLine("Property {0} changed from {1} to {2}",
-                     propertyName,
-                     originalValues[propertyName],
-                     currentValues[propertyName]);
-                    }
-                }
-                else if (change.State == EntityState.Deleted)
-                {
-                    // log deleted
-                }
-            }
-            //return Context.ChangeTracker.HasChanges();
+            //            if (original != current)
+            //            {
+            //            }
+            //            Console.WriteLine("Property {0} changed from {1} to {2}",
+            //         propertyName,
+            //         originalValues[propertyName],
+            //         currentValues[propertyName]);
+            //        }
+            //    }
+            //    else if (change.State == EntityState.Deleted)
+            //    {
+            //        // log deleted
+            //    }
+            //}
+            ////return Context.ChangeTracker.HasChanges();
             IEnumerable<DbEntityEntry> res = from e in Context.ChangeTracker.Entries()
                                              where
                                              e.State.HasFlag(EntityState.Added) ||
@@ -197,49 +209,49 @@ namespace BubbleStart.Database
                 }
             });
 
-            var EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
+            //var EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
 
-            EditedEntities.ForEach(E =>
-            {
-                if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
-                {
-                    //   E.Property("ModifiedDate").CurrentValue = DateTime.Now;
-                }
-            });
+            //EditedEntities.ForEach(E =>
+            //{
+            //    if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
+            //    {
+            //        //   E.Property("ModifiedDate").CurrentValue = DateTime.Now;
+            //    }
+            //});
 
-            var changes = from e in Context.ChangeTracker.Entries()
-                          where e.State != EntityState.Unchanged
-                          select e;
+            //var changes = from e in Context.ChangeTracker.Entries()
+            //              where e.State != EntityState.Unchanged
+            //              select e;
 
-            foreach (var change in changes)
-            {
-                if (change.State == EntityState.Added)
-                {
-                    // Log Added
-                }
-                else if (change.State == EntityState.Modified)
-                {
-                    // Log Modified
-                    var item = change.Entity;
-                    var originalValues = Context.Entry(item).OriginalValues;
-                    var currentValues = Context.Entry(item).CurrentValues;
+            //foreach (var change in changes)
+            //{
+            //    if (change.State == EntityState.Added)
+            //    {
+            //        // Log Added
+            //    }
+            //    else if (change.State == EntityState.Modified)
+            //    {
+            //        // Log Modified
+            //        var item = change.Entity;
+            //        var originalValues = Context.Entry(item).OriginalValues;
+            //        var currentValues = Context.Entry(item).CurrentValues;
 
-                    foreach (string propertyName in originalValues.PropertyNames)
-                    {
-                        var original = originalValues[propertyName];
-                        var current = currentValues[propertyName];
+            //        foreach (string propertyName in originalValues.PropertyNames)
+            //        {
+            //            var original = originalValues[propertyName];
+            //            var current = currentValues[propertyName];
 
-                        Console.WriteLine("Property {0} changed from {1} to {2}",
-                     propertyName,
-                     originalValues[propertyName],
-                     currentValues[propertyName]);
-                    }
-                }
-                else if (change.State == EntityState.Deleted)
-                {
-                    // log deleted
-                }
-            }
+            //            Console.WriteLine("Property {0} changed from {1} to {2}",
+            //         propertyName,
+            //         originalValues[propertyName],
+            //         currentValues[propertyName]);
+            //        }
+            //    }
+            //    else if (change.State == EntityState.Deleted)
+            //    {
+            //        // log deleted
+            //    }
+            //}
             await Context.SaveChangesAsync();
         }
 
@@ -335,7 +347,9 @@ namespace BubbleStart.Database
         {
             try
             {
-                var x = (await Context.Set<Customer>().Select(c => new
+                var x = (await Context.Set<Customer>()
+                    .Include(o=>o.Programs.Select(t=>t.Payments))
+                    .Select(c => new
                 {
                     c,
                     Programs = c.Programs.Where(p => p.StartDay >= Limit),
@@ -346,17 +360,6 @@ namespace BubbleStart.Database
                     Changes = c.Changes.Where(p3 => p3.Date >= Limit),
                     Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
                 }).ToListAsync()).Select(x1 => x1.c).ToList();
-
-
-                //var x = await Context.Set<Customer>()
-                //        .Include(f => f.Programs)
-                //        .Include(g => g.Payments)
-                //        .Include(d => d.WeightHistory)
-                //        .Include(c => c.Illness)
-                //       // .Include(e => e.ShowUps)
-                //        .Include(h => h.Changes)
-                //        .Include(a => a.Apointments)
-                //        .ToListAsync();
                 return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
             }
             catch (Exception ex)

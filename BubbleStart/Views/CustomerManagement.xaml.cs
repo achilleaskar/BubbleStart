@@ -15,13 +15,16 @@ namespace BubbleStart.Views
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (DataContext is Customer c && c.Context.HasChanges())
+            if (DataContext is Customer c && c.BasicDataManager.HasChanges())
             {
                 MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να κλείσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.No)
+                if (result == MessageBoxResult.Yes)
                 {
-                    e.Cancel = true;
+                    c.BasicDataManager.RollBack();
                 }
+                else
+                    e.Cancel = true;
+
             }
            
         }

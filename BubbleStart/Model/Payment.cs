@@ -8,10 +8,40 @@ namespace BubbleStart.Model
     public class Payment : BaseModel
     {
 
+
+
+
+        private Program _Program;
+
+
+        public Program Program
+        {
+            get
+            {
+                return _Program;
+            }
+
+            set
+            {
+                if (_Program == value)
+                {
+                    return;
+                }
+
+                _Program = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        public SolidColorBrush PaymentColor => Program != null ? Program.Color : new SolidColorBrush(Colors.White);
+
+
+
         public Payment()
         {
             Date = DateTime.Now;
-            
+
         }
         private SolidColorBrush _Color;
 

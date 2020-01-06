@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
 
@@ -22,6 +23,27 @@ namespace BubbleStart.Model
 
         #region Enums
 
+        private ObservableCollection<Payment> _Payments = new ObservableCollection<Payment>();
+
+        public ObservableCollection<Payment> Payments
+        {
+            get
+            {
+                return _Payments;
+            }
+
+            set
+            {
+                if (_Payments == value)
+                {
+                    return;
+                }
+
+                _Payments = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public enum ProgramTypes
         {
             ReformerPilates,
@@ -37,7 +59,8 @@ namespace BubbleStart.Model
             masazRel50,
             masazTher30,
             masazTher50,
-            blackfriday
+            blackfriday,
+            massage41
         }
 
         #endregion Enums
@@ -122,6 +145,49 @@ namespace BubbleStart.Model
                 }
 
                 _Months = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public void CalculateRemainingAmount()
+        {
+            decimal tmpAmount = Amount;
+            if (Payments != null && Payments.Count > 0)
+            {
+                foreach (var p in Payments)
+                {
+                    tmpAmount -= p.Amount;
+                }
+            }
+            RemainingAmount = tmpAmount;
+            if (tmpAmount > 0)
+            {
+                PaidCol = false;
+            }
+            else
+            {
+                PaidCol = true;
+            }
+        }
+
+        private decimal _RemainingAmount;
+
+        [NotMapped]
+        public decimal RemainingAmount
+        {
+            get
+            {
+                return _RemainingAmount;
+            }
+
+            set
+            {
+                if (_RemainingAmount == value)
+                {
+                    return;
+                }
+
+                _RemainingAmount = value;
                 RaisePropertyChanged();
             }
         }
@@ -276,8 +342,11 @@ namespace BubbleStart.Model
 
                 case ProgramTypes.masazTher50:
                     return "Μασάζ Θεραπευτικό 50'";
+
                 case ProgramTypes.blackfriday:
-                    return "Black Friday Deal'";
+                    return "Black Friday Deal";
+                case ProgramTypes.massage41:
+                    return "4+1 massage";
             }
             return "Ανενεργό";
         }

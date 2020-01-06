@@ -1,5 +1,7 @@
-﻿using BubbleStart.Database;
+﻿using BubbleStart.Helpers;
+using DocumentFormat.OpenXml.InkML;
 using GalaSoft.MvvmLight.CommandWpf;
+using Org.BouncyCastle.Asn1.Crmf;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -42,25 +44,44 @@ namespace BubbleStart.Model
             AddOldShowUpCommand = new RelayCommand(async () => { await AddOldShowUp(); });
             SaveChangesAsyncCommand = new RelayCommand(async () => { await SaveChanges(); }, CanSaveChanges);
             PaymentCommand = new RelayCommand(async () => { await AddPayment(); }, CanAddPayment);
-            DeleteShowUpCommand = new RelayCommand(async () => { await DeleteShowUp(); });
-            DeletePaymentCommand = new RelayCommand(async () => { await DeletePayment(); });
-            DeleteProgramCommand = new RelayCommand(async () => { await DeleteProgram(); });
+            DeleteShowUpCommand = new RelayCommand(async () => { await DeleteShowUp(); }, SelectedShowUp != null);
+            ToggleMassageCommand = new RelayCommand(async () => { await TogleMassage(); },SelectedShowUp!=null);
+            DeletePaymentCommand = new RelayCommand(async () => { await DeletePayment(); },SelectedPayment!=null);
+            SetToProgramCommand = new RelayCommand(async () => { await SetToPayment(); }, CanSet);
+            DeleteProgramCommand = new RelayCommand(async () => { await DeleteProgram(); },SelectedProgramToDelete!=null);
             OldShowUpDate = DateOfPayment = DateOfIssue = StartDate = DateTime.Today;
             DisableCustomerCommand = new RelayCommand(DisableCustomer);
             ProgramTypeIndex = -1;
         }
 
-        private async Task ShowPreviewsData()
+        private async Task TogleMassage()
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            await Context.GetFullCustomerById(Id);
-            Mouse.OverrideCursor = Cursors.Arrow;
+            SelectedShowUp.Massage = !SelectedShowUp.Massage;
+            await BasicDataManager.SaveAsync();
+            SetColors();
+
         }
 
-        private void DisableCustomer()
+        private bool _IsMassage;
+
+        [NotMapped]
+        public bool IsMassage
         {
-            ForceDisable = !ForceDisable;
-            IsActiveColor = GetCustomerColor();
+            get
+            {
+                return _IsMassage;
+            }
+
+            set
+            {
+                if (_IsMassage == value)
+                {
+                    return;
+                }
+
+                _IsMassage = value;
+                RaisePropertyChanged();
+            }
         }
 
         #endregion Constructors
@@ -76,6 +97,8 @@ namespace BubbleStart.Model
         private int _AlcoholUsage;
 
         private ObservableCollection<Apointment> _Apointments;
+
+        private BasicDataManager _BasicDataManager;
 
         private ObservableCollection<Change> _Changes;
 
@@ -94,6 +117,8 @@ namespace BubbleStart.Model
         private string _ExtraReasons;
 
         private DateTime _FirstDate;
+
+        private bool _ForceDisable;
 
         private bool _Gender;
 
@@ -207,27 +232,6 @@ namespace BubbleStart.Model
 
         #region Properties
 
-        private bool _ForceDisable;
-
-        public bool ForceDisable
-        {
-            get
-            {
-                return _ForceDisable;
-            }
-
-            set
-            {
-                if (_ForceDisable == value)
-                {
-                    return;
-                }
-
-                _ForceDisable = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public string Active => SelectedProgram != null && RemainingDays > 0 ? $"ΝΑΙ (έως {SelectedProgram.StartDay.AddMonths(1).ToString("dd/MM")})" : "ΟΧΙ";
 
         [NotMapped]
@@ -255,10 +259,7 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public RelayCommand AddOldShowUpCommand { get;  }
-
-        [NotMapped]
-        public RelayCommand ShowPreviusDataCommand { get;  }
+        public RelayCommand AddOldShowUpCommand { get; }
 
         public string Address
         {
@@ -352,6 +353,26 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
+        public BasicDataManager BasicDataManager
+        {
+            get
+            {
+                return _BasicDataManager;
+            }
+
+            set
+            {
+                if (_BasicDataManager == value)
+                {
+                    return;
+                }
+
+                _BasicDataManager = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [NotMapped]
         public decimal BMI
         {
             get
@@ -381,9 +402,6 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
-
-        [NotMapped]
-        public GenericRepository Context { get; set; }
 
         [NotMapped]
         public DateTime DateOfIssue
@@ -433,6 +451,9 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand DeleteShowUpCommand { get; set; }
+
+        [NotMapped]
+        public RelayCommand DisableCustomerCommand { get; set; }
 
         public string DistrictText
         {
@@ -552,6 +573,25 @@ namespace BubbleStart.Model
                 }
 
                 _FirstDate = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool ForceDisable
+        {
+            get
+            {
+                return _ForceDisable;
+            }
+
+            set
+            {
+                if (_ForceDisable == value)
+                {
+                    return;
+                }
+
+                _ForceDisable = value;
                 RaisePropertyChanged();
             }
         }
@@ -1331,6 +1371,8 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand SaveChangesAsyncCommand { get; set; }
+        [NotMapped]
+        public RelayCommand ToggleMassageCommand { get; set; }
 
         [NotMapped]
         public Payment SelectedPayment
@@ -1416,7 +1458,13 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
+        public RelayCommand SetToProgramCommand { get; set; }
+
+        [NotMapped]
         public bool ShowedUpToday => ShowUps.Any(s => s.Arrived.Date == DateTime.Today);
+
+        [NotMapped]
+        public RelayCommand ShowPreviusDataCommand { get; }
 
         [NotMapped]
         public decimal ShowUpPrice
@@ -1746,107 +1794,125 @@ namespace BubbleStart.Model
                 if (Programs != null && ShowUps != null && ShowUps.Count > 0 && Programs.Count > 0)
                 {
                     Program selProg;
-                    int group = 0;
-                    int cntr = 1;
+                    int cntr = 0;
                     int progIndex = 0;
                     var programsReversed = Programs.OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
+                    var showUpsReserved = ShowUps.OrderBy(r => r.Arrived).ThenBy(r => r.Id).ToList();
 
-                    selProg = programsReversed[progIndex];
-                    selProg.Color = new SolidColorBrush(Colors.LightGreen);
-                    foreach (ShowUp showUp in ShowUps.OrderBy(s => s.Arrived).ThenBy(s => s.Id))
+                    selProg = null;
+                    foreach (ShowUp showUp in showUpsReserved)
                     {
-                        if (cntr > selProg.Showups)
+                        if (showUp.Massage)
                         {
-                            if (progIndex < programsReversed.Count - 1)
+                            continue;
+                        }
+                        if (cntr == 0 && progIndex < Programs.Count)
+                        {
+                            selProg = programsReversed[progIndex];
+                            cntr = selProg.Showups;
+                            if (progIndex % 2 == 0)
                             {
-                                progIndex++;
-                                group++;
-                                selProg = programsReversed[progIndex];
-                                cntr = 1;
-                                if (group % 2 == 0)
-                                {
-                                    selProg.Color = new SolidColorBrush(Colors.LightGreen);
-                                }
-                                else
-                                {
-                                    selProg.Color = new SolidColorBrush(Colors.LightYellow);
-                                }
+                                selProg.Color = new SolidColorBrush(Colors.LightGreen);
                             }
                             else
                             {
-                                showUp.Prog = new Program { Color = new SolidColorBrush(Colors.White) };
-                                continue;
+                                selProg.Color = new SolidColorBrush(Colors.Orange);
                             }
+                            progIndex++;
                         }
-                        showUp.Prog = selProg;
-                        cntr++;
+                        if (cntr != 0 || progIndex != Programs.Count)
+                        {
+                            showUp.Color = selProg.Color;
+                            cntr--;
+                        }
                     }
-                }
-                if (Programs != null && Payments != null && Payments.Count > 0 && Programs.Count > 0)
-                {
-                    Program selProg;
-                    int progIndex = 0;
-                    var programsReversed = Programs.OrderBy(p => p.StartDay).ThenBy(s => s.Id).ToList();
-                    selProg = programsReversed[progIndex];
-                    decimal remainingAmount = programsReversed[progIndex].Amount;
-                    decimal extraAmount = 0;
-                    decimal sum = 0;
-
-                    foreach (Payment payment in Payments.OrderBy(s => s.Date).ThenBy(s => s.Id))
+                    for (int i = progIndex; i < Programs.Count; i++)
                     {
-                        sum += payment.Amount;
-                        if (payment.Amount < remainingAmount)
+                        selProg = programsReversed[progIndex];
+                        if (progIndex % 2 == 0)
                         {
-                            payment.Color = selProg.Color;
-                            remainingAmount -= payment.Amount;
-                        }
-                        else if (payment.Amount > remainingAmount)
-                        {
-                            //if (progIndex < programsReversed.Count && payment.Amount == remainingAmount + programsReversed[progIndex + 1].Amount)
-                            //{
-                            //}
-                            //else
-                            //{
-                            payment.Color = new SolidColorBrush(Colors.Green);
-                            extraAmount = payment.Amount;
-                            while (extraAmount > 0 && extraAmount >= selProg.Amount)
-                            {
-                                extraAmount -= remainingAmount;
-                                selProg.Color = new SolidColorBrush(Colors.Green);
-                                progIndex++;
-                                if (progIndex < programsReversed.Count)
-                                {
-                                    selProg = programsReversed[progIndex];
-                                    remainingAmount = selProg.Amount;
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                            //  }
-                            // remainingAmount -= selProg.Amount - extraAmount;
+                            selProg.Color = new SolidColorBrush(Colors.LightGreen);
                         }
                         else
                         {
-                            payment.Color = selProg.Color;
-                            progIndex++;
-                            if (progIndex < programsReversed.Count)
-                            {
-                                selProg = programsReversed[progIndex];
-                                remainingAmount = selProg.Amount;
-                            }
-                            else
-                                break;
+                            selProg.Color = new SolidColorBrush(Colors.Orange);
                         }
                     }
-
-                    foreach (var p in Programs.OrderBy(p => p.DayOfIssue).ThenBy(s => s.Id))
-                    {
-                        p.PaidCol = sum >= p.Amount;
-                        sum -= p.Amount;
-                    }
+                    SetRemaining();
                 }
+                //if (Programs != null && Payments != null && Payments.Count > 0 && Programs.Count > 0)
+                //{
+                //    Program selProg;
+                //    int progIndex = 0;
+                //    var programsReversed = Programs.OrderBy(p => p.StartDay).ThenBy(s => s.Id).ToList();
+                //    selProg = programsReversed[progIndex];
+                //    decimal remainingAmount = programsReversed[progIndex].Amount;
+                //    decimal extraAmount = 0;
+                //    decimal sum = 0;
+
+                //    foreach (Payment payment in Payments.OrderBy(s => s.Date).ThenBy(s => s.Id))
+                //    {
+                //        sum += payment.Amount;
+                //        if (payment.Amount < remainingAmount)
+                //        {
+                //            payment.Color = selProg.Color;
+                //            remainingAmount -= payment.Amount;
+                //        }
+                //        else if (payment.Amount > remainingAmount)
+                //        {
+                //            //if (progIndex < programsReversed.Count && payment.Amount == remainingAmount + programsReversed[progIndex + 1].Amount)
+                //            //{
+                //            //}
+                //            //else
+                //            //{
+                //            payment.Color = new SolidColorBrush(Colors.Green);
+                //            extraAmount = payment.Amount;
+                //            while (extraAmount > 0 && extraAmount >= selProg.Amount)
+                //            {
+                //                extraAmount -= remainingAmount;
+                //                selProg.Color = new SolidColorBrush(Colors.Green);
+                //                progIndex++;
+                //                if (progIndex < programsReversed.Count)
+                //                {
+                //                    selProg = programsReversed[progIndex];
+                //                    remainingAmount = selProg.Amount;
+                //                }
+                //                else
+                //                {
+                //                    break;
+                //                }
+                //            }
+                //            //  }
+                //            // remainingAmount -= selProg.Amount - extraAmount;
+                //        }
+                //        else
+                //        {
+                //            payment.Color = selProg.Color;
+                //            progIndex++;
+                //            if (progIndex < programsReversed.Count)
+                //            {
+                //                selProg = programsReversed[progIndex];
+                //                remainingAmount = selProg.Amount;
+                //            }
+                //            else
+                //                break;
+                //        }
+                //    }
+
+                //    foreach (var p in Programs.OrderBy(p => p.DayOfIssue).ThenBy(s => s.Id))
+                //    {
+                //        p.PaidCol = sum >= p.Amount;
+                //        sum -= p.Amount;
+                //    }
+                //}
+            }
+        }
+
+        public void SetRemaining()
+        {
+            foreach (var p in Programs)
+            {
+                p.CalculateRemainingAmount();
             }
         }
 
@@ -1902,20 +1968,22 @@ namespace BubbleStart.Model
 
         internal async Task AddPayment()
         {
-            Payments.Add(new Payment { Amount = PaymentAmount, Date = DateOfPayment, User = Context.GetById<User>(Helpers.StaticResources.User.Id) });
+            Payments.Add(new Payment { Amount = PaymentAmount, Date = DateOfPayment, User = StaticResources.User });
+            SelectedProgramToDelete.Payments.Add(Payments.Last());
             RaisePropertyChanged(nameof(PaymentVisibility));
             await SaveChanges();
+            SelectedProgramToDelete.CalculateRemainingAmount();
         }
 
         internal void MakeProgramPayment()
         {
-            Payments.Add(new Payment { Amount = ProgramPrice, Date = DateOfIssue, User = Context.GetById<User>(Helpers.StaticResources.User.Id) });
+            Payments.Add(new Payment { Amount = ProgramPrice, Date = DateOfIssue, User = StaticResources.User });
         }
 
         internal bool ProgramDataCheck()
         {
             ValidateProgram();
-            return ProgramPrice >= 0 && ProgramTypeIndex >= 0 && IsDateValid && NumOfShowUps > 0 && ProgramDuration > 0;
+            return ProgramPrice >= 0 && ProgramTypeIndex >= 0 && NumOfShowUps > 0 && ProgramDuration > 0;
         }
 
         internal void ShowedUp(bool arrived)
@@ -1926,45 +1994,61 @@ namespace BubbleStart.Model
 
         private async Task AddOldShowUp()
         {
-            ShowUps.Add(new ShowUp { Arrived = OldShowUpDate, Left = new DateTime(1234, 1, 1) });
-            await Context.SaveAsync();
+            ShowUps.Add(new ShowUp { Arrived = OldShowUpDate, Massage = IsMassage, Left = new DateTime(1234, 1, 1) });
+            await BasicDataManager.SaveAsync();
+            IsMassage = false;
         }
 
         private bool CanAddPayment()
         {
-            return PaymentAmount > 0 && PaymentAmount <= RemainingAmount;
+            return PaymentAmount > 0 && PaymentAmount <= RemainingAmount && SelectedProgramToDelete != null && PaymentAmount <= SelectedProgramToDelete.RemainingAmount;
         }
 
         private bool CanMakeBooking(string arg) => ProgramDataCheck();
 
         private bool CanSaveChanges()
         {
-            return Context.HasChanges();
+            return BasicDataManager.HasChanges();
+        }
+
+        private bool CanSet()
+        {
+            return SelectedPayment != null && SelectedProgramToDelete != null;
         }
 
         private async Task DeletePayment()
         {
-            Changes.Add(new Change($"Διαγράφηκε ΠΛΗΡΩΜΗ {SelectedPayment.Amount}€ που είχε γίνει {SelectedPayment.Date.ToString("ddd dd/MM/yy")}", (Context.GetById<User>(Helpers.StaticResources.User.Id))));
-            Context.Delete(SelectedPayment);
+            Changes.Add(new Change($"Διαγράφηκε ΠΛΗΡΩΜΗ {SelectedPayment.Amount}€ που είχε γίνει {SelectedPayment.Date.ToString("ddd dd/MM/yy")}", StaticResources.User));
+            if (SelectedPayment.Program != null && SelectedPayment.Program.Payments.Any(p => p.Id == SelectedPayment.Id))
+            {
+                SelectedPayment.Program.Payments.Remove(SelectedPayment);
+            }
+            BasicDataManager.Delete(SelectedPayment);
             RaisePropertyChanged(nameof(PaymentVisibility));
-            await Context.SaveAsync();
+            await BasicDataManager.SaveAsync();
         }
 
         private async Task DeleteProgram()
         {
             Changes.Add(new Change($"Διαγράφηκε ΠΡΟΓΡΑΜΜΑ  {SelectedProgramToDelete} που είχε καταχωρηθεί {SelectedProgramToDelete.DayOfIssue.ToString("ddd dd/MM/yy")} με " +
-                $"διάρκεια {SelectedProgramToDelete.Showups} Αξίας{SelectedProgramToDelete.Amount} και έναρξη {SelectedProgramToDelete.StartDay.ToString("ddd dd/MM/yy")}", Context.GetById<User>(Helpers.StaticResources.User.Id)));
+                $"διάρκεια {SelectedProgramToDelete.Showups} Αξίας{SelectedProgramToDelete.Amount} και έναρξη {SelectedProgramToDelete.StartDay.ToString("ddd dd/MM/yy")}", StaticResources.User));
 
-            Context.Delete(SelectedProgramToDelete);
-            await Context.SaveAsync();
+            BasicDataManager.Delete(SelectedProgramToDelete);
+            await BasicDataManager.SaveAsync();
         }
 
         private async Task DeleteShowUp()
         {
-            Changes.Add(new Change($"Διαγράφηκε ΠΑΡΟΥΣΙΑ  με ημερομηνία {SelectedShowUp.Arrived.ToString("ddd dd/MM/yy")}", Context.GetById<User>(Helpers.StaticResources.User.Id)));
+            Changes.Add(new Change($"Διαγράφηκε ΠΑΡΟΥΣΙΑ  με ημερομηνία {SelectedShowUp.Arrived.ToString("ddd dd/MM/yy")}", StaticResources.User));
 
-            Context.Delete(SelectedShowUp);
-            await Context.SaveAsync();
+            BasicDataManager.Delete(SelectedShowUp);
+            await BasicDataManager.SaveAsync();
+        }
+
+        private void DisableCustomer()
+        {
+            ForceDisable = !ForceDisable;
+            IsActiveColor = GetCustomerColor();
         }
 
         private SolidColorBrush GetCustomerColor()
@@ -2023,6 +2107,8 @@ namespace BubbleStart.Model
             if (par == 1)
             {
                 MakeProgramPayment();
+                Programs.Last().Payments.Add(Payments.Last());
+                Programs.Last().CalculateRemainingAmount();
             }
             CalculateRemainingAmount();
             RaisePropertyChanged(nameof(PaymentVisibility));
@@ -2033,11 +2119,8 @@ namespace BubbleStart.Model
             DateOfIssue = StartDate = DateTime.Today;
             RaisePropertyChanged(nameof(RemainingAmount));
             ForceDisable = false;
-            await Context.SaveAsync();
+            await BasicDataManager.SaveAsync();
         }
-
-        [NotMapped]
-        public RelayCommand DisableCustomerCommand { get; set; }
 
         private void PaymentsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -2059,9 +2142,24 @@ namespace BubbleStart.Model
             Mouse.OverrideCursor = Cursors.Wait;
             SelectProperProgram();
             GetRemainingDays(SelectedProgram);
-            await Context.SaveAsync();
+            await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
             RaisePropertyChanged(nameof(RemainingDays));
+        }
+
+        private async Task SetToPayment()
+        {
+            SelectedProgramToDelete.Payments.Add(SelectedPayment);
+            await BasicDataManager.SaveAsync();
+            SetColors();
+            SelectedPayment.RaisePropertyChanged("PaymentColor");
+        }
+
+        private async Task ShowPreviewsData()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            await BasicDataManager.Context.GetFullCustomerById(Id);
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private void ShowUps_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -2071,8 +2169,10 @@ namespace BubbleStart.Model
                 RaisePropertyChanged(nameof(RemainingDays));
                 IsActiveColor = GetCustomerColor();
                 SelectProperProgram();
-                SetColors();
                 RaisePropertyChanged(nameof(ShowedUpToday));
+                RaisePropertyChanged(nameof(ShowUpsCollectionView));
+                //ShowUpsCollectionView.Refresh();
+                SetColors();
             }
             catch (Exception ex)
             {

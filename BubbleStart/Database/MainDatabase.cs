@@ -1,6 +1,5 @@
-﻿using BubbleStart.Model;
-using EntityFramework.DynamicFilters;
-using MySql.Data.Entity;
+﻿using BubbleStart.Migrations;
+using BubbleStart.Model;
 using System;
 using System.Data.Entity;
 
@@ -8,7 +7,7 @@ namespace BubbleStart.Database
 {
     // Code-Based Configuration and Dependency resolution
     //[DbConfigurationType(typeof(MySqlEFConfiguration))]
-    [DbConfigurationType(typeof(MySqlEFConfiguration))]
+   // [DbConfigurationType(typeof(ContextConfiguration))]
     public class MainDatabase : DbContext
     {
         public DbSet<User> Users { get; set; }
@@ -20,17 +19,19 @@ namespace BubbleStart.Database
         public DbSet<ShowUp> ShowUps { get; set; }
         public DbSet<Payment> Payments { get; set; }
 
-        public MainDatabase() : base("BubbleDatabase")
+        public MainDatabase() : base(normal)
         {
+           // DbConfiguration.SetConfiguration(new ContextConfiguration());
             Configuration.ValidateOnSaveEnabled = false;
             Configuration.LazyLoadingEnabled = false;
+
         }
+        private const string normal = "Server=server19.cretaforce.gr;Database=readmore_achill2;pooling=true;Uid=readmore_achill2;Pwd=986239787346;Convert Zero Datetime=True; CharSet=utf8; default command timeout=3600;SslMode=none;";
 
         public DateTime Limit { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-           
             modelBuilder.Properties<string>()
             .Configure(s => s.HasMaxLength(200).HasColumnType("varchar"));
             modelBuilder.Properties().Where(x => x.PropertyType == typeof(bool))

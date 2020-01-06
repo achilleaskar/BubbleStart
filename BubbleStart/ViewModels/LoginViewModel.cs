@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Database;
+using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Security;
@@ -16,19 +17,17 @@ namespace BubbleStart.ViewModels
     {
         private readonly GenericRepository startingRepository;
 
-        public LoginViewModel(GenericRepository startingRepository)
+        public LoginViewModel(BasicDataManager basicDataManager)
         {
-            this.startingRepository = startingRepository;
             LoginCommand = new RelayCommand(async () => { await TryLogin(); }, CanLogin);
             PossibleUser = new User();
+            BasicDataManager = basicDataManager;
         }
 
         private string _ErrorMessage;
-        private bool _LoginFailed;
         private SecureString _PasswordSecureString;
         private User _PossibleUser;
 
-        public List<User> Users { get; set; }
 
         public string ErrorMessage
         {
@@ -51,24 +50,6 @@ namespace BubbleStart.ViewModels
 
         public RelayCommand LoginCommand { get; set; }
 
-        public bool LoginFailed
-        {
-            get
-            {
-                return _LoginFailed;
-            }
-
-            set
-            {
-                if (_LoginFailed == value)
-                {
-                    return;
-                }
-
-                _LoginFailed = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public SecureString PasswordSecureString
         {
@@ -108,6 +89,8 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public BasicDataManager BasicDataManager { get; }
+
         private bool CanLogin()
         {
             //Execution should only be possible if both Username and Password have been supplied
@@ -126,7 +109,7 @@ namespace BubbleStart.ViewModels
                 User userFound = null;
                 ErrorMessage = "Παρακαλώ περιμένετε...";
 
-                userFound = await startingRepository.FindUserAsync(PossibleUser.UserName.ToLower());
+                userFound = await BasicDataManager.Context.FindUserAsync(PossibleUser.UserName.ToLower());
                 if (userFound == null)
                 {
                     ErrorMessage = "Δεν βρέθηκε χρηστης.";
@@ -155,7 +138,7 @@ namespace BubbleStart.ViewModels
                 }
 
                 ErrorMessage = "Επιτυχής σύνδεση!";
-                Helpers.StaticResources.User = userFound;
+                StaticResources.User = userFound;
                 MessengerInstance.Send(new LoginLogOutMessage(true));
             }
             catch (Exception ex)
@@ -168,12 +151,12 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public async override Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
+        public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-            Users = (await startingRepository.GetAllAsync<User>()).ToList();
+            throw new NotImplementedException();
         }
 
-        public override Task ReloadAsync()
+        public override void Reload()
         {
             throw new NotImplementedException();
         }

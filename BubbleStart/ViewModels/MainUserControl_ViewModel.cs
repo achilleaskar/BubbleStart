@@ -1,10 +1,9 @@
 ﻿using BubbleStart.Database;
 using BubbleStart.Helpers;
 using BubbleStart.Messages;
-using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
-using System.Linq;
+using GalaSoft.MvvmLight.Messaging;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -13,112 +12,42 @@ namespace BubbleStart.ViewModels
 {
     public class MainUserControl_ViewModel : MyViewModelBase
     {
-        public MainUserControl_ViewModel(GenericRepository startingRepository)
+        #region Constructors
+
+        public MainUserControl_ViewModel(BasicDataManager basicDataManager)
         {
-            LogOutCommand = new RelayCommand(TryLogOut, CanLogout);
+            BasicDataManager = basicDataManager;
+            LogOutCommand = new RelayCommand(TryLogOut);
             OpenUsersEditCommand = new RelayCommand(async () => { await OpenUsersWindow(); }, CanEditWindows);
 
             RefreshAllDataCommand = new RelayCommand(async () => { await RefreshAllData(); });
 
-            StartingRepository = startingRepository;
-            SearchCustomer_ViewModel = new SearchCustomer_ViewModel(startingRepository);
-            EconomicData_ViewModel = new EconomicData_ViewModel(startingRepository);
+            SearchCustomer_ViewModel = new SearchCustomer_ViewModel(basicDataManager);
+            EconomicData_ViewModel = new EconomicData_ViewModel(basicDataManager);
+            Apointments_ViewModel = new Apointments_ViewModel(BasicDataManager);
+            ShowUpsPerDay_ViewModel = new ShowUpsPerDay_ViewModel(BasicDataManager);
+
+            Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+
         }
 
-        private async Task RefreshAllData()
-        {
-            if (SearchCustomer_ViewModel != null)
-            {
-                MessageBoxResult result = MessageBoxResult.Yes;
-                if (StartingRepository.HasChanges())
-                {
-                    result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να κάνετε ανανέωση?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                }
-                if (result == MessageBoxResult.Yes)
-                {
-                    Mouse.OverrideCursor = Cursors.Wait;
-                    StartingRepository = new GenericRepository();
-                    SearchCustomer_ViewModel = new SearchCustomer_ViewModel(StartingRepository);
-                    await SearchCustomer_ViewModel.LoadAsync();
-                    EconomicData_ViewModel = new EconomicData_ViewModel(StartingRepository);
-                    await EconomicData_ViewModel.LoadAsync();
-                    StaticResources.User = StartingRepository.GetById<User>(StaticResources.User.Id);
-                    Mouse.OverrideCursor = Cursors.Arrow;
-                }
-            }
-        }
+        #endregion Constructors
 
+        #region Fields
 
-
-
-
+        private Apointments_ViewModel _Apointments_ViewModel;
 
         private EconomicData_ViewModel _EconomicData_ViewModel;
 
-
-        public EconomicData_ViewModel EconomicData_ViewModel
-        {
-            get
-            {
-                return _EconomicData_ViewModel;
-            }
-
-            set
-            {
-                if (_EconomicData_ViewModel == value)
-                {
-                    return;
-                }
-
-                _EconomicData_ViewModel = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private SearchCustomer_ViewModel _SearchCustomer_ViewModel;
-        private Apointments_ViewModel _Apointments_ViewModel;
 
-        public SearchCustomer_ViewModel SearchCustomer_ViewModel
-        {
-            get
-            {
-                return _SearchCustomer_ViewModel;
-            }
+        private ShowUpsPerDay_ViewModel _ShowUpsPerDay_ViewModel;
 
-            set
-            {
-                if (_SearchCustomer_ViewModel == value)
-                {
-                    return;
-                }
+        #endregion Fields
 
-                _SearchCustomer_ViewModel = value;
-                RaisePropertyChanged();
-            }
-        }
+        #region Properties
 
-        public RelayCommand RefreshAllDataCommand { get; set; }
-
-        private bool CanEditWindows()
-        {
-            return true;
-        }
-
-        public RelayCommand OpenUsersEditCommand { get; set; }
-        public string UserName => StaticResources.User != null ? StaticResources.User.Name : "Error";
-
-        private async Task OpenUsersWindow()
-        {
-            var vm = new UsersManagement_viewModel(StartingRepository);
-            await vm.LoadAsync();
-            MessengerInstance.Send(new OpenChildWindowCommand(new UsersManagement_Window { DataContext = vm }));
-        }
-
-        public RelayCommand LogOutCommand { get; set; }
-
-        public GenericRepository StartingRepository { get; set; }
-
-        public string Username => StaticResources.User.Name;
+        public static string UserName => StaticResources.User != null ? StaticResources.User.Name : "Error";
 
         public Apointments_ViewModel Apointments_ViewModel
         {
@@ -139,12 +68,51 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public BasicDataManager BasicDataManager { get; }
 
+        public EconomicData_ViewModel EconomicData_ViewModel
+        {
+            get
+            {
+                return _EconomicData_ViewModel;
+            }
 
+            set
+            {
+                if (_EconomicData_ViewModel == value)
+                {
+                    return;
+                }
 
+                _EconomicData_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        private ShowUpsPerDay_ViewModel _ShowUpsPerDay_ViewModel;
+        public RelayCommand LogOutCommand { get; set; }
 
+        public RelayCommand OpenUsersEditCommand { get; set; }
+
+        public RelayCommand RefreshAllDataCommand { get; set; }
+
+        public SearchCustomer_ViewModel SearchCustomer_ViewModel
+        {
+            get
+            {
+                return _SearchCustomer_ViewModel;
+            }
+
+            set
+            {
+                if (_SearchCustomer_ViewModel == value)
+                {
+                    return;
+                }
+
+                _SearchCustomer_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public ShowUpsPerDay_ViewModel ShowUpsPerDay_ViewModel
         {
@@ -165,33 +133,70 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
+
+        public string Username => StaticResources.User.Name;
+
+        #endregion Properties
+
+        #region Methods
+
+        public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-            //await RefreshAllData();
-            //await StartingRepository.GetAllAsync<Payment>();
-            //await StartingRepository.GetAllAsync<Program>();
-            //await StartingRepository.GetAllAsync<ShowUp>();
-            await SearchCustomer_ViewModel.LoadAsync();
-            await EconomicData_ViewModel.LoadAsync();
-            Apointments_ViewModel = new Apointments_ViewModel();
-            ShowUpsPerDay_ViewModel = new ShowUpsPerDay_ViewModel();
-            await Apointments_ViewModel.LoadAsync();
+           
         }
 
-        public override async Task ReloadAsync()
+        public override void Reload()
         {
-            await Task.Delay(0);
+            throw new System.NotImplementedException();
         }
 
         public void TryLogOut()
         {
-            MessengerInstance.Send(new LoginLogOutMessage(false));
+            if (BasicDataManager.HasChanges())
+            {
+                MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να κάνετε ανανέωση?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
+                Mouse.OverrideCursor = Cursors.Wait;
+                MessengerInstance.Send(new LoginLogOutMessage(false));
+
+                Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        private bool CanLogout()
+        private bool CanEditWindows()
         {
-            //ToDO
             return true;
         }
+
+        private async Task OpenUsersWindow()
+        {
+            var vm = new UsersManagement_viewModel(BasicDataManager.Context);
+            await vm.LoadAsync();
+            MessengerInstance.Send(new OpenChildWindowCommand(new UsersManagement_Window { DataContext = vm }));
+        }
+
+        private async Task RefreshAllData()
+        {
+            if (SearchCustomer_ViewModel != null)
+            {
+                if (BasicDataManager.HasChanges())
+                {
+                    MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να κάνετε ανανέωση?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    if (result == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    await BasicDataManager.Refresh();
+
+                    Mouse.OverrideCursor = Cursors.Arrow;
+                }
+            }
+        }
+
+        #endregion Methods
     }
 }

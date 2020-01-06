@@ -12,7 +12,7 @@ namespace BubbleStart.Messages
             Window = window;
         }
 
-        public OpenChildWindowCommand(Window window, MyViewModelBase viewModel)
+        public OpenChildWindowCommand(Window window, MyViewModelBaseAsync viewModel)
         {
             Window = window;
             ViewModel = viewModel;
@@ -21,6 +21,6 @@ namespace BubbleStart.Messages
         #endregion constructors and destructors
 
         public Window Window { get; set; }
-        public MyViewModelBase ViewModel { get; set; }
+        public MyViewModelBaseAsync ViewModel { get; set; }
     }
 }

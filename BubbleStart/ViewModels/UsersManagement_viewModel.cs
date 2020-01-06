@@ -134,7 +134,7 @@ namespace BubbleStart.ViewModels
             return Context.HasChanges();
         }
 
-        public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
+        public override async Task LoadAsync(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             MainCollection = new ObservableCollection<UserWrapper>((await Context.GetAllUsersAsyncSortedByUserName()).Select(u => new UserWrapper(u)));
         }

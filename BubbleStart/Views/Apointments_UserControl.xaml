@@ -30,11 +30,14 @@
             </Grid.RowDefinitions>
             <Grid Margin="0 0 0 2">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
                 <StackPanel HorizontalAlignment="Right"
+                            Grid.Column="1"
                             Orientation="Horizontal">
                     <ComboBox Width="70"
                               SelectedIndex="{Binding RoomIndex}"
@@ -51,7 +54,7 @@
                         <ComboBoxItem Content="Γυμναστής" />
                     </ComboBox>
                 </StackPanel>
-                <StackPanel Grid.Column="1"
+                <StackPanel Grid.Column="2"
                             Orientation="Horizontal"
                             HorizontalAlignment="Center">
                     <Button  Margin="25 0"
@@ -63,7 +66,7 @@
                         <iconPacks:PackIconFontAwesome Kind="ArrowCircleRightSolid" />
                     </Button>
                 </StackPanel>
-                <StackPanel Grid.Column="2"
+                <StackPanel Grid.Column="3"
                             Orientation="Horizontal"
                             Margin="0 0 10 0"
                             HorizontalAlignment="Right">
@@ -74,8 +77,11 @@
                     <Label Content="Υοga"
                            Background="LightBlue" />
                 </StackPanel>
+                <Button Content="Φόρτωση" Grid.Column="4"
+                        Command="{Binding ShowProgramCommand}" VerticalAlignment="Center"  Background="Yellow"/>
             </Grid>
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          Visibility="{Binding HasDays,Converter={StaticResource booleanToVisibilityConverter}}"
                           VerticalScrollBarVisibility="Auto"
                           Grid.Row="1">
                 <Grid>

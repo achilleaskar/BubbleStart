@@ -17,6 +17,31 @@ namespace BubbleStart.Model
         private DateTime _Left;
         private DateTime _Time;
 
+
+
+
+
+        private bool _Massage;
+
+
+        public bool Massage
+        {
+            get
+            {
+                return _Massage;
+            }
+
+            set
+            {
+                if (_Massage == value)
+                {
+                    return;
+                }
+
+                _Massage = value;
+                RaisePropertyChanged();
+            }
+        }
         #endregion Fields
 
         #region Properties

@@ -1,6 +1,9 @@
 ﻿using BubbleStart.Database;
+using BubbleStart.Helpers;
+using BubbleStart.Messages;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,12 +17,14 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-        public CustomersWindow_Viewmodel(GenericRepository context, int type, Hour hour)
+        public CustomersWindow_Viewmodel(BasicDataManager basicDataManager, int type, Hour hour)
         {
-            Context = context;
+            BasicDataManager = basicDataManager;
             Type = type;
             Hour = hour;
             AddCustomerCommand = new RelayCommand<string>(async (obj) => { await AddCustomer(obj); }, CanAdd);
+            Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+
         }
 
         private bool Busy;
@@ -52,8 +57,6 @@ namespace BubbleStart.ViewModels
         #region Properties
 
         public RelayCommand<string> AddCustomerCommand { get; set; }
-
-        public GenericRepository Context { get; }
 
         public ObservableCollection<Customer> Customers
         {
@@ -109,7 +112,10 @@ namespace BubbleStart.ViewModels
                 }
 
                 _IsGogoChecked = value;
-                SelectedPerson = 1;
+                if (value)
+                {
+                    SelectedPerson = 0;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -131,7 +137,10 @@ namespace BubbleStart.ViewModels
                 }
 
                 _IsDimitrisChecked = value;
-                SelectedPerson = 2;
+                if (value)
+                {
+                    SelectedPerson = 1;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -151,7 +160,10 @@ namespace BubbleStart.ViewModels
                 }
 
                 _IsGymnastChecked = value;
-                SelectedPerson = 2;
+                if (value)
+                {
+                    SelectedPerson = 2;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -214,25 +226,13 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public BasicDataManager BasicDataManager { get; }
         public int Type { get; }
         public Hour Hour { get; }
 
         #endregion Properties
 
         #region Methods
-
-        public override async Task LoadAsync(int id = 0, MyViewModelBase previousViewModel = null)
-        {
-            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsyncb()).OrderBy(n => n.Name));
-
-            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
-            CustomersCollectionView.Filter = CustomerFilter;
-        }
-
-        public override Task ReloadAsync()
-        {
-            throw new NotImplementedException();
-        }
 
         private async Task AddCustomer(string p)
         {
@@ -243,8 +243,8 @@ namespace BubbleStart.ViewModels
                     Hour.AppointmentsFunctional.Remove(Hour.AppointmentsFunctional.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
                 if (Hour.AppointmentsReformer.Any(q => q.Customer.Id == SelectedCustomer.Id))
                     Hour.AppointmentsReformer.Remove(Hour.AppointmentsReformer.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
-                await Context.DeleteFromThis(SelectedCustomer, Hour.Time);
-                await Context.SaveAsync();
+                await BasicDataManager.Context.DeleteFromThis(SelectedCustomer, Hour.Time);
+                await BasicDataManager.SaveAsync();
             }
             else
             {
@@ -262,114 +262,23 @@ namespace BubbleStart.ViewModels
                 return true;
             }
             SearchTerm = SearchTerm.ToUpper();
-            string tmpTerm = ToGreek(SearchTerm);
+            string tmpTerm = StaticResources.ToGreek(SearchTerm);
             return customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm);
         }
 
-        private string ToGreek(string searchTerm)
+
+
+        public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-            string toReturn = "";
-            foreach (char c in searchTerm)
-            {
-                if (c < 65 || c > 90)
-                {
-                    toReturn += c;
-                }
-                else
-                {
-                    switch ((int)c)
-                    {
-                        case 65:
-                            toReturn += 'Α';
-                            break;
+            Customers = new ObservableCollection<Customer>(BasicDataManager.Customers);
 
-                        case 66:
-                            toReturn += 'Β';
-                            break;
+            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
+            CustomersCollectionView.Filter = CustomerFilter;
+        }
 
-                        case 68:
-                            toReturn += 'Δ';
-                            break;
-
-                        case 69:
-                            toReturn += 'Ε';
-                            break;
-
-                        case 70:
-                            toReturn += 'Φ';
-                            break;
-
-                        case 71:
-                            toReturn += 'Γ';
-                            break;
-
-                        case 72:
-                            toReturn += 'Η';
-                            break;
-
-                        case 73:
-                            toReturn += 'Ι';
-                            break;
-
-                        case 75:
-                            toReturn += 'Κ';
-                            break;
-
-                        case 76:
-                            toReturn += 'Λ';
-                            break;
-
-                        case 77:
-                            toReturn += 'Μ';
-                            break;
-
-                        case 78:
-                            toReturn += 'Ν';
-                            break;
-
-                        case 79:
-                            toReturn += 'Ο';
-                            break;
-
-                        case 80:
-                            toReturn += 'Π';
-                            break;
-
-                        case 82:
-                            toReturn += 'Ρ';
-                            break;
-
-                        case 83:
-                            toReturn += 'Σ';
-                            break;
-
-                        case 84:
-                            toReturn += 'Τ';
-                            break;
-
-                        case 86:
-                            toReturn += 'Β';
-                            break;
-
-                        case 88:
-                            toReturn += 'Χ';
-                            break;
-
-                        case 89:
-                            toReturn += 'Υ';
-                            break;
-
-                        case 90:
-                            toReturn += 'Ζ';
-                            break;
-
-                        default:
-                            toReturn += c;
-                            break;
-                    }
-                }
-            }
-            return toReturn;
+        public override void Reload()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion Methods

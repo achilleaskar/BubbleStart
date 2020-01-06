@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BubbleStart.ViewModels
 {
-    public abstract class AddEditBase<TWrapper, TEntity> : MyViewModelBase
+    public abstract class AddEditBase<TWrapper, TEntity> : MyViewModelBaseAsync
         where TEntity : BaseModel, new()
         where TWrapper : ModelWrapper<TEntity>, new()
     {

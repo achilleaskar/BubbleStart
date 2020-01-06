@@ -1,4 +1,5 @@
 using BubbleStart.Database;
+using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight;
@@ -15,27 +16,27 @@ namespace BubbleStart.ViewModels
         public MainViewModel()
         {
             Messenger.Default.Register<ChangeVisibilityMessage>(this, msg => { Visibility = msg.Visible ? Visibility.Visible : Visibility.Collapsed; });
-            Messenger.Default.Register<LoginLogOutMessage>(this, async msg => { await ChangeViewModel(msg.Login); });
+            Messenger.Default.Register<LoginLogOutMessage>(this, async (msg) => await ChangeViewModel(msg.Login));
         }
 
         private async Task ChangeViewModel(bool login)
         {
-            StartingRepository = new GenericRepository();
             if (login)
             {
-                SelectedViewmodel = new MainUserControl_ViewModel(StartingRepository);
+                SelectedViewmodel = new MainUserControl_ViewModel(BasicDataManager);
+               // await BasicDataManager.Refresh();
             }
             else
             {
-                SelectedViewmodel = new LoginViewModel(StartingRepository);
+                SelectedViewmodel = new LoginViewModel(BasicDataManager);
             }
-            await SelectedViewmodel.LoadAsync();
+            Messenger.Default.Send(new BasicDataManagerRefreshedMessage());
+
             RaisePropertyChanged(nameof(MenuVisibility));
         }
 
         #region Fields
-
-        private IViewModel _SelectedViewmodel;
+        MyViewModelBase _SelectedViewmodel;
 
         private Visibility _Visibility;
 
@@ -49,7 +50,7 @@ namespace BubbleStart.ViewModels
         {
             get
             {
-                if (Helpers.StaticResources.User != null && Helpers.StaticResources.User.Level <= 1)
+                if (StaticResources.User != null && StaticResources.User.Level <= 1)
                 {
                     return Visibility.Visible;
                 }
@@ -57,7 +58,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public IViewModel SelectedViewmodel
+        public MyViewModelBase SelectedViewmodel
         {
             get
             {
@@ -99,6 +100,8 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        BasicDataManager BasicDataManager;
+
         #endregion Properties
 
         public async Task LoadAsync(GenericRepository startingRepository)
@@ -106,15 +109,18 @@ namespace BubbleStart.ViewModels
             try
             {
                 StartingRepository = startingRepository;
+                BasicDataManager = new BasicDataManager(StartingRepository);
 #if DEBUG
-                Helpers.StaticResources.User = (await StartingRepository.GetAllAsync<User>(u => u.Id == 3)).First();
+                StaticResources.User = new User { Name = "admin", Id = 3, Level = 0 };
                 RaisePropertyChanged(nameof(MenuVisibility));
 #endif
-                if (Helpers.StaticResources.User == null)
-                    SelectedViewmodel = new LoginViewModel(StartingRepository);//TODO
+                if (StaticResources.User == null)
+                    SelectedViewmodel = new LoginViewModel(BasicDataManager);//TODO
                 else
-                    SelectedViewmodel = new MainUserControl_ViewModel(StartingRepository);//TODO
-                await SelectedViewmodel.LoadAsync();
+                {
+                    SelectedViewmodel = new MainUserControl_ViewModel(BasicDataManager);//TODO
+                }
+                await BasicDataManager.LoadAsync();
             }
             catch (Exception ex)
             {
