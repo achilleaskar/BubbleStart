@@ -9,7 +9,8 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         d:DataContext="{d:DesignInstance models:Customer}"
         mc:Ignorable="d"
-        Closing="Window_Closing" Width="1300"
+        Closing="Window_Closing"
+        Width="1300"
         WindowStartupLocation="CenterScreen"
         Background="White"
         d:DesignHeight="950"
@@ -17,6 +18,7 @@
     <Window.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:FloadToStringValueConverter x:Key="FtoSConverter" />
+        <Converters:RemainingAmountToColorConverter x:Key="RemainingAmountToColorConverter" />
         <Converters:BoolToPaidConverter x:Key="BoolToShowedUp_Converter" />
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
@@ -89,14 +91,23 @@
                 <Label Content="Απομένουν(φορές):"
                        Grid.Row="4"
                        Grid.Column="0" />
-                <TextBlock Text="{Binding RemainingDays}"
-                           Grid.Row="4"
-                           Grid.Column="1"
-                           HorizontalAlignment="Left"
-                           Padding="5 0"
-                           Background="{Binding IsActiveColor}"
-                           Margin="0,4">
-                               <!--Background="{Binding ,ConverterParameter={Binding RemainingAmount}, Converter={StaticResource MeetingsToColorConverter}}"--></TextBlock>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="4"
+                            Grid.Column="1">
+                    <TextBlock Text="{Binding RemainingTrainingDays}"
+                               HorizontalAlignment="Left"
+                               Padding="5 0"
+                               Background="{Binding SelectedProgram,Converter={StaticResource RemainingAmountToColorConverter}}"
+                               Margin="0,4" />
+                    <TextBlock Text="-"
+                               Margin="5" />
+                    <TextBlock Text="{Binding RemainingMassageDays}"
+                               HorizontalAlignment="Left"
+                               Padding="5 0"
+                               Background="{Binding SelectedMasage,Converter={StaticResource RemainingAmountToColorConverter}}"
+                               Margin="0,4" />
+                </StackPanel>
+                <!--Background="{Binding ,ConverterParameter={Binding RemainingAmount}, Converter={StaticResource MeetingsToColorConverter}}"-->
                 <Label Content="Τύπος Ενεργού Πακέτου:"
                        Grid.Row="5"
                        Grid.Column="0" />
@@ -186,7 +197,8 @@
                                     Grid.Column="0">
                             <StackPanel>
                                 <TextBlock Text="Αγορά Πακέτου:" />
-                                <DatePicker SelectedDate="{Binding DateOfIssue,  UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+                                <DatePicker SelectedDate="{Binding DateOfIssue,  UpdateSourceTrigger=PropertyChanged}"
+                                            Width="120" />
                             </StackPanel>
                             <StackPanel Margin="5 0">
                                 <TextBlock Text="1η συνεδρία" />
@@ -307,7 +319,9 @@
                         <DatePicker SelectedDate="{Binding OldShowUpDate,UpdateSourceTrigger=PropertyChanged}"
                                     Width="120" />
                         <CheckBox Content="Massage"
-                                  IsChecked="{Binding IsMassage}"  VerticalAlignment="Center" Margin="5"/>
+                                  IsChecked="{Binding IsMassage}"
+                                  VerticalAlignment="Center"
+                                  Margin="5" />
                         <Button Command="{Binding AddOldShowUpCommand}"
                                 Content="Προσθήκη"
                                 Margin="0 0 5 0"
@@ -365,7 +379,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Border>
-                                        <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource  RowToIndexConverter}}">
+                                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource  RowToIndexConverter}}">
                                                 <TextBlock.Style>
                                                     <Style>
                                                         <Style.Triggers>
@@ -439,11 +453,12 @@
                 </GroupBox>
                 <GroupBox Header="Προγράμματα"
                           Width="540"
-                          Grid.Column="1" VerticalAlignment="Top"
+                          Grid.Column="1"
+                          VerticalAlignment="Top"
                           HorizontalAlignment="Left">
                     <DataGrid ItemsSource="{Binding ProgramsColelctionView}"
                               VerticalAlignment="Top"
-                              CanUserAddRows="False" 
+                              CanUserAddRows="False"
                               SelectedItem="{Binding SelectedProgramToDelete}"
                               VirtualizingPanel.VirtualizationMode="Standard"
                               Height="185"
@@ -470,23 +485,30 @@
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Έναρξη" Width="70"
+                            <DataGridTextColumn Header="Έναρξη"
+                                                Width="70"
                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yyyy', Converter={StaticResource DateTimeToString}}" />
                             <DataGridTextColumn Header="Τύπος"
                                                 Width="120"
                                                 IsReadOnly="True"
                                                 Binding="{Binding }" />
-                            <DataGridTextColumn Header="Συν." Width="30"
+                            <DataGridTextColumn Header="Συν."
+                                                Width="30"
                                                 Binding="{Binding Showups}" />
-                            <DataGridTextColumn Header="Μήνες" Width="35"
+                            <DataGridTextColumn Header="Μήνες"
+                                                Width="35"
                                                 Binding="{Binding Months}" />
-                            <DataGridTextColumn Header="Τιμή Συν." Width="55"
+                            <DataGridTextColumn Header="Τιμή Συν."
+                                                Width="55"
                                                 Binding="{Binding ShowUpPrice,StringFormat=c}" />
-                            <DataGridTextColumn Header="Σύνολο" Width="55"
+                            <DataGridTextColumn Header="Σύνολο"
+                                                Width="55"
                                                 Binding="{Binding Amount,StringFormat=c}" />
-                            <DataGridTextColumn Header="Αγορά" Width="70"
+                            <DataGridTextColumn Header="Αγορά"
+                                                Width="70"
                                                 Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yyyy', Converter={StaticResource DateTimeToString}}" />
-                            <DataGridTemplateColumn Header="Πλήρωμή" Width="60">
+                            <DataGridTemplateColumn Header="Πλήρωμή"
+                                                    Width="60">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Border>

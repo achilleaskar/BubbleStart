@@ -30,6 +30,7 @@ namespace BubbleStart.ViewModels
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
             SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); }, CanSaveCustomer);
             ShowedUpCommand = new RelayCommand(async () => { await CustomerShowedUp(); });
+            ShowedUpMassCommand = new RelayCommand(async () => { await CustomerShowedUp(true); });
             CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
@@ -207,10 +208,6 @@ namespace BubbleStart.ViewModels
                     _SelectedCustomer.IsSelected = false;
                 }
                 _SelectedCustomer = value;
-                if (_SelectedCustomer != null)
-                {
-                    _SelectedCustomer.SelectProperProgram();
-                }
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Enabled));
             }
@@ -255,6 +252,7 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand ShowedUpCommand { get; set; }
+        public RelayCommand ShowedUpMassCommand { get; set; }
 
         public ObservableCollection<Customer> TodaysApointments
         {
@@ -289,12 +287,12 @@ namespace BubbleStart.ViewModels
             await BasicDataManager.SaveAsync();
         }
 
-        public async Task CustomerShowedUp()
+        public async Task CustomerShowedUp(bool mass = false)
         {
             if (SelectedCustomer != null)
             {
                 CustomersPracticing.Add(SelectedCustomer);
-                SelectedCustomer.ShowedUp(true);
+                SelectedCustomer.ShowedUp(true, mass);
                 await BasicDataManager.SaveAsync();
             }
         }
@@ -582,7 +580,7 @@ namespace BubbleStart.ViewModels
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-            TodaysApointments = new ObservableCollection<Customer>() ;
+            TodaysApointments = new ObservableCollection<Customer>();
             Customers = new ObservableCollection<Customer>(BasicDataManager.Customers);
             CustomersPracticing.Clear();
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
@@ -594,8 +592,7 @@ namespace BubbleStart.ViewModels
                 {
                     c.PropertyChanged += EntityViewModelPropertyChanged;
                     c.Loaded = true;
-                    c.SetColors();
-                    c.SelectProperProgram();
+                    c.GetRemainingDays();
                     if (c.LastShowUp != null && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
                     {
                         c.IsPracticing = true;

@@ -189,11 +189,12 @@ namespace BubbleStart.ViewModels
                     {
                         return;
                     }
-                    Mouse.OverrideCursor = Cursors.Wait;
-                    await BasicDataManager.Refresh();
-
-                    Mouse.OverrideCursor = Cursors.Arrow;
+                   
                 }
+                Mouse.OverrideCursor = Cursors.Wait;
+                await BasicDataManager.Refresh();
+
+                Mouse.OverrideCursor = Cursors.Arrow;
             }
         }
 

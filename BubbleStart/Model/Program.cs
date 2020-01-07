@@ -23,6 +23,26 @@ namespace BubbleStart.Model
 
         #region Enums
 
+        [NotMapped]
+        public int RemainingDays { get; set; }
+
+        public bool IsMassage => Ismassage();
+
+        private bool Ismassage()
+        {
+            switch (ProgramType)
+            {
+                case ProgramTypes.masasRel30:
+                case ProgramTypes.masazRel50:
+                case ProgramTypes.masazTher30:
+                case ProgramTypes.masazTher50:
+                case ProgramTypes.massage41:
+                    return true;
+            }
+            return false;
+
+        }
+
         private ObservableCollection<Payment> _Payments = new ObservableCollection<Payment>();
 
         public ObservableCollection<Payment> Payments
