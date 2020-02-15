@@ -35,6 +35,10 @@
                                      IsChecked="{Binding IsYogaChecked}"
                                      GroupName="Options1"
                                      Margin="5 0" />
+                        <RadioButton Content="Massage"
+                                     IsChecked="{Binding IsMassageChecked}"
+                                     GroupName="Options1"
+                                     Margin="5 0" />
                     </StackPanel>
                 </GroupBox>
                 <TextBlock Grid.Row="1"

@@ -23,6 +23,8 @@ namespace BubbleStart.Converters
                     return new SolidColorBrush(Colors.Orange);
                 else if (a.Person == 2)
                     return new SolidColorBrush(Colors.LightBlue);
+                else if (a.Person == 3)
+                    return new SolidColorBrush(Colors.HotPink);
             }
             return new SolidColorBrush(Colors.Transparent);
         }

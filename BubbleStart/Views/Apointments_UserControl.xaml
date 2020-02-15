@@ -51,7 +51,9 @@
                               Margin="5 0">
                         <ComboBoxItem Content="Όλοι" />
                         <ComboBoxItem Content="Γωγώ" />
-                        <ComboBoxItem Content="Γυμναστής" />
+                        <ComboBoxItem Content="Δημήτρης" />
+                        <ComboBoxItem Content="Yoga" />
+                        <ComboBoxItem Content="Massage" />
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Grid.Column="2"
@@ -76,6 +78,8 @@
                            Background="Orange" />
                     <Label Content="Υοga"
                            Background="LightBlue" />
+                    <Label Content="Massage"
+                           Background="HotPink" />
                 </StackPanel>
                 <Button Content="Φόρτωση" Grid.Column="4"
                         Command="{Binding ShowProgramCommand}" VerticalAlignment="Center"  Background="Yellow"/>

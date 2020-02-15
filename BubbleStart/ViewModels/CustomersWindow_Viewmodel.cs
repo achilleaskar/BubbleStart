@@ -31,7 +31,7 @@ namespace BubbleStart.ViewModels
 
         private bool CanAdd(object p)
         {
-            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked);
+            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked|| IsMassageChecked);
         }
 
         #endregion Constructors
@@ -163,6 +163,35 @@ namespace BubbleStart.ViewModels
                 if (value)
                 {
                     SelectedPerson = 2;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private bool _IsMassageChecked;
+
+
+        public bool IsMassageChecked
+        {
+            get
+            {
+                return _IsMassageChecked;
+            }
+
+            set
+            {
+                if (_IsMassageChecked == value)
+                {
+                    return;
+                }
+
+                _IsMassageChecked = value;
+                if (value)
+                {
+                    SelectedPerson = 3;
                 }
                 RaisePropertyChanged();
             }
