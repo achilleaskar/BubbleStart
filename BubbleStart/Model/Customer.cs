@@ -48,12 +48,26 @@ namespace BubbleStart.Model
             ToggleMassageCommand = new RelayCommand(async () => { await TogleMassage(); }, SelectedShowUp != null);
             ToggleMassagebCommand = new RelayCommand(async () => { await TogleMassageb(); }, SelectedMassShowUp != null);
             DeletePaymentCommand = new RelayCommand(async () => { await DeletePayment(); }, SelectedPayment != null);
+            DeletePaymentMassCommand = new RelayCommand(async () => { await DeletePaymentMass(); }, SelectedPaymentMass != null);
             SetToProgramCommand = new RelayCommand(async () => { await SetToPayment(); }, CanSet);
             DeleteProgramCommand = new RelayCommand(async () => { await DeleteProgram(); }, SelectedProgramToDelete != null);
             DeleteProgramMassCommand = new RelayCommand(async () => { await DeleteProgramMass(); }, SelectedProgramMassageToDelete != null);
             OldShowUpDate = DateOfPayment = DateOfIssue = StartDate = DateTime.Today;
             DisableCustomerCommand = new RelayCommand(DisableCustomer);
             ProgramTypeIndex = -1;
+        }
+
+        private async Task DeletePaymentMass()
+        {
+
+            Changes.Add(new Change($"Διαγράφηκε ΠΛΗΡΩΜΗ {SelectedPaymentMass.Amount}€ που είχε γίνει {SelectedPaymentMass.Date.ToString("ddd dd/MM/yy")} για μασάζ", StaticResources.User));
+            if (SelectedPaymentMass.Program != null && SelectedPaymentMass.Program.Payments.Any(p => p.Id == SelectedPaymentMass.Id))
+            {
+                SelectedPaymentMass.Program.Payments.Remove(SelectedPaymentMass);
+            }
+            BasicDataManager.Delete(SelectedPaymentMass);
+            RaisePropertyChanged(nameof(PaymentVisibility));
+            await BasicDataManager.SaveAsync();
         }
 
         private async Task DeletemassShowUp()
@@ -482,6 +496,8 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand DeletePaymentCommand { get; set; }
+        [NotMapped]
+        public RelayCommand DeletePaymentMassCommand { get; set; }
 
         [NotMapped]
         public RelayCommand DeleteProgramCommand { get; set; }
@@ -1118,9 +1134,16 @@ namespace BubbleStart.Model
 
                 _Payments = value;
                 Payments.CollectionChanged += PaymentsCollectionChanged;
-                PaymentsCollectionView = (CollectionView)CollectionViewSource.GetDefaultView(Payments);
+
+                PaymentsCollectionView = ProgramsMassageColelctionView = new ListCollectionView(Payments);
+                PaymentsCollectionView.Filter = ProgramsgymFilter;
                 PaymentsCollectionView.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Descending));
                 PaymentsCollectionView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+
+                PaymentsMassCollectionView = ProgramsMassageColelctionView = new ListCollectionView(Payments);
+                PaymentsMassCollectionView.Filter = ProgramsmasFilter;
+                PaymentsMassCollectionView.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Descending));
+                PaymentsMassCollectionView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
                 RaisePropertyChanged();
             }
         }
@@ -1140,6 +1163,30 @@ namespace BubbleStart.Model
                 }
 
                 _PaymentsCollectionView = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+        private ICollectionView _PaymentsMassCollectionView;
+
+
+        public ICollectionView PaymentsMassCollectionView
+        {
+            get
+            {
+                return _PaymentsMassCollectionView;
+            }
+
+            set
+            {
+                if (_PaymentsMassCollectionView == value)
+                {
+                    return;
+                }
+
+                _PaymentsMassCollectionView = value;
                 RaisePropertyChanged();
             }
         }
@@ -1266,11 +1313,11 @@ namespace BubbleStart.Model
                 _Programs = value;
                 Programs.CollectionChanged += ProgramsCollectionChanged;
 
-                ProgramsMassageColelctionView = new CollectionViewSource { Source = Programs }.View;
+                ProgramsMassageColelctionView = new ListCollectionView(Programs);
                 ProgramsMassageColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                 ProgramsMassageColelctionView.Filter = ProgramsmasFilter;
 
-                ProgramsColelctionView = new CollectionViewSource { Source = Programs }.View;
+                ProgramsColelctionView = new ListCollectionView(Programs);
                 ProgramsColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                 ProgramsColelctionView.Filter = ProgramsgymFilter;
 
@@ -1280,12 +1327,31 @@ namespace BubbleStart.Model
 
         private bool ProgramsmasFilter(object obj)
         {
-            return (obj is Program p && p.IsMassage) || (obj is ShowUp s && s.Massage);
+            try
+            {
+                return (obj is Program p && p.IsMassage) ||
+                    (obj is ShowUp s && s.Massage) ||
+                    (obj is Payment a && a.Program != null && a.Program.IsMassage);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         private bool ProgramsgymFilter(object obj)
         {
-            return (obj is Program p && !p.IsMassage) || (obj is ShowUp s && !s.Massage);
+            try
+            {
+                return (obj is Program p && !p.IsMassage) ||
+                    (obj is ShowUp s && !s.Massage) ||
+                    (obj is Payment a && (a.Program == null || !a.Program.IsMassage));
+            }
+            catch (Exception ex)
+            {
+                // MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
+                return false;
+            }
         }
 
         public ICollectionView ProgramsColelctionView
@@ -1324,6 +1390,8 @@ namespace BubbleStart.Model
                 }
 
                 _ProgramsMassageColelctionView = value;
+                ProgramsMassageColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
+                ProgramsMassageColelctionView.Filter = ProgramsmasFilter;
                 RaisePropertyChanged();
             }
         }
@@ -1476,6 +1544,31 @@ namespace BubbleStart.Model
                 }
 
                 _SelectedPayment = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private Payment _SelectedPaymentMass;
+
+        [NotMapped]
+        public Payment SelectedPaymentMass
+        {
+            get
+            {
+                return _SelectedPaymentMass;
+            }
+
+            set
+            {
+                if (_SelectedPaymentMass == value)
+                {
+                    return;
+                }
+
+                _SelectedPaymentMass = value;
                 RaisePropertyChanged();
             }
         }
@@ -1662,11 +1755,11 @@ namespace BubbleStart.Model
 
                 _ShowUps = value;
                 ShowUps.CollectionChanged += ShowUps_CollectionChanged;
-                ShowUpsCollectionView = new CollectionViewSource { Source = ShowUps }.View;
+                ShowUpsCollectionView = new ListCollectionView(ShowUps);
                 ShowUpsCollectionView.SortDescriptions.Add(new SortDescription("Arrived", ListSortDirection.Descending));
                 ShowUpsCollectionView.Filter = ProgramsgymFilter;
 
-                ShowUpsMassCollectionView = new CollectionViewSource { Source = ShowUps }.View;
+                ShowUpsMassCollectionView = new ListCollectionView(ShowUps);
                 ShowUpsMassCollectionView.SortDescriptions.Add(new SortDescription("Arrived", ListSortDirection.Descending));
                 ShowUpsMassCollectionView.Filter = ProgramsmasFilter; ;
 
@@ -1950,16 +2043,22 @@ namespace BubbleStart.Model
         {
             if (Loaded)
             {
-                if (Id == 1)
-                {
-                }
                 if (Programs != null && ShowUps != null && ShowUps.Count > 0 && Programs.Count > 0)
                 {
                     Program selProg;
                     int progIndex = 0;
                     var programsReversed = Programs.Where(o => !o.IsMassage).OrderBy(p => p.StartDay).ThenByDescending(p => p.Id).ToList();
-                    var showUpsReserved = ShowUps.OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList();
-
+                    DateTime Limit;
+                    if (programsReversed.Count > 0)
+                    {
+                        Limit = programsReversed[0].StartDay;
+                    }
+                    else
+                    {
+                        Limit = new DateTime();
+                    }
+                    var showUpsReserved = ShowUps.Where(s => s.Arrived >= Limit).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList();
+                    int counter = 0;
                     selProg = null;
                     foreach (ShowUp showUp in showUpsReserved)
                     {
@@ -1969,6 +2068,7 @@ namespace BubbleStart.Model
                         }
                         if ((selProg == null || selProg.RemainingDays == 0) && progIndex < programsReversed.Count)
                         {
+                            counter = 1;
                             selProg = programsReversed[progIndex];
                             selProg.RemainingDays = selProg.Showups;
                             if (progIndex % 2 == 0)
@@ -1984,6 +2084,7 @@ namespace BubbleStart.Model
                         if (selProg != null && (selProg.RemainingDays != 0 || progIndex != programsReversed.Count))
                         {
                             showUp.Color = selProg.Color;
+                            showUp.Count = counter++;
                             selProg.RemainingDays--;
                         }
                     }
@@ -2010,6 +2111,7 @@ namespace BubbleStart.Model
                         }
                         if ((selProg == null || selProg.RemainingDays == 0) && progIndex < programsReversed.Count)
                         {
+                            counter = 1;
                             selProg = programsReversed[progIndex];
                             selProg.RemainingDays = selProg.Showups;
                             if (progIndex % 2 == 0)
@@ -2025,6 +2127,8 @@ namespace BubbleStart.Model
                         if (selProg != null && (selProg.RemainingDays != 0 || progIndex != programsReversed.Count))
                         {
                             showUp.Color = selProg.Color;
+                            showUp.Count = counter++;
+
                             selProg.RemainingDays--;
                         }
                     }
@@ -2110,6 +2214,8 @@ namespace BubbleStart.Model
                 //}
                 RaisePropertyChanged(nameof(SelectedMasage));
                 RaisePropertyChanged(nameof(SelectedProgram));
+                PaymentsCollectionView.Refresh();
+                PaymentsMassCollectionView.Refresh();
             }
         }
 
@@ -2228,12 +2334,12 @@ namespace BubbleStart.Model
 
         private bool CanSet()
         {
-            return SelectedPayment != null && (SelectedProgramToDelete != null || SelectedProgramMassageToDelete != null);
+            return (SelectedPayment != null || SelectedPaymentMass != null) && (SelectedProgramToDelete != null || SelectedProgramMassageToDelete != null);
         }
 
         private async Task DeletePayment()
         {
-            Changes.Add(new Change($"Διαγράφηκε ΠΛΗΡΩΜΗ {SelectedPayment.Amount}€ που είχε γίνει {SelectedPayment.Date.ToString("ddd dd/MM/yy")}", StaticResources.User));
+            Changes.Add(new Change($"Διαγράφηκε ΠΛΗΡΩΜΗ {SelectedPayment.Amount}€ που είχε γίνει {SelectedPayment.Date.ToString("ddd dd/MM/yy")} για γυμναστική", StaticResources.User));
             if (SelectedPayment.Program != null && SelectedPayment.Program.Payments.Any(p => p.Id == SelectedPayment.Id))
             {
                 SelectedPayment.Program.Payments.Remove(SelectedPayment);
@@ -2362,19 +2468,46 @@ namespace BubbleStart.Model
         private async Task SetToPayment()
         {
             if (SelectedProgramToDelete != null)
+            {
                 SelectedProgramToDelete.Payments.Add(SelectedPayment);
+                SelectedPayment.RaisePropertyChanged("PaymentColor");
+            }
             else if (SelectedProgramMassageToDelete != null)
-                SelectedProgramMassageToDelete.Payments.Add(SelectedPayment);
+            {
+                SelectedProgramMassageToDelete.Payments.Add(SelectedPaymentMass);
+                SelectedPaymentMass.RaisePropertyChanged("PaymentColor");
+            }
             await BasicDataManager.SaveAsync();
             GetRemainingDays();
-            SelectedPayment.RaisePropertyChanged("PaymentColor");
         }
 
         private async Task ShowPreviewsData()
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            Loaded = false;
             await BasicDataManager.Context.GetFullCustomerById(Id);
+            Loaded = true;
+
+            SetColors();
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void TryRefrehAllCollections()
+        {
+            GetRemainingDays();
+            ProgramsMassageColelctionView = new CollectionViewSource { Source = Programs }.View;
+
+            ProgramsColelctionView = new CollectionViewSource { Source = Programs }.View;
+            ProgramsColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
+            ProgramsColelctionView.Filter = ProgramsgymFilter;
+
+            ShowUpsCollectionView = new CollectionViewSource { Source = ShowUps }.View;
+            ShowUpsCollectionView.SortDescriptions.Add(new SortDescription("Arrived", ListSortDirection.Descending));
+            ShowUpsCollectionView.Filter = ProgramsgymFilter;
+
+            ShowUpsMassCollectionView = new CollectionViewSource { Source = ShowUps }.View;
+            ShowUpsMassCollectionView.SortDescriptions.Add(new SortDescription("Arrived", ListSortDirection.Descending));
+            ShowUpsMassCollectionView.Filter = ProgramsmasFilter; ;
         }
 
         private void ShowUps_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

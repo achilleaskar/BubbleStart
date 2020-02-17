@@ -10,6 +10,31 @@ namespace BubbleStart.Model
         {
 
         }
+
+
+
+
+        private int _Count;
+
+        [NotMapped]
+        public int Count
+        {
+            get
+            {
+                return _Count;
+            }
+
+            set
+            {
+                if (_Count == value)
+                {
+                    return;
+                }
+
+                _Count = value;
+                RaisePropertyChanged();
+            }
+        }
         #region Fields
 
         private bool _Arrive;

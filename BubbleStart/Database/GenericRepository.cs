@@ -107,7 +107,7 @@ namespace BubbleStart.Database
             try
             {
                 return await Context.Set<Customer>().Where(c => c.Id == id)
-                        .Include(f => f.Programs)
+                        .Include(f => f.Programs.Select(t => t.Payments))
                         .Include(g => g.Payments)
                         .Include(d => d.WeightHistory)
                         .Include(c => c.Illness)
