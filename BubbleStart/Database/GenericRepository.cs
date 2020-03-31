@@ -14,6 +14,7 @@ namespace BubbleStart.Database
     {
         protected readonly MainDatabase Context;
         protected readonly DateTime Limit;
+        protected readonly DateTime CloseLimit;
 
 
         public GenericRepository()
@@ -23,11 +24,19 @@ namespace BubbleStart.Database
             if (DateTime.Today.Month > 7 && DateTime.Today.Day >= 20)
             {
                 Limit = new DateTime(DateTime.Today.Year, 8, 20);
+
             }
             else
             {
                 Limit = new DateTime(DateTime.Today.Year - 1, 8, 20);
-
+            }
+            if ((DateTime.Today - Limit).TotalDays > 60)
+            {
+                CloseLimit = DateTime.Today.AddDays(-60);
+            }
+            else
+            {
+                CloseLimit = Limit;
             }
             //Context.Database.Log = Console.Write;
         }
@@ -199,7 +208,8 @@ namespace BubbleStart.Database
 
         public async Task SaveAsync()
         {
-            var AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
+
+            List<DbEntityEntry> AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
 
             AddedEntities.ForEach(E =>
             {
@@ -209,19 +219,19 @@ namespace BubbleStart.Database
                 }
             });
 
-            //var EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
+            var EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
 
-            //EditedEntities.ForEach(E =>
-            //{
-            //    if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
-            //    {
-            //        //   E.Property("ModifiedDate").CurrentValue = DateTime.Now;
-            //    }
-            //});
+            EditedEntities.ForEach(E =>
+            {
+                if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
+                {
+                    //   E.Property("ModifiedDate").CurrentValue = DateTime.Now;
+                }
+            });
 
-            //var changes = from e in Context.ChangeTracker.Entries()
-            //              where e.State != EntityState.Unchanged
-            //              select e;
+            var changes = from e in Context.ChangeTracker.Entries()
+                          where e.State != EntityState.Unchanged
+                          select e;
 
             //foreach (var change in changes)
             //{
@@ -347,19 +357,19 @@ namespace BubbleStart.Database
         {
             try
             {
-                var x = (await Context.Set<Customer>()
-                    .Include(o=>o.Programs.Select(t=>t.Payments))
+                var x = (await Context.Set<Customer>().Where(c => c.Enabled)
+                    .Include(o => o.Programs.Select(t => t.Payments))
                     .Select(c => new
-                {
-                    c,
-                    Programs = c.Programs.Where(p => p.StartDay >= Limit),
-                    Payments = c.Payments.Where(p1 => p1.Date >= Limit),
-                    c.WeightHistory,
-                    c.Illness,
-                    ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
-                    Changes = c.Changes.Where(p3 => p3.Date >= Limit),
-                    Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
-                }).ToListAsync()).Select(x1 => x1.c).ToList();
+                    {
+                        c,
+                        Programs = c.Programs.Where(p => p.StartDay >= Limit),
+                        Payments = c.Payments.Where(p1 => p1.Date >= Limit),
+                        c.WeightHistory,
+                        c.Illness,
+                        ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
+                        Changes = c.Changes.Where(p3 => p3.Date >= CloseLimit),
+                        Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
+                    }).ToListAsync()).Select(x1 => x1.c).ToList();
                 return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
             }
             catch (Exception ex)
@@ -375,6 +385,7 @@ namespace BubbleStart.Database
             try
             {
                 var x = await Context.Set<Customer>()
+                    .Where(c => c.Enabled)
                     .Include(z => z.Illness)
                     .Include(z => z.ShowUps)
                     .ToListAsync();

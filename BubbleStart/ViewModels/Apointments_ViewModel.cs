@@ -201,6 +201,7 @@ namespace BubbleStart.ViewModels
 
         public async Task CreateProgram()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             List<Apointment> apointments = (await BasicDataManager.Context.GetApointmentsAsync(StartDate)).ToList();
             DateTime tmpDate = StartDate;
             Days.Clear();
@@ -228,6 +229,8 @@ namespace BubbleStart.ViewModels
             }
             RaisePropertyChanged(nameof(HasDays));
             RaisePropertyChanged(nameof(Days));
+            Mouse.OverrideCursor = Cursors.Arrow;
+
         }
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)

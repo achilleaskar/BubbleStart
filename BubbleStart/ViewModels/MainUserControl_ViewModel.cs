@@ -1,9 +1,16 @@
 ﻿using BubbleStart.Database;
 using BubbleStart.Helpers;
 using BubbleStart.Messages;
+using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using OfficeOpenXml;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -18,7 +25,8 @@ namespace BubbleStart.ViewModels
         {
             BasicDataManager = basicDataManager;
             LogOutCommand = new RelayCommand(TryLogOut);
-            OpenUsersEditCommand = new RelayCommand(async () => { await OpenUsersWindow(); }, CanEditWindows);
+            OpenUsersEditCommand = new RelayCommand(async () => await OpenUsersWindow(), CanEditWindows);
+            PrintCustomersCommand = new RelayCommand(PrintCustomers);
 
             RefreshAllDataCommand = new RelayCommand(async () => { await RefreshAllData(); });
 
@@ -29,6 +37,46 @@ namespace BubbleStart.ViewModels
 
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
 
+        }
+
+        private void PrintCustomers()
+        {
+            int lineNum = 1;
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Πελάτες.xlsx";
+
+            FileInfo fileInfo = new FileInfo(path);
+            ExcelPackage p = new ExcelPackage();
+            p.Workbook.Worksheets.Add($"Customers");
+            ExcelWorksheet myWorksheet = p.Workbook.Worksheets[1];
+
+            myWorksheet.Cells["A1"].Value = "#";
+            myWorksheet.Cells["B1"].Value = "Όνομα";
+            myWorksheet.Cells["C1"].Value = "Επίθετο";
+            myWorksheet.Cells["D1"].Value = "Τηλέφωνο";
+            myWorksheet.Cells["E1"].Value = "Email";
+            myWorksheet.Cells["F1"].Value = "Ενεργός";
+            foreach (Customer customer in BasicDataManager.Customers)
+            {
+                lineNum++;
+                myWorksheet.Cells["A" + lineNum].Value = lineNum - 1;
+                myWorksheet.Cells["B" + lineNum].Value = customer.Name;
+                myWorksheet.Cells["C" + lineNum].Value = customer.SureName;
+                myWorksheet.Cells["D" + lineNum].Value = !string.IsNullOrEmpty(customer.Tel) && customer.Tel.Length >= 10 && !customer.Tel.StartsWith("000") ? customer.Tel : "";
+                myWorksheet.Cells["E" + lineNum].Value = customer.Email;
+                myWorksheet.Cells["F" + lineNum].Value = customer.ActiveCustomer ? "ΝΑΙ" : "ΟΧΙ";
+
+            }
+            myWorksheet.Column(1).Width = 4;
+            myWorksheet.Column(2).Width = 16;
+            myWorksheet.Column(3).Width = 18;
+            myWorksheet.Column(4).Width = 12;
+            myWorksheet.Column(5).Width = 30;
+            myWorksheet.Column(6).Width = 8;
+
+
+            //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());
+            p.SaveAs(fileInfo);
+            Process.Start(path);
         }
 
         #endregion Constructors
@@ -92,6 +140,7 @@ namespace BubbleStart.ViewModels
         public RelayCommand LogOutCommand { get; set; }
 
         public RelayCommand OpenUsersEditCommand { get; set; }
+        public RelayCommand PrintCustomersCommand { get; set; }
 
         public RelayCommand RefreshAllDataCommand { get; set; }
 
@@ -142,7 +191,7 @@ namespace BubbleStart.ViewModels
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-           
+
         }
 
         public override void Reload()
@@ -160,10 +209,10 @@ namespace BubbleStart.ViewModels
                     return;
                 }
             }
-                Mouse.OverrideCursor = Cursors.Wait;
-                MessengerInstance.Send(new LoginLogOutMessage(false));
+            Mouse.OverrideCursor = Cursors.Wait;
+            MessengerInstance.Send(new LoginLogOutMessage(false));
 
-                Mouse.OverrideCursor = Cursors.Arrow;
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private bool CanEditWindows()
@@ -189,7 +238,7 @@ namespace BubbleStart.ViewModels
                     {
                         return;
                     }
-                   
+
                 }
                 Mouse.OverrideCursor = Cursors.Wait;
                 await BasicDataManager.Refresh();

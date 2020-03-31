@@ -2,6 +2,7 @@
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using System;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BubbleStart.ViewModels
 {
@@ -91,7 +93,7 @@ namespace BubbleStart.ViewModels
                 }
 
                 _Customers = value;
-                Customers.CollectionChanged += Customers_CollectionChanged;
+              // Customers.CollectionChanged += Customers_CollectionChanged;
 
                 RaisePropertyChanged();
             }
@@ -335,43 +337,57 @@ namespace BubbleStart.ViewModels
             return customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm);
         }
 
-        private void Customers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (Customer customer in e.OldItems)
-                {
-                    //Removed items
-                    customer.PropertyChanged -= EntityViewModelPropertyChanged;
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (Customer customer in e.NewItems)
-                {
-                    customer.PropertyChanged += EntityViewModelPropertyChanged;
-                }
-            }
-        }
+        //private void Customers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (e.Action == NotifyCollectionChangedAction.Remove)
+        //    {
+        //        foreach (Customer customer in e.OldItems)
+        //        {
+        //            //Removed items
+        //            customer.PropertyChanged -= EntityViewModelPropertyChanged;
+        //        }
+        //    }
+        //    else if (e.Action == NotifyCollectionChangedAction.Add)
+        //    {
+        //        foreach (Customer customer in e.NewItems)
+        //        {
+        //            customer.PropertyChanged += EntityViewModelPropertyChanged;
+        //        }
+        //    }
+        //}
 
         private async Task DeleteCustomer()
         {
-            BasicDataManager.Add(new Change($"Διαγράφηκε Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", StaticResources.User));
-            BasicDataManager.Delete(SelectedCustomer);
+            //#if DEBUG
+            //            string PhoneNumbers = "";
+            //            foreach (var c in Customers)
+            //            {
+            //                //if (c.IsActiveColor != null && (c.IsActiveColor.Color == Colors.Red || c.IsActiveColor.Color == Colors.Green) && !string.IsNullOrEmpty(c.Tel) && c.Tel.StartsWith("69") && c.Tel.Count() == 10)
+            //                if ( !string.IsNullOrEmpty(c.Tel) && c.Tel.StartsWith("69") && c.Tel.Count() == 10)
+            //                {
+            //                    PhoneNumbers += c.Tel + ",";
+            //                }
+            //            }
+            //            PhoneNumbers = PhoneNumbers.Trim(',');
+            //            Clipboard.SetText(PhoneNumbers ?? "");
+            //            return;
+            //#endif
+            BasicDataManager.Add(new Change($"Απενεργοποιήθηκε Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", StaticResources.User));
+            SelectedCustomer.Enabled = false;
             Customers.Remove(SelectedCustomer);
             await BasicDataManager.SaveAsync();
         }
 
-        private void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            // RaisePropertyChanged(nameof(SelectedCustomer));
+        //private void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        //{
+        //    // RaisePropertyChanged(nameof(SelectedCustomer));
 
-            //if (e.PropertyName == "IsActiveColor")
-            //{
-            //    Customers = new ObservableCollection<Customer>(Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
+        //    //if (e.PropertyName == "IsActiveColor")
+        //    //{
+        //    //    Customers = new ObservableCollection<Customer>(Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
 
-            //}
-        }
+        //    //}
+        //}
 
         private void OpenCustomerManagement(Customer c)
         {
@@ -590,7 +606,7 @@ namespace BubbleStart.ViewModels
             {
                 try
                 {
-                    c.PropertyChanged += EntityViewModelPropertyChanged;
+                    //c.PropertyChanged += EntityViewModelPropertyChanged;
                     c.Loaded = true;
                     c.GetRemainingDays();
                     if (c.LastShowUp != null && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)

@@ -37,6 +37,9 @@
                     <MenuItem Command="{Binding OpenUsersEditCommand}"
                               Header="Χρήστες"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
+                    <MenuItem Command="{Binding PrintCustomersCommand}"
+                              Header="Εκτύπωση όλων"
+                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
                 </MenuItem>
             </Menu>
             <StackPanel HorizontalAlignment="Right"

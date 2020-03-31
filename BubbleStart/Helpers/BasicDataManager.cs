@@ -80,7 +80,11 @@ namespace BubbleStart.Helpers
         internal void Delete<TEntity>(TEntity model) where TEntity : BaseModel, new()
         {
             Context.Delete(model);
-          
+            if (model is Customer c)
+            {
+                Customers.Remove(c);
+            }
+
         }
 
         internal async Task SaveAsync()
@@ -147,7 +151,16 @@ namespace BubbleStart.Helpers
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
             Messenger.Default.Send(new BasicDataManagerRefreshedMessage());
 
+            foreach (var c in Customers)
+            {
+                c.PropertyChanged += C_PropertyChanged;
+            }
+
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void C_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
         }
 
         public RelayCommand RefreshCommand { get; set; }

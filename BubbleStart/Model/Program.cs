@@ -66,21 +66,22 @@ namespace BubbleStart.Model
 
         public enum ProgramTypes
         {
-            ReformerPilates,
-            Pilates,
-            Functional,
-            PilatesFunctional,
-            freeUse,
-            MedicalExersise,
-            dokimastiko,
-            yoga,
-            aerial,
-            masasRel30,
-            masazRel50,
-            masazTher30,
-            masazTher50,
-            blackfriday,
-            massage41
+            ReformerPilates=0,
+            Pilates=1,
+            Functional=2,
+            PilatesFunctional=3,
+            freeUse=4,
+            MedicalExersise=5,
+            dokimastiko=6,
+            yoga=7,
+            aerial=8,
+            masasRel30=9,
+            masazRel50=10,
+            masazTher30=11,
+            masazTher50=12,
+            blackfriday=13,
+            massage41=14,
+            online=15
         }
 
         #endregion Enums
@@ -365,8 +366,12 @@ namespace BubbleStart.Model
 
                 case ProgramTypes.blackfriday:
                     return "Black Friday Deal";
+
                 case ProgramTypes.massage41:
                     return "4+1 massage";
+
+                case ProgramTypes.online:
+                    return "Online";
             }
             return "Ανενεργό";
         }

@@ -8,11 +8,32 @@ namespace BubbleStart.Model
     {
         public ShowUp()
         {
-
         }
 
 
+        public SolidColorBrush RealColor => Real ? new SolidColorBrush(Colors.Transparent) : new SolidColorBrush(Colors.OrangeRed);
 
+        private bool _Real = true;
+
+        public bool Real
+        {
+            get
+            {
+                return _Real;
+            }
+
+            set
+            {
+                if (_Real == value)
+                {
+                    return;
+                }
+
+                _Real = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(RealColor));
+            }
+        }
 
         private int _Count;
 
@@ -35,6 +56,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         #region Fields
 
         private bool _Arrive;
@@ -42,12 +64,7 @@ namespace BubbleStart.Model
         private DateTime _Left;
         private DateTime _Time;
 
-
-
-
-
         private bool _Massage;
-
 
         public bool Massage
         {
@@ -67,6 +84,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         #endregion Fields
 
         #region Properties
@@ -90,9 +108,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
         private Program _Prog;
 
         [NotMapped]
@@ -114,6 +129,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         public DateTime Arrived
         {
             get
@@ -159,6 +175,7 @@ namespace BubbleStart.Model
         }
 
         public Customer Customer { get; set; }
+
         public DateTime Left
         {
             get
@@ -179,6 +196,5 @@ namespace BubbleStart.Model
         }
 
         #endregion Properties
-
     }
 }
