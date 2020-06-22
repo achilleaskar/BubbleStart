@@ -32,10 +32,7 @@ namespace BubbleStart.Model
 
         public Customer Customer
         {
-            get
-            {
-                return _Customer;
-            }
+            get => _Customer;
 
             set
             {
@@ -51,10 +48,7 @@ namespace BubbleStart.Model
 
         public DateTime Date
         {
-            get
-            {
-                return _Date;
-            }
+            get => _Date;
 
             set
             {
@@ -70,10 +64,7 @@ namespace BubbleStart.Model
 
         public string Description
         {
-            get
-            {
-                return _Description;
-            }
+            get => _Description;
 
             set
             {
@@ -89,10 +80,7 @@ namespace BubbleStart.Model
 
         public User User
         {
-            get
-            {
-                return _User;
-            }
+            get => _User;
 
             set
             {

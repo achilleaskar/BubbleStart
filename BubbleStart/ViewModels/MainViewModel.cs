@@ -1,13 +1,12 @@
+using System;
+using System.Threading.Tasks;
+using System.Windows;
 using BubbleStart.Database;
 using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace BubbleStart.ViewModels
 {
@@ -16,15 +15,14 @@ namespace BubbleStart.ViewModels
         public MainViewModel()
         {
             Messenger.Default.Register<ChangeVisibilityMessage>(this, msg => { Visibility = msg.Visible ? Visibility.Visible : Visibility.Collapsed; });
-            Messenger.Default.Register<LoginLogOutMessage>(this, async (msg) => await ChangeViewModel(msg.Login));
+            Messenger.Default.Register<LoginLogOutMessage>(this, msg =>  ChangeViewModel(msg.Login));
         }
 
-        private async Task ChangeViewModel(bool login)
+        private void ChangeViewModel(bool login)
         {
             if (login)
             {
                 SelectedViewmodel = new MainUserControl_ViewModel(BasicDataManager);
-               // await BasicDataManager.Refresh();
             }
             else
             {
@@ -60,10 +58,7 @@ namespace BubbleStart.ViewModels
 
         public MyViewModelBase SelectedViewmodel
         {
-            get
-            {
-                return _SelectedViewmodel;
-            }
+            get => _SelectedViewmodel;
 
             set
             {
@@ -83,10 +78,7 @@ namespace BubbleStart.ViewModels
         /// </summary>
         public Visibility Visibility
         {
-            get
-            {
-                return _Visibility;
-            }
+            get => _Visibility;
 
             set
             {

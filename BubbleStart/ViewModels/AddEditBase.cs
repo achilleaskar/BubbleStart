@@ -1,13 +1,13 @@
-﻿using BubbleStart.Database;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using BubbleStart.Wrappers;
-using GalaSoft.MvvmLight.CommandWpf;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using BubbleStart.Database;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using BubbleStart.Wrappers;
+using GalaSoft.MvvmLight.CommandWpf;
 
 namespace BubbleStart.ViewModels
 {
@@ -68,10 +68,7 @@ namespace BubbleStart.ViewModels
 
         public string ControlName
         {
-            get
-            {
-                return _ControlName;
-            }
+            get => _ControlName;
 
             set
             {
@@ -105,10 +102,7 @@ namespace BubbleStart.ViewModels
         /// </summary>
         public ObservableCollection<TWrapper> MainCollection
         {
-            get
-            {
-                return _MainCollection;
-            }
+            get => _MainCollection;
 
             set
             {
@@ -130,10 +124,7 @@ namespace BubbleStart.ViewModels
 
         public string ResultMessage
         {
-            get
-            {
-                return _ResultMessage;
-            }
+            get => _ResultMessage;
 
             set
             {
@@ -158,10 +149,7 @@ namespace BubbleStart.ViewModels
         /// </summary>
         public TWrapper SelectedEntity
         {
-            get
-            {
-                return _SelectedEntity;
-            }
+            get => _SelectedEntity;
 
             set
             {

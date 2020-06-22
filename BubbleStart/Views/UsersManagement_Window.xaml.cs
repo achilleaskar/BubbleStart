@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using BubbleStart.AttachedProperties;
 
 namespace BubbleStart.Views
 {
@@ -20,7 +21,7 @@ namespace BubbleStart.Views
 
             //Set this "EncryptedPassword" dependency property to the "SecurePassword"
             //of the PasswordBox.
-            AttachedProperties.PasswordBoxMVVMAttachedProperties.SetEncryptedPassword(pBox, pBox.SecurePassword);
+            PasswordBoxMVVMAttachedProperties.SetEncryptedPassword(pBox, pBox.SecurePassword);
         }
     }
 }

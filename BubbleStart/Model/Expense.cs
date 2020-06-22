@@ -24,10 +24,7 @@ namespace BubbleStart.Model
 
         public decimal Amount
         {
-            get
-            {
-                return _Amount;
-            }
+            get => _Amount;
 
             set
             {
@@ -43,10 +40,7 @@ namespace BubbleStart.Model
 
         public DateTime Date
         {
-            get
-            {
-                return _Date;
-            }
+            get => _Date;
 
             set
             {
@@ -62,10 +56,7 @@ namespace BubbleStart.Model
 
         public string Reason
         {
-            get
-            {
-                return _Reason;
-            }
+            get => _Reason;
 
             set
             {
@@ -81,10 +72,7 @@ namespace BubbleStart.Model
 
         public User User
         {
-            get
-            {
-                return _User;
-            }
+            get => _User;
 
             set
             {

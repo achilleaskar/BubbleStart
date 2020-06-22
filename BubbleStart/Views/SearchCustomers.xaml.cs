@@ -1,6 +1,6 @@
-﻿using BubbleStart.ViewModels;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
+using BubbleStart.ViewModels;
 
 namespace BubbleStart.Views
 {

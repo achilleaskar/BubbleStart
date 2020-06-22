@@ -104,10 +104,7 @@ namespace BubbleStart.Model
         [DisplayName("ΑΜΣΣ")]
         public string afxenas
         {
-            get
-            {
-                return _afxenas;
-            }
+            get => _afxenas;
 
             set
             {
@@ -124,10 +121,7 @@ namespace BubbleStart.Model
         [DisplayName("Αριστερός Αγκώνας")]
         public string agonasA
         {
-            get
-            {
-                return _agonasA;
-            }
+            get => _agonasA;
 
             set
             {
@@ -144,10 +138,7 @@ namespace BubbleStart.Model
         [DisplayName("Δεξιός Αγκώνας")]
         public string agonasD
         {
-            get
-            {
-                return _agonasD;
-            }
+            get => _agonasD;
 
             set
             {
@@ -163,10 +154,7 @@ namespace BubbleStart.Model
 
         public bool allergia
         {
-            get
-            {
-                return _allergia;
-            }
+            get => _allergia;
 
             set
             {
@@ -182,10 +170,7 @@ namespace BubbleStart.Model
 
         public string allergiaText
         {
-            get
-            {
-                return _allergiaText;
-            }
+            get => _allergiaText;
 
             set
             {
@@ -201,10 +186,7 @@ namespace BubbleStart.Model
 
         public bool Arthritida
         {
-            get
-            {
-                return _Arthritida;
-            }
+            get => _Arthritida;
 
             set
             {
@@ -220,10 +202,7 @@ namespace BubbleStart.Model
 
         public string arthritidaText
         {
-            get
-            {
-                return _arthritidaText;
-            }
+            get => _arthritidaText;
 
             set
             {
@@ -239,10 +218,7 @@ namespace BubbleStart.Model
 
         public bool Asthma
         {
-            get
-            {
-                return _Asthma;
-            }
+            get => _Asthma;
 
             set
             {
@@ -258,10 +234,7 @@ namespace BubbleStart.Model
 
         public string asthmaText
         {
-            get
-            {
-                return _asthmaText;
-            }
+            get => _asthmaText;
 
             set
             {
@@ -277,10 +250,7 @@ namespace BubbleStart.Model
 
         public string cancerText
         {
-            get
-            {
-                return _cancerText;
-            }
+            get => _cancerText;
 
             set
             {
@@ -297,10 +267,7 @@ namespace BubbleStart.Model
         [DisplayName("Δάχτυλα Αριστερού Χεριού")]
         public string DaxtylaA
         {
-            get
-            {
-                return _DaxtylaA;
-            }
+            get => _DaxtylaA;
 
             set
             {
@@ -317,10 +284,7 @@ namespace BubbleStart.Model
         [DisplayName("Δάχτυλα Δεξιού Χεριού")]
         public string DaxtylaD
         {
-            get
-            {
-                return _DaxtylaD;
-            }
+            get => _DaxtylaD;
 
             set
             {
@@ -336,10 +300,7 @@ namespace BubbleStart.Model
 
         public bool Diavitis
         {
-            get
-            {
-                return _Diavitis;
-            }
+            get => _Diavitis;
 
             set
             {
@@ -355,10 +316,7 @@ namespace BubbleStart.Model
 
         public string diavitisText
         {
-            get
-            {
-                return _diavitisText;
-            }
+            get => _diavitisText;
 
             set
             {
@@ -374,10 +332,7 @@ namespace BubbleStart.Model
 
         public bool Eggymosini
         {
-            get
-            {
-                return _Eggymosini;
-            }
+            get => _Eggymosini;
 
             set
             {
@@ -393,10 +348,7 @@ namespace BubbleStart.Model
 
         public string eggymosynhText
         {
-            get
-            {
-                return _eggymosynhText;
-            }
+            get => _eggymosynhText;
 
             set
             {
@@ -412,10 +364,7 @@ namespace BubbleStart.Model
 
         public string emmhnopafshText
         {
-            get
-            {
-                return _emmhnopafshText;
-            }
+            get => _emmhnopafshText;
 
             set
             {
@@ -431,10 +380,7 @@ namespace BubbleStart.Model
 
         public bool Emminopafsi
         {
-            get
-            {
-                return _Emminopafsi;
-            }
+            get => _Emminopafsi;
 
             set
             {
@@ -450,10 +396,7 @@ namespace BubbleStart.Model
 
         public bool Epilipsia
         {
-            get
-            {
-                return _Epilipsia;
-            }
+            get => _Epilipsia;
 
             set
             {
@@ -469,10 +412,7 @@ namespace BubbleStart.Model
 
         public string epilipsiaText
         {
-            get
-            {
-                return _epilipsiaText;
-            }
+            get => _epilipsiaText;
 
             set
             {
@@ -489,10 +429,7 @@ namespace BubbleStart.Model
         [DisplayName("Αριστερό Γόνατο")]
         public string GonatoA
         {
-            get
-            {
-                return _GonatoA;
-            }
+            get => _GonatoA;
 
             set
             {
@@ -509,10 +446,7 @@ namespace BubbleStart.Model
         [DisplayName("Δεξί Γόνατο")]
         public string gonatoD
         {
-            get
-            {
-                return _gonatoD;
-            }
+            get => _gonatoD;
 
             set
             {
@@ -529,10 +463,7 @@ namespace BubbleStart.Model
         [DisplayName("Αριστερό Ισχίο")]
         public string isxioA
         {
-            get
-            {
-                return _isxioA;
-            }
+            get => _isxioA;
 
             set
             {
@@ -549,10 +480,7 @@ namespace BubbleStart.Model
         [DisplayName("Δεξί Ισχίο")]
         public string IsxioD
         {
-            get
-            {
-                return _IsxioD;
-            }
+            get => _IsxioD;
 
             set
             {
@@ -568,10 +496,7 @@ namespace BubbleStart.Model
 
         public bool Kardia
         {
-            get
-            {
-                return _Kardia;
-            }
+            get => _Kardia;
 
             set
             {
@@ -587,10 +512,7 @@ namespace BubbleStart.Model
 
         public string kardiaText
         {
-            get
-            {
-                return _kardiaText;
-            }
+            get => _kardiaText;
 
             set
             {
@@ -606,10 +528,7 @@ namespace BubbleStart.Model
 
         public bool Karkinos
         {
-            get
-            {
-                return _Karkinos;
-            }
+            get => _Karkinos;
 
             set
             {
@@ -626,10 +545,7 @@ namespace BubbleStart.Model
         [DisplayName("Δεξιός Καρπός")]
         public string karposD
         {
-            get
-            {
-                return _karposD;
-            }
+            get => _karposD;
 
             set
             {
@@ -646,10 +562,7 @@ namespace BubbleStart.Model
         [DisplayName("Αριστερός Καρπός")]
         public string karsposA
         {
-            get
-            {
-                return _karsposA;
-            }
+            get => _karsposA;
 
             set
             {
@@ -665,10 +578,7 @@ namespace BubbleStart.Model
 
         public bool Katagma
         {
-            get
-            {
-                return _Katagma;
-            }
+            get => _Katagma;
 
             set
             {
@@ -684,10 +594,7 @@ namespace BubbleStart.Model
 
         public string KatagmaText
         {
-            get
-            {
-                return _KatagmaText;
-            }
+            get => _KatagmaText;
 
             set
             {
@@ -704,10 +611,7 @@ namespace BubbleStart.Model
         [DisplayName("ΟΜΣΣ")]
         public string mesh
         {
-            get
-            {
-                return _mesh;
-            }
+            get => _mesh;
 
             set
             {
@@ -723,10 +627,7 @@ namespace BubbleStart.Model
 
         public bool NevrikiVlavi
         {
-            get
-            {
-                return _NevrikiVlavi;
-            }
+            get => _NevrikiVlavi;
 
             set
             {
@@ -742,10 +643,7 @@ namespace BubbleStart.Model
 
         public string nevrikoText
         {
-            get
-            {
-                return _nevrikoText;
-            }
+            get => _nevrikoText;
 
             set
             {
@@ -761,10 +659,7 @@ namespace BubbleStart.Model
 
         public bool omoiopathitiki
         {
-            get
-            {
-                return _omoiopathitiki;
-            }
+            get => _omoiopathitiki;
 
             set
             {
@@ -781,10 +676,7 @@ namespace BubbleStart.Model
         [DisplayName("Αριστερός Ώμος")]
         public string omosA
         {
-            get
-            {
-                return _omosA;
-            }
+            get => _omosA;
 
             set
             {
@@ -801,10 +693,7 @@ namespace BubbleStart.Model
         [DisplayName("Δεξιός Ώμος")]
         public string omosd
         {
-            get
-            {
-                return _omosd;
-            }
+            get => _omosd;
 
             set
             {
@@ -822,10 +711,7 @@ namespace BubbleStart.Model
 
         public string opoiopathitikiText
         {
-            get
-            {
-                return _opoiopathitikiText;
-            }
+            get => _opoiopathitikiText;
 
             set
             {
@@ -841,10 +727,7 @@ namespace BubbleStart.Model
 
         public bool Osteoporosi
         {
-            get
-            {
-                return _Osteoporosi;
-            }
+            get => _Osteoporosi;
 
             set
             {
@@ -860,10 +743,7 @@ namespace BubbleStart.Model
 
         public string osteoporosiText
         {
-            get
-            {
-                return _osteoporosiText;
-            }
+            get => _osteoporosiText;
 
             set
             {
@@ -879,10 +759,7 @@ namespace BubbleStart.Model
 
         public string pieshText
         {
-            get
-            {
-                return _pieshText;
-            }
+            get => _pieshText;
 
             set
             {
@@ -898,10 +775,7 @@ namespace BubbleStart.Model
 
         public bool Piesi
         {
-            get
-            {
-                return _Piesi;
-            }
+            get => _Piesi;
 
             set
             {
@@ -917,10 +791,7 @@ namespace BubbleStart.Model
 
         public bool PiesiXamili
         {
-            get
-            {
-                return _PiesiXamili;
-            }
+            get => _PiesiXamili;
 
             set
             {
@@ -936,10 +807,7 @@ namespace BubbleStart.Model
 
         public string PiesiXamiliText
         {
-            get
-            {
-                return _PiesiXamiliText;
-            }
+            get => _PiesiXamiliText;
 
             set
             {
@@ -956,10 +824,7 @@ namespace BubbleStart.Model
         [DisplayName("Αριστερή Ποδοκνήμη")]
         public string PodoknhmhA
         {
-            get
-            {
-                return _PodoknhmhA;
-            }
+            get => _PodoknhmhA;
 
             set
             {
@@ -976,10 +841,7 @@ namespace BubbleStart.Model
         [DisplayName("Δεξιά Ποδοκνήμη")]
         public string podoknhmhD
         {
-            get
-            {
-                return _podoknhmhD;
-            }
+            get => _podoknhmhD;
 
             set
             {
@@ -1005,19 +867,13 @@ namespace BubbleStart.Model
                 return null;
             }
 
-            set
-            {
-                GetType().GetProperty(SelectedIllnessPropertyName).SetValue(this, value);
-            }
+            set => GetType().GetProperty(SelectedIllnessPropertyName).SetValue(this, value);
         }
 
         [NotMapped]
         public string SelectedIllnessPropertyName
         {
-            get
-            {
-                return _SelectedIllnessPropertyName;
-            }
+            get => _SelectedIllnessPropertyName;
 
             set
             {
@@ -1037,10 +893,7 @@ namespace BubbleStart.Model
 
         public bool Stomaxika
         {
-            get
-            {
-                return _Stomaxika;
-            }
+            get => _Stomaxika;
 
             set
             {
@@ -1056,10 +909,7 @@ namespace BubbleStart.Model
 
         public string stomaxikaText
         {
-            get
-            {
-                return _stomaxikaText;
-            }
+            get => _stomaxikaText;
 
             set
             {
@@ -1075,10 +925,7 @@ namespace BubbleStart.Model
 
         public bool Thiroidis
         {
-            get
-            {
-                return _Thiroidis;
-            }
+            get => _Thiroidis;
 
             set
             {
@@ -1094,10 +941,7 @@ namespace BubbleStart.Model
 
         public string thiroidisText
         {
-            get
-            {
-                return _thiroidisText;
-            }
+            get => _thiroidisText;
 
             set
             {
@@ -1114,10 +958,7 @@ namespace BubbleStart.Model
         [DisplayName("ΘΜΣΣ")]
         public string thorakas
         {
-            get
-            {
-                return _thorakas;
-            }
+            get => _thorakas;
 
             set
             {
@@ -1133,10 +974,7 @@ namespace BubbleStart.Model
 
         public bool travmatismos
         {
-            get
-            {
-                return _travmatismos;
-            }
+            get => _travmatismos;
 
             set
             {
@@ -1152,10 +990,7 @@ namespace BubbleStart.Model
 
         public string travmatismosText
         {
-            get
-            {
-                return _travmatismosText;
-            }
+            get => _travmatismosText;
 
             set
             {

@@ -1,5 +1,5 @@
-﻿using BubbleStart.ViewModels;
-using System.Windows;
+﻿using System.Windows;
+using BubbleStart.ViewModels;
 
 namespace BubbleStart.Messages
 {

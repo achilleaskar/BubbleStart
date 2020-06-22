@@ -1,7 +1,6 @@
-﻿using BubbleStart.Migrations;
-using BubbleStart.Model;
-using System;
+﻿using System;
 using System.Data.Entity;
+using BubbleStart.Model;
 
 namespace BubbleStart.Database
 {
@@ -26,7 +25,7 @@ namespace BubbleStart.Database
             Configuration.LazyLoadingEnabled = false;
 
         }
-        private const string normal = "Server=server19.cretaforce.gr;Database=readmore_achill2;pooling=true;Uid=readmore_achill2;Pwd=986239787346;Convert Zero Datetime=True; CharSet=utf8; default command timeout=3600;SslMode=none;";
+        private const string normal = "Server=localhost;Database=readmore_achill2;pooling=true;Uid=readmore_achill2;Pwd=986239787346;Convert Zero Datetime=True; CharSet=utf8; default command timeout=3600;SslMode=none;";
 
         public DateTime Limit { get; set; }
 

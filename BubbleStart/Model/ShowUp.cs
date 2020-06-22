@@ -6,21 +6,13 @@ namespace BubbleStart.Model
 {
     public class ShowUp : BaseModel
     {
-        public ShowUp()
-        {
-        }
-
-
         public SolidColorBrush RealColor => Real ? new SolidColorBrush(Colors.Transparent) : new SolidColorBrush(Colors.OrangeRed);
 
         private bool _Real = true;
 
         public bool Real
         {
-            get
-            {
-                return _Real;
-            }
+            get => _Real;
 
             set
             {
@@ -40,10 +32,7 @@ namespace BubbleStart.Model
         [NotMapped]
         public int Count
         {
-            get
-            {
-                return _Count;
-            }
+            get => _Count;
 
             set
             {
@@ -68,10 +57,7 @@ namespace BubbleStart.Model
 
         public bool Massage
         {
-            get
-            {
-                return _Massage;
-            }
+            get => _Massage;
 
             set
             {
@@ -91,10 +77,7 @@ namespace BubbleStart.Model
 
         public bool Arrive
         {
-            get
-            {
-                return _Arrive;
-            }
+            get => _Arrive;
 
             set
             {
@@ -113,10 +96,7 @@ namespace BubbleStart.Model
         [NotMapped]
         public Program Prog
         {
-            get
-            {
-                return _Prog;
-            }
+            get => _Prog;
 
             set
             {
@@ -132,10 +112,7 @@ namespace BubbleStart.Model
 
         public DateTime Arrived
         {
-            get
-            {
-                return _Time;
-            }
+            get => _Time;
 
             set
             {
@@ -157,10 +134,7 @@ namespace BubbleStart.Model
         [NotMapped]
         public SolidColorBrush Color
         {
-            get
-            {
-                return _Color;
-            }
+            get => _Color;
 
             set
             {
@@ -178,10 +152,7 @@ namespace BubbleStart.Model
 
         public DateTime Left
         {
-            get
-            {
-                return _Left;
-            }
+            get => _Left;
 
             set
             {

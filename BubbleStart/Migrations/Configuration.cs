@@ -1,8 +1,8 @@
+using System.Data.Entity.Migrations;
+using BubbleStart.Database;
+
 namespace BubbleStart.Migrations
 {
-    using BubbleStart.Database;
-    using System.Data.Entity.Migrations;
-
     internal sealed class Configuration : DbMigrationsConfiguration<MainDatabase>
     {
         public Configuration()

@@ -1,5 +1,4 @@
-﻿using BubbleStart.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
@@ -7,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using BubbleStart.Model;
 
 namespace BubbleStart.Database
 {
@@ -19,7 +19,8 @@ namespace BubbleStart.Database
 
         public GenericRepository()
         {
-            this.Context = new MainDatabase();
+            Context = new MainDatabase();
+            // Context.Database.Log = Console.Write;
 
             if (DateTime.Today.Month > 7 && DateTime.Today.Day >= 20)
             {
@@ -30,14 +31,7 @@ namespace BubbleStart.Database
             {
                 Limit = new DateTime(DateTime.Today.Year - 1, 8, 20);
             }
-            if ((DateTime.Today - Limit).TotalDays > 60)
-            {
-                CloseLimit = DateTime.Today.AddDays(-60);
-            }
-            else
-            {
-                CloseLimit = Limit;
-            }
+            CloseLimit = (DateTime.Today - Limit).TotalDays > 60 ? DateTime.Today.AddDays(-60) : Limit;
             //Context.Database.Log = Console.Write;
         }
         protected virtual void Dispose(bool b)
@@ -46,7 +40,6 @@ namespace BubbleStart.Database
             {
                 Context.Dispose();
                 GC.SuppressFinalize(this);
-                return;
             }
         }
         public void Dispose()
@@ -71,10 +64,10 @@ namespace BubbleStart.Database
            .ToListAsync();
         }
 
-        public async Task<Payment> Gettest()
-        {
-            return await Context.Payments.Where(p => p.Id == 67).FirstOrDefaultAsync();
-        }
+        //public async Task<Payment> Gettest()
+        //{
+        //    return await Context.Payments.Where(p => p.Id == 67).FirstOrDefaultAsync();
+        //}
 
         public async Task DeleteFromThis(Customer c, DateTime date)
         {
@@ -92,10 +85,10 @@ namespace BubbleStart.Database
                 .ToListAsync();
         }
 
-        public TEntity GetById<TEntity>(int id) where TEntity : BaseModel
-        {
-            return Context.Set<TEntity>().Where(p => p.Id == id).FirstOrDefault();
-        }
+        //public TEntity GetById<TEntity>(int id) where TEntity : BaseModel
+        //{
+        //    return Context.Set<TEntity>().Where(p => p.Id == id).FirstOrDefault();
+        //}
 
         public async Task<IEnumerable<TEntity>> GetAllAsync<TEntity>(Expression<Func<TEntity, bool>> filter = null) where TEntity : BaseModel
         {
@@ -103,10 +96,8 @@ namespace BubbleStart.Database
             {
                 return await Context.Set<TEntity>().ToListAsync();
             }
-            else
-            {
-                return await Context.Set<TEntity>().Where(filter).ToListAsync();
-            }
+
+            return await Context.Set<TEntity>().Where(filter).ToListAsync();
         }
 
 
@@ -125,12 +116,10 @@ namespace BubbleStart.Database
                         .Include(a => a.Apointments)
                         .FirstOrDefaultAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
-            finally
-            { }
         }
 
         public bool HasChanges()
@@ -201,9 +190,7 @@ namespace BubbleStart.Database
                                              e.State.HasFlag(EntityState.Deleted)
                                              select e;
 
-            if (res.Any())
-                return true;
-            return false;
+            return res.Any();
         }
 
         public async Task SaveAsync()
@@ -219,7 +206,7 @@ namespace BubbleStart.Database
                 }
             });
 
-            var EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
+            List<DbEntityEntry> EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
 
             EditedEntities.ForEach(E =>
             {
@@ -229,9 +216,10 @@ namespace BubbleStart.Database
                 }
             });
 
-            var changes = from e in Context.ChangeTracker.Entries()
-                          where e.State != EntityState.Unchanged
-                          select e;
+            // ReSharper disable once UnusedVariable
+            IEnumerable<DbEntityEntry> changes = from e in Context.ChangeTracker.Entries()
+                                                 where e.State != EntityState.Unchanged
+                                                 select e;
 
             //foreach (var change in changes)
             //{
@@ -280,6 +268,12 @@ namespace BubbleStart.Database
                     case EntityState.Added:
                         entry.State = EntityState.Detached;
                         break;
+                    case EntityState.Detached:
+                        break;
+                    case EntityState.Unchanged:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
             RejectNavigationChanges();
@@ -288,7 +282,7 @@ namespace BubbleStart.Database
         private void RejectNavigationChanges()
         {
             var objectContext = ((IObjectContextAdapter)Context).ObjectContext;
-            var deletedRelationships = objectContext.ObjectStateManager.GetObjectStateEntries(EntityState.Deleted).Where(e => e.IsRelationship && !this.RelationshipContainsKeyEntry(e));
+            var deletedRelationships = objectContext.ObjectStateManager.GetObjectStateEntries(EntityState.Deleted).Where(e => e.IsRelationship && !RelationshipContainsKeyEntry(e));
             var addedRelationships = objectContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added).Where(e => e.IsRelationship);
 
             foreach (var relationship in addedRelationships)
@@ -321,8 +315,6 @@ namespace BubbleStart.Database
             {
                 return null;
             }
-            finally
-            { }
         }
 
         internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp)
@@ -357,46 +349,51 @@ namespace BubbleStart.Database
         {
             try
             {
-                var x = (await Context.Set<Customer>().Where(c => c.Enabled)
-                    .Include(o => o.Programs.Select(t => t.Payments))
-                    .Select(c => new
-                    {
-                        c,
-                        Programs = c.Programs.Where(p => p.StartDay >= Limit),
-                        Payments = c.Payments.Where(p1 => p1.Date >= Limit),
-                        c.WeightHistory,
-                        c.Illness,
-                        ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
-                        Changes = c.Changes.Where(p3 => p3.Date >= CloseLimit),
-                        Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
-                    }).ToListAsync()).Select(x1 => x1.c).ToList();
-                return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-            finally
-            { }
-        }
+                await Context.Set<ShowUp>().Where(p2 => p2.Arrived >= Limit).ToListAsync();
+                await Context.Set<Change>().Where(p3 => p3.Date >= CloseLimit).ToListAsync();
+                await Context.Set<Apointment>().Where(p4 => p4.DateTime >= Limit).ToListAsync();
+                await Context.Set<Program>().Where(p => p.StartDay >= Limit).ToListAsync();
+                await Context.Set<Payment>().Where(p1 => p1.Date >= Limit).ToListAsync();
 
-        public async Task<IEnumerable<Customer>> LoadAllCustomersAsyncb()
-        {
-            try
-            {
-                var x = await Context.Set<Customer>()
-                    .Where(c => c.Enabled)
-                    .Include(z => z.Illness)
-                    .Include(z => z.ShowUps)
-                    .ToListAsync();
-                return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
+                var x = (await Context.Set<Customer>().Where(c => c.Enabled)
+                        //.Include(o => o.Programs.Select(t => t.Payments))
+                        .Select(c => new
+                        {
+                            c,
+                            //Programs = c.Programs.Where(p => p.StartDay >= Limit),
+                           //Payments = c.Payments.Where(p1 => p1.Date >= Limit),
+                            c.WeightHistory,
+                            c.Illness,
+                             //ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
+                              //Changes = c.Changes.Where(p3 => p3.Date >= CloseLimit),
+                             //Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
+                        })
+                        .ToListAsync())
+                    .Select(x1 => x1.c);
+
+                return x;
             }
             catch (Exception)
             {
                 return null;
             }
-            finally
-            { }
         }
+
+        //public async Task<IEnumerable<Customer>> LoadAllCustomersAsyncb()
+        //{
+        //    try
+        //    {
+        //        var x = await Context.Set<Customer>()
+        //            .Where(c => c.Enabled)
+        //            .Include(z => z.Illness)
+        //            .Include(z => z.ShowUps)
+        //            .ToListAsync();
+        //        return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return null;
+        //    }
+        //}
     }
 }

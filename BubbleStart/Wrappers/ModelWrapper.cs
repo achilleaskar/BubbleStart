@@ -1,8 +1,8 @@
-﻿using BubbleStart.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using BubbleStart.Model;
 
 namespace BubbleStart.Wrappers
 {
@@ -53,8 +53,8 @@ namespace BubbleStart.Wrappers
 
         public int Id
         {
-            get { return Model.Id; }
-            set { SetValue(value); }
+            get => Model.Id;
+            set => SetValue(value);
         }
 
         protected virtual void SetValue<TValue>(TValue value,

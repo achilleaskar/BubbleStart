@@ -4,16 +4,15 @@
 
 #endregion Assembly MySql.Data.Entity.EF6, Version=6.10.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d
 
-using MySql.Data.EntityFramework;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.IO;
+using MySql.Data.EntityFramework;
 
 namespace BubbleStart.Migrations
 {
     public class ContextConfiguration : MySqlEFConfiguration
     {
-        public ContextConfiguration() : base()
+        public ContextConfiguration()
         {
             var path = Path.GetDirectoryName(GetType().Assembly.Location);
             SetModelStore(new DefaultDbModelStore(path));

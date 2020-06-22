@@ -1,15 +1,14 @@
-﻿using BubbleStart.Database;
-using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace BubbleStart.ViewModels
 {
@@ -22,7 +21,7 @@ namespace BubbleStart.ViewModels
             BasicDataManager = basicDataManager;
             Type = type;
             Hour = hour;
-            AddCustomerCommand = new RelayCommand<string>(async (obj) => { await AddCustomer(obj); }, CanAdd);
+            AddCustomerCommand = new RelayCommand<string>(async obj => { await AddCustomer(obj); }, CanAdd);
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
 
         }
@@ -60,10 +59,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Customer> Customers
         {
-            get
-            {
-                return _Customers;
-            }
+            get => _Customers;
 
             set
             {
@@ -80,10 +76,7 @@ namespace BubbleStart.ViewModels
 
         public ICollectionView CustomersCollectionView
         {
-            get
-            {
-                return _CustomersCollectionView;
-            }
+            get => _CustomersCollectionView;
 
             set
             {
@@ -99,10 +92,7 @@ namespace BubbleStart.ViewModels
 
         public bool IsGogoChecked
         {
-            get
-            {
-                return _IsGogoChecked;
-            }
+            get => _IsGogoChecked;
 
             set
             {
@@ -124,10 +114,7 @@ namespace BubbleStart.ViewModels
 
         public bool IsDimitrisChecked
         {
-            get
-            {
-                return _IsDimitrisChecked;
-            }
+            get => _IsDimitrisChecked;
 
             set
             {
@@ -147,10 +134,7 @@ namespace BubbleStart.ViewModels
 
         public bool IsYogaChecked
         {
-            get
-            {
-                return _IsGymnastChecked;
-            }
+            get => _IsGymnastChecked;
 
             set
             {
@@ -176,10 +160,7 @@ namespace BubbleStart.ViewModels
 
         public bool IsMassageChecked
         {
-            get
-            {
-                return _IsMassageChecked;
-            }
+            get => _IsMassageChecked;
 
             set
             {
@@ -199,10 +180,7 @@ namespace BubbleStart.ViewModels
 
         public string SearchTerm
         {
-            get
-            {
-                return _SearchTerm;
-            }
+            get => _SearchTerm;
 
             set
             {
@@ -211,18 +189,14 @@ namespace BubbleStart.ViewModels
                     return;
                 }
                 _SearchTerm = value;
-                if (CustomersCollectionView != null)
-                    CustomersCollectionView.Refresh();
+                CustomersCollectionView?.Refresh();
                 RaisePropertyChanged();
             }
         }
 
         public Customer SelectedCustomer
         {
-            get
-            {
-                return _SelectedCustomer;
-            }
+            get => _SelectedCustomer;
 
             set
             {
@@ -238,10 +212,7 @@ namespace BubbleStart.ViewModels
 
         public int SelectedPerson
         {
-            get
-            {
-                return _SelectedPerson;
-            }
+            get => _SelectedPerson;
 
             set
             {

@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace BubbleStart.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class tel22 : DbMigration
     {
         public override void Up()

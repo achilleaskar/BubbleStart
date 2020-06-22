@@ -1,4 +1,9 @@
-﻿using BubbleStart.Database;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Model;
@@ -6,14 +11,6 @@ using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using OfficeOpenXml;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 
 namespace BubbleStart.ViewModels
 {
@@ -46,7 +43,7 @@ namespace BubbleStart.ViewModels
 
             FileInfo fileInfo = new FileInfo(path);
             ExcelPackage p = new ExcelPackage();
-            p.Workbook.Worksheets.Add($"Customers");
+            p.Workbook.Worksheets.Add("Customers");
             ExcelWorksheet myWorksheet = p.Workbook.Worksheets[1];
 
             myWorksheet.Cells["A1"].Value = "#";
@@ -99,10 +96,7 @@ namespace BubbleStart.ViewModels
 
         public Apointments_ViewModel Apointments_ViewModel
         {
-            get
-            {
-                return _Apointments_ViewModel;
-            }
+            get => _Apointments_ViewModel;
 
             set
             {
@@ -120,10 +114,7 @@ namespace BubbleStart.ViewModels
 
         public EconomicData_ViewModel EconomicData_ViewModel
         {
-            get
-            {
-                return _EconomicData_ViewModel;
-            }
+            get => _EconomicData_ViewModel;
 
             set
             {
@@ -146,10 +137,7 @@ namespace BubbleStart.ViewModels
 
         public SearchCustomer_ViewModel SearchCustomer_ViewModel
         {
-            get
-            {
-                return _SearchCustomer_ViewModel;
-            }
+            get => _SearchCustomer_ViewModel;
 
             set
             {
@@ -165,10 +153,7 @@ namespace BubbleStart.ViewModels
 
         public ShowUpsPerDay_ViewModel ShowUpsPerDay_ViewModel
         {
-            get
-            {
-                return _ShowUpsPerDay_ViewModel;
-            }
+            get => _ShowUpsPerDay_ViewModel;
 
             set
             {
@@ -196,7 +181,7 @@ namespace BubbleStart.ViewModels
 
         public override void Reload()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void TryLogOut()

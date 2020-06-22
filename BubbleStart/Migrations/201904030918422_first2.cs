@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace BubbleStart.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class first2 : DbMigration
     {
         public override void Up()
@@ -16,7 +16,7 @@ namespace BubbleStart.Migrations
                     Name = c.String(nullable: false, maxLength: 20, unicode: false),
                     Surename = c.String(nullable: false, maxLength: 20, unicode: false),
                     Tel = c.String(nullable: false, maxLength: 18, unicode: false),
-                    UserName = c.String(nullable: false, maxLength: 12, unicode: false),
+                    UserName = c.String(nullable: false, maxLength: 12, unicode: false)
                 })
                 .PrimaryKey(t => t.Id);
         }

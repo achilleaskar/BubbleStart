@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace BubbleStart.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class anotherchance : DbMigration
     {
         public override void Up()
@@ -13,7 +13,7 @@ namespace BubbleStart.Migrations
                     Id = c.Int(nullable: false, identity: true),
                     Time = c.DateTime(nullable: false, precision: 0),
                     Arrive = c.Boolean(nullable: false),
-                    Customer_Id = c.Int(),
+                    Customer_Id = c.Int()
                 })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.BubbleCustomers", t => t.Customer_Id)

@@ -1,9 +1,9 @@
-﻿using GalaSoft.MvvmLight;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using GalaSoft.MvvmLight;
 
 namespace BubbleStart.Wrappers
 {
@@ -29,8 +29,8 @@ namespace BubbleStart.Wrappers
             {
                 return _errorsByPropertyName.First().Value[0];
             }
-            else
-                return null;
+
+            return null;
         }
 
         protected virtual void OnErrorsChanged(string propertyName)

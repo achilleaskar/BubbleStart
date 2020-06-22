@@ -1,11 +1,4 @@
-﻿using BubbleStart.Database;
-using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using BubbleStart.Views;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,6 +7,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using BubbleStart.Views;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace BubbleStart.ViewModels
 {
@@ -22,7 +21,7 @@ namespace BubbleStart.ViewModels
 
         #region Constructors
 
-        public Apointments_ViewModel(Helpers.BasicDataManager basicDataManager)
+        public Apointments_ViewModel(BasicDataManager basicDataManager)
         {
             Days = new ObservableCollection<Day>();
             NextWeekCommand = new RelayCommand(async () => { await NextWeek(); });
@@ -60,10 +59,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Day> Days
         {
-            get
-            {
-                return _Days;
-            }
+            get => _Days;
 
             set
             {
@@ -79,10 +75,7 @@ namespace BubbleStart.ViewModels
 
         public bool FunctionalVisible
         {
-            get
-            {
-                return _FunctionalVisible;
-            }
+            get => _FunctionalVisible;
 
             set
             {
@@ -98,10 +91,7 @@ namespace BubbleStart.ViewModels
 
         public int GymIndex
         {
-            get
-            {
-                return _GymIndex;
-            }
+            get => _GymIndex;
 
             set
             {
@@ -127,10 +117,7 @@ namespace BubbleStart.ViewModels
 
         public bool ReformerVisible
         {
-            get
-            {
-                return _ReformerVisible;
-            }
+            get => _ReformerVisible;
 
             set
             {
@@ -146,10 +133,7 @@ namespace BubbleStart.ViewModels
 
         public int RoomIndex
         {
-            get
-            {
-                return _RoomIndex;
-            }
+            get => _RoomIndex;
 
             set
             {
@@ -178,10 +162,7 @@ namespace BubbleStart.ViewModels
         }
         public DateTime StartDate
         {
-            get
-            {
-                return _StartDate;
-            }
+            get => _StartDate;
 
             set
             {
@@ -303,10 +284,7 @@ namespace BubbleStart.ViewModels
 
         public DateTime Date
         {
-            get
-            {
-                return _date;
-            }
+            get => _date;
 
             set
             {
@@ -324,10 +302,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Hour> Hours
         {
-            get
-            {
-                return _Hours;
-            }
+            get => _Hours;
 
             set
             {
@@ -383,10 +358,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Apointment> AppointmentsFunctional
         {
-            get
-            {
-                return _ApointmentsFunctional;
-            }
+            get => _ApointmentsFunctional;
 
             set
             {
@@ -405,10 +377,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Apointment> AppointmentsReformer
         {
-            get
-            {
-                return _AppointmentsReformer;
-            }
+            get => _AppointmentsReformer;
 
             set
             {
@@ -431,10 +400,7 @@ namespace BubbleStart.ViewModels
 
         public ICollectionView FunctionalCV
         {
-            get
-            {
-                return _FunctionalCV;
-            }
+            get => _FunctionalCV;
 
             set
             {
@@ -450,10 +416,7 @@ namespace BubbleStart.ViewModels
 
         public int GymIndex
         {
-            get
-            {
-                return _GymIndex;
-            }
+            get => _GymIndex;
 
             set
             {
@@ -471,10 +434,7 @@ namespace BubbleStart.ViewModels
 
         public ICollectionView ReformerCV
         {
-            get
-            {
-                return _ReformerCV;
-            }
+            get => _ReformerCV;
 
             set
             {

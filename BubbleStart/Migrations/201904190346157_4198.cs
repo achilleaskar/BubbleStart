@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace BubbleStart.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class _4198 : DbMigration
     {
         public override void Up()

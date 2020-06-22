@@ -1,20 +1,16 @@
-﻿using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using BubbleStart.Views;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
+using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using BubbleStart.Views;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace BubbleStart.ViewModels
 {
@@ -80,10 +76,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Customer> Customers
         {
-            get
-            {
-                return _Customers;
-            }
+            get => _Customers;
 
             set
             {
@@ -101,10 +94,7 @@ namespace BubbleStart.ViewModels
 
         public ICollectionView CustomersCollectionView
         {
-            get
-            {
-                return _CustomersCollectionView;
-            }
+            get => _CustomersCollectionView;
 
             set
             {
@@ -120,10 +110,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Customer> CustomersPracticing
         {
-            get
-            {
-                return _CustomersPracticing;
-            }
+            get => _CustomersPracticing;
 
             set
             {
@@ -155,10 +142,7 @@ namespace BubbleStart.ViewModels
 
         public string SearchTerm
         {
-            get
-            {
-                return _SearchTerm;
-            }
+            get => _SearchTerm;
 
             set
             {
@@ -167,18 +151,14 @@ namespace BubbleStart.ViewModels
                     return;
                 }
                 _SearchTerm = value;
-                if (CustomersCollectionView != null)
-                    CustomersCollectionView.Refresh();
+                CustomersCollectionView?.Refresh();
                 RaisePropertyChanged();
             }
         }
 
         public Customer SelectedApointment
         {
-            get
-            {
-                return _SelectedApointment;
-            }
+            get => _SelectedApointment;
 
             set
             {
@@ -194,10 +174,7 @@ namespace BubbleStart.ViewModels
 
         public Customer SelectedCustomer
         {
-            get
-            {
-                return _SelectedCustomer;
-            }
+            get => _SelectedCustomer;
 
             set
             {
@@ -217,10 +194,7 @@ namespace BubbleStart.ViewModels
 
         public Customer SelectedPracticingCustomer
         {
-            get
-            {
-                return _SelectedPracticingCustomer;
-            }
+            get => _SelectedPracticingCustomer;
 
             set
             {
@@ -236,10 +210,7 @@ namespace BubbleStart.ViewModels
 
         public Customer SelectedSideCustomer
         {
-            get
-            {
-                return _SelectedSideCustomer;
-            }
+            get => _SelectedSideCustomer;
 
             set
             {
@@ -258,10 +229,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Customer> TodaysApointments
         {
-            get
-            {
-                return _TodaysApointments;
-            }
+            get => _TodaysApointments;
 
             set
             {
@@ -308,7 +276,7 @@ namespace BubbleStart.ViewModels
         {
             if (SelectedApointment != null)
             {
-                BasicDataManager.Delete(SelectedApointment.Apointments.Where(a => a.DateTime.Date == DateTime.Today.Date).FirstOrDefault());
+                BasicDataManager.Delete(SelectedApointment.Apointments.FirstOrDefault(a => a.DateTime.Date == DateTime.Today.Date));
                 await BasicDataManager.SaveAsync();
                 TodaysApointments.Remove(SelectedApointment);
             }
@@ -322,6 +290,7 @@ namespace BubbleStart.ViewModels
         private void CreateNewCustomer()
         {
             SelectedCustomer = new Customer();
+            SelectedCustomer.InitialLoad();
         }
 
         private bool CustomerFilter(object item)
@@ -334,7 +303,7 @@ namespace BubbleStart.ViewModels
             }
             SearchTerm = SearchTerm.ToUpper();
             string tmpTerm = ToGreek(SearchTerm);
-            return customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm);
+            return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
         }
 
         //private void Customers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -416,7 +385,7 @@ namespace BubbleStart.ViewModels
         {
             if (SelectedCustomer != null)
             {
-                if (!string.IsNullOrEmpty(SelectedCustomer.DistrictText) && !BasicDataManager.Districts.Any(d => d.Name == SelectedCustomer.DistrictText))
+                if (!string.IsNullOrEmpty(SelectedCustomer.DistrictText) && BasicDataManager.Districts.All(d => d.Name != SelectedCustomer.DistrictText))
                 {
                     var d = new District { Name = SelectedCustomer.DistrictText };
                     BasicDataManager.Add(d);
@@ -432,61 +401,58 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        private string ToEng(string searchTerm)
-        {
-            string toReturn = "";
-            foreach (char c in searchTerm.ToUpper())
-            {
-                if (c < 134 || c > 255)
-                {
-                    toReturn += c;
-                }
-                else
-                {
-                    switch ((int)c)
-                    {
-                        case 164:
-                        case 134:
-                            toReturn += 'A';
-                            break;
+        //private string ToEng(string searchTerm)
+        //{
+        //    string toReturn = "";
+        //    foreach (char c in searchTerm.ToUpper())
+        //    {
+        //        if (c < 134 || c > 255)
+        //        {
+        //            toReturn += c;
+        //        }
+        //        else
+        //        {
+        //            switch ((int)c)
+        //            {
+        //                case 164:
+        //                case 134:
+        //                    toReturn += 'A';
+        //                    break;
 
-                        case 165:
-                            toReturn += 'B';
-                            break;
+        //                case 165:
+        //                    toReturn += 'B';
+        //                    break;
 
-                        case 166:
-                            toReturn += 'G';
-                            break;
+        //                case 166:
+        //                    toReturn += 'G';
+        //                    break;
 
-                        case 167:
-                            toReturn += 'D';
-                            break;
+        //                case 167:
+        //                    toReturn += 'D';
+        //                    break;
 
-                        case 168:
-                        case 141:
-                            toReturn += 'E';
-                            break;
+        //                case 168:
+        //                case 141:
+        //                    toReturn += 'E';
+        //                    break;
 
-                        case 169:
-                            toReturn += 'Z';
-                            break;
+        //                case 169:
+        //                    toReturn += 'Z';
+        //                    break;
 
-                        case 170:
-                            toReturn += 'I';
-                            break;
+        //                case 170:
+        //                    toReturn += 'I';
+        //                    break;
 
-                        case 172:
-                            toReturn += 'T';
-                            toReturn += 'H';
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-            }
-            return toReturn;
-        }
+        //                case 172:
+        //                    toReturn += 'T';
+        //                    toReturn += 'H';
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //    return toReturn;
+        //}
 
         private string ToGreek(string searchTerm)
         {
@@ -597,12 +563,9 @@ namespace BubbleStart.ViewModels
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             TodaysApointments = new ObservableCollection<Customer>();
-            Customers = new ObservableCollection<Customer>(BasicDataManager.Customers);
-            CustomersPracticing.Clear();
-            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
-            CustomersCollectionView.Filter = CustomerFilter;
+         
 
-            foreach (var c in Customers)
+            foreach (var c in BasicDataManager.Customers)
             {
                 try
                 {
@@ -625,6 +588,11 @@ namespace BubbleStart.ViewModels
                     MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
                 }
             }
+            Customers = new ObservableCollection<Customer>(BasicDataManager.Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
+            CustomersPracticing.Clear();
+            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
+            CustomersCollectionView.Filter = CustomerFilter;
+
             CustomersCollectionView.Refresh();
         }
 

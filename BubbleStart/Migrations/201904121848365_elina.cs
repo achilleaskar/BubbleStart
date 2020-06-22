@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace BubbleStart.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class elina : DbMigration
     {
         public override void Up()
@@ -14,7 +14,7 @@ namespace BubbleStart.Migrations
                     DayOfIssue = c.DateTime(nullable: false, precision: 0),
                     Duration = c.Int(nullable: false),
                     Amount = c.Int(nullable: false),
-                    Customer_Id = c.Int(),
+                    Customer_Id = c.Int()
                 })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.BubbleCustomers", t => t.Customer_Id)

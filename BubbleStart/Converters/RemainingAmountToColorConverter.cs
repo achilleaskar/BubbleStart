@@ -1,12 +1,8 @@
-﻿using BubbleStart.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
+using BubbleStart.Model;
 
 namespace BubbleStart.Converters
 {

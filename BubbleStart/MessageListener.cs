@@ -1,6 +1,6 @@
-﻿using BubbleStart.Messages;
+﻿using System.Windows;
+using BubbleStart.Messages;
 using GalaSoft.MvvmLight.Messaging;
-using System.Windows;
 
 namespace BubbleStart
 {

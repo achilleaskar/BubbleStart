@@ -21,38 +21,38 @@ namespace BubbleStart.Wrappers
 
         public byte[] HashedPassword//
         {
-            get { return GetValue<byte[]>(); }
-            set { SetValue(value); }
+            get => GetValue<byte[]>();
+            set => SetValue(value);
         }
 
         public int Level//
         {
-            get { return GetValue<int>(); }
-            set { SetValue(value); }
+            get => GetValue<int>();
+            set => SetValue(value);
         }
 
         public string Name//
         {
-            get { return GetValue<string>(); }
-            set { SetValue(value); }
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public string Surename//
         {
-            get { return GetValue<string>(); }
-            set { SetValue(value); }
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public string Tel//
         {
-            get { return GetValue<string>(); }
-            set { SetValue(value); }
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public string UserName//
         {
-            get { return GetValue<string>(); }
-            set { SetValue(value); }
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         #endregion Properties

@@ -1,10 +1,11 @@
-﻿using BubbleStart.Helpers;
-using BubbleStart.Model;
-using GalaSoft.MvvmLight.CommandWpf;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using BubbleStart.Helpers;
+using BubbleStart.Model;
+using GalaSoft.MvvmLight.CommandWpf;
 
 namespace BubbleStart.ViewModels
 {
@@ -59,10 +60,7 @@ namespace BubbleStart.ViewModels
 
         public decimal Cleanse
         {
-            get
-            {
-                return _Cleanse;
-            }
+            get => _Cleanse;
 
             set
             {
@@ -78,10 +76,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Payment> DailyPayments
         {
-            get
-            {
-                return _DailyPayments;
-            }
+            get => _DailyPayments;
 
             set
             {
@@ -101,10 +96,7 @@ namespace BubbleStart.ViewModels
 
         public DateTime EndDateCash
         {
-            get
-            {
-                return _EndDateCash;
-            }
+            get => _EndDateCash;
 
             set
             {
@@ -124,10 +116,7 @@ namespace BubbleStart.ViewModels
 
         public DateTime EndDateExpenses
         {
-            get
-            {
-                return _EndDateExpenses;
-            }
+            get => _EndDateExpenses;
 
             set
             {
@@ -147,10 +136,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Expense> Expenses
         {
-            get
-            {
-                return _Expenses;
-            }
+            get => _Expenses;
 
             set
             {
@@ -168,10 +154,7 @@ namespace BubbleStart.ViewModels
 
         public decimal ExpensesSum
         {
-            get
-            {
-                return _ExpensesSum;
-            }
+            get => _ExpensesSum;
 
             set
             {
@@ -187,10 +170,7 @@ namespace BubbleStart.ViewModels
 
         public Expense NewExpense
         {
-            get
-            {
-                return _NewExpense;
-            }
+            get => _NewExpense;
 
             set
             {
@@ -208,10 +188,7 @@ namespace BubbleStart.ViewModels
 
         public Expense SelectedExpense
         {
-            get
-            {
-                return _SelectedExpense;
-            }
+            get => _SelectedExpense;
 
             set
             {
@@ -231,10 +208,7 @@ namespace BubbleStart.ViewModels
 
         public DateTime StartDateCash
         {
-            get
-            {
-                return _StartDateCash;
-            }
+            get => _StartDateCash;
 
             set
             {
@@ -255,10 +229,7 @@ namespace BubbleStart.ViewModels
 
         public DateTime StartDateExpenses
         {
-            get
-            {
-                return _StartDateExpenses;
-            }
+            get => _StartDateExpenses;
 
             set
             {
@@ -278,10 +249,7 @@ namespace BubbleStart.ViewModels
 
         public decimal Sum
         {
-            get
-            {
-                return _Sum;
-            }
+            get => _Sum;
 
             set
             {
@@ -328,7 +296,7 @@ namespace BubbleStart.ViewModels
             return NewExpense != null && NewExpense.Amount > 0 && !string.IsNullOrEmpty(NewExpense.Reason);
         }
 
-        private void DailyPayments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void DailyPayments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             CalculateAmounts();
         }
@@ -341,7 +309,7 @@ namespace BubbleStart.ViewModels
             Expenses.Remove(SelectedExpense);
         }
 
-        private void Expenses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Expenses_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             CalculateAmounts();
         }

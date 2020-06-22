@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using BubbleStart.Helpers;
 
 namespace BubbleStart.Converters
 {
@@ -13,19 +14,18 @@ namespace BubbleStart.Converters
         {
             if (parameter == null && value is int)
             {
-                if (Helpers.StaticResources.User.Level <= (int)value)
+                if (StaticResources.User.Level <= (int)value)
                     return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
+                return Visibility.Collapsed;
             }
-            if (Helpers.StaticResources.User != null && parameter != null)
+            if (StaticResources.User != null && parameter != null)
             {
                 //if (value is Reservation r && StaticResources.User.Level == StaticResources.UserLevel.OfficeManager)
                 //    if (r.User.Grafeio == StaticResources.User.Grafeio)
                 //        return Visibility.Visible;
                 //    else
                 //        return Visibility.Collapsed;
-                if (Helpers.StaticResources.User.Level <= int.Parse(parameter.ToString()))
+                if (StaticResources.User.Level <= int.Parse(parameter.ToString()))
                     return Visibility.Visible;
             }
             return Visibility.Collapsed;

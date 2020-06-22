@@ -1,12 +1,13 @@
-﻿using BubbleStart.ViewModels;
-using BubbleStart.Views;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Threading;
+using BubbleStart.ViewModels;
+using BubbleStart.Views;
 
 namespace BubbleStart
 {
@@ -64,7 +65,7 @@ namespace BubbleStart
         }
 
         private void Application_DispatcherUnhandledException(object sender,
-          System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+          DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show("Unexpected error occured. Please inform the admin."
               + Environment.NewLine + e.Exception.Message, "Unexpected error");

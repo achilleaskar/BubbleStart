@@ -1086,6 +1086,7 @@
                                         <TextBox Grid.Row="21"
                                                  Height="35"
                                                  Width="260"
+                                                 Text="{Binding MedicineText}"
                                                  Visibility="{Binding IsChecked, ElementName=medicine, Converter={StaticResource booleanToVisibilityConverter}}"
                                                  TextWrapping="Wrap"
                                                  Margin="0 0 5 0"

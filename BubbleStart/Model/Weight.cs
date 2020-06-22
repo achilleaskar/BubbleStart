@@ -27,20 +27,11 @@ namespace BubbleStart.Model
         #region Properties
 
         [NotMapped]
-        public decimal BMI
-        {
-            get
-            {
-                return (decimal)Math.Round(WeightValue / (Customer != null ? (Customer.Height * Customer.Height / 10000) : (Height * Height / 10000)), 2); ;
-            }
-        }
+        public decimal BMI => Math.Round(WeightValue / (Customer != null ? (Customer.Height * Customer.Height / 10000) : (Height * Height / 10000)), 2);
 
         public Customer Customer
         {
-            get
-            {
-                return _Customer;
-            }
+            get => _Customer;
 
             set
             {
@@ -56,10 +47,7 @@ namespace BubbleStart.Model
 
         public DateTime DateOfMeasure
         {
-            get
-            {
-                return _DateOfMeasure;
-            }
+            get => _DateOfMeasure;
 
             set
             {

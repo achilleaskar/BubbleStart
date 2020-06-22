@@ -1,5 +1,4 @@
-﻿using BubbleStart.Model;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -18,8 +17,7 @@ namespace BubbleStart.Converters
                     return new SolidColorBrush(Colors.Red);
                 //else if(b > 0)
                 //    return new SolidColorBrush(Colors.Orange);
-                else 
-                    return new SolidColorBrush(Colors.LightGreen);
+                return new SolidColorBrush(Colors.LightGreen);
             }
 
             return new SolidColorBrush(Colors.Transparent);

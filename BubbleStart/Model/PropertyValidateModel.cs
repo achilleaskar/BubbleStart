@@ -1,15 +1,15 @@
-﻿using GalaSoft.MvvmLight;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using GalaSoft.MvvmLight;
 
 namespace BubbleStart.Model
 {
     public abstract class PropertyValidateModel : ObservableObject, IDataErrorInfo
     {
         // check for general model error
-        public string Error { get { return null; } }
+        public string Error => null;
 
         // check for property errors
         public string this[string columnName]

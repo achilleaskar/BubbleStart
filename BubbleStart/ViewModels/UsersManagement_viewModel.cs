@@ -1,12 +1,12 @@
-﻿using BubbleStart.Database;
-using BubbleStart.Model;
-using BubbleStart.Security;
-using BubbleStart.Wrappers;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
+using BubbleStart.Database;
+using BubbleStart.Model;
+using BubbleStart.Security;
+using BubbleStart.Wrappers;
 
 namespace BubbleStart.ViewModels
 {
@@ -37,10 +37,7 @@ namespace BubbleStart.ViewModels
 
         public SecureString PassWord
         {
-            get
-            {
-                return _PassWord;
-            }
+            get => _PassWord;
 
             set
             {
@@ -60,10 +57,7 @@ namespace BubbleStart.ViewModels
         /// </summary>
         public SecureString PasswordRepeat
         {
-            get
-            {
-                return _PasswordRepeat;
-            }
+            get => _PasswordRepeat;
 
             set
             {
@@ -91,10 +85,7 @@ namespace BubbleStart.ViewModels
         /// </summary>
         public ObservableCollection<User> Users
         {
-            get
-            {
-                return _Users;
-            }
+            get => _Users;
 
             set
             {

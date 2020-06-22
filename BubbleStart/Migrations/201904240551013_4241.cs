@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace BubbleStart.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class _4241 : DbMigration
     {
         public override void Up()
@@ -15,7 +14,7 @@ namespace BubbleStart.Migrations
                         Date = c.DateTime(nullable: false, precision: 0),
                         Reason = c.String(maxLength: 200, unicode: false),
                         Amount = c.Single(nullable: false),
-                        User_Id = c.Int(),
+                        User_Id = c.Int()
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.BubbleUsers", t => t.User_Id)

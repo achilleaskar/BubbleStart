@@ -1,16 +1,12 @@
-﻿using BubbleStart.Database;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
 using BubbleStart.Helpers;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace BubbleStart.ViewModels
 {
@@ -62,10 +58,7 @@ namespace BubbleStart.ViewModels
 
         public ShowUp SelectedShowUp
         {
-            get
-            {
-                return _SelectedShowUp;
-            }
+            get => _SelectedShowUp;
 
             set
             {
@@ -95,10 +88,7 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<ShowUp> DailyShowUps
         {
-            get
-            {
-                return _DailyShowUps;
-            }
+            get => _DailyShowUps;
 
             set
             {
@@ -119,10 +109,7 @@ namespace BubbleStart.ViewModels
 
         public DateTime EndDate
         {
-            get
-            {
-                return _EndDate;
-            }
+            get => _EndDate;
 
             set
             {
@@ -145,10 +132,7 @@ namespace BubbleStart.ViewModels
 
         public DateTime StartDate
         {
-            get
-            {
-                return _StartDate;
-            }
+            get => _StartDate;
 
             set
             {

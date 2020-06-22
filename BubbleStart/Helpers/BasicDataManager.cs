@@ -1,14 +1,14 @@
-﻿using BubbleStart.Database;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using BubbleStart.Database;
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace BubbleStart.Helpers
 {
@@ -33,10 +33,7 @@ namespace BubbleStart.Helpers
 
         public ObservableCollection<Customer> Customers
         {
-            get
-            {
-                return _Customers;
-            }
+            get => _Customers;
 
             set
             {
@@ -54,10 +51,7 @@ namespace BubbleStart.Helpers
 
         public ObservableCollection<District> Districts
         {
-            get
-            {
-                return _Districts;
-            }
+            get => _Districts;
 
             set
             {
@@ -100,10 +94,7 @@ namespace BubbleStart.Helpers
 
         public ObservableCollection<User> Users
         {
-            get
-            {
-                return _Users;
-            }
+            get => _Users;
 
             set
             {
@@ -119,10 +110,7 @@ namespace BubbleStart.Helpers
 
         public ObservableCollection<Customer> TodaysApointments
         {
-            get
-            {
-                return _TodaysApointments;
-            }
+            get => _TodaysApointments;
 
             set
             {
@@ -149,17 +137,18 @@ namespace BubbleStart.Helpers
             Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()));
 
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
-            Messenger.Default.Send(new BasicDataManagerRefreshedMessage());
 
             foreach (var c in Customers)
             {
                 c.PropertyChanged += C_PropertyChanged;
+                c.InitialLoad();
             }
 
+            Messenger.Default.Send(new BasicDataManagerRefreshedMessage());
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        private void C_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void C_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
         }
 

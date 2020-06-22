@@ -1,7 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace BubbleStart.Migrations
 {
-    using System.Data.Entity.Migrations;
-
     public partial class lastmin1 : DbMigration
     {
         public override void Up()
@@ -36,7 +36,7 @@ namespace BubbleStart.Migrations
                     SureName = c.String(nullable: false, maxLength: 20, unicode: false),
                     Tel = c.String(nullable: false, maxLength: 18, unicode: false),
                     WantToQuit = c.Boolean(nullable: false),
-                    Illness_Id = c.Int(),
+                    Illness_Id = c.Int()
                 })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Illnesses", t => t.Illness_Id)
@@ -60,7 +60,7 @@ namespace BubbleStart.Migrations
                     Piesi = c.Boolean(nullable: false),
                     Stomaxika = c.Boolean(nullable: false),
                     Thiroidis = c.Boolean(nullable: false),
-                    Travmatismos = c.String(maxLength: 200, unicode: false),
+                    Travmatismos = c.String(maxLength: 200, unicode: false)
                 })
                 .PrimaryKey(t => t.Id);
 
@@ -71,7 +71,7 @@ namespace BubbleStart.Migrations
                     Id = c.Int(nullable: false, identity: true),
                     DateOfMeasure = c.DateTime(nullable: false, precision: 0),
                     WeightValue = c.Single(nullable: false),
-                    Customer_Id = c.Int(),
+                    Customer_Id = c.Int()
                 })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.BubbleCustomers", t => t.Customer_Id)

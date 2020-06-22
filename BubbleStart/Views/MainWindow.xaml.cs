@@ -1,29 +1,27 @@
-﻿using BubbleStart.Database;
-using BubbleStart.ViewModels;
-using Squirrel;
-using System;
+﻿using System;
 using System.Net;
 using System.Windows;
+using BubbleStart.Database;
+using BubbleStart.ViewModels;
+using Squirrel;
 
 namespace BubbleStart.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private readonly MainViewModel _viewModel;
-
         public GenericRepository StartingRepository;
 
         public MainWindow(MainViewModel viewModel)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             InitializeComponent();
-            _viewModel = viewModel;
-            DataContext = _viewModel;
+            var viewModel1 = viewModel;
+            DataContext = viewModel1;
             StartingRepository = new GenericRepository();
-            _viewModel.LoadAsync(StartingRepository).ConfigureAwait(true);
+            viewModel1.LoadAsync(StartingRepository).ConfigureAwait(true);
         }
 
         private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -44,8 +42,8 @@ namespace BubbleStart.Views
             catch (Exception ex)
             {
                 if (!ex.Message.Contains(".exe"))
-                    MessageBox.Show("Error updating:" + ex.Message + "   " + ex.InnerException != null ? ex.InnerException.Message : "");
-                throw ex;
+                    MessageBox.Show("Error updating:" + ex.Message + "   " + (ex.InnerException != null ? ex.InnerException.Message : ""));
+                throw;
             }
         }
 

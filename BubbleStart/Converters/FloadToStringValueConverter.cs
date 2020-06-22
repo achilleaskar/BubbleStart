@@ -13,7 +13,7 @@ namespace BubbleStart.Converters
             decimal decimalValue = (decimal)value;
 
             var decimalString = decimalValue.ToString();
-            string s = decimalString.IndexOfAny(new char[] { ',', '.' }) >= 0 ? decimalString.TrimEnd('0').TrimEnd('0').TrimEnd('.').TrimEnd(',') : decimalString;
+            string s = decimalString.IndexOfAny(new[] { ',', '.' }) >= 0 ? decimalString.TrimEnd('0').TrimEnd('0').TrimEnd('.').TrimEnd(',') : decimalString;
             int indexofcomma = s.IndexOf(',');
             if (indexofcomma <= 0)
             {

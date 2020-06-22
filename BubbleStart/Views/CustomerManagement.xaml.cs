@@ -1,5 +1,6 @@
-﻿using BubbleStart.Model;
+﻿using System.ComponentModel;
 using System.Windows;
+using BubbleStart.Model;
 
 namespace BubbleStart.Views
 {
@@ -13,7 +14,7 @@ namespace BubbleStart.Views
             InitializeComponent();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (DataContext is Customer c && c.BasicDataManager.HasChanges())
             {

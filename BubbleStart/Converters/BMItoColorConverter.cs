@@ -15,7 +15,7 @@ namespace BubbleStart.Converters
             {
                 if ((decimal)value < 18.5m || ((decimal)value >= 25 && ((decimal)value < 30)))
                     return new SolidColorBrush(Colors.Orange);
-                else if ((decimal)value >= 30)
+                if ((decimal)value >= 30)
                     return new SolidColorBrush(Colors.Red);
             }
 

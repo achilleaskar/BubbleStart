@@ -47,10 +47,7 @@ namespace BubbleStart.Model
 
         public ObservableCollection<Payment> Payments
         {
-            get
-            {
-                return _Payments;
-            }
+            get => _Payments;
 
             set
             {
@@ -90,10 +87,7 @@ namespace BubbleStart.Model
 
         public decimal Amount
         {
-            get
-            {
-                return _Amount;
-            }
+            get => _Amount;
 
             set
             {
@@ -110,10 +104,7 @@ namespace BubbleStart.Model
         [NotMapped]
         public SolidColorBrush Color
         {
-            get
-            {
-                return _Color;
-            }
+            get => _Color;
 
             set
             {
@@ -129,10 +120,7 @@ namespace BubbleStart.Model
 
         public DateTime DayOfIssue
         {
-            get
-            {
-                return _DayOfIssue;
-            }
+            get => _DayOfIssue;
 
             set
             {
@@ -153,10 +141,7 @@ namespace BubbleStart.Model
 
         public int Months
         {
-            get
-            {
-                return _Months;
-            }
+            get => _Months;
 
             set
             {
@@ -196,10 +181,7 @@ namespace BubbleStart.Model
         [NotMapped]
         public decimal RemainingAmount
         {
-            get
-            {
-                return _RemainingAmount;
-            }
+            get => _RemainingAmount;
 
             set
             {
@@ -215,10 +197,7 @@ namespace BubbleStart.Model
 
         public bool Paid
         {
-            get
-            {
-                return _Paid;
-            }
+            get => _Paid;
 
             set
             {
@@ -235,10 +214,7 @@ namespace BubbleStart.Model
         [NotMapped]
         public bool PaidCol
         {
-            get
-            {
-                return _PaidCol;
-            }
+            get => _PaidCol;
 
             set
             {
@@ -254,10 +230,7 @@ namespace BubbleStart.Model
 
         public ProgramTypes ProgramType
         {
-            get
-            {
-                return _ProgramType;
-            }
+            get => _ProgramType;
 
             set
             {
@@ -276,10 +249,7 @@ namespace BubbleStart.Model
 
         public int Showups
         {
-            get
-            {
-                return _Showups;
-            }
+            get => _Showups;
 
             set
             {
@@ -295,10 +265,7 @@ namespace BubbleStart.Model
 
         public DateTime StartDay
         {
-            get
-            {
-                return _StartDay;
-            }
+            get => _StartDay;
 
             set
             {

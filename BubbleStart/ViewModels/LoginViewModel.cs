@@ -1,15 +1,13 @@
-﻿using BubbleStart.Database;
+﻿using System;
+using System.Security;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using BubbleStart.Database;
 using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Security;
 using GalaSoft.MvvmLight.CommandWpf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace BubbleStart.ViewModels
 {
@@ -31,10 +29,7 @@ namespace BubbleStart.ViewModels
 
         public string ErrorMessage
         {
-            get
-            {
-                return _ErrorMessage;
-            }
+            get => _ErrorMessage;
 
             set
             {
@@ -53,10 +48,7 @@ namespace BubbleStart.ViewModels
 
         public SecureString PasswordSecureString
         {
-            get
-            {
-                return _PasswordSecureString;
-            }
+            get => _PasswordSecureString;
 
             set
             {
@@ -72,10 +64,7 @@ namespace BubbleStart.ViewModels
 
         public User PossibleUser
         {
-            get
-            {
-                return _PossibleUser;
-            }
+            get => _PossibleUser;
 
             set
             {

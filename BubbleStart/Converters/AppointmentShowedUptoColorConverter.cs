@@ -1,9 +1,9 @@
-﻿using BubbleStart.Model;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
+using BubbleStart.Model;
 
 namespace BubbleStart.Converters
 {
@@ -17,13 +17,13 @@ namespace BubbleStart.Converters
             {
                 if (a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date))
                     return new SolidColorBrush(Colors.Red);
-                else if (a.Person == 0)
+                if (a.Person == 0)
                     return new SolidColorBrush(Colors.LimeGreen);
-                else if (a.Person == 1)
+                if (a.Person == 1)
                     return new SolidColorBrush(Colors.Orange);
-                else if (a.Person == 2)
+                if (a.Person == 2)
                     return new SolidColorBrush(Colors.LightBlue);
-                else if (a.Person == 3)
+                if (a.Person == 3)
                     return new SolidColorBrush(Colors.HotPink);
             }
             return new SolidColorBrush(Colors.Transparent);

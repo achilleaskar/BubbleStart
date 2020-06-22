@@ -46,7 +46,7 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.5.6")]
-[assembly: AssemblyFileVersion("0.5.6")]
+[assembly: AssemblyVersion("0.5.8")]
+[assembly: AssemblyFileVersion("0.5.8")]
 [assembly: NeutralResourcesLanguage("el-GR")]
 //squirrel --releasify BubbleStart\bin\Release\BubbleStart.0.3.6.nupkg --no-msi

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Security;
 
 namespace BubbleStart.Security
@@ -13,10 +14,10 @@ namespace BubbleStart.Security
             IntPtr valuePtr = IntPtr.Zero;
             try
             {
-                valuePtr = System.Runtime.InteropServices.Marshal.SecureStringToGlobalAllocUnicode(value);
+                valuePtr = Marshal.SecureStringToGlobalAllocUnicode(value);
                 for (int i = 0; i < value.Length; i++)
                 {
-                    short unicodeChar = System.Runtime.InteropServices.Marshal.ReadInt16(valuePtr, i * 2);
+                    short unicodeChar = Marshal.ReadInt16(valuePtr, i * 2);
                     returnVal[i] = Convert.ToByte(unicodeChar);
                 }
 
@@ -24,7 +25,7 @@ namespace BubbleStart.Security
             }
             finally
             {
-                System.Runtime.InteropServices.Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
+                Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
             }
         }
     }

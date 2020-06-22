@@ -1,7 +1,7 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using BubbleStart.AttachedProperties;
 
 namespace BubbleStart.Views
 {
@@ -22,7 +22,7 @@ namespace BubbleStart.Views
 
             //Set this "EncryptedPassword" dependency property to the "SecurePassword"
             //of the PasswordBox.
-            AttachedProperties.PasswordBoxMVVMAttachedProperties.SetEncryptedPassword(pBox, pBox.SecurePassword);
+            PasswordBoxMVVMAttachedProperties.SetEncryptedPassword(pBox, pBox.SecurePassword);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -35,8 +35,7 @@ namespace BubbleStart.Views
         private void SelectAllPassword(object sender, RoutedEventArgs e)
         {
             var pb = (sender as PasswordBox);
-            if (pb != null)
-                pb.SelectAll();
+            pb?.SelectAll();
         }
 
         private void PasswordOnPreviewMouseDown(object sender, MouseButtonEventArgs e)

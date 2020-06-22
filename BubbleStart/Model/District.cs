@@ -6,10 +6,7 @@
 
         public string Name
         {
-            get
-            {
-                return _Name;
-            }
+            get => _Name;
 
             set
             {
