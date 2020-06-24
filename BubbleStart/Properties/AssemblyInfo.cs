@@ -22,7 +22,7 @@ using System.Windows;
 
 //In order to begin building localizable applications, set
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
-//inside a <PropertyGroup>.  For example, if you are using US english
+//inside a <PropertyGroup>.  For example, if you are using US English
 //in your source files, set the <UICulture> to en-US.  Then uncomment
 //the NeutralResourceLanguage attribute below.  Update the "en-US" in
 //the line below to match the UICulture setting in the project file.
@@ -46,7 +46,8 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.5.8")]
-[assembly: AssemblyFileVersion("0.5.8")]
+[assembly: AssemblyVersion("0.6.1")]
+[assembly: AssemblyFileVersion("0.6.1")]
 [assembly: NeutralResourcesLanguage("el-GR")]
-//squirrel --releasify BubbleStart\bin\Release\BubbleStart.0.3.6.nupkg --no-msi
+//"nuget pack MyApp.nuspec -Version 0.5.9.0 -Properties Configuration=Release -OutputDirectory bin\Release\ -BasePath bin\Release\" exited with code 9009.	BubbleStart	C:\Users\achil\source\repos\BubbleStart\BubbleStart\BubbleStart.csproj	702	
+

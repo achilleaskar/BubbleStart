@@ -16,6 +16,7 @@
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
         <Converters:BoolToShowedUp_Converter x:Key="BoolToShowedUp_Converter" />
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
+        <Converters:DateTimeToString x:Key="DateTimeToString" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -202,6 +203,8 @@
                                                     Binding="{Binding SureName}" />
                                 <DataGridTextColumn Header="Ηλικία"
                                                     Binding="{Binding Age}" />
+                                <DataGridTextColumn Header="Ώρα"
+                                                    Binding="{Binding AppointmentTime,Converter={StaticResource DateTimeToString},ConverterParameter='HH:mm'}" />
                                 <DataGridTextColumn Header="Παρουσία"
                                                     Binding="{Binding ShowedUpToday,Converter={StaticResource BoolToShowedUp_Converter}}" />
                             </DataGrid.Columns>
@@ -209,7 +212,7 @@
                     </GroupBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Λεπτομέριες Πελάτη">
+            <TabItem Header="Λεπτομέρειες Πελάτη">
                 <views:UserDetail DataContext="{Binding SelectedCustomer}" />
             </TabItem>
         </TabControl>

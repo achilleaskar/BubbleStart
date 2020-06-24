@@ -380,6 +380,10 @@
     <Compile Include="Migrations\202004010625255_boost.designer.cs">
       <DependentUpon>202004010625255_boost.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006221549260_asfdsda.cs" />
+    <Compile Include="Migrations\202006221549260_asfdsda.designer.cs">
+      <DependentUpon>202006221549260_asfdsda.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -602,6 +606,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004010625255_boost.resx">
       <DependentUpon>202004010625255_boost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006221549260_asfdsda.resx">
+      <DependentUpon>202006221549260_asfdsda.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

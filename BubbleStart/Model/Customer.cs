@@ -575,6 +575,28 @@ namespace BubbleStart.Model
             }
         }
 
+
+        private DateTime _AppointmentTime;
+
+        [NotMapped]
+        public DateTime AppointmentTime
+        {
+            get
+            {
+                return _AppointmentTime;
+            }
+
+            set
+            {
+                if (_AppointmentTime == value)
+                {
+                    return;
+                }
+
+                _AppointmentTime = value;
+                RaisePropertyChanged();
+            }
+        }
         public bool HistoryNotFirstTime
         {
             get => _HistoryNotFirstTime;
@@ -696,6 +718,8 @@ namespace BubbleStart.Model
         }
 
         public bool IsNotPracticing => !IsPracticing;
+
+
 
         [NotMapped]
         public bool IsPracticing
@@ -1224,10 +1248,9 @@ namespace BubbleStart.Model
 
         public string RemainingDays => $"{RemainingTrainingDays}+{RemainingMassageDays}";
 
-        public int RemainingMassageDays => SelectedMasage != null && SelectedMasage.RemainingDays > 0 ? SelectedMasage.RemainingDays : 0;
+        public int RemainingMassageDays => Programs.Where(p => p.IsMassage).Sum(p => p.RemainingDays);
 
-        public int RemainingTrainingDays => SelectedProgram != null && SelectedProgram.RemainingDays > 0 ?
-            SelectedProgram.RemainingDays : 0;
+        public int RemainingTrainingDays =>Programs.Where(p=>!p.IsMassage).Sum(p=>p.RemainingDays);
 
         [NotMapped]
         public RelayCommand SaveChangesAsyncCommand { get; set; }

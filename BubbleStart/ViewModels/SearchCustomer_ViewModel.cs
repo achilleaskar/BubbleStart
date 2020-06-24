@@ -563,7 +563,9 @@ namespace BubbleStart.ViewModels
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             TodaysApointments = new ObservableCollection<Customer>();
-         
+            CustomersPracticing.Clear();
+
+            Apointment app;
 
             foreach (var c in BasicDataManager.Customers)
             {
@@ -572,14 +574,16 @@ namespace BubbleStart.ViewModels
                     //c.PropertyChanged += EntityViewModelPropertyChanged;
                     c.Loaded = true;
                     c.GetRemainingDays();
-                    if (c.LastShowUp != null && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
+                    if (c.LastShowUp != null&& c.LastShowUp.Arrived.Date==DateTime.Today && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
                     {
                         c.IsPracticing = true;
                         CustomersPracticing.Add(c);
                     }
                     c.CalculateRemainingAmount();
-                    if (c.Apointments.Any(a => a.DateTime.Date == DateTime.Today))
+                    app = c.Apointments.FirstOrDefault(a => a.DateTime.Date == DateTime.Today);
+                    if (app != null)
                     {
+                        c.AppointmentTime = app.DateTime;
                         TodaysApointments.Add(c);
                     }
                 }
@@ -589,11 +593,12 @@ namespace BubbleStart.ViewModels
                 }
             }
             Customers = new ObservableCollection<Customer>(BasicDataManager.Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
-            CustomersPracticing.Clear();
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;
 
             CustomersCollectionView.Refresh();
+            TodaysApointments = new ObservableCollection<Customer>(TodaysApointments.OrderBy(ta => ta.AppointmentTime));
+
         }
 
         public override void Reload()

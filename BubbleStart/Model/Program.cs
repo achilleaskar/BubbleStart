@@ -78,7 +78,8 @@ namespace BubbleStart.Model
             masazTher50=12,
             blackfriday=13,
             massage41=14,
-            online=15
+            online=15,
+            summerDeal=16
         }
 
         #endregion Enums
@@ -339,6 +340,9 @@ namespace BubbleStart.Model
 
                 case ProgramTypes.online:
                     return "Online";
+
+                case ProgramTypes.summerDeal:
+                    return "Summer Deal";
             }
             return "Ανενεργό";
         }

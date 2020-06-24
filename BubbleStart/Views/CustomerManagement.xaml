@@ -166,6 +166,7 @@
                                     <ComboBoxItem Content="Black Friday Deal" />
                                     <ComboBoxItem Content="4+1 massage" />
                                     <ComboBoxItem Content="Online" />
+                                    <ComboBoxItem Content="Summer Deal" />
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Grid.Row="0"
