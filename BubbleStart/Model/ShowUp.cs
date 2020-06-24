@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
+using static BubbleStart.Helpers.Enums;
 
 namespace BubbleStart.Model
 {
@@ -67,6 +68,35 @@ namespace BubbleStart.Model
                 }
 
                 _Massage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+
+
+
+
+        private ProgramMode _ProgramMode;
+
+
+        public ProgramMode ProgramMode
+        {
+            get
+            {
+                return _ProgramMode;
+            }
+
+            set
+            {
+                if (_ProgramMode == value)
+                {
+                    return;
+                }
+
+                _ProgramMode = value;
                 RaisePropertyChanged();
             }
         }

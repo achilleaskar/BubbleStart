@@ -30,6 +30,11 @@
                                  Color="White" />
             </Style.Resources>
         </Style>
+        <Style x:Key="DataGridCellStyle"
+               TargetType="{x:Type DataGridCell}">
+            <Setter Property="IsTabStop"
+                    Value="False" />
+        </Style>
     </Window.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
@@ -385,7 +390,8 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
-                    <GroupBox Header="Πακέτα Γυμναστικής" VerticalAlignment="Top">
+                    <GroupBox Header="Πακέτα Γυμναστικής"
+                              VerticalAlignment="Top">
                         <DataGrid ItemsSource="{Binding ProgramsColelctionView}"
                                   VerticalAlignment="Top"
                                   CanUserAddRows="False"
@@ -418,10 +424,35 @@
                                 <DataGridTextColumn Header="Έναρξη"
                                                     Width="55"
                                                     Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                <DataGridTextColumn Header="Τύπος"
-                                                    Width="120"
-                                                    IsReadOnly="True"
-                                                    Binding="{Binding }" />
+                                <DataGridTemplateColumn Header="Τύπος"
+                                                        Width="120"
+                                                        CellStyle="{StaticResource DataGridCellStyle}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Width="Auto"
+                                                      VerticalAlignment="Top"
+                                                      Text="{Binding TypeString, UpdateSourceTrigger=PropertyChanged}">
+                                                <ComboBoxItem Content="Reformer Pilates" />
+                                                <ComboBoxItem Content="Pilates" />
+                                                <ComboBoxItem Content="Functional" />
+                                                <ComboBoxItem Content="Pilates &amp; Functional" />
+                                                <ComboBoxItem Content="Ελέυθερη Χρήση" />
+                                                <ComboBoxItem Content="Medical Exercise" />
+                                                <ComboBoxItem Content="Δοκιμαστικό" />
+                                                <ComboBoxItem Content="Yoga" />
+                                                <ComboBoxItem Content="Aerial Yoga" />
+                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 30'" />
+                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 50'" />
+                                                <ComboBoxItem Content="Μασάζ Θεραπευτικό 30'" />
+                                                <ComboBoxItem Content="Μασάζ Θεραπευτικό 50'" />
+                                                <ComboBoxItem Content="Black Friday Deal" />
+                                                <ComboBoxItem Content="4+1 massage" />
+                                                <ComboBoxItem Content="Online" />
+                                                <ComboBoxItem Content="Summer Deal" />
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Συν."
                                                     Width="30"
                                                     Binding="{Binding Showups}" />
@@ -623,10 +654,35 @@
                                 <DataGridTextColumn Header="Έναρξη"
                                                     Width="55"
                                                     Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                <DataGridTextColumn Header="Τύπος"
-                                                    Width="120"
-                                                    IsReadOnly="True"
-                                                    Binding="{Binding }" />
+                                <DataGridTemplateColumn Header="Τύπος"
+                                                        Width="120"
+                                                        CellStyle="{StaticResource DataGridCellStyle}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Width="Auto"
+                                                      VerticalAlignment="Top"
+                                                      Text="{Binding TypeString, UpdateSourceTrigger=PropertyChanged}">
+                                                <ComboBoxItem Content="Reformer Pilates" />
+                                                <ComboBoxItem Content="Pilates" />
+                                                <ComboBoxItem Content="Functional" />
+                                                <ComboBoxItem Content="Pilates &amp; Functional" />
+                                                <ComboBoxItem Content="Ελέυθερη Χρήση" />
+                                                <ComboBoxItem Content="Medical Exercise" />
+                                                <ComboBoxItem Content="Δοκιμαστικό" />
+                                                <ComboBoxItem Content="Yoga" />
+                                                <ComboBoxItem Content="Aerial Yoga" />
+                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 30'" />
+                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 50'" />
+                                                <ComboBoxItem Content="Μασάζ Θεραπευτικό 30'" />
+                                                <ComboBoxItem Content="Μασάζ Θεραπευτικό 50'" />
+                                                <ComboBoxItem Content="Black Friday Deal" />
+                                                <ComboBoxItem Content="4+1 massage" />
+                                                <ComboBoxItem Content="Online" />
+                                                <ComboBoxItem Content="Summer Deal" />
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Συν."
                                                     Width="30"
                                                     Binding="{Binding Showups}" />
@@ -717,7 +773,229 @@
                         </DataGrid>
                     </GroupBox>
                 </StackPanel>
-                
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left">
+                    <GroupBox Header="Online-Outdoor"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Grid.Column="1">
+                        <DataGrid ItemsSource="{Binding ShowUpsOnlineCollectionView}"
+                                  SelectedItem="{Binding SelectedOnlineShowUp}"
+                                  CanUserAddRows="False"
+                                  Height="330"
+                                  VerticalAlignment="Stretch"
+                                  CanUserDeleteRows="False"
+                                  Width="135"
+                                  VirtualizingPanel.VirtualizationMode="Standard"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.Resources>
+                                <ContextMenu x:Key="ShowUpsSubMenu">
+                                    <MenuItem Header="Διαγραφή"
+                                              Command="{Binding DataContext.DeletemassShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                        <MenuItem.Icon>
+                                            <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Αλλαγή απο/σε massage"
+                                              Command="{Binding DataContext.ToggleMassagebCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    <MenuItem Header="Ήρθε/Δεν ήρθε"
+                                              Command="{Binding DataContext.ToggleRealbCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                </ContextMenu>
+                            </DataGrid.Resources>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="{x:Type DataGridRow}"
+                                       BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                    <Setter Property="ContextMenu"
+                                            Value="{StaticResource ShowUpsSubMenu}" />
+                                    <Setter Property="Background"
+                                            Value="{Binding Color}" />
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="#">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding RealColor}">
+                                                <TextBlock Text="{Binding Count}" />
+                                                <!--<TextBlock.Style>
+                                                        <Style>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Massage}"
+                                                                             Value="false">
+                                                                    <Setter Property="TextBlock.Background"
+                                                                            Value="Transparent" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Massage}"
+                                                                             Value="true">
+                                                                    <Setter Property="TextBlock.Background"
+                                                                            Value="LightBlue" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>-->
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Ημερομηνία"
+                                                    Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                    <GroupBox Header="Πακέτα Μασάζ">
+                        <DataGrid ItemsSource="{Binding ProgramsMassageColelctionView}"
+                                  VerticalAlignment="Top"
+                                  CanUserAddRows="False"
+                                  SelectedItem="{Binding SelectedProgramMassageToDelete}"
+                                  VirtualizingPanel.VirtualizationMode="Standard"
+                                  Margin="0 0 0 0"
+                                  Height="330"
+                                  Width="475"
+                                  CanUserDeleteRows="False"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.Resources>
+                                <ContextMenu x:Key="ProgramsSubMenu">
+                                    <MenuItem Header="Διαγραφή"
+                                              Command="{Binding DataContext.DeleteProgramMassCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                        <MenuItem.Icon>
+                                            <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </DataGrid.Resources>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="{x:Type DataGridRow}"
+                                       BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                    <Setter Property="ContextMenu"
+                                            Value="{StaticResource ProgramsSubMenu}" />
+                                    <Setter Property="Background"
+                                            Value="{Binding Color}" />
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Έναρξη"
+                                                    Width="55"
+                                                    Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                <DataGridTemplateColumn Header="Τύπος"
+                                                        Width="120"
+                                                        CellStyle="{StaticResource DataGridCellStyle}">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox Width="Auto"
+                                                      VerticalAlignment="Top"
+                                                      Text="{Binding TypeString, UpdateSourceTrigger=PropertyChanged}">
+                                                <ComboBoxItem Content="Reformer Pilates" />
+                                                <ComboBoxItem Content="Pilates" />
+                                                <ComboBoxItem Content="Functional" />
+                                                <ComboBoxItem Content="Pilates &amp; Functional" />
+                                                <ComboBoxItem Content="Ελέυθερη Χρήση" />
+                                                <ComboBoxItem Content="Medical Exercise" />
+                                                <ComboBoxItem Content="Δοκιμαστικό" />
+                                                <ComboBoxItem Content="Yoga" />
+                                                <ComboBoxItem Content="Aerial Yoga" />
+                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 30'" />
+                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 50'" />
+                                                <ComboBoxItem Content="Μασάζ Θεραπευτικό 30'" />
+                                                <ComboBoxItem Content="Μασάζ Θεραπευτικό 50'" />
+                                                <ComboBoxItem Content="Black Friday Deal" />
+                                                <ComboBoxItem Content="4+1 massage" />
+                                                <ComboBoxItem Content="Online" />
+                                                <ComboBoxItem Content="Summer Deal" />
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="Συν."
+                                                    Width="30"
+                                                    Binding="{Binding Showups}" />
+                                <DataGridTextColumn Header="Μήνες"
+                                                    Width="35"
+                                                    Binding="{Binding Months}" />
+                                <DataGridTextColumn Header="Τιμή Συν."
+                                                    Width="55"
+                                                    Binding="{Binding ShowUpPrice,StringFormat=c}" />
+                                <DataGridTextColumn Header="Σύνολο"
+                                                    Width="55"
+                                                    Binding="{Binding Amount,StringFormat=c}" />
+                                <DataGridTextColumn Header="Αγορά"
+                                                    Width="55"
+                                                    Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                <DataGridTemplateColumn Header="Πλήρωμή"
+                                                        Width="60">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border>
+                                                <TextBlock Text="{Binding Paid, Converter={StaticResource BoolToShowedUp_Converter}}">
+                                                    <TextBlock.Style>
+                                                        <Style>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding PaidCol}"
+                                                                             Value="true">
+                                                                    <Setter Property="TextBlock.Background"
+                                                                            Value="LightGreen" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding PaidCol}"
+                                                                             Value="false">
+                                                                    <Setter Property="TextBlock.Background"
+                                                                            Value="#FFE67979" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style></TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                    <GroupBox Header="Πληρωμές Mass."
+                              Grid.Column="3"
+                              Grid.RowSpan="30"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left">
+                        <DataGrid ItemsSource="{Binding PaymentsMassCollectionView}"
+                                  VerticalAlignment="Top"
+                                  SelectedItem="{Binding SelectedPaymentMass}"
+                                  CanUserAddRows="False"
+                                  Width="110"
+                                  Height="330"
+                                  VirtualizingPanel.VirtualizationMode="Standard"
+                                  CanUserDeleteRows="False"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.Resources>
+                                <ContextMenu x:Key="PaymentsSubMenuMass">
+                                    <MenuItem Header="Διαγραφή"
+                                              Command="{Binding DataContext.DeletePaymentMassCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                        <MenuItem.Icon>
+                                            <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Σύνδεση με πακέτο"
+                                              Command="{Binding DataContext.SetToProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                </ContextMenu>
+                            </DataGrid.Resources>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="{x:Type DataGridRow}"
+                                       BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                    <Setter Property="ContextMenu"
+                                            Value="{StaticResource PaymentsSubMenuMass}" />
+                                    <Setter Property="Background"
+                                            Value="{Binding PaymentColor}" />
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Ημερομ."
+                                                    Width="55"
+                                                    Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                <DataGridTextColumn Header="Ποσό"
+                                                    Width="45"
+                                                    Binding="{Binding Amount,StringFormat=c1}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                </StackPanel>
             </Grid>
             <GroupBox Grid.Row="1"
                       Margin="5 0 0 0"
@@ -752,12 +1030,18 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
-            <StackPanel Grid.Row="3">
+            <StackPanel Grid.Row="3"
+                        Orientation="Horizontal">
                 <Button Content="Αποθήκευση αλλαγών"
                         HorizontalAlignment="Left"
-                        VerticalAlignment="Bottom"
+                        VerticalAlignment="Top"
                         Margin="5"
                         Command="{Binding SaveChangesAsyncCommand}" />
+                <!--<Button Content="Ακύρωση αλλαγών"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Margin="0 5"
+                        Command="{Binding CancelChangesAsyncCommand}" />-->
             </StackPanel>
         </Grid>
     </ScrollViewer>

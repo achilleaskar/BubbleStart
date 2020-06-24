@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using GalaSoft.MvvmLight.CommandWpf;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -11,18 +13,13 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using BubbleStart.Helpers;
-using GalaSoft.MvvmLight.CommandWpf;
+using static BubbleStart.Helpers.Enums;
 
 namespace BubbleStart.Model
 {
     [Table("BubbleCustomers")]
     public class Customer : BaseModel
     {
-        #region Constructors
-
-        #endregion Constructors
-
         #region Fields
 
         private bool _ActiveCustomer;
@@ -222,7 +219,7 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public RelayCommand AddOldShowUpCommand { get; set; }
+        public RelayCommand<int> AddOldShowUpCommand { get; set; }
 
         public string Address
         {
@@ -575,8 +572,8 @@ namespace BubbleStart.Model
             }
         }
 
-
         private DateTime _AppointmentTime;
+        private ICollectionView _ShowUpsOnlineCollectionView;
 
         [NotMapped]
         public DateTime AppointmentTime
@@ -597,6 +594,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         public bool HistoryNotFirstTime
         {
             get => _HistoryNotFirstTime;
@@ -718,8 +716,6 @@ namespace BubbleStart.Model
         }
 
         public bool IsNotPracticing => !IsPracticing;
-
-
 
         [NotMapped]
         public bool IsPracticing
@@ -1248,12 +1244,17 @@ namespace BubbleStart.Model
 
         public string RemainingDays => $"{RemainingTrainingDays}+{RemainingMassageDays}";
 
-        public int RemainingMassageDays => Programs.Where(p => p.IsMassage).Sum(p => p.RemainingDays);
+        public int RemainingMassageDays => Programs.Where(p => p.ProgramMode == ProgramMode.massage).Sum(p => p.RemainingDays);
 
-        public int RemainingTrainingDays =>Programs.Where(p=>!p.IsMassage).Sum(p=>p.RemainingDays);
+        public int RemainingTrainingDays => Programs.Where(p => p.ProgramMode == ProgramMode.normal).Sum(p => p.RemainingDays);
+        public int RemainingOnlineDays => Programs.Where(p => p.ProgramMode == ProgramMode.online).Sum(p => p.RemainingDays);
+        public int RemainingOutDoorDays => Programs.Where(p => p.ProgramMode == ProgramMode.outdoor).Sum(p => p.RemainingDays);
 
         [NotMapped]
         public RelayCommand SaveChangesAsyncCommand { get; set; }
+
+        [NotMapped]
+        public RelayCommand CancelChangesAsyncCommand { get; set; }
 
         [NotMapped]
         public Program SelectedMasage
@@ -1453,6 +1454,10 @@ namespace BubbleStart.Model
                 ShowUpsMassCollectionView.SortDescriptions.Add(new SortDescription("Arrived", ListSortDirection.Descending));
                 ShowUpsMassCollectionView.Filter = ProgramsmasFilter;
 
+                ShowUpsOnlineCollectionView = new ListCollectionView(ShowUps);
+                ShowUpsOnlineCollectionView.SortDescriptions.Add(new SortDescription("Arrived", ListSortDirection.Descending));
+                ShowUpsOnlineCollectionView.Filter = ProgramsOnlineFilter;
+
                 RaisePropertyChanged();
             }
         }
@@ -1489,6 +1494,22 @@ namespace BubbleStart.Model
                 }
 
                 _ShowUpsMassCollectionView = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ICollectionView ShowUpsOnlineCollectionView
+        {
+            get => _ShowUpsOnlineCollectionView;
+
+            set
+            {
+                if (_ShowUpsOnlineCollectionView == value)
+                {
+                    return;
+                }
+
+                _ShowUpsOnlineCollectionView = value;
                 RaisePropertyChanged();
             }
         }
@@ -1722,8 +1743,9 @@ namespace BubbleStart.Model
             timer.Start();
             ShowPreviusDataCommand = new RelayCommand(async () => { await ShowPreviewsData(); });
             BookCommand = new RelayCommand<string>(async obj => { await MakeBooking(obj); }, CanMakeBooking);
-            AddOldShowUpCommand = new RelayCommand(async () => { await AddOldShowUp(); });
+            AddOldShowUpCommand = new RelayCommand<int>(async obj => { await AddOldShowUp(obj); });
             SaveChangesAsyncCommand = new RelayCommand(async () => { await SaveChanges(); }, CanSaveChanges);
+            CancelChangesAsyncCommand = new RelayCommand(RollBackChanges, CanSaveChanges);
             PaymentCommand = new RelayCommand(async () => { await AddPayment(); }, CanAddPayment);
             DeleteShowUpCommand = new RelayCommand(async () => { await DeleteShowUp(); }, SelectedShowUp != null);
             DeletemassShowUpCommand = new RelayCommand(async () => { await DeletemassShowUp(); }, SelectedMassShowUp != null);
@@ -1741,18 +1763,24 @@ namespace BubbleStart.Model
             ProgramTypeIndex = -1;
         }
 
+        private void RollBackChanges()
+        {
+            BasicDataManager.RollBack();
+            CommandManager.InvalidateRequerySuggested();
+        }
+
         public void SetColors()
         {
             if (!Loaded) return;
             if (Programs != null && ShowUps != null && ShowUps.Count > 0 && Programs.Count > 0)
             {
                 int progIndex = 0;
-                var programsReversed = Programs.Where(o => !o.IsMassage).OrderBy(p => p.StartDay).ThenByDescending(p => p.Id).ToList();
+                var programsReversed = Programs.Where(o => o.ProgramMode == ProgramMode.normal).OrderBy(p => p.StartDay).ThenByDescending(p => p.Id).ToList();
                 var Limit = programsReversed.Count > 0 ? programsReversed[0].StartDay : new DateTime();
                 var showUpsReserved = ShowUps.Where(s => s.Arrived >= Limit).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList();
                 int counter = 0;
                 Program selProg = null;
-                foreach (var showUp in showUpsReserved.Where(showUp => !showUp.Massage))
+                foreach (var showUp in showUpsReserved.Where(showUp => showUp.ProgramMode == ProgramMode.normal))
                 {
                     if ((selProg == null || selProg.RemainingDays == 0) && progIndex < programsReversed.Count)
                     {
@@ -1780,9 +1808,9 @@ namespace BubbleStart.Model
                     selProg = programsReversed[progIndex];
                     selProg.Color = progIndex % 2 == 0 ? new SolidColorBrush(Colors.LightGreen) : new SolidColorBrush(Colors.Orange);
                 }
-                programsReversed = Programs.Where(o => o.IsMassage).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
+                programsReversed = Programs.Where(o => o.ProgramMode == ProgramMode.massage).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
                 selProg = null; progIndex = 0;
-                foreach (var showUp in showUpsReserved.Where(showUp => showUp.Massage))
+                foreach (var showUp in showUpsReserved.Where(showUp => showUp.ProgramMode == ProgramMode.massage))
                 {
                     if ((selProg == null || selProg.RemainingDays == 0) && progIndex < programsReversed.Count)
                     {
@@ -1810,6 +1838,68 @@ namespace BubbleStart.Model
                 {
                     selProg = programsReversed[progIndex];
                     selProg.Color = progIndex % 2 == 0 ? new SolidColorBrush(Colors.Aqua) : new SolidColorBrush(Colors.LightBlue);
+                }
+                programsReversed = Programs.Where(o => o.ProgramMode == ProgramMode.online).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
+                selProg = null; progIndex = 0;
+                foreach (var showUp in showUpsReserved.Where(showUp => showUp.ProgramMode == ProgramMode.online))
+                {
+                    if ((selProg == null || selProg.RemainingDays == 0) && progIndex < programsReversed.Count)
+                    {
+                        counter = 1;
+                        selProg = programsReversed[progIndex];
+                        selProg.RemainingDays = selProg.Showups;
+                        selProg.Color = progIndex % 2 == 0 ? new SolidColorBrush(Colors.MediumSeaGreen) : new SolidColorBrush(Colors.MediumSpringGreen);
+                        progIndex++;
+                    }
+
+                    if (selProg == null || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
+                        continue;
+                    showUp.Color = selProg.Color;
+                    showUp.Count = counter++;
+
+                    selProg.RemainingDays--;
+                }
+                if (progIndex < programsReversed.Count)
+                {
+                    selProg = programsReversed[progIndex];
+                    selProg.RemainingDays = selProg.Showups;
+                }
+                SelectedMasage = selProg;
+                for (int i = progIndex; i < programsReversed.Count; i++)
+                {
+                    selProg = programsReversed[progIndex];
+                    selProg.Color = progIndex % 2 == 0 ? new SolidColorBrush(Colors.MediumSeaGreen) : new SolidColorBrush(Colors.MediumSpringGreen);
+                }
+                programsReversed = Programs.Where(o => o.ProgramMode == ProgramMode.outdoor).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
+                selProg = null; progIndex = 0;
+                foreach (var showUp in showUpsReserved.Where(showUp => showUp.ProgramMode == ProgramMode.outdoor))
+                {
+                    if ((selProg == null || selProg.RemainingDays == 0) && progIndex < programsReversed.Count)
+                    {
+                        counter = 1;
+                        selProg = programsReversed[progIndex];
+                        selProg.RemainingDays = selProg.Showups;
+                        selProg.Color = progIndex % 2 == 0 ? new SolidColorBrush(Colors.LightPink) : new SolidColorBrush(Colors.HotPink);
+                        progIndex++;
+                    }
+
+                    if (selProg == null || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
+                        continue;
+                    showUp.Color = selProg.Color;
+                    showUp.Count = counter++;
+
+                    selProg.RemainingDays--;
+                }
+                if (progIndex < programsReversed.Count)
+                {
+                    selProg = programsReversed[progIndex];
+                    selProg.RemainingDays = selProg.Showups;
+                }
+                SelectedMasage = selProg;
+                for (int i = progIndex; i < programsReversed.Count; i++)
+                {
+                    selProg = programsReversed[progIndex];
+                    selProg.Color = progIndex % 2 == 0 ? new SolidColorBrush(Colors.LightPink) : new SolidColorBrush(Colors.HotPink);
                 }
                 SetRemaining();
             }
@@ -1946,14 +2036,14 @@ namespace BubbleStart.Model
             {
                 SelectedProgramToDelete.Payments.Add(Payments.Last());
                 RaisePropertyChanged(nameof(PaymentVisibility));
-                await SaveChanges();
+                // await SaveChanges();
                 SelectedProgramToDelete.CalculateRemainingAmount();
             }
             else if (SelectedProgramMassageToDelete != null)
             {
                 SelectedProgramMassageToDelete.Payments.Add(Payments.Last());
                 RaisePropertyChanged(nameof(PaymentVisibility));
-                await SaveChanges();
+                // await SaveChanges();
                 SelectedProgramMassageToDelete.CalculateRemainingAmount();
             }
         }
@@ -1969,33 +2059,51 @@ namespace BubbleStart.Model
             return ProgramPrice >= 0 && ProgramTypeIndex >= 0 && NumOfShowUps > 0 && ProgramDuration > 0;
         }
 
-        internal void ShowedUp(bool arrived, bool mass)
+        internal void ShowedUp(bool arrived, ProgramMode mode)
         {
             IsPracticing = arrived;
-            if (mass)
+            if (mode == ProgramMode.massage)
             {
                 int remain = RemainingMassageDays;
-                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, Massage = true });
+                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramMode = mode });
                 if (RemainingMassageDays != 0) return;
                 MessageBox.Show(remain > 0
                     ? $"Αυτή ήταν η τελευταία συνδερία μασάζ του {ToString()}"
                     : $"Οι συνεδρίες μασάζ του {ToString()} έχουν τελειώσει");
             }
-            else
+            else if (mode == ProgramMode.normal)
             {
-                int remain = RemainingMassageDays;
-                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, Massage = false });
+                int remain = RemainingTrainingDays;
+                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramMode = mode });
                 if (RemainingTrainingDays != 0) return;
                 MessageBox.Show(remain > 0
                     ? $"Αυτή ήταν η τελευταία συνδερία γυμναστικής του {ToString()}"
                     : $"Οι συνεδρίες γυμναστικής του {ToString()} έχουν τελειώσει");
             }
+            else if (mode == ProgramMode.online)
+            {
+                int remain = RemainingOnlineDays;
+                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramMode = mode });
+                if (RemainingOnlineDays != 0) return;
+                MessageBox.Show(remain > 0
+                    ? $"Αυτή ήταν η τελευταία συνδερία Online του {ToString()}"
+                    : $"Οι συνεδρίες Online του {ToString()} έχουν τελειώσει");
+            }
+            else if (mode == ProgramMode.outdoor)
+            {
+                int remain = RemainingOutDoorDays;
+                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramMode = mode });
+                if (RemainingOutDoorDays != 0) return;
+                MessageBox.Show(remain > 0
+                    ? $"Αυτή ήταν η τελευταία συνδερία Outdoor του {ToString()}"
+                    : $"Οι συνεδρίες Outdoor του {ToString()} έχουν τελειώσει");
+            }
         }
 
-        private async Task AddOldShowUp()
+        private async Task AddOldShowUp(int programMode)
         {
-            ShowUps.Add(new ShowUp { Arrived = OldShowUpDate, Massage = IsMassage, Left = new DateTime(1234, 1, 1) });
-            await BasicDataManager.SaveAsync();
+            ShowUps.Add(new ShowUp { Arrived = OldShowUpDate, ProgramMode = (ProgramMode)programMode, Left = new DateTime(1234, 1, 1) });
+            // await BasicDataManager.SaveAsync();
             IsMassage = false;
         }
 
@@ -2021,7 +2129,7 @@ namespace BubbleStart.Model
             Changes.Add(new Change($"Διαγράφηκε ΠΑΡΟΥΣΙΑ massage  με ημερομηνία {SelectedMassShowUp.Arrived:ddd dd/MM/yy}", StaticResources.User));
 
             BasicDataManager.Delete(SelectedMassShowUp);
-            await BasicDataManager.SaveAsync();
+            // await BasicDataManager.SaveAsync();
         }
 
         private async Task DeletePayment()
@@ -2033,7 +2141,7 @@ namespace BubbleStart.Model
             }
             BasicDataManager.Delete(SelectedPayment);
             RaisePropertyChanged(nameof(PaymentVisibility));
-            await BasicDataManager.SaveAsync();
+            //await BasicDataManager.SaveAsync();
         }
 
         private async Task DeletePaymentMass()
@@ -2045,7 +2153,7 @@ namespace BubbleStart.Model
             }
             BasicDataManager.Delete(SelectedPaymentMass);
             RaisePropertyChanged(nameof(PaymentVisibility));
-            await BasicDataManager.SaveAsync();
+            // await BasicDataManager.SaveAsync();
         }
 
         private async Task DeleteProgram()
@@ -2054,7 +2162,7 @@ namespace BubbleStart.Model
                 $"διάρκεια {SelectedProgramToDelete.Showups} Αξίας{SelectedProgramToDelete.Amount} και έναρξη {SelectedProgramToDelete.StartDay:ddd dd/MM/yy}", StaticResources.User));
 
             BasicDataManager.Delete(SelectedProgramToDelete);
-            await BasicDataManager.SaveAsync();
+            // await BasicDataManager.SaveAsync();
         }
 
         private async Task DeleteProgramMass()
@@ -2063,7 +2171,7 @@ namespace BubbleStart.Model
                   $"διάρκεια {SelectedProgramMassageToDelete.Showups} Αξίας{SelectedProgramMassageToDelete.Amount} και έναρξη {SelectedProgramMassageToDelete.StartDay:ddd dd/MM/yy}", StaticResources.User));
 
             BasicDataManager.Delete(SelectedProgramMassageToDelete);
-            await BasicDataManager.SaveAsync();
+            // await BasicDataManager.SaveAsync();
         }
 
         private async Task DeleteShowUp()
@@ -2071,7 +2179,7 @@ namespace BubbleStart.Model
             Changes.Add(new Change($"Διαγράφηκε ΠΑΡΟΥΣΙΑ γυμναστικής με ημερομηνία {SelectedShowUp.Arrived:ddd dd/MM/yy}", StaticResources.User));
 
             BasicDataManager.Delete(SelectedShowUp);
-            await BasicDataManager.SaveAsync();
+            // await BasicDataManager.SaveAsync();
         }
 
         private void DisableCustomer()
@@ -2156,7 +2264,7 @@ namespace BubbleStart.Model
             DateOfIssue = StartDate = DateTime.Today;
             RaisePropertyChanged(nameof(RemainingAmount));
             ForceDisable = false;
-            await BasicDataManager.SaveAsync();
+            // await BasicDataManager.SaveAsync();
             PaymentsCollectionView.Refresh();
             PaymentsMassCollectionView.Refresh();
         }
@@ -2230,9 +2338,9 @@ namespace BubbleStart.Model
         {
             try
             {
-                return (obj is Program p && !p.IsMassage) ||
-                    (obj is ShowUp s && !s.Massage) ||
-                    (obj is Payment a && (a.Program == null || !a.Program.IsMassage));
+                return (obj is Program p && p.ProgramMode == ProgramMode.normal) ||
+                    (obj is ShowUp s && s.ProgramMode == ProgramMode.normal) ||
+                    (obj is Payment a && (a.Program == null || a.Program.ProgramMode == ProgramMode.normal));
             }
             catch (Exception)
             {
@@ -2241,13 +2349,41 @@ namespace BubbleStart.Model
             }
         }
 
+        private bool ProgramsOutDoorFilter(object obj)
+        {
+            try
+            {
+                return (obj is Program p && p.ProgramMode == ProgramMode.outdoor) ||
+                    (obj is ShowUp s && s.ProgramMode == ProgramMode.outdoor) ||
+                    (obj is Payment a && a.Program != null && a.Program.ProgramMode == ProgramMode.outdoor);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private bool ProgramsOnlineFilter(object obj)
+        {
+            try
+            {
+                return (obj is Program p && p.ProgramMode == ProgramMode.online) ||
+                    (obj is ShowUp s && s.ProgramMode == ProgramMode.online) ||
+                    (obj is Payment a && a.Program != null && a.Program.ProgramMode == ProgramMode.online);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         private bool ProgramsmasFilter(object obj)
         {
             try
             {
-                return (obj is Program p && p.IsMassage) ||
-                    (obj is ShowUp s && s.Massage) ||
-                    (obj is Payment a && a.Program != null && a.Program.IsMassage);
+                return (obj is Program p && p.ProgramMode == ProgramMode.massage) ||
+                    (obj is ShowUp s && s.ProgramMode == ProgramMode.massage) ||
+                    (obj is Payment a && a.Program != null && a.Program.ProgramMode == ProgramMode.massage);
             }
             catch (Exception)
             {
@@ -2275,7 +2411,7 @@ namespace BubbleStart.Model
                 SelectedProgramMassageToDelete.Payments.Add(SelectedPaymentMass);
                 SelectedPaymentMass.RaisePropertyChanged(nameof(Payment.PaymentColor));
             }
-            await BasicDataManager.SaveAsync();
+            // await BasicDataManager.SaveAsync();
             GetRemainingDays();
         }
 
@@ -2307,28 +2443,42 @@ namespace BubbleStart.Model
 
         private async Task TogleMassage()
         {
-            SelectedShowUp.Massage = !SelectedShowUp.Massage;
-            await BasicDataManager.SaveAsync();
+            if (SelectedShowUp.ProgramMode == ProgramMode.massage)
+            {
+                SelectedShowUp.ProgramMode = ProgramMode.normal;
+            }
+            else
+            {
+                SelectedShowUp.ProgramMode = ProgramMode.massage;
+            }
+            // await BasicDataManager.SaveAsync();
             GetRemainingDays();
         }
 
         private async Task TogleMassageb()
         {
-            SelectedMassShowUp.Massage = !SelectedMassShowUp.Massage;
-            await BasicDataManager.SaveAsync();
+            if (SelectedMassShowUp.ProgramMode == ProgramMode.massage)
+            {
+                SelectedMassShowUp.ProgramMode = ProgramMode.normal;
+            }
+            else
+            {
+                SelectedMassShowUp.ProgramMode = ProgramMode.massage;
+            }
+            // await BasicDataManager.SaveAsync();
             GetRemainingDays();
         }
 
         private async Task TogleReal()
         {
             SelectedShowUp.Real = !SelectedShowUp.Real;
-            await BasicDataManager.SaveAsync();
+            //await BasicDataManager.SaveAsync();
         }
 
         private async Task TogleRealb()
         {
             SelectedMassShowUp.Real = !SelectedMassShowUp.Real;
-            await BasicDataManager.SaveAsync();
+            //await BasicDataManager.SaveAsync();
         }
 
         //private void TryRefrehAllCollections()

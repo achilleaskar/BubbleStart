@@ -27,8 +27,8 @@ namespace BubbleStart.ViewModels
             BasicDataManager = basicDataManager;
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
             SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); }, CanSaveCustomer);
-            ShowedUpCommand = new RelayCommand(async () => { await CustomerShowedUp(); });
-            ShowedUpMassCommand = new RelayCommand(async () => { await CustomerShowedUp(true); });
+            ShowedUpCommand = new RelayCommand(async () => { await CustomerShowedUp(0); });
+            ShowedUpMassCommand = new RelayCommand(async () => { await CustomerShowedUp(1); });
             CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
@@ -86,7 +86,7 @@ namespace BubbleStart.ViewModels
                 }
 
                 _Customers = value;
-              // Customers.CollectionChanged += Customers_CollectionChanged;
+                // Customers.CollectionChanged += Customers_CollectionChanged;
 
                 RaisePropertyChanged();
             }
@@ -257,12 +257,12 @@ namespace BubbleStart.ViewModels
             await BasicDataManager.SaveAsync();
         }
 
-        public async Task CustomerShowedUp(bool mass = false)
+        public async Task CustomerShowedUp(int programMode)
         {
             if (SelectedCustomer != null)
             {
                 CustomersPracticing.Add(SelectedCustomer);
-                SelectedCustomer.ShowedUp(true, mass);
+                SelectedCustomer.ShowedUp(true, (Enums.ProgramMode)programMode);
                 await BasicDataManager.SaveAsync();
             }
         }
@@ -574,7 +574,7 @@ namespace BubbleStart.ViewModels
                     //c.PropertyChanged += EntityViewModelPropertyChanged;
                     c.Loaded = true;
                     c.GetRemainingDays();
-                    if (c.LastShowUp != null&& c.LastShowUp.Arrived.Date==DateTime.Today && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
+                    if (c.LastShowUp != null && c.LastShowUp.Arrived.Date == DateTime.Today && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
                     {
                         c.IsPracticing = true;
                         CustomersPracticing.Add(c);

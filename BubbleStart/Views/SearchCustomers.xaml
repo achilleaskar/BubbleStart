@@ -60,8 +60,6 @@
                         <Style TargetType="{x:Type DataGridRow}">
                             <Setter Property="IsSelected"
                                     Value="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" />
-                            <Setter Property="Background"
-                                    Value="{Binding BackGround}" />
                             <Setter Property="ContextMenu"
                                     Value="{StaticResource searchContextMenu}" />
                             <EventSetter Event="MouseDoubleClick"
@@ -78,9 +76,9 @@
                                             Width="120"
                                             Binding="{Binding SureName}" />
                         <DataGridTextColumn Header="Ηλικ."
-                                            Width="40"
+                                            Width="35"
                                             Binding="{Binding Age}" />
-                        <DataGridTemplateColumn Header="Ενεργ.">
+                        <DataGridTemplateColumn Header="Εν." Width="30">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border Background="{Binding IsActiveColor}"
@@ -89,9 +87,10 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Πρόγραμμα:"
+                                            Width="105"
                                             Binding="{Binding TypeOfProgram}" />
                         <DataGridTextColumn Header="Απομ."
-                                            Width="50"
+                                            Width="45"
                                             FontSize="15"
                                             Binding="{Binding RemainingDays}" />
                         <DataGridTemplateColumn>
@@ -108,7 +107,7 @@
                                 <DataTemplate>
                                     <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown_1"
                                             IsEnabled="{Binding IsNotPracticing}"
-                                            Content="Μασάζ" />
+                                            Content="Μασ." />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -149,8 +148,6 @@
                                                 Binding="{Binding SureName}" />
                             <DataGridTextColumn Header="Όνομα"
                                                 Binding="{Binding Name}" />
-                            <DataGridTextColumn Header="Ηλικία"
-                                                Binding="{Binding Age}" />
                             <DataGridTextColumn Header="Διάρκεια"
                                                 Width="60"
                                                 Binding="{Binding Duration, FallbackValue=00:00, StringFormat=\{0:hh\}:\{0:mm\}}" />
@@ -166,7 +163,7 @@
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <GroupBox Margin="20 0 0 0"
+                    <GroupBox Margin="5 0 0 0"
                               Header="Ραντεβού Ημέρας">
                         <DataGrid ItemsSource="{Binding TodaysApointments}"
                                   CanUserAddRows="False"
@@ -198,15 +195,13 @@
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Όνομα"
+                                                    Width="75"
                                                     Binding="{Binding Name}" />
                                 <DataGridTextColumn Header="Επίθετο"
+                                                    Width="85"
                                                     Binding="{Binding SureName}" />
-                                <DataGridTextColumn Header="Ηλικία"
-                                                    Binding="{Binding Age}" />
                                 <DataGridTextColumn Header="Ώρα"
                                                     Binding="{Binding AppointmentTime,Converter={StaticResource DateTimeToString},ConverterParameter='HH:mm'}" />
-                                <DataGridTextColumn Header="Παρουσία"
-                                                    Binding="{Binding ShowedUpToday,Converter={StaticResource BoolToShowedUp_Converter}}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>

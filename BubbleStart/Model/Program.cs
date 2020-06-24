@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
+using static BubbleStart.Helpers.Enums;
 
 namespace BubbleStart.Model
 {
@@ -27,6 +28,27 @@ namespace BubbleStart.Model
         public int RemainingDays { get; set; }
 
         public bool IsMassage => Ismassage();
+
+        private ProgramMode _ProgramMode;
+
+        public ProgramMode ProgramMode
+        {
+            get
+            {
+                return _ProgramMode;
+            }
+
+            set
+            {
+                if (_ProgramMode == value)
+                {
+                    return;
+                }
+
+                _ProgramMode = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private bool Ismassage()
         {
@@ -288,6 +310,90 @@ namespace BubbleStart.Model
         #endregion Properties
 
         #region Methods
+
+        [NotMapped]
+        public string TypeString
+        {
+            get
+            {
+                return ToString();
+            }
+
+            set
+            {
+                switch (value)
+                {
+                    case "Reformer Pilates":
+                        ProgramType = ProgramTypes.ReformerPilates;
+                        break;
+
+                    case "Pilates":
+                        ProgramType = ProgramTypes.Pilates;
+                        break;
+
+                    case "Functional":
+                        ProgramType = ProgramTypes.Functional;
+                        break;
+
+                    case "Pilates & Functional":
+                        ProgramType = ProgramTypes.PilatesFunctional;
+                        break;
+
+                    case "Ελέυθερη Χρήση":
+                        ProgramType = ProgramTypes.freeUse;
+                        break;
+
+                    case "Medical Exercise":
+                        ProgramType = ProgramTypes.MedicalExersise;
+                        break;
+
+                    case "Δοκιμαστικό":
+                        ProgramType = ProgramTypes.dokimastiko;
+                        break;
+
+                    case "Yoga":
+                        ProgramType = ProgramTypes.yoga;
+                        break;
+
+                    case "Aerial Yoga":
+                        ProgramType = ProgramTypes.aerial;
+                        break;
+
+                    case "Μασάζ Χαλαρωτικό 30'":
+                        ProgramType = ProgramTypes.masasRel30;
+                        break;
+
+                    case "Μασάζ Χαλαρωτικό 50'":
+                        ProgramType = ProgramTypes.masazRel50;
+                        break;
+
+                    case "Μασάζ Θεραπευτικό 30'":
+                        ProgramType = ProgramTypes.masazTher30;
+                        break;
+
+                    case "Μασάζ Θεραπευτικό 50'":
+                        ProgramType = ProgramTypes.masazTher50;
+                        break;
+
+                    case "Black Friday Deal":
+                        ProgramType = ProgramTypes.blackfriday;
+                        break;
+
+                    case "4+1 massage":
+                        ProgramType = ProgramTypes.massage41;
+                        break;
+
+                    case "Online":
+                        ProgramType = ProgramTypes.online;
+                        break;
+
+                    case "Summer Deal":
+                        ProgramType = ProgramTypes.summerDeal;
+                        break;
+                }
+                RaisePropertyChanged();
+            }
+        }
 
         public override string ToString()
         {
