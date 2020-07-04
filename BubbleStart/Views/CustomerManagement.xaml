@@ -48,6 +48,34 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Popup Name="Popup1"
+                   IsOpen="{Binding Popup1Open}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Placement="Center">
+                <StackPanel Background="LightBlue">
+                    <Button Content="Gym"
+                            Width="100"
+                            Command="{Binding AddOldShowUpCommand}"
+                            CommandParameter="0"
+                            Margin="5" />
+                    <Button Content="Massage"
+                            Width="100"
+                            CommandParameter="1"
+                            Command="{Binding AddOldShowUpCommand}"
+                            Margin="5" />
+                    <Button Content="Online"
+                            CommandParameter="2"
+                            Width="100"
+                            Command="{Binding AddOldShowUpCommand}"
+                            Margin="5" />
+                    <Button Content="Outdoor"
+                            CommandParameter="3"
+                            Width="100"
+                            Command="{Binding AddOldShowUpCommand}"
+                            Margin="5" />
+                </StackPanel>
+            </Popup>
             <Grid Margin="5 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -90,24 +118,34 @@
                            Grid.Row="3"
                            Grid.Column="1"
                            Margin="0,4" />
-                <Label Content="Απομένουν(φορές):"
-                       Grid.Row="4"
-                       Grid.Column="0" />
-                <StackPanel Orientation="Horizontal"
+                <StackPanel   Grid.Row="4"
+                              Grid.Column="0">
+                    <Label Content="Απομένουν(φορές):" />
+                    <TextBlock Text="Gym"
+                               Margin="5 0 5 5" />
+                    <TextBlock Text="Massage"
+                               Margin="5 0" />
+                    <TextBlock Text="Online"
+                               Margin="5" />
+                    <TextBlock Text="Outdoor"
+                               Margin="5 0" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical"
                             Grid.Row="4"
                             Grid.Column="1">
+                    <Label Content=" " />
                     <TextBlock Text="{Binding RemainingTrainingDays}"
                                HorizontalAlignment="Left"
-                               Padding="5 0"
-                               Background="{Binding SelectedProgram,Converter={StaticResource RemainingAmountToColorConverter}}"
-                               Margin="0,4" />
-                    <TextBlock Text="-"
-                               Margin="5" />
+                               Margin="5 0 5 5" />
                     <TextBlock Text="{Binding RemainingMassageDays}"
                                HorizontalAlignment="Left"
-                               Padding="5 0"
-                               Background="{Binding SelectedMasage,Converter={StaticResource RemainingAmountToColorConverter}}"
-                               Margin="0,4" />
+                               Margin="5 0" />
+                    <TextBlock Text="{Binding RemainingOnlineDays}"
+                               HorizontalAlignment="Left"
+                               Margin="5" />
+                    <TextBlock Text="{Binding RemainingOutDoorDays}"
+                               HorizontalAlignment="Left"
+                               Margin="5 0" />
                 </StackPanel>
                 <!--Background="{Binding ,ConverterParameter={Binding RemainingAmount}, Converter={StaticResource MeetingsToColorConverter}}"-->
                 <Label Content="Τύπος Ενεργού Πακέτου:"
@@ -164,14 +202,15 @@
                                     <ComboBoxItem Content="Δοκιμαστικό" />
                                     <ComboBoxItem Content="Yoga" />
                                     <ComboBoxItem Content="Aerial Yoga" />
-                                    <ComboBoxItem Content="Μασάζ χαλαρωτικό 30'" />
-                                    <ComboBoxItem Content="Μασάζ χαλαρωτικό 50'" />
+                                    <ComboBoxItem Content="Μασάζ Χαλαρωτικό 30'" />
+                                    <ComboBoxItem Content="Μασάζ Χαλαρωτικό 50'" />
                                     <ComboBoxItem Content="Μασάζ Θεραπευτικό 30'" />
                                     <ComboBoxItem Content="Μασάζ Θεραπευτικό 50'" />
                                     <ComboBoxItem Content="Black Friday Deal" />
                                     <ComboBoxItem Content="4+1 massage" />
                                     <ComboBoxItem Content="Online" />
                                     <ComboBoxItem Content="Summer Deal" />
+                                    <ComboBoxItem Content="OutDoor" />
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Grid.Row="0"
@@ -322,34 +361,26 @@
                         <Label Content="Ημερομ. :" />
                         <DatePicker SelectedDate="{Binding OldShowUpDate,UpdateSourceTrigger=PropertyChanged}"
                                     Width="98" />
-                        <CheckBox Content="Massage"
-                                  IsChecked="{Binding IsMassage}"
-                                  VerticalAlignment="Center"
-                                  Margin="5" />
-                        <Button Command="{Binding AddOldShowUpCommand}"
+                        <Button Command="{Binding OpenPopup1Command}"
                                 Content="Προσθήκη"
                                 Margin="0 0 5 0"
                                 VerticalAlignment="Center" />
                     </StackPanel>
                 </GroupBox>
             </Grid>
-            <Grid Grid.Column="1"
-                  Grid.RowSpan="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal">
+            <StackPanel Grid.Column="1"
+                        Grid.RowSpan="3">
+                <StackPanel Orientation="Horizontal"
+                            Height="250">
                     <GroupBox Header="Παρουσίες Γυμναστικής"
-                              VerticalAlignment="Top"
+                              VerticalAlignment="Stretch"
                               HorizontalAlignment="Left">
                         <DataGrid ItemsSource="{Binding ShowUpsCollectionView}"
                                   SelectedItem="{Binding SelectedShowUp}"
                                   CanUserAddRows="False"
-                                  Height="330"
                                   VerticalAlignment="Stretch"
                                   CanUserDeleteRows="False"
-                                  Width="135"
+                                  Width="145"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   AutoGenerateColumns="False">
                             <DataGrid.Resources>
@@ -360,8 +391,20 @@
                                             <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="Αλλαγή απο/σε massage"
-                                              Command="{Binding DataContext.ToggleMassageCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    <MenuItem Header="Αλλαγή σε:">
+                                        <MenuItem Header="Indoor"
+                                                  CommandParameter="0"
+                                                  Command="{Binding DataContext.ToggleShowUpNormalCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                        <MenuItem Header="Massage"
+                                                  CommandParameter="1"
+                                                  Command="{Binding DataContext.ToggleShowUpNormalCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                        <MenuItem Header="Online"
+                                                  CommandParameter="2"
+                                                  Command="{Binding DataContext.ToggleShowUpNormalCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                        <MenuItem Header="Outdoor"
+                                                  CommandParameter="3"
+                                                  Command="{Binding DataContext.ToggleShowUpNormalCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    </MenuItem>
                                     <MenuItem Header="Ήρθε/Δεν ήρθε"
                                               Command="{Binding DataContext.ToggleRealCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                 </ContextMenu>
@@ -391,14 +434,15 @@
                         </DataGrid>
                     </GroupBox>
                     <GroupBox Header="Πακέτα Γυμναστικής"
-                              VerticalAlignment="Top">
-                        <DataGrid ItemsSource="{Binding ProgramsColelctionView}"
-                                  VerticalAlignment="Top"
+                              VerticalAlignment="Stretch">
+                        <DataGrid Name="DatagridNormal"
+                            ItemsSource="{Binding ProgramsColelctionView}"
+                                  VerticalAlignment="Stretch"
                                   CanUserAddRows="False"
                                   SelectedItem="{Binding SelectedProgramToDelete}"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   Width="475"
-                                  Height="330"
+                                  CellEditEnding="DataGrid_CellEditEnding"
                                   CanUserDeleteRows="False"
                                   AutoGenerateColumns="False">
                             <DataGrid.Resources>
@@ -441,14 +485,15 @@
                                                 <ComboBoxItem Content="Δοκιμαστικό" />
                                                 <ComboBoxItem Content="Yoga" />
                                                 <ComboBoxItem Content="Aerial Yoga" />
-                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 30'" />
-                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 50'" />
+                                                <ComboBoxItem Content="Μασάζ Χαλαρωτικό 30'" />
+                                                <ComboBoxItem Content="Μασάζ Χαλαρωτικό 50'" />
                                                 <ComboBoxItem Content="Μασάζ Θεραπευτικό 30'" />
                                                 <ComboBoxItem Content="Μασάζ Θεραπευτικό 50'" />
                                                 <ComboBoxItem Content="Black Friday Deal" />
                                                 <ComboBoxItem Content="4+1 massage" />
                                                 <ComboBoxItem Content="Online" />
                                                 <ComboBoxItem Content="Summer Deal" />
+                                                <ComboBoxItem Content="OutDoor" />
                                             </ComboBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -461,6 +506,7 @@
                                                     Binding="{Binding Months}" />
                                 <DataGridTextColumn Header="Τιμή Συν."
                                                     Width="55"
+                                                    IsReadOnly="true"
                                                     Binding="{Binding ShowUpPrice,StringFormat=c}" />
                                 <DataGridTextColumn Header="Σύνολο"
                                                     Width="55"
@@ -500,14 +546,13 @@
                     <GroupBox Header="Πληρωμές Γυμν."
                               Grid.Column="3"
                               Grid.RowSpan="30"
-                              VerticalAlignment="Top"
+                              VerticalAlignment="Stretch"
                               HorizontalAlignment="Left">
                         <DataGrid ItemsSource="{Binding PaymentsCollectionView}"
-                                  VerticalAlignment="Top"
+                                  VerticalAlignment="Stretch"
                                   SelectedItem="{Binding SelectedPayment}"
                                   CanUserAddRows="False"
                                   Width="110"
-                                  Height="330"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   CanUserDeleteRows="False"
                                   AutoGenerateColumns="False">
@@ -549,21 +594,20 @@
                             VerticalAlignment="Top"
                             HorizontalAlignment="Center" />
                 </StackPanel>
-                <StackPanel  Grid.Row="1"
-                             Orientation="Horizontal"
-                             VerticalAlignment="Top"
-                             HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Stretch"
+                            Height="250"
+                            HorizontalAlignment="Left">
                     <GroupBox Header="Παρουσίες Masssage"
-                              VerticalAlignment="Top"
+                              VerticalAlignment="Stretch"
                               HorizontalAlignment="Left"
                               Grid.Column="1">
                         <DataGrid ItemsSource="{Binding ShowUpsMassCollectionView}"
                                   SelectedItem="{Binding SelectedMassShowUp}"
                                   CanUserAddRows="False"
-                                  Height="330"
                                   VerticalAlignment="Stretch"
                                   CanUserDeleteRows="False"
-                                  Width="135"
+                                  Width="145"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   AutoGenerateColumns="False">
                             <DataGrid.Resources>
@@ -574,8 +618,20 @@
                                             <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="Αλλαγή απο/σε massage"
-                                              Command="{Binding DataContext.ToggleMassagebCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    <MenuItem Header="Αλλαγή σε:">
+                                        <MenuItem Header="Indoor"
+                                                  CommandParameter="0"
+                                                  Command="{Binding DataContext.ToggleShowUpMassageCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                        <MenuItem Header="Massage"
+                                                  CommandParameter="1"
+                                                  Command="{Binding DataContext.ToggleShowUpMassageCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                        <MenuItem Header="Online"
+                                                  CommandParameter="2"
+                                                  Command="{Binding DataContext.ToggleShowUpMassageCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                        <MenuItem Header="Outdoor"
+                                                  CommandParameter="3"
+                                                  Command="{Binding DataContext.ToggleShowUpMassageCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    </MenuItem>
                                     <MenuItem Header="Ήρθε/Δεν ήρθε"
                                               Command="{Binding DataContext.ToggleRealbCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                 </ContextMenu>
@@ -620,15 +676,17 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
-                    <GroupBox Header="Πακέτα Μασάζ">
-                        <DataGrid ItemsSource="{Binding ProgramsMassageColelctionView}"
-                                  VerticalAlignment="Top"
+                    <GroupBox Header="Πακέτα Μασάζ"
+                              VerticalAlignment="Stretch">
+                        <DataGrid  Name="DatagridMassage"
+                                   ItemsSource="{Binding ProgramsMassageColelctionView}"
+                                  VerticalAlignment="Stretch"
                                   CanUserAddRows="False"
                                   SelectedItem="{Binding SelectedProgramMassageToDelete}"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   Margin="0 0 0 0"
-                                  Height="330"
                                   Width="475"
+                                  CellEditEnding="DataGrid_CellEditEnding"
                                   CanUserDeleteRows="False"
                                   AutoGenerateColumns="False">
                             <DataGrid.Resources>
@@ -671,14 +729,15 @@
                                                 <ComboBoxItem Content="Δοκιμαστικό" />
                                                 <ComboBoxItem Content="Yoga" />
                                                 <ComboBoxItem Content="Aerial Yoga" />
-                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 30'" />
-                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 50'" />
+                                                <ComboBoxItem Content="Μασάζ Χαλαρωτικό 30'" />
+                                                <ComboBoxItem Content="Μασάζ Χαλαρωτικό 50'" />
                                                 <ComboBoxItem Content="Μασάζ Θεραπευτικό 30'" />
                                                 <ComboBoxItem Content="Μασάζ Θεραπευτικό 50'" />
                                                 <ComboBoxItem Content="Black Friday Deal" />
                                                 <ComboBoxItem Content="4+1 massage" />
                                                 <ComboBoxItem Content="Online" />
                                                 <ComboBoxItem Content="Summer Deal" />
+                                                <ComboBoxItem Content="OutDoor" />
                                             </ComboBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -691,6 +750,7 @@
                                                     Binding="{Binding Months}" />
                                 <DataGridTextColumn Header="Τιμή Συν."
                                                     Width="55"
+                                                    IsReadOnly="true"
                                                     Binding="{Binding ShowUpPrice,StringFormat=c}" />
                                 <DataGridTextColumn Header="Σύνολο"
                                                     Width="55"
@@ -730,14 +790,13 @@
                     <GroupBox Header="Πληρωμές Mass."
                               Grid.Column="3"
                               Grid.RowSpan="30"
-                              VerticalAlignment="Top"
+                              VerticalAlignment="Stretch"
                               HorizontalAlignment="Left">
                         <DataGrid ItemsSource="{Binding PaymentsMassCollectionView}"
-                                  VerticalAlignment="Top"
+                                  VerticalAlignment="Stretch"
                                   SelectedItem="{Binding SelectedPaymentMass}"
                                   CanUserAddRows="False"
                                   Width="110"
-                                  Height="330"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   CanUserDeleteRows="False"
                                   AutoGenerateColumns="False">
@@ -774,33 +833,46 @@
                     </GroupBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"
-                            VerticalAlignment="Top"
+                            Height="250"
+                            VerticalAlignment="Stretch"
+                            Margin="0 0 0 5"
                             HorizontalAlignment="Left">
                     <GroupBox Header="Online-Outdoor"
-                              VerticalAlignment="Top"
+                              VerticalAlignment="Stretch"
                               HorizontalAlignment="Left"
                               Grid.Column="1">
                         <DataGrid ItemsSource="{Binding ShowUpsOnlineCollectionView}"
                                   SelectedItem="{Binding SelectedOnlineShowUp}"
                                   CanUserAddRows="False"
-                                  Height="330"
                                   VerticalAlignment="Stretch"
                                   CanUserDeleteRows="False"
-                                  Width="135"
+                                  Width="145"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   AutoGenerateColumns="False">
                             <DataGrid.Resources>
                                 <ContextMenu x:Key="ShowUpsSubMenu">
                                     <MenuItem Header="Διαγραφή"
-                                              Command="{Binding DataContext.DeletemassShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                              Command="{Binding DataContext.DeleteOnlineShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
                                         <MenuItem.Icon>
                                             <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="Αλλαγή απο/σε massage"
-                                              Command="{Binding DataContext.ToggleMassagebCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    <MenuItem Header="Αλλαγή σε:">
+                                        <MenuItem Header="Indoor"
+                                                  CommandParameter="0"
+                                                  Command="{Binding DataContext.ToggleShowUpOutdoorCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                        <MenuItem Header="Massage"
+                                                  CommandParameter="1"
+                                                  Command="{Binding DataContext.ToggleShowUpOutdoorCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                        <MenuItem Header="Online"
+                                                  CommandParameter="2"
+                                                  Command="{Binding DataContext.ToggleShowUpOutdoorCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                        <MenuItem Header="Outdoor"
+                                                  CommandParameter="3"
+                                                  Command="{Binding DataContext.ToggleShowUpOutdoorCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    </MenuItem>
                                     <MenuItem Header="Ήρθε/Δεν ήρθε"
-                                              Command="{Binding DataContext.ToggleRealbCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                              Command="{Binding DataContext.ToggleRealcCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                 </ContextMenu>
                             </DataGrid.Resources>
                             <DataGrid.RowStyle>
@@ -818,46 +890,35 @@
                                         <DataTemplate>
                                             <Border Background="{Binding RealColor}">
                                                 <TextBlock Text="{Binding Count}" />
-                                                <!--<TextBlock.Style>
-                                                        <Style>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Massage}"
-                                                                             Value="false">
-                                                                    <Setter Property="TextBlock.Background"
-                                                                            Value="Transparent" />
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Massage}"
-                                                                             Value="true">
-                                                                    <Setter Property="TextBlock.Background"
-                                                                            Value="LightBlue" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>-->
                                             </Border>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Ημερομηνία"
+                                                    Width="87"
                                                     Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                <DataGridTextColumn Header="Τύπ"
+                                                    Binding="{Binding Type}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
-                    <GroupBox Header="Πακέτα Μασάζ">
-                        <DataGrid ItemsSource="{Binding ProgramsMassageColelctionView}"
-                                  VerticalAlignment="Top"
+                    <GroupBox Header="Πακέτα Outdoor"
+                              VerticalAlignment="Stretch">
+                        <DataGrid  Name="DatagridOnline"
+                                   ItemsSource="{Binding ProgramsOnlineColelctionView}"
+                                  VerticalAlignment="Stretch"
                                   CanUserAddRows="False"
-                                  SelectedItem="{Binding SelectedProgramMassageToDelete}"
+                                   CellEditEnding="DataGrid_CellEditEnding"
+                                  SelectedItem="{Binding SelectedProgramOnlineToDelete}"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   Margin="0 0 0 0"
-                                  Height="330"
                                   Width="475"
                                   CanUserDeleteRows="False"
                                   AutoGenerateColumns="False">
                             <DataGrid.Resources>
                                 <ContextMenu x:Key="ProgramsSubMenu">
                                     <MenuItem Header="Διαγραφή"
-                                              Command="{Binding DataContext.DeleteProgramMassCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                              Command="{Binding DataContext.DeleteProgramOnlineCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
                                         <MenuItem.Icon>
                                             <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                         </MenuItem.Icon>
@@ -894,14 +955,15 @@
                                                 <ComboBoxItem Content="Δοκιμαστικό" />
                                                 <ComboBoxItem Content="Yoga" />
                                                 <ComboBoxItem Content="Aerial Yoga" />
-                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 30'" />
-                                                <ComboBoxItem Content="Μασάζ χαλαρωτικό 50'" />
+                                                <ComboBoxItem Content="Μασάζ Χαλαρωτικό 30'" />
+                                                <ComboBoxItem Content="Μασάζ Χαλαρωτικό 50'" />
                                                 <ComboBoxItem Content="Μασάζ Θεραπευτικό 30'" />
                                                 <ComboBoxItem Content="Μασάζ Θεραπευτικό 50'" />
                                                 <ComboBoxItem Content="Black Friday Deal" />
                                                 <ComboBoxItem Content="4+1 massage" />
                                                 <ComboBoxItem Content="Online" />
                                                 <ComboBoxItem Content="Summer Deal" />
+                                                <ComboBoxItem Content="OutDoor" />
                                             </ComboBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -914,6 +976,7 @@
                                                     Binding="{Binding Months}" />
                                 <DataGridTextColumn Header="Τιμή Συν."
                                                     Width="55"
+                                                    IsReadOnly="true"
                                                     Binding="{Binding ShowUpPrice,StringFormat=c}" />
                                 <DataGridTextColumn Header="Σύνολο"
                                                     Width="55"
@@ -950,24 +1013,23 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
-                    <GroupBox Header="Πληρωμές Mass."
+                    <GroupBox Header="Πληρ. Outdoor."
                               Grid.Column="3"
                               Grid.RowSpan="30"
-                              VerticalAlignment="Top"
+                              VerticalAlignment="Stretch"
                               HorizontalAlignment="Left">
-                        <DataGrid ItemsSource="{Binding PaymentsMassCollectionView}"
-                                  VerticalAlignment="Top"
-                                  SelectedItem="{Binding SelectedPaymentMass}"
+                        <DataGrid ItemsSource="{Binding PaymentsOnlineCollectionView}"
+                                  VerticalAlignment="Stretch"
+                                  SelectedItem="{Binding SelectedPaymentOnline}"
                                   CanUserAddRows="False"
                                   Width="110"
-                                  Height="330"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   CanUserDeleteRows="False"
                                   AutoGenerateColumns="False">
                             <DataGrid.Resources>
                                 <ContextMenu x:Key="PaymentsSubMenuMass">
                                     <MenuItem Header="Διαγραφή"
-                                              Command="{Binding DataContext.DeletePaymentMassCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                              Command="{Binding DataContext.DeletePaymentOnlineCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
                                         <MenuItem.Icon>
                                             <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                         </MenuItem.Icon>
@@ -996,10 +1058,11 @@
                         </DataGrid>
                     </GroupBox>
                 </StackPanel>
-            </Grid>
+            </StackPanel>
             <GroupBox Grid.Row="1"
                       Margin="5 0 0 0"
                       Width="370"
+                      VerticalAlignment="Stretch"
                       Foreground="Red"
                       HorizontalAlignment="Left"
                       Header="Αλλαγές">

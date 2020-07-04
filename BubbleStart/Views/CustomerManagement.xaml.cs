@@ -29,5 +29,15 @@ namespace BubbleStart.Views
             }
            
         }
+
+        private void DataGrid_CellEditEnding(object sender, System.Windows.Controls.DataGridCellEditEndingEventArgs e)
+        {
+            //DatagridMassage.CommitEdit();
+            //DatagridMassage.CommitEdit();
+            //DatagridNormal. edit CommitEdit();
+            //DatagridNormal.CommitEdit();
+            //DatagridOnline.CommitEdit();
+            //DatagridOnline.CommitEdit();
+        }
     }
 }

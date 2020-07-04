@@ -11,6 +11,7 @@ using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using static BubbleStart.Helpers.Enums;
 
 namespace BubbleStart.ViewModels
 {
@@ -27,14 +28,14 @@ namespace BubbleStart.ViewModels
             BasicDataManager = basicDataManager;
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
             SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); }, CanSaveCustomer);
-            ShowedUpCommand = new RelayCommand(async () => { await CustomerShowedUp(0); });
-            ShowedUpMassCommand = new RelayCommand(async () => { await CustomerShowedUp(1); });
+            ShowedUpCommand = new RelayCommand<int>(async (obj) => { await CustomerShowedUp(obj); });
             CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
             DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(); });
             CancelApointmentCommand = new RelayCommand(async () => { await CancelApointment(); });
             OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
+            OpenPopupCommand = new RelayCommand(() => { PopupOpen = true; });
             OpenActiveCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedPracticingCustomer); });
             OpenActiveCustomerSideManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedApointment); });
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
@@ -66,6 +67,29 @@ namespace BubbleStart.ViewModels
 
         #region Properties
 
+
+
+        private bool _PopupOpen;
+
+
+        public bool PopupOpen
+        {
+            get
+            {
+                return _PopupOpen;
+            }
+
+            set
+            {
+                if (_PopupOpen == value)
+                {
+                    return;
+                }
+
+                _PopupOpen = value;
+                RaisePropertyChanged();
+            }
+        }
         public RelayCommand<string> BodyPartSelected { get; set; }
 
         public RelayCommand CancelApointmentCommand { get; set; }
@@ -137,6 +161,7 @@ namespace BubbleStart.ViewModels
         public RelayCommand OpenActiveCustomerSideManagementCommand { get; set; }
 
         public RelayCommand OpenCustomerManagementCommand { get; set; }
+        public RelayCommand OpenPopupCommand { get; set; }
 
         public RelayCommand SaveCustomerCommand { get; set; }
 
@@ -224,7 +249,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public RelayCommand ShowedUpCommand { get; set; }
+        public RelayCommand<int> ShowedUpCommand { get; set; }
         public RelayCommand ShowedUpMassCommand { get; set; }
 
         public ObservableCollection<Customer> TodaysApointments
@@ -259,11 +284,13 @@ namespace BubbleStart.ViewModels
 
         public async Task CustomerShowedUp(int programMode)
         {
+            PopupOpen = false;
             if (SelectedCustomer != null)
             {
                 CustomersPracticing.Add(SelectedCustomer);
-                SelectedCustomer.ShowedUp(true, (Enums.ProgramMode)programMode);
+                SelectedCustomer.ShowedUp(true, (ProgramMode)programMode);
                 await BasicDataManager.SaveAsync();
+                SelectedCustomer.SetColors();
             }
         }
 

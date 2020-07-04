@@ -85,23 +85,24 @@ namespace BubbleStart.Model
 
         public enum ProgramTypes
         {
-            ReformerPilates=0,
-            Pilates=1,
-            Functional=2,
-            PilatesFunctional=3,
-            freeUse=4,
-            MedicalExersise=5,
-            dokimastiko=6,
-            yoga=7,
-            aerial=8,
-            masasRel30=9,
-            masazRel50=10,
-            masazTher30=11,
-            masazTher50=12,
-            blackfriday=13,
-            massage41=14,
-            online=15,
-            summerDeal=16
+            ReformerPilates = 0,
+            Pilates = 1,
+            Functional = 2,
+            PilatesFunctional = 3,
+            freeUse = 4,
+            MedicalExersise = 5,
+            dokimastiko = 6,
+            yoga = 7,
+            aerial = 8,
+            masasRel30 = 9,
+            masazRel50 = 10,
+            masazTher30 = 11,
+            masazTher50 = 12,
+            blackfriday = 13,
+            massage41 = 14,
+            online = 15,
+            summerDeal = 16,
+            OutDoor = 17
         }
 
         #endregion Enums
@@ -263,7 +264,31 @@ namespace BubbleStart.Model
                 }
 
                 _ProgramType = value;
+                SetProgramMode();
                 RaisePropertyChanged();
+            }
+        }
+
+        private void SetProgramMode()
+        {
+            switch (ProgramType)
+            {
+                case ProgramTypes.masasRel30:
+                case ProgramTypes.masazRel50:
+                case ProgramTypes.masazTher30:
+                case ProgramTypes.masazTher50:
+                case ProgramTypes.massage41:
+                    ProgramMode = ProgramMode.massage;
+                    break;
+                case ProgramTypes.online:
+                    ProgramMode = ProgramMode.online;
+                    break;
+                case ProgramTypes.OutDoor:
+                    ProgramMode = ProgramMode.outdoor;
+                    break;
+                default:
+                    ProgramMode = ProgramMode.normal;
+                    break;
             }
         }
 
@@ -390,6 +415,9 @@ namespace BubbleStart.Model
                     case "Summer Deal":
                         ProgramType = ProgramTypes.summerDeal;
                         break;
+                    case "OutDoor":
+                        ProgramType = ProgramTypes.OutDoor;
+                        break;
                 }
                 RaisePropertyChanged();
             }
@@ -449,6 +477,8 @@ namespace BubbleStart.Model
 
                 case ProgramTypes.summerDeal:
                     return "Summer Deal";
+                case ProgramTypes.OutDoor:
+                    return "OutDoor";
             }
             return "Ανενεργό";
         }

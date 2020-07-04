@@ -24,6 +24,54 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <Popup Name="Popup"
+               IsOpen="{Binding PopupOpen}"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Placement="Center">
+            <StackPanel Background="LightBlue">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Gym"
+                            Width="100"
+                            Command="{Binding ShowedUpCommand}"
+                            CommandParameter="0"
+                            Margin="5" />
+                    <Label HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Massage"
+                            Width="100"
+                            CommandParameter="1"
+                            Command="{Binding ShowedUpCommand}"
+                            Margin="5" />
+                    <Label HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Content="{Binding SelectedCustomer.RemainingMassageDays}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Online"
+                            CommandParameter="2"
+                            Width="100"
+                            Command="{Binding ShowedUpCommand}"
+                            Margin="5" />
+                    <Label HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Content="{Binding SelectedCustomer.RemainingOutDoorDays}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Outdoor"
+                            CommandParameter="3"
+                            Width="100"
+                            Command="{Binding ShowedUpCommand}"
+                            Margin="5" />
+                    <Label HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Content="{Binding SelectedCustomer.RemainingOutDoorDays}" />
+                </StackPanel>
+            </StackPanel>
+        </Popup>
         <GroupBox Margin="5"
                   Padding="5"
                   Header="Αναζήτηση Πελάτη">
@@ -78,7 +126,8 @@
                         <DataGridTextColumn Header="Ηλικ."
                                             Width="35"
                                             Binding="{Binding Age}" />
-                        <DataGridTemplateColumn Header="Εν." Width="30">
+                        <DataGridTemplateColumn Header="Εν."
+                                                Width="30">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border Background="{Binding IsActiveColor}"

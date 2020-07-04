@@ -7,6 +7,23 @@ namespace BubbleStart.Model
 {
     public class ShowUp : BaseModel
     {
+
+        public string Type => GetShowUpType();
+
+        private string GetShowUpType()
+        {
+            if (ProgramMode == ProgramMode.online)
+            {
+                return "Onl";
+            }
+            else if (ProgramMode == ProgramMode.outdoor)
+            {
+                return "Out";
+            }
+            else
+                return "";
+        }
+
         public SolidColorBrush RealColor => Real ? new SolidColorBrush(Colors.Transparent) : new SolidColorBrush(Colors.OrangeRed);
 
         private bool _Real = true;

@@ -27,7 +27,7 @@ namespace BubbleStart.Views
             {
                 if (sender is Button b && b.IsEnabled)
                 {
-                    ((SearchCustomer_ViewModel)DataContext).ShowedUpCommand.Execute(null);
+                    ((SearchCustomer_ViewModel)DataContext).OpenPopupCommand.Execute(null);
                     e.Handled = true;
                 }
             }
@@ -50,7 +50,7 @@ namespace BubbleStart.Views
             {
                 if (sender is Button b && b.IsEnabled)
                 {
-                    ((SearchCustomer_ViewModel)DataContext).ShowedUpMassCommand.Execute(null);
+                    ((SearchCustomer_ViewModel)DataContext).ShowedUpCommand.Execute(1);
                     e.Handled = true;
                 }
             }

@@ -39,7 +39,7 @@
                         Command="{Binding ShowShowUpsCommand}" />
             </StackPanel>
             <DataGrid ItemsSource="{Binding DailyShowUps}"
-                      Grid.Row="1"
+                      Grid.Row="1" LoadingRow="DataGrid_LoadingRow"
                       CanUserAddRows="False" HorizontalAlignment="Left"
                   SelectedItem="{Binding SelectedShowUp}"
                       IsReadOnly="True"
