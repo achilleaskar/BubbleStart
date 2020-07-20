@@ -372,7 +372,7 @@ namespace BubbleStart.Model
                         ProgramType = ProgramTypes.MedicalExersise;
                         break;
 
-                    case "Δοκιμαστικό":
+                    case "Personal":
                         ProgramType = ProgramTypes.dokimastiko;
                         break;
 
@@ -446,7 +446,7 @@ namespace BubbleStart.Model
                     return "Medical Exercise";
 
                 case ProgramTypes.dokimastiko:
-                    return "Δοκιμαστικό";
+                    return "Personal";
 
                 case ProgramTypes.yoga:
                     return "Yoga";

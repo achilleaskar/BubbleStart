@@ -199,7 +199,7 @@
                                     <ComboBoxItem Content="Pilates &amp; Functional" />
                                     <ComboBoxItem Content="Ελέυθερη Χρήση" />
                                     <ComboBoxItem Content="Medical Exercise" />
-                                    <ComboBoxItem Content="Δοκιμαστικό" />
+                                    <ComboBoxItem Content="Personal" />
                                     <ComboBoxItem Content="Yoga" />
                                     <ComboBoxItem Content="Aerial Yoga" />
                                     <ComboBoxItem Content="Μασάζ Χαλαρωτικό 30'" />
@@ -482,7 +482,7 @@
                                                 <ComboBoxItem Content="Pilates &amp; Functional" />
                                                 <ComboBoxItem Content="Ελέυθερη Χρήση" />
                                                 <ComboBoxItem Content="Medical Exercise" />
-                                                <ComboBoxItem Content="Δοκιμαστικό" />
+                                                <ComboBoxItem Content="Personal" />
                                                 <ComboBoxItem Content="Yoga" />
                                                 <ComboBoxItem Content="Aerial Yoga" />
                                                 <ComboBoxItem Content="Μασάζ Χαλαρωτικό 30'" />
@@ -726,7 +726,7 @@
                                                 <ComboBoxItem Content="Pilates &amp; Functional" />
                                                 <ComboBoxItem Content="Ελέυθερη Χρήση" />
                                                 <ComboBoxItem Content="Medical Exercise" />
-                                                <ComboBoxItem Content="Δοκιμαστικό" />
+                                                <ComboBoxItem Content="Personal" />
                                                 <ComboBoxItem Content="Yoga" />
                                                 <ComboBoxItem Content="Aerial Yoga" />
                                                 <ComboBoxItem Content="Μασάζ Χαλαρωτικό 30'" />
@@ -952,7 +952,7 @@
                                                 <ComboBoxItem Content="Pilates &amp; Functional" />
                                                 <ComboBoxItem Content="Ελέυθερη Χρήση" />
                                                 <ComboBoxItem Content="Medical Exercise" />
-                                                <ComboBoxItem Content="Δοκιμαστικό" />
+                                                <ComboBoxItem Content="Personal" />
                                                 <ComboBoxItem Content="Yoga" />
                                                 <ComboBoxItem Content="Aerial Yoga" />
                                                 <ComboBoxItem Content="Μασάζ Χαλαρωτικό 30'" />

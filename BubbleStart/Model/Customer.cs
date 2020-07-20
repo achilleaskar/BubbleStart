@@ -2178,10 +2178,10 @@ namespace BubbleStart.Model
         internal async Task AddPayment()
         {
             Payment p = new Payment { Amount = PaymentAmount, Date = DateOfPayment, User = StaticResources.User };
-            Payments.Add(p);
             if (SelectedProgramToDelete != null)
             {
                 SelectedProgramToDelete.Payments.Add(p);
+                p.Program = SelectedProgramToDelete;
                 RaisePropertyChanged(nameof(PaymentVisibility));
                 // await SaveChanges();
                 SelectedProgramToDelete.CalculateRemainingAmount();
@@ -2189,6 +2189,7 @@ namespace BubbleStart.Model
             else if (SelectedProgramMassageToDelete != null)
             {
                 SelectedProgramMassageToDelete.Payments.Add(p);
+                p.Program = SelectedProgramMassageToDelete;
                 RaisePropertyChanged(nameof(PaymentVisibility));
                 // await SaveChanges();
                 SelectedProgramMassageToDelete.CalculateRemainingAmount();
@@ -2196,10 +2197,24 @@ namespace BubbleStart.Model
             else if (SelectedProgramOnlineToDelete != null)
             {
                 SelectedProgramOnlineToDelete.Payments.Add(p);
+                p.Program = SelectedProgramOnlineToDelete;
                 RaisePropertyChanged(nameof(PaymentVisibility));
                 // await SaveChanges();
                 SelectedProgramOnlineToDelete.CalculateRemainingAmount();
             }
+            Payments.Add(p);
+            GetRemainingDays();
+            //RaiseAllChanged();
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+        private void RaiseAllChanged()
+        {
+
+            RaisePropertyChanged(nameof(Payments));
+            RaisePropertyChanged(nameof(PaymentsCollectionView));
+            RaisePropertyChanged(nameof(PaymentsOnlineCollectionView));
+            RaisePropertyChanged(nameof(PaymentsMassCollectionView));
         }
 
         internal void MakeProgramPayment()
@@ -2467,9 +2482,12 @@ namespace BubbleStart.Model
             RaisePropertyChanged(nameof(RemainingAmount));
             ForceDisable = false;
             // await BasicDataManager.SaveAsync();
-            PaymentsCollectionView.Refresh();
-            PaymentsMassCollectionView.Refresh();
-            PaymentsOnlineCollectionView.Refresh();
+            //PaymentsCollectionView.Refresh();
+            //PaymentsMassCollectionView.Refresh();
+            //PaymentsOnlineCollectionView.Refresh();
+
+            SetColors();
+
         }
 
         private void PaymentPropertyChanged(object sender, PropertyChangedEventArgs e)
