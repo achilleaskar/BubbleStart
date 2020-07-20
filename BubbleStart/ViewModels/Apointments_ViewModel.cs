@@ -183,7 +183,9 @@ namespace BubbleStart.ViewModels
         public async Task CreateProgram()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            List<Apointment> apointments = (await BasicDataManager.Context.GetApointmentsAsync(StartDate)).ToList();
+            DateTime tmpdate = StartDate.AddDays(6);
+            List<Apointment> apointments = BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToList();
+
             DateTime tmpDate = StartDate;
             Days.Clear();
             for (int i = 0; i < 6; i++)

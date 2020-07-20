@@ -12,8 +12,8 @@ namespace BubbleStart.Database
 {
     public class GenericRepository : IDisposable
     {
-        protected readonly MainDatabase Context;
-        protected readonly DateTime Limit;
+        public MainDatabase Context;
+        public DateTime Limit;
         protected readonly DateTime CloseLimit;
 
 
