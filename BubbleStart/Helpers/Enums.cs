@@ -9,5 +9,21 @@
             online,
             outdoor
         }
+
+        public enum ForceDisable
+        {
+            normal,
+            forceDisable,
+            forceEnable
+        }
+
+        public enum ExpenseCategory
+        {
+            pagia,
+            misthoi,
+            ektakta,
+            spitiou,
+            gwgw
+        }
     }
 }

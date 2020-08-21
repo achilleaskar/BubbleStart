@@ -21,9 +21,19 @@ namespace BubbleStart.ViewModels
             StartDateCash = StartDateExpenses = DateTime.Today;
             Expenses = new ObservableCollection<Expense>();
             RegisterExpenseCommand = new RelayCommand(async () => { await RegisterExpense(); }, CanRegisterExpense);
+            SaveChangesCommand = new RelayCommand(async () => { await SaveChanges(); }, CanSaveChanges);
             ShowExpensesDataCommand = new RelayCommand(async () => { await ShowExpensesData(); });
             DeleteExpenseCommand = new RelayCommand(async () => { await DeleteExpense(); });
+        }
 
+        private bool CanSaveChanges()
+        {
+           return BasicDataManager.HasChanges();
+        }
+
+        private async Task SaveChanges()
+        {
+            await BasicDataManager.SaveAsync();
         }
 
         #endregion Constructors
@@ -185,6 +195,7 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand RegisterExpenseCommand { get; set; }
+        public RelayCommand SaveChangesCommand { get; set; }
 
         public Expense SelectedExpense
         {

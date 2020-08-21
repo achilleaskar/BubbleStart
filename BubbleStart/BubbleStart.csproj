@@ -216,6 +216,7 @@
     <Compile Include="Converters\DateTimeToString.cs" />
     <Compile Include="Converters\FloadToStringValueConverter.cs" />
     <Compile Include="Converters\GymToColorConverter.cs" />
+    <Compile Include="Converters\IndexToENumConverter.cs" />
     <Compile Include="Converters\IsCustomerNullToBoolConverter.cs" />
     <Compile Include="Converters\MeetingsToColorConverter.cs" />
     <Compile Include="Converters\RemainingAmountToColorConverter.cs" />
@@ -419,6 +420,14 @@
     <Compile Include="Migrations\202006241526534_outdoor.cs" />
     <Compile Include="Migrations\202006241526534_outdoor.designer.cs">
       <DependentUpon>202006241526534_outdoor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008121525150_summer.cs" />
+    <Compile Include="Migrations\202008121525150_summer.designer.cs">
+      <DependentUpon>202008121525150_summer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202008121558164_expenses.cs" />
+    <Compile Include="Migrations\202008121558164_expenses.designer.cs">
+      <DependentUpon>202008121558164_expenses.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
@@ -648,6 +657,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006241526534_outdoor.resx">
       <DependentUpon>202006241526534_outdoor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008121525150_summer.resx">
+      <DependentUpon>202008121525150_summer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008121558164_expenses.resx">
+      <DependentUpon>202008121558164_expenses.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

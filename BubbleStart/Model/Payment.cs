@@ -8,7 +8,27 @@ namespace BubbleStart.Model
     public class Payment : BaseModel
     {
 
+        private bool _IsSelected;
 
+        [NotMapped]
+        public bool IsSelected
+        {
+            get
+            {
+                return _IsSelected;
+            }
+
+            set
+            {
+                if (_IsSelected == value)
+                {
+                    return;
+                }
+
+                _IsSelected = value;
+                RaisePropertyChanged();
+            }
+        }
 
 
         private Program _Program;

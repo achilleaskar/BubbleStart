@@ -14,7 +14,13 @@
              d:DesignWidth="1200">
     <UserControl.Resources>
         <Converters:FloadToStringValueConverter x:Key="FtoSConverter" />
+        <Converters:IndexToENumConverter x:Key="IndexToENumConverter" />
         <Converters:DateTimeToString x:Key="DateTimeToString" />
+        <Style x:Key="DataGridCellStyle"
+               TargetType="{x:Type DataGridCell}">
+            <Setter Property="IsTabStop"
+                    Value="False" />
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -116,10 +122,8 @@
                     </DataGrid.Resources>
                     <DataGrid.RowStyle>
                         <Style TargetType="{x:Type DataGridRow}">
-                            
                             <Setter Property="ContextMenu"
                                     Value="{StaticResource expensesContextMenu}" />
-                          
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
@@ -129,15 +133,31 @@
                         <DataGridTextColumn Header="Ημερομηνία"
                                             MaxWidth="120"
                                             Binding="{Binding Date, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
+                        <DataGridTemplateColumn Header="Κατηγορία"
+                                                Width="110"
+                                                CellStyle="{StaticResource DataGridCellStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox Width="Auto"
+                                              VerticalAlignment="Center"
+                                              SelectedIndex="{Binding ExpenseCategory, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IndexToENumConverter}}">
+                                        <ComboBoxItem Content="Πάγια" />
+                                        <ComboBoxItem Content="Μισθοδοσίες" />
+                                        <ComboBoxItem Content="Έκτακτα" />
+                                        <ComboBoxItem Content="Σπιτιού" />
+                                        <ComboBoxItem Content="Γωγώ" />
+                                    </ComboBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Χρήστης"
                                             MaxWidth="120"
                                             Binding="{Binding User.Name}" />
-                        <DataGridTemplateColumn Header="Αιτιολογία"
-                                                Width="220">
+                        <DataGridTemplateColumn Header="Αιτιολογία">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Width="Auto"
-                                               MaxWidth="200"
+                                               MaxWidth="260"
                                                VerticalAlignment="Top"
                                                TextWrapping="Wrap"
                                                MaxHeight="60"
@@ -158,6 +178,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel>
@@ -175,21 +196,31 @@
                                     Grid.RowSpan="2"
                                     Grid.Column="1"
                                     VerticalAlignment="Top"
-                                   
                                     HorizontalAlignment="Left">
                             <TextBlock Text="Αιτιολογία:" />
                             <TextBox Text="{Binding NewExpense.Reason, UpdateSourceTrigger=PropertyChanged}"
                                      Width="250"
-                                     AllowDrop="True" VerticalScrollBarVisibility="Auto"
+                                     AllowDrop="True"
+                                     VerticalScrollBarVisibility="Auto"
                                      TextWrapping="Wrap"
                                      Height="55" />
                         </StackPanel>
                         <Button Content="Καταχώρηση"
-                                Grid.Row="1"
+                                Grid.Row="1" Grid.Column="2"
                                 VerticalAlignment="Bottom"
-                                HorizontalAlignment="Left"
-                                Margin="0 5"
+                                HorizontalAlignment="Center"
+                                Margin="5" Width="90"
                                 Command="{Binding RegisterExpenseCommand}" />
+                        <ComboBox VerticalAlignment="Top" Margin="5 0"
+                                  Grid.Column="2"
+                                  Width="90"
+                                  SelectedIndex="{Binding NewExpense.ExpenseCategory, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IndexToENumConverter}}">
+                            <ComboBoxItem Content="Πάγια" />
+                            <ComboBoxItem Content="Μισθοδοσίες" />
+                            <ComboBoxItem Content="Έκτακτα" />
+                            <ComboBoxItem Content="Σπιτιού" />
+                            <ComboBoxItem Content="Γωγώ" />
+                        </ComboBox>
                     </Grid>
                 </GroupBox>
                 <StackPanel Orientation="Horizontal"
@@ -197,10 +228,15 @@
                     <Label Content="Σύνολο Εξόδων:" />
                     <Label Content="{Binding ExpensesSum, Converter={StaticResource FtoSConverter}}" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
                             Grid.Row="3">
                     <Label Content="Ταμείο:" />
-                    <Label Content="{Binding Cleanse, Converter={StaticResource FtoSConverter}}"  />
+                    <Label Content="{Binding Cleanse, Converter={StaticResource FtoSConverter}}" />
+                    <Button Content="Αποθήκευση"
+                            VerticalAlignment="Center"
+                            Margin="5 0"
+                            Command="{Binding SaveChangesCommand}" />
                 </StackPanel>
             </Grid>
         </GroupBox>

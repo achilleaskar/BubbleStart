@@ -7,7 +7,27 @@ namespace BubbleStart.Model
 {
     public class ShowUp : BaseModel
     {
+        private bool _IsSelected;
 
+        [NotMapped]
+        public bool IsSelected
+        {
+            get
+            {
+                return _IsSelected;
+            }
+
+            set
+            {
+                if (_IsSelected == value)
+                {
+                    return;
+                }
+
+                _IsSelected = value;
+                RaisePropertyChanged();
+            }
+        }
         public string Type => GetShowUpType();
 
         private string GetShowUpType()

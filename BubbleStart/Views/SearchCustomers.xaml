@@ -96,12 +96,23 @@
                           VirtualizingPanel.VirtualizationMode="Standard"
                           IsReadOnly="True"
                           CanUserDeleteRows="False"
-                          AutoGenerateColumns="False">
+                          AutoGenerateColumns="False"
+                          Margin="-10,0,10,0">
                     <DataGrid.Resources>
                         <ContextMenu x:Key="searchContextMenu"
                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                             <MenuItem Header="Διαγραφή Πελάτη"
                                       Command="{Binding DataContext.DeleteCustomerCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                            <Separator />
+                            <MenuItem Header="Normal"
+                                      CommandParameter="0"
+                                      Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                            <MenuItem Header="Ανενεργός"
+                                      CommandParameter="1"
+                                      Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                            <MenuItem Header="Ενεργός"
+                                      CommandParameter="2"
+                                      Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                         </ContextMenu>
                     </DataGrid.Resources>
                     <DataGrid.RowStyle>
@@ -160,7 +171,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn>
+                        <!--<DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button FontSize="25"
@@ -171,7 +182,7 @@
                                             Command="{Binding DisableCustomerCommand}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                        </DataGridTemplateColumn>-->
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

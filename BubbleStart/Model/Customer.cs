@@ -38,7 +38,7 @@ namespace BubbleStart.Model
         private string _ExtraNotes;
         private string _ExtraReasons;
         private DateTime _FirstDate;
-        private bool _ForceDisable;
+        private ForceDisable _ForceDisable;
         private bool _Gender;
         private int _Height;
         private string _HistoryDuration;
@@ -48,7 +48,6 @@ namespace BubbleStart.Model
         private Illness _Illness;
         private SolidColorBrush _IsActiveColor;
         private bool _IsDateValid;
-        private bool _IsManualyActive;
         private bool _IsPracticing;
         private bool _IsSelected;
         private string _Job;
@@ -388,8 +387,8 @@ namespace BubbleStart.Model
         [NotMapped]
         public RelayCommand DeleteShowUpCommand { get; set; }
 
-        [NotMapped]
-        public RelayCommand DisableCustomerCommand { get; set; }
+        //[NotMapped]
+        //public RelayCommand DisableCustomerCommand { get; set; }
 
         public string DistrictText
         {
@@ -497,7 +496,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public bool ForceDisable
+        public ForceDisable ForceDisable
         {
             get => _ForceDisable;
 
@@ -662,22 +661,6 @@ namespace BubbleStart.Model
                 }
 
                 _IsDateValid = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool IsManualyActive
-        {
-            get => _IsManualyActive;
-
-            set
-            {
-                if (_IsManualyActive == value)
-                {
-                    return;
-                }
-
-                _IsManualyActive = value;
                 RaisePropertyChanged();
             }
         }
@@ -1415,6 +1398,73 @@ namespace BubbleStart.Model
             }
         }
 
+        public void UpdateSelections(object selectedItem)
+        {
+            foreach (var su in ShowUps)
+            {
+                su.IsSelected = false;
+            }
+            foreach (var pr in Programs)
+            {
+                pr.IsSelected = false;
+            }
+            foreach (var pay in Payments)
+            {
+                pay.IsSelected = false;
+            }
+            if (selectedItem is ShowUp s)
+            {
+                if (s.Prog==null)
+                {
+                    return;
+                }
+                s.IsSelected = true;
+                s.Prog.IsSelected = true;
+                foreach (var paym in Payments)
+                {
+                    if (paym.Program.Id == s.Prog.Id)
+                    {
+                        paym.IsSelected = true;
+                    }
+                }
+            }
+            else if (selectedItem is Program p)
+            {
+                p.IsSelected = true;
+                foreach (var show in ShowUps)
+                {
+                    if (show.Prog.Id == p.Id)
+                    {
+                        show.IsSelected = true;
+                    }
+                }
+                foreach (var paym in Payments)
+                {
+                    if (paym.Program.Id == p.Id)
+                    {
+                        paym.IsSelected = true;
+                    }
+                }
+            }
+            else if (selectedItem is Payment pay)
+            {
+                if (pay.Program==null)
+                {
+                    return;
+                }
+                pay.IsSelected = true;
+                pay.Program.IsSelected = true;
+                foreach (var show in ShowUps)
+                {
+                    if (show.Prog.Id == pay.Program.Id)
+                    {
+                        show.IsSelected = true;
+                    }
+                }
+            }
+        }
+
+
         [NotMapped]
         public Program SelectedProgram
         {
@@ -1890,7 +1940,7 @@ namespace BubbleStart.Model
             DeleteProgramMassCommand = new RelayCommand(async () => { await DeleteProgramMass(); }, SelectedProgramMassageToDelete != null);
             DeleteProgramOnlineCommand = new RelayCommand(async () => { await DeleteProgramOnline(); }, SelectedProgramOnlineToDelete != null);
 
-            DisableCustomerCommand = new RelayCommand(DisableCustomer);
+            //DisableCustomerCommand = new RelayCommand(DisableCustomer);
             OldShowUpDate = DateOfPayment = DateOfIssue = StartDate = DateTime.Today;
             ProgramTypeIndex = -1;
         }
@@ -1930,6 +1980,7 @@ namespace BubbleStart.Model
                     if (selProg == null || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
                         continue;
                     showUp.Color = selProg.Color;
+                    showUp.Prog = selProg;
                     showUp.Count = counter++;
                     selProg.RemainingDays--;
                 }
@@ -2366,7 +2417,11 @@ namespace BubbleStart.Model
 
         private async Task DeleteProgram()
         {
-            Changes.Add(new Change($"Διαγράφηκε ΠΡΟΓΡΑΜΜΑ {SelectedProgramToDelete} που είχε καταχωρηθεί {SelectedProgramToDelete.DayOfIssue:ddd dd/MM/yy} με " +
+            if (SelectedProgramToDelete == null)
+            {
+                return;
+            }
+            Changes.Add(new Change($"Διαγράφηκε ΠΡΌΓΡΑΜΜΑ {SelectedProgramToDelete} που είχε καταχωρηθεί {SelectedProgramToDelete.DayOfIssue:ddd dd/MM/yy} με " +
                 $"διάρκεια {SelectedProgramToDelete.Showups} Αξίας {SelectedProgramToDelete.Amount} και έναρξη {SelectedProgramToDelete.StartDay:ddd dd/MM/yy}", StaticResources.User));
 
             BasicDataManager.Delete(SelectedProgramToDelete);
@@ -2375,7 +2430,11 @@ namespace BubbleStart.Model
 
         private async Task DeleteProgramMass()
         {
-            Changes.Add(new Change($"Διαγράφηκε ΠΡΟΓΡΑΜΜΑ {SelectedProgramMassageToDelete} που είχε καταχωρηθεί {SelectedProgramMassageToDelete.DayOfIssue:ddd dd/MM/yy} με " +
+            if (SelectedProgramMassageToDelete == null)
+            {
+                return;
+            }
+            Changes.Add(new Change($"Διαγράφηκε ΠΡΌΓΡΑΜΜΑ {SelectedProgramMassageToDelete} που είχε καταχωρηθεί {SelectedProgramMassageToDelete.DayOfIssue:ddd dd/MM/yy} με " +
                   $"διάρκεια {SelectedProgramMassageToDelete.Showups} Αξίας {SelectedProgramMassageToDelete.Amount} και έναρξη {SelectedProgramMassageToDelete.StartDay:ddd dd/MM/yy}", StaticResources.User));
 
             BasicDataManager.Delete(SelectedProgramMassageToDelete);
@@ -2384,6 +2443,10 @@ namespace BubbleStart.Model
 
         private async Task DeleteProgramOnline()
         {
+            if (SelectedProgramOnlineToDelete == null)
+            {
+                return;
+            }
             Changes.Add(new Change($"Διαγράφηκε πακέτο  {SelectedProgramOnlineToDelete} που είχε καταχωρηθεί {SelectedProgramOnlineToDelete.DayOfIssue:ddd dd/MM/yy} με " +
                 $"διάρκεια {SelectedProgramOnlineToDelete.Showups} Αξίας {SelectedProgramOnlineToDelete.Amount} και έναρξη {SelectedProgramOnlineToDelete.StartDay:ddd dd/MM/yy}", StaticResources.User));
 
@@ -2399,24 +2462,18 @@ namespace BubbleStart.Model
             // await BasicDataManager.SaveAsync();
         }
 
-        private void DisableCustomer()
-        {
-            ForceDisable = !ForceDisable;
-            IsActiveColor = GetCustomerColor();
-        }
-
-        private SolidColorBrush GetCustomerColor()
+        public SolidColorBrush GetCustomerColor()
         {
             if (!Loaded)
             {
                 return new SolidColorBrush(Colors.Fuchsia);
             }
-            if (IsManualyActive)
+            if (ForceDisable == ForceDisable.forceEnable)
             {
                 ActiveCustomer = true;
-                return new SolidColorBrush(Colors.LightGreen);
+                return new SolidColorBrush(Colors.Green);
             }
-            if (ForceDisable)
+            if (ForceDisable == ForceDisable.forceDisable)
             {
                 ActiveCustomer = false;
                 return new SolidColorBrush(Colors.Orange);
@@ -2470,6 +2527,7 @@ namespace BubbleStart.Model
             {
                 MakeProgramPayment();
                 Programs.Last().Payments.Add(Payments.Last());
+                Payments.Last().Program = Programs.Last();
                 Programs.Last().CalculateRemainingAmount();
             }
             CalculateRemainingAmount();
@@ -2480,7 +2538,8 @@ namespace BubbleStart.Model
             ProgramTypeIndex = -1;
             DateOfIssue = StartDate = DateTime.Today;
             RaisePropertyChanged(nameof(RemainingAmount));
-            ForceDisable = false;
+            if (ForceDisable == ForceDisable.forceDisable)
+                ForceDisable = ForceDisable.normal;
             // await BasicDataManager.SaveAsync();
             //PaymentsCollectionView.Refresh();
             //PaymentsMassCollectionView.Refresh();

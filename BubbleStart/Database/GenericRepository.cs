@@ -24,12 +24,12 @@ namespace BubbleStart.Database
 
             if (DateTime.Today.Month > 7 && DateTime.Today.Day >= 20)
             {
-                Limit = new DateTime(DateTime.Today.Year, 8, 20);
+                Limit = new DateTime(DateTime.Today.Year-1, 8, 20);
 
             }
             else
             {
-                Limit = new DateTime(DateTime.Today.Year - 1, 8, 20);
+                Limit = new DateTime(DateTime.Today.Year - 2, 8, 20);
             }
             CloseLimit = (DateTime.Today - Limit).TotalDays > 60 ? DateTime.Today.AddDays(-60) : Limit;
             //Context.Database.Log = Console.Write;

@@ -1,16 +1,16 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using BubbleStart.Views;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using BubbleStart.Views;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
 using static BubbleStart.Helpers.Enums;
 
 namespace BubbleStart.ViewModels
@@ -33,6 +33,7 @@ namespace BubbleStart.ViewModels
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
             DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(); });
+            ToggleForcedDisableCommand = new RelayCommand<object>(async (par) => await TogleDisable(par), (par) => CanToggleDisable(par));
             CancelApointmentCommand = new RelayCommand(async () => { await CancelApointment(); });
             OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
             OpenPopupCommand = new RelayCommand(() => { PopupOpen = true; });
@@ -42,6 +43,21 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Constructors
+
+        private bool CanToggleDisable(object arg)
+        {
+            return SelectedCustomer != null && (int)SelectedCustomer.ForceDisable != Convert.ToInt32(arg);
+        }
+
+        private async Task TogleDisable(object to)
+        {
+            if (SelectedCustomer != null)
+            {
+                SelectedCustomer.ForceDisable = (ForceDisable)Convert.ToInt32(to);
+                SelectedCustomer.IsActiveColor = SelectedCustomer.GetCustomerColor();
+            }
+            await BasicDataManager.SaveAsync();
+        }
 
         #region Fields
 
@@ -67,10 +83,7 @@ namespace BubbleStart.ViewModels
 
         #region Properties
 
-
-
         private bool _PopupOpen;
-
 
         public bool PopupOpen
         {
@@ -90,6 +103,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public RelayCommand<string> BodyPartSelected { get; set; }
 
         public RelayCommand CancelApointmentCommand { get; set; }
@@ -153,6 +167,7 @@ namespace BubbleStart.ViewModels
         public ICollectionView CustomersPracticingCollectionView { get; set; }
 
         public RelayCommand DeleteCustomerCommand { get; set; }
+        public RelayCommand<object> ToggleForcedDisableCommand { get; set; }
 
         public bool Enabled => SelectedCustomer != null;
 
@@ -625,7 +640,6 @@ namespace BubbleStart.ViewModels
 
             CustomersCollectionView.Refresh();
             TodaysApointments = new ObservableCollection<Customer>(TodaysApointments.OrderBy(ta => ta.AppointmentTime));
-
         }
 
         public override void Reload()

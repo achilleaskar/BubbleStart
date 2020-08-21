@@ -336,6 +336,31 @@ namespace BubbleStart.Model
 
         #region Methods
 
+
+
+
+        private bool _IsSelected;
+
+        [NotMapped]
+        public bool IsSelected
+        {
+            get
+            {
+                return _IsSelected;
+            }
+
+            set
+            {
+                if (_IsSelected == value)
+                {
+                    return;
+                }
+
+                _IsSelected = value;
+                RaisePropertyChanged();
+            }
+        }
+
         [NotMapped]
         public string TypeString
         {

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using BubbleStart.Model;
 
 namespace BubbleStart.Views
@@ -38,6 +39,14 @@ namespace BubbleStart.Views
             //DatagridNormal.CommitEdit();
             //DatagridOnline.CommitEdit();
             //DatagridOnline.CommitEdit();
+        }
+
+        private void DataGridRow_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow dgr && DataContext is Customer c)
+            {
+                c.UpdateSelections(dgr.DataContext);
+            }
         }
     }
 }

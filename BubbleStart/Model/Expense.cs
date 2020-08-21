@@ -1,4 +1,5 @@
 ﻿using System;
+using static BubbleStart.Helpers.Enums;
 
 namespace BubbleStart.Model
 {
@@ -22,6 +23,32 @@ namespace BubbleStart.Model
 
         #region Properties
 
+
+
+
+        private ExpenseCategory _ExpenseCategory;
+
+
+        public ExpenseCategory ExpenseCategory
+        {
+            get
+            {
+                return _ExpenseCategory;
+            }
+
+            set
+            {
+                if (_ExpenseCategory == value)
+                {
+                    return;
+                }
+
+                _ExpenseCategory = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        
         public decimal Amount
         {
             get => _Amount;

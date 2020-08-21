@@ -476,7 +476,7 @@ namespace BubbleStart.ViewModels
                         BasicDataManager.Add(new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type });
                     }
                 }
-                if (!AppointmentsFunctional.Any(a => a.Customer.Id == ap.Customer.Id) && !AppointmentsReformer.Any(api => api.Customer.Id == ap.Customer.Id))
+                if ((type == 0 && !AppointmentsFunctional.Any(a => a.Customer.Id == ap.Customer.Id)) || (type == 1 && !AppointmentsReformer.Any(api => api.Customer.Id == ap.Customer.Id)))
                 {
                     if (type == 0)
                     {
