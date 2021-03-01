@@ -61,7 +61,7 @@
                            Content="{Binding SelectedCustomer.RemainingOutDoorDays}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Outdoor"
+                    <Button Content="OutDoor"
                             CommandParameter="3"
                             Width="100"
                             Command="{Binding ShowedUpCommand}"

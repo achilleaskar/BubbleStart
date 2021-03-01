@@ -39,6 +39,10 @@
                                      IsChecked="{Binding IsMassageChecked}"
                                      GroupName="Options1"
                                      Margin="5 0" />
+                        <RadioButton Content="Online"
+                                     IsChecked="{Binding IsOnlineChecked}"
+                                     GroupName="Options1"
+                                     Margin="5 0" />
                     </StackPanel>
                 </GroupBox>
                 <TextBlock Grid.Row="1"
@@ -67,10 +71,10 @@
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Όνομα"
-                                            Width="120"
+                                            Width="140"
                                             Binding="{Binding Name}" />
                         <DataGridTextColumn Header="Επίθετο"
-                                            Width="120"
+                                            Width="140"
                                             Binding="{Binding SureName}" />
                         <DataGridTextColumn Header="Ηλικία"
                                             Width="60"

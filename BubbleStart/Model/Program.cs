@@ -102,7 +102,8 @@ namespace BubbleStart.Model
             massage41 = 14,
             online = 15,
             summerDeal = 16,
-            OutDoor = 17
+            OutDoor = 17,
+            September = 18
         }
 
         #endregion Enums
@@ -443,6 +444,9 @@ namespace BubbleStart.Model
                     case "OutDoor":
                         ProgramType = ProgramTypes.OutDoor;
                         break;
+                    case "September Deal":
+                        ProgramType = ProgramTypes.September;
+                        break;
                 }
                 RaisePropertyChanged();
             }
@@ -503,7 +507,9 @@ namespace BubbleStart.Model
                 case ProgramTypes.summerDeal:
                     return "Summer Deal";
                 case ProgramTypes.OutDoor:
-                    return "OutDoor";
+                    return "OutDoor"; 
+                case ProgramTypes.September:
+                    return "September Deal";
             }
             return "Ανενεργό";
         }

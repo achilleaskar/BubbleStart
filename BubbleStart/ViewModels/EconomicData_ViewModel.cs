@@ -1,17 +1,161 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using BubbleStart.Model;
+using GalaSoft.MvvmLight.CommandWpf;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
-using BubbleStart.Helpers;
-using BubbleStart.Model;
-using GalaSoft.MvvmLight.CommandWpf;
 
 namespace BubbleStart.ViewModels
 {
     public class EconomicData_ViewModel : MyViewModelBase
     {
         #region Constructors
+
+
+
+
+        private decimal _Pagia;
+
+
+        public decimal Pagia
+        {
+            get
+            {
+                return _Pagia;
+            }
+
+            set
+            {
+                if (_Pagia == value)
+                {
+                    return;
+                }
+
+                _Pagia = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+        private decimal _Misthoi;
+
+
+        public decimal Misthoi
+        {
+            get
+            {
+                return _Misthoi;
+            }
+
+            set
+            {
+                if (_Misthoi == value)
+                {
+                    return;
+                }
+
+                _Misthoi = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+        private decimal _Ektakta;
+
+
+        public decimal Ektakta
+        {
+            get
+            {
+                return _Ektakta;
+            }
+
+            set
+            {
+                if (_Ektakta == value)
+                {
+                    return;
+                }
+
+                _Ektakta = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+        private decimal _Spitiou;
+
+
+        public decimal Spitiou
+        {
+            get
+            {
+                return _Spitiou;
+            }
+
+            set
+            {
+                if (_Spitiou == value)
+                {
+                    return;
+                }
+
+                _Spitiou = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private decimal _Timologia;
+
+
+        public decimal Timologia
+        {
+            get
+            {
+                return _Timologia;
+            }
+
+            set
+            {
+                if (_Timologia == value)
+                {
+                    return;
+                }
+
+                _Timologia = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _Gwgw;
+
+
+        public decimal Gwgw
+        {
+            get
+            {
+                return _Gwgw;
+            }
+
+            set
+            {
+                if (_Gwgw == value)
+                {
+                    return;
+                }
+
+                _Gwgw = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public EconomicData_ViewModel(BasicDataManager basicDataManager)
         {
@@ -28,7 +172,7 @@ namespace BubbleStart.ViewModels
 
         private bool CanSaveChanges()
         {
-           return BasicDataManager.HasChanges();
+            return BasicDataManager.HasChanges();
         }
 
         private async Task SaveChanges()
@@ -297,10 +441,8 @@ namespace BubbleStart.ViewModels
                     ExpensesSum += item.Amount;
                 }
             }
-            Cleanse = Sum - ExpensesSum+50;
+            Cleanse = Sum - ExpensesSum + 50;
         }
-
-     
 
         private bool CanRegisterExpense()
         {
@@ -318,6 +460,8 @@ namespace BubbleStart.ViewModels
             BasicDataManager.Delete(SelectedExpense);
             await BasicDataManager.SaveAsync();
             Expenses.Remove(SelectedExpense);
+            UpdateAmmounts();
+
         }
 
         private void Expenses_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -335,6 +479,7 @@ namespace BubbleStart.ViewModels
                 Expenses.Add(NewExpense);
             }
             NewExpense = new Expense();
+            UpdateAmmounts();
         }
 
         private async Task ShowCashData()
@@ -343,17 +488,56 @@ namespace BubbleStart.ViewModels
             CalculateAmounts();
         }
 
+        public void UpdateAmmounts()
+        {
+            Pagia = Ektakta = Spitiou = Gwgw = Misthoi = Timologia = 0;
+            foreach (var exp in Expenses)
+            {
+                switch (exp.ExpenseCategory)
+                {
+                    case Enums.ExpenseCategory.pagia:
+                        Pagia += exp.Amount;
+                        break;
+
+                    case Enums.ExpenseCategory.misthoi:
+                        Misthoi += exp.Amount;
+                        break;
+
+                    case Enums.ExpenseCategory.ektakta:
+                        Ektakta += exp.Amount;
+                        break;
+
+                    case Enums.ExpenseCategory.spitiou:
+                        Spitiou += exp.Amount;
+                        break;
+
+                    case Enums.ExpenseCategory.gwgw:
+                        Gwgw += exp.Amount;
+                        break;
+
+                    case Enums.ExpenseCategory.timologia:
+                        Timologia += exp.Amount;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            CalculateAmounts();
+        }
+
         private async Task ShowExpensesData()
         {
             DateTime enddate = EndDateExpenses.AddDays(1);
             Expenses = new ObservableCollection<Expense>((await BasicDataManager.Context.GetAllExpensesAsync(e => e.Date >= StartDateExpenses && e.Date < enddate)).OrderBy(a => a.Date));
             NewExpense = new Expense();
-            CalculateAmounts();
+
+            UpdateAmmounts();
         }
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-      
         }
 
         public override void Reload()

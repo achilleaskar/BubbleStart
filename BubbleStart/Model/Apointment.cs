@@ -17,7 +17,11 @@ namespace BubbleStart.Model
                     case 1:
                         return "Dimitris";
                     case 2:
-                        return "Yoga";
+                        return "Yoga"; 
+                    case 3:
+                        return "Massage";
+                    case 4:
+                        return "Online";
                     default:
                         return "";
                 }

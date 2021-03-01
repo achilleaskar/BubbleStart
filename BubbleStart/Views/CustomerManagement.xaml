@@ -69,7 +69,7 @@
                             Width="100"
                             Command="{Binding AddOldShowUpCommand}"
                             Margin="5" />
-                    <Button Content="Outdoor"
+                    <Button Content="OutDoor"
                             CommandParameter="3"
                             Width="100"
                             Command="{Binding AddOldShowUpCommand}"
@@ -127,7 +127,7 @@
                                Margin="5 0" />
                     <TextBlock Text="Online"
                                Margin="5" />
-                    <TextBlock Text="Outdoor"
+                    <TextBlock Text="OutDoor"
                                Margin="5 0" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical"
@@ -197,7 +197,7 @@
                                     <ComboBoxItem Content="Pilates" />
                                     <ComboBoxItem Content="Functional" />
                                     <ComboBoxItem Content="Pilates &amp; Functional" />
-                                    <ComboBoxItem Content="Ελέυθερη Χρήση" />
+                                    <ComboBoxItem Content="Ελεύθερη Χρήση" />
                                     <ComboBoxItem Content="Medical Exercise" />
                                     <ComboBoxItem Content="Personal" />
                                     <ComboBoxItem Content="Yoga" />
@@ -211,6 +211,7 @@
                                     <ComboBoxItem Content="Online" />
                                     <ComboBoxItem Content="Summer Deal" />
                                     <ComboBoxItem Content="OutDoor" />
+                                    <ComboBoxItem Content="September Deal" />
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Grid.Row="0"
@@ -284,7 +285,7 @@
                         </StackPanel>
                         <GroupBox Grid.Row="3"
                                   Visibility="{Binding PaymentVisibility}"
-                                  Header="Πληρωμη Δόσης / Εξόφληση">
+                                  Header="Πληρωμή Δόσης / Εξόφληση">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal">
                                     <StackPanel>
@@ -363,7 +364,7 @@
                                     Width="98" />
                         <Button Command="{Binding OpenPopup1Command}"
                                 Content="Προσθήκη"
-                                Margin="0 0 5 0"
+                                Margin="5 0 5 0"
                                 VerticalAlignment="Center" />
                     </StackPanel>
                 </GroupBox>
@@ -401,7 +402,7 @@
                                         <MenuItem Header="Online"
                                                   CommandParameter="2"
                                                   Command="{Binding DataContext.ToggleShowUpNormalCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                        <MenuItem Header="Outdoor"
+                                        <MenuItem Header="OutDoor"
                                                   CommandParameter="3"
                                                   Command="{Binding DataContext.ToggleShowUpNormalCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                     </MenuItem>
@@ -490,7 +491,7 @@
                                                 <ComboBoxItem Content="Pilates" />
                                                 <ComboBoxItem Content="Functional" />
                                                 <ComboBoxItem Content="Pilates &amp; Functional" />
-                                                <ComboBoxItem Content="Ελέυθερη Χρήση" />
+                                                <ComboBoxItem Content="Ελεύθερη Χρήση" />
                                                 <ComboBoxItem Content="Medical Exercise" />
                                                 <ComboBoxItem Content="Personal" />
                                                 <ComboBoxItem Content="Yoga" />
@@ -504,6 +505,7 @@
                                                 <ComboBoxItem Content="Online" />
                                                 <ComboBoxItem Content="Summer Deal" />
                                                 <ComboBoxItem Content="OutDoor" />
+                                                <ComboBoxItem Content="September Deal" />
                                             </ComboBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -524,7 +526,7 @@
                                 <DataGridTextColumn Header="Αγορά"
                                                     Width="55"
                                                     Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                <DataGridTemplateColumn Header="Πλήρωμή"
+                                <DataGridTemplateColumn Header="Πληρωμή"
                                                         Width="60">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -576,6 +578,9 @@
                                     </MenuItem>
                                     <MenuItem Header="Σύνδεση με πακέτο"
                                               Command="{Binding DataContext.SetToProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    <MenuItem Header="Αποσύνδεση"
+                                              CommandParameter="0"
+                                              Command="{Binding DataContext.ReleasePaymentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                 </ContextMenu>
                             </DataGrid.Resources>
                             <DataGrid.RowStyle>
@@ -613,7 +618,7 @@
                             VerticalAlignment="Stretch"
                             Height="250"
                             HorizontalAlignment="Left">
-                    <GroupBox Header="Παρουσίες Masssage"
+                    <GroupBox Header="Παρουσίες Massage"
                               VerticalAlignment="Stretch"
                               HorizontalAlignment="Left"
                               Grid.Column="1">
@@ -643,7 +648,7 @@
                                         <MenuItem Header="Online"
                                                   CommandParameter="2"
                                                   Command="{Binding DataContext.ToggleShowUpMassageCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                        <MenuItem Header="Outdoor"
+                                        <MenuItem Header="OutDoor"
                                                   CommandParameter="3"
                                                   Command="{Binding DataContext.ToggleShowUpMassageCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                     </MenuItem>
@@ -749,7 +754,7 @@
                                                 <ComboBoxItem Content="Pilates" />
                                                 <ComboBoxItem Content="Functional" />
                                                 <ComboBoxItem Content="Pilates &amp; Functional" />
-                                                <ComboBoxItem Content="Ελέυθερη Χρήση" />
+                                                <ComboBoxItem Content="Ελεύθερη Χρήση" />
                                                 <ComboBoxItem Content="Medical Exercise" />
                                                 <ComboBoxItem Content="Personal" />
                                                 <ComboBoxItem Content="Yoga" />
@@ -763,6 +768,7 @@
                                                 <ComboBoxItem Content="Online" />
                                                 <ComboBoxItem Content="Summer Deal" />
                                                 <ComboBoxItem Content="OutDoor" />
+                                                <ComboBoxItem Content="September Deal" />
                                             </ComboBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -783,7 +789,7 @@
                                 <DataGridTextColumn Header="Αγορά"
                                                     Width="55"
                                                     Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                <DataGridTemplateColumn Header="Πλήρωμή"
+                                <DataGridTemplateColumn Header="Πληρωμή"
                                                         Width="60">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -835,6 +841,9 @@
                                     </MenuItem>
                                     <MenuItem Header="Σύνδεση με πακέτο"
                                               Command="{Binding DataContext.SetToProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    <MenuItem Header="Αποσύνδεση"
+                                              CommandParameter="1"
+                                              Command="{Binding DataContext.ReleasePaymentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                 </ContextMenu>
                             </DataGrid.Resources>
                             <DataGrid.RowStyle>
@@ -867,7 +876,7 @@
                             VerticalAlignment="Stretch"
                             Margin="0 0 0 5"
                             HorizontalAlignment="Left">
-                    <GroupBox Header="Online-Outdoor"
+                    <GroupBox Header="Online-OutDoor"
                               VerticalAlignment="Stretch"
                               HorizontalAlignment="Left"
                               Grid.Column="1">
@@ -897,7 +906,7 @@
                                         <MenuItem Header="Online"
                                                   CommandParameter="2"
                                                   Command="{Binding DataContext.ToggleShowUpOutdoorCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                        <MenuItem Header="Outdoor"
+                                        <MenuItem Header="OutDoor"
                                                   CommandParameter="3"
                                                   Command="{Binding DataContext.ToggleShowUpOutdoorCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                     </MenuItem>
@@ -937,7 +946,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
-                    <GroupBox Header="Πακέτα Outdoor"
+                    <GroupBox Header="Πακέτα OutDoor"
                               VerticalAlignment="Stretch">
                         <DataGrid  Name="DatagridOnline"
                                    ItemsSource="{Binding ProgramsOnlineColelctionView}"
@@ -990,7 +999,7 @@
                                                 <ComboBoxItem Content="Pilates" />
                                                 <ComboBoxItem Content="Functional" />
                                                 <ComboBoxItem Content="Pilates &amp; Functional" />
-                                                <ComboBoxItem Content="Ελέυθερη Χρήση" />
+                                                <ComboBoxItem Content="Ελεύθερη Χρήση" />
                                                 <ComboBoxItem Content="Medical Exercise" />
                                                 <ComboBoxItem Content="Personal" />
                                                 <ComboBoxItem Content="Yoga" />
@@ -1004,6 +1013,7 @@
                                                 <ComboBoxItem Content="Online" />
                                                 <ComboBoxItem Content="Summer Deal" />
                                                 <ComboBoxItem Content="OutDoor" />
+                                                <ComboBoxItem Content="September Deal" />
                                             </ComboBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -1024,7 +1034,7 @@
                                 <DataGridTextColumn Header="Αγορά"
                                                     Width="55"
                                                     Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                <DataGridTemplateColumn Header="Πλήρωμή"
+                                <DataGridTemplateColumn Header="Πληρωμή"
                                                         Width="60">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -1053,7 +1063,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
-                    <GroupBox Header="Πληρ. Outdoor."
+                    <GroupBox Header="Πληρ. OutDoor."
                               Grid.Column="3"
                               Grid.RowSpan="30"
                               VerticalAlignment="Stretch"
@@ -1076,6 +1086,9 @@
                                     </MenuItem>
                                     <MenuItem Header="Σύνδεση με πακέτο"
                                               Command="{Binding DataContext.SetToProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    <MenuItem Header="Αποσύνδεση"
+                                              CommandParameter="2"
+                                              Command="{Binding DataContext.ReleasePaymentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                 </ContextMenu>
                             </DataGrid.Resources>
                             <DataGrid.RowStyle>

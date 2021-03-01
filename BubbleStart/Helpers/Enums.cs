@@ -23,7 +23,8 @@
             misthoi,
             ektakta,
             spitiou,
-            gwgw
+            gwgw,
+            timologia
         }
     }
 }

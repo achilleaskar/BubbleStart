@@ -19,7 +19,6 @@
     <UserControl.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:AppointmentShowedUptoColorConverter x:Key="appointmentShowedUptoColorConverter" />
-
     </UserControl.Resources>
     <GroupBox Header="Πρόγραμμα Εβδομάδας"
               HorizontalAlignment="Left">
@@ -76,13 +75,18 @@
                            Background="LimeGreen" />
                     <Label Content="Δημήτρης"
                            Background="Orange" />
-                    <Label Content="Υοga"
+                    <Label Content="Yoga"
                            Background="LightBlue" />
                     <Label Content="Massage"
                            Background="HotPink" />
+                    <Label Content="Online"
+                           Background="Yellow" />
                 </StackPanel>
-                <Button Content="Φόρτωση" Grid.Column="4"
-                        Command="{Binding ShowProgramCommand}" VerticalAlignment="Center"  Background="Yellow"/>
+                <Button Content="Φόρτωση"
+                        Grid.Column="4"
+                        Command="{Binding ShowProgramCommand}"
+                        VerticalAlignment="Center"
+                        Background="PaleVioletRed" />
             </Grid>
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                           Visibility="{Binding HasDays,Converter={StaticResource booleanToVisibilityConverter}}"
@@ -97,7 +101,6 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-
                     <Border BorderBrush="Gray"
                             Grid.Row="1"
                             BorderThickness="0 0 1 1"
@@ -182,7 +185,6 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel>
-
                                                 <ItemsControl ItemsSource="{Binding Hours}"
                                                               Visibility="{Binding DataContext.FunctionalVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                               HorizontalAlignment="Left">
@@ -254,7 +256,6 @@
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
-
                                                 <ItemsControl ItemsSource="{Binding Hours}"
                                                               Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                               HorizontalAlignment="Left">

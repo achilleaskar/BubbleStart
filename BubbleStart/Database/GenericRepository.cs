@@ -72,6 +72,7 @@ namespace BubbleStart.Database
         public async Task DeleteFromThis(Customer c, DateTime date)
         {
             var todel = await Context.Apointments.Where(p => p.Customer.Id == c.Id && p.DateTime >= date).ToListAsync();
+            todel = todel.Where(a => a.DateTime.DayOfWeek == date.DayOfWeek && a.DateTime.TimeOfDay == date.TimeOfDay).ToList();
             Context.Apointments.RemoveRange(todel);
         }
 
@@ -189,7 +190,7 @@ namespace BubbleStart.Database
                                              e.State.HasFlag(EntityState.Modified) ||
                                              e.State.HasFlag(EntityState.Deleted)
                                              select e;
-
+            return Context.ChangeTracker.HasChanges();
             return res.Any();
         }
 

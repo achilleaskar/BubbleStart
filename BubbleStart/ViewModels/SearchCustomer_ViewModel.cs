@@ -415,6 +415,7 @@ namespace BubbleStart.ViewModels
                 //}
 
                 c.BasicDataManager = BasicDataManager;
+                c.UpdateCollections();
                 Window window = new CustomerManagement
                 {
                     DataContext = c

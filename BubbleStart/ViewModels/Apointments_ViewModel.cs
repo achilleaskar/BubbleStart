@@ -373,6 +373,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
                 FunctionalCV = (CollectionView)CollectionViewSource.GetDefaultView(_ApointmentsFunctional);
                 FunctionalCV.Filter = AppointmensFilter;
+                FunctionalCV.SortDescriptions.Add(new SortDescription(nameof(Apointment.Person),ListSortDirection.Ascending));
                 FunctionalCV.Refresh();
             }
         }
@@ -391,6 +392,7 @@ namespace BubbleStart.ViewModels
                 _AppointmentsReformer = value;
                 RaisePropertyChanged();
                 ReformerCV = (CollectionView)CollectionViewSource.GetDefaultView(_AppointmentsReformer);
+                ReformerCV.SortDescriptions.Add(new SortDescription(nameof(Apointment.Person), ListSortDirection.Ascending));
                 ReformerCV.Filter = AppointmensFilter;
                 ReformerCV.Refresh();
             }

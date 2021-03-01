@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows;
-using BubbleStart.Helpers;
+﻿using BubbleStart.Helpers;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace BubbleStart.ViewModels
 {
@@ -48,13 +48,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
-
-
         private ShowUp _SelectedShowUp;
-
 
         public ShowUp SelectedShowUp
         {
@@ -71,20 +65,13 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         private async Task ShowShowUps()
         {
-
-
-
             DailyShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(StartDate, EndDate.AddDays(1))));
-
         }
 
-
-
-
         private ObservableCollection<ShowUp> _DailyShowUps;
-
 
         public ObservableCollection<ShowUp> DailyShowUps
         {
@@ -105,7 +92,6 @@ namespace BubbleStart.ViewModels
         public RelayCommand ShowShowUpsCommand { get; set; }
 
         private DateTime _EndDate;
-
 
         public DateTime EndDate
         {
@@ -128,7 +114,6 @@ namespace BubbleStart.ViewModels
         }
 
         private DateTime _StartDate;
-
 
         public DateTime StartDate
         {
