@@ -214,6 +214,7 @@
     <Compile Include="Converters\BoolToShowedUp_Converter.cs" />
     <Compile Include="Converters\ContentToColorConverter.cs" />
     <Compile Include="Converters\DateTimeToString.cs" />
+    <Compile Include="Converters\EnumConverter.cs" />
     <Compile Include="Converters\FloadToStringValueConverter.cs" />
     <Compile Include="Converters\GymToColorConverter.cs" />
     <Compile Include="Converters\IndexToENumConverter.cs" />
@@ -225,6 +226,8 @@
     <Compile Include="Database\GenericRepository.cs" />
     <Compile Include="Database\MainDatabase.cs" />
     <Compile Include="Helpers\BasicDataManager.cs" />
+    <Compile Include="Helpers\EnumBindingSourceExtension.cs" />
+    <Compile Include="Helpers\EnumDescriptionTypeConverter.cs" />
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\StaticResources.cs" />
     <Compile Include="MessageListener.cs" />
@@ -233,6 +236,7 @@
     <Compile Include="Messages\LoginLogOutMessage.cs" />
     <Compile Include="Messages\OpenChildWindowCommand.cs" />
     <Compile Include="Messages\ShowExceptionMessage_Message.cs" />
+    <Compile Include="Messages\UpdateProgramMessage.cs" />
     <Compile Include="Migrations\201904030918422_first2.cs" />
     <Compile Include="Migrations\201904030918422_first2.Designer.cs">
       <DependentUpon>201904030918422_first2.cs</DependentUpon>
@@ -428,6 +432,34 @@
     <Compile Include="Migrations\202008121558164_expenses.cs" />
     <Compile Include="Migrations\202008121558164_expenses.designer.cs">
       <DependentUpon>202008121558164_expenses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103131025444_changes.cs" />
+    <Compile Include="Migrations\202103131025444_changes.designer.cs">
+      <DependentUpon>202103131025444_changes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103131142355_cascade.cs" />
+    <Compile Include="Migrations\202103131142355_cascade.designer.cs">
+      <DependentUpon>202103131142355_cascade.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103131857373_customerNotes.cs" />
+    <Compile Include="Migrations\202103131857373_customerNotes.designer.cs">
+      <DependentUpon>202103131857373_customerNotes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103131951437_is30or60min.cs" />
+    <Compile Include="Migrations\202103131951437_is30or60min.designer.cs">
+      <DependentUpon>202103131951437_is30or60min.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103141624520_present.cs" />
+    <Compile Include="Migrations\202103141624520_present.designer.cs">
+      <DependentUpon>202103141624520_present.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103181251276_RecieptNMethod.cs" />
+    <Compile Include="Migrations\202103181251276_RecieptNMethod.designer.cs">
+      <DependentUpon>202103181251276_RecieptNMethod.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202103221923350_xilia.cs" />
+    <Compile Include="Migrations\202103221923350_xilia.designer.cs">
+      <DependentUpon>202103221923350_xilia.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
@@ -663,6 +695,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008121558164_expenses.resx">
       <DependentUpon>202008121558164_expenses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103131025444_changes.resx">
+      <DependentUpon>202103131025444_changes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103131142355_cascade.resx">
+      <DependentUpon>202103131142355_cascade.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103131857373_customerNotes.resx">
+      <DependentUpon>202103131857373_customerNotes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103131951437_is30or60min.resx">
+      <DependentUpon>202103131951437_is30or60min.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103141624520_present.resx">
+      <DependentUpon>202103141624520_present.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103181251276_RecieptNMethod.resx">
+      <DependentUpon>202103181251276_RecieptNMethod.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202103221923350_xilia.resx">
+      <DependentUpon>202103221923350_xilia.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

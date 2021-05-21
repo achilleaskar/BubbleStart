@@ -36,6 +36,18 @@ namespace BubbleStart.Database
             .Configure(s => s.HasMaxLength(200).HasColumnType("varchar"));
             modelBuilder.Properties().Where(x => x.PropertyType == typeof(bool))
              .Configure(x => x.HasColumnType("bit"));
+            modelBuilder.Entity<Program>().HasMany(p => p.Changes)
+                .WithOptional(r => r.Program)
+                .HasForeignKey(t => t.Program_Id)
+                .WillCascadeOnDelete(true);
+            modelBuilder.Entity<Payment>().HasMany(p => p.Changes)
+              .WithOptional(r => r.Payment)
+              .HasForeignKey(t => t.Payment_Id)
+              .WillCascadeOnDelete(true);
+            modelBuilder.Entity<ShowUp>().HasMany(p => p.Changes)
+              .WithOptional(r => r.ShowUp)
+              .HasForeignKey(t => t.ShowUp_Id)
+              .WillCascadeOnDelete(true);
             //modelBuilder.Entity<ShowUp>()
             //        .Property(p => p.Arrive)
             //        .HasColumnType("bit");

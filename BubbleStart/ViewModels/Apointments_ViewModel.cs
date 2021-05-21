@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,6 +31,7 @@ namespace BubbleStart.ViewModels
             ReformerVisible = FunctionalVisible = true;
             BasicDataManager = basicDataManager;
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+            Messenger.Default.Register<UpdateProgramMessage>(this, async (msg) =>  await CreateProgram(false));
 
         }
 
@@ -112,6 +114,16 @@ namespace BubbleStart.ViewModels
             }
         }
         public RelayCommand NextWeekCommand { get; set; }
+        public void OpenCustomerManagement(Customer c)
+        {
+            c.BasicDataManager = BasicDataManager;
+            c.UpdateCollections();
+            Window window = new CustomerManagement
+            {
+                DataContext = c
+            };
+            Messenger.Default.Send(new OpenChildWindowCommand(window));
+        }
 
         public RelayCommand PreviousWeekCommand { get; set; }
 
@@ -180,11 +192,13 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
-        public async Task CreateProgram()
+        public async Task CreateProgram(bool refresh = true)
         {
             Mouse.OverrideCursor = Cursors.Wait;
             DateTime tmpdate = StartDate.AddDays(6);
-            List<Apointment> apointments = BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToList();
+          
+            List<Apointment> apointments = refresh? await BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToListAsync():
+               BasicDataManager.Context.Context.Apointments.Local.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToList();
 
             DateTime tmpDate = StartDate;
             Days.Clear();
@@ -219,6 +233,8 @@ namespace BubbleStart.ViewModels
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             StartDate = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek + 6) % 7);
+            Days=new ObservableCollection<Day>();
+            
         }
 
         public override void Reload()
@@ -373,7 +389,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
                 FunctionalCV = (CollectionView)CollectionViewSource.GetDefaultView(_ApointmentsFunctional);
                 FunctionalCV.Filter = AppointmensFilter;
-                FunctionalCV.SortDescriptions.Add(new SortDescription(nameof(Apointment.Person),ListSortDirection.Ascending));
+                FunctionalCV.SortDescriptions.Add(new SortDescription(nameof(Apointment.Person), ListSortDirection.Ascending));
                 FunctionalCV.Refresh();
             }
         }

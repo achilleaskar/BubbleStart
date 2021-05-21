@@ -495,27 +495,27 @@ namespace BubbleStart.ViewModels
             {
                 switch (exp.ExpenseCategory)
                 {
-                    case Enums.ExpenseCategory.pagia:
+                    case ExpenseCategory.pagia:
                         Pagia += exp.Amount;
                         break;
 
-                    case Enums.ExpenseCategory.misthoi:
+                    case ExpenseCategory.misthoi:
                         Misthoi += exp.Amount;
                         break;
 
-                    case Enums.ExpenseCategory.ektakta:
+                    case ExpenseCategory.ektakta:
                         Ektakta += exp.Amount;
                         break;
 
-                    case Enums.ExpenseCategory.spitiou:
+                    case ExpenseCategory.spitiou:
                         Spitiou += exp.Amount;
                         break;
 
-                    case Enums.ExpenseCategory.gwgw:
+                    case ExpenseCategory.gwgw:
                         Gwgw += exp.Amount;
                         break;
 
-                    case Enums.ExpenseCategory.timologia:
+                    case ExpenseCategory.timologia:
                         Timologia += exp.Amount;
                         break;
 

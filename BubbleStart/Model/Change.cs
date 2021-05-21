@@ -9,11 +9,36 @@ namespace BubbleStart.Model
         {
 
         }
-        public Change(string description,User user)
+        public Change(string description, User user)
         {
             Date = DateTime.Now;
             Description = description;
             User = user;
+        }
+
+        public int? Program_Id { get; set; } 
+        public int? Payment_Id { get; set; } 
+        public int? ShowUp_Id { get; set; } 
+        public string Type => GetTypeDesc();
+
+        private string GetTypeDesc()
+        {
+            if (ShowUp != null)
+            {
+                return "Παρουσία";
+            }
+            else if (Program != null)
+            {
+                return "Πακέτο";
+            }
+            else if (Payment != null)
+            {
+                return "Πληρωμή";
+            }
+            else
+            {
+                return "";
+            }
         }
 
         #endregion Constructors
@@ -93,6 +118,10 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        public Program Program { get; set; }
+        public Payment Payment { get; set; }
+        public ShowUp ShowUp { get; set; }
 
         #endregion Properties
     }

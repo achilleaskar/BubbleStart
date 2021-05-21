@@ -55,5 +55,16 @@ namespace BubbleStart.Views
                 }
             }
         }
+
+        private void UserControl_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key==Key.Escape)
+            {
+                if (DataContext is SearchCustomer_ViewModel sc && sc.PopupOpen)
+                {
+                    sc.PopupOpen = false;
+                }
+            }
+        }
     }
 }

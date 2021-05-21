@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
-using static BubbleStart.Helpers.Enums;
+using BubbleStart.Helpers;
 
 namespace BubbleStart.Model
 {
@@ -21,6 +22,8 @@ namespace BubbleStart.Model
         private DateTime _StartDay;
 
         #endregion Fields
+
+        public IList<Change> Changes { get; set; }
 
         #region Enums
 

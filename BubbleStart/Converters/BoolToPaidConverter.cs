@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace BubbleStart.Converters
 {
-    public class BoolToPaidConverter       : IValueConverter
+    public class BoolToPaidConverter : IValueConverter
     {
         #region Methods
 

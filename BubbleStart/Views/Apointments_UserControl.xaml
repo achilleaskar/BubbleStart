@@ -222,13 +222,15 @@
                                                                         <ListBox.ItemTemplate>
                                                                             <DataTemplate>
                                                                                 <StackPanel Orientation="Horizontal">
-                                                                                    <TextBlock Text="{Binding Customer}"
-                                                                                               Padding="1"
-                                                                                               Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}">
-                                                                                        <TextBlock.ToolTip>
-                                                                                            <TextBlock Text="{Binding PersonName}" />
-                                                                                        </TextBlock.ToolTip>
+                                                                                    <ContentControl MouseDoubleClick="OnDoubleClick">
+                                                                                        <TextBlock Text="{Binding Customer}"
+                                                                                                   Padding="1"
+                                                                                                   Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}">
+                                                                                            <TextBlock.ToolTip>
+                                                                                                <TextBlock Text="{Binding PersonName}" />
+                                                                                            </TextBlock.ToolTip>
                                                                                     </TextBlock>
+                                                                                    </ContentControl>
                                                                                 </StackPanel>
                                                                             </DataTemplate>
                                                                         </ListBox.ItemTemplate>
@@ -292,13 +294,15 @@
                                                                         <ListBox.ItemTemplate>
                                                                             <DataTemplate>
                                                                                 <StackPanel Orientation="Horizontal">
-                                                                                    <TextBlock Text="{Binding Customer}"
-                                                                                               Padding="1"
-                                                                                               Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}">
-                                                                                        <TextBlock.ToolTip>
-                                                                                            <TextBlock Text="{Binding PersonName}" />
-                                                                                        </TextBlock.ToolTip>
+                                                                                    <ContentControl MouseDoubleClick="OnDoubleClick">
+                                                                                        <TextBlock Text="{Binding Customer}"
+                                                                                                   Padding="1"
+                                                                                                   Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}">
+                                                                                            <TextBlock.ToolTip>
+                                                                                                <TextBlock Text="{Binding PersonName}" />
+                                                                                            </TextBlock.ToolTip>
                                                                                     </TextBlock>
+                                                                                    </ContentControl>
                                                                                 </StackPanel>
                                                                             </DataTemplate>
                                                                         </ListBox.ItemTemplate>

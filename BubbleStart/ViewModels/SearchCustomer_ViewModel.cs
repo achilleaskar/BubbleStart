@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using static BubbleStart.Helpers.Enums;
+
 
 namespace BubbleStart.ViewModels
 {
@@ -81,9 +81,29 @@ namespace BubbleStart.ViewModels
 
         #endregion Fields
 
+        public bool Is30min
+        {
+            get
+            {
+                return _Is30min;
+            }
+
+            set
+            {
+                if (_Is30min == value)
+                {
+                    return;
+                }
+
+                _Is30min = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #region Properties
 
         private bool _PopupOpen;
+        private bool _Is30min;
 
         public bool PopupOpen
         {
@@ -303,9 +323,10 @@ namespace BubbleStart.ViewModels
             if (SelectedCustomer != null)
             {
                 CustomersPracticing.Add(SelectedCustomer);
-                SelectedCustomer.ShowedUp(true, (ProgramMode)programMode);
+                SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min);
                 await BasicDataManager.SaveAsync();
                 SelectedCustomer.SetColors();
+                Is30min = false;
             }
         }
 

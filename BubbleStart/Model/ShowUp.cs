@@ -1,13 +1,63 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
-using static BubbleStart.Helpers.Enums;
+using BubbleStart.Helpers;
 
 namespace BubbleStart.Model
 {
     public class ShowUp : BaseModel
     {
         private bool _IsSelected;
+
+        private bool _Is30min;
+
+
+
+
+        private bool _Present;
+
+
+        public bool Present
+        {
+            get
+            {
+                return _Present;
+            }
+
+            set
+            {
+                if (_Present == value)
+                {
+                    return;
+                }
+
+                _Present = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(RealColor));
+            }
+        }
+
+        public bool Is30min
+        {
+            get
+            {
+                return _Is30min;
+            }
+
+            set
+            {
+                if (_Is30min == value)
+                {
+                    return;
+                }
+
+                _Is30min = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public IList<Change> Changes { get; set; }
 
         [NotMapped]
         public bool IsSelected
@@ -28,6 +78,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         public string Type => GetShowUpType();
 
         private string GetShowUpType()
@@ -44,7 +95,7 @@ namespace BubbleStart.Model
                 return "";
         }
 
-        public SolidColorBrush RealColor => Real ? new SolidColorBrush(Colors.Transparent) : new SolidColorBrush(Colors.OrangeRed);
+        public SolidColorBrush RealColor => Present ? new SolidColorBrush(Colors.LightPink) : Real ? new SolidColorBrush(Colors.Transparent) : new SolidColorBrush(Colors.OrangeRed);
 
         private bool _Real = true;
 
@@ -109,15 +160,7 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-
-
-
-
         private ProgramMode _ProgramMode;
-
 
         public ProgramMode ProgramMode
         {

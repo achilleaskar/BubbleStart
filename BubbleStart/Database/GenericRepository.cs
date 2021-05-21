@@ -16,7 +16,6 @@ namespace BubbleStart.Database
         public DateTime Limit;
         protected readonly DateTime CloseLimit;
 
-
         public GenericRepository()
         {
             Context = new MainDatabase();
@@ -24,16 +23,16 @@ namespace BubbleStart.Database
 
             if (DateTime.Today.Month > 7 && DateTime.Today.Day >= 20)
             {
-                Limit = new DateTime(DateTime.Today.Year-1, 8, 20);
-
+                Limit = new DateTime(DateTime.Today.Year - 1, 8, 20);
             }
             else
             {
                 Limit = new DateTime(DateTime.Today.Year - 2, 8, 20);
             }
-            CloseLimit = (DateTime.Today - Limit).TotalDays > 60 ? DateTime.Today.AddDays(-60) : Limit;
+            CloseLimit = (DateTime.Today - Limit).TotalDays > 20 ? DateTime.Today.AddDays(-20) : Limit;
             //Context.Database.Log = Console.Write;
         }
+
         protected virtual void Dispose(bool b)
         {
             if (b)
@@ -42,6 +41,7 @@ namespace BubbleStart.Database
                 GC.SuppressFinalize(this);
             }
         }
+
         public void Dispose()
         {
             // Dispose of unmanaged resources.
@@ -101,21 +101,20 @@ namespace BubbleStart.Database
             return await Context.Set<TEntity>().Where(filter).ToListAsync();
         }
 
-
-
         public async Task<Customer> GetFullCustomerById(int id)
         {
             try
             {
-                return await Context.Set<Customer>().Where(c => c.Id == id)
-                        .Include(f => f.Programs.Select(t => t.Payments))
-                        .Include(g => g.Payments)
-                        .Include(d => d.WeightHistory)
-                        .Include(c => c.Illness)
-                        .Include(e => e.ShowUps)
-                        .Include(h => h.Changes)
-                        .Include(a => a.Apointments)
-                        .FirstOrDefaultAsync();
+                return await Context.Set<Customer>()
+                    .Where(c => c.Id == id)
+                    .Include(f => f.Programs.Select(t => t.Payments))
+                    .Include(g => g.Payments)
+                    .Include(d => d.WeightHistory)
+                    .Include(c => c.Illness)
+                    .Include(e => e.ShowUps)
+                    .Include(h => h.Changes)
+                    .Include(a => a.Apointments)
+                    .FirstOrDefaultAsync();
             }
             catch (Exception)
             {
@@ -184,19 +183,18 @@ namespace BubbleStart.Database
             //    }
             //}
             ////return Context.ChangeTracker.HasChanges();
-            IEnumerable<DbEntityEntry> res = from e in Context.ChangeTracker.Entries()
-                                             where
-                                             e.State.HasFlag(EntityState.Added) ||
-                                             e.State.HasFlag(EntityState.Modified) ||
-                                             e.State.HasFlag(EntityState.Deleted)
-                                             select e;
+            //IEnumerable<DbEntityEntry> res = from e in Context.ChangeTracker.Entries()
+            //                                 where
+            //                                 e.State.HasFlag(EntityState.Added) ||
+            //                                 e.State.HasFlag(EntityState.Modified) ||
+            //                                 e.State.HasFlag(EntityState.Deleted)
+            //                                 select e;
             return Context.ChangeTracker.HasChanges();
-            return res.Any();
+            //return res.Any();
         }
 
         public async Task SaveAsync()
         {
-
             List<DbEntityEntry> AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
 
             AddedEntities.ForEach(E =>
@@ -218,9 +216,9 @@ namespace BubbleStart.Database
             });
 
             // ReSharper disable once UnusedVariable
-            IEnumerable<DbEntityEntry> changes = from e in Context.ChangeTracker.Entries()
-                                                 where e.State != EntityState.Unchanged
-                                                 select e;
+            //IEnumerable<DbEntityEntry> changes = from e in Context.ChangeTracker.Entries()
+            //                                     where e.State != EntityState.Unchanged
+            //                                     select e;
 
             //foreach (var change in changes)
             //{
@@ -269,10 +267,13 @@ namespace BubbleStart.Database
                     case EntityState.Added:
                         entry.State = EntityState.Detached;
                         break;
+
                     case EntityState.Detached:
                         break;
+
                     case EntityState.Unchanged:
                         break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -341,6 +342,8 @@ namespace BubbleStart.Database
             dbSet.Remove(entity);
         }
 
+        
+
         public async Task<IEnumerable<User>> GetAllUsersAsyncSortedByUserName()
         {
             return await Context.Set<User>().OrderBy(x => x.UserName).ToListAsync();
@@ -350,11 +353,17 @@ namespace BubbleStart.Database
         {
             try
             {
-                await Context.Set<ShowUp>().Where(p2 => p2.Arrived >= Limit).ToListAsync();
+                await Context.Set<ShowUp>().ToListAsync();
                 await Context.Set<Change>().Where(p3 => p3.Date >= CloseLimit).ToListAsync();
-                await Context.Set<Apointment>().Where(p4 => p4.DateTime >= Limit).ToListAsync();
-                await Context.Set<Program>().Where(p => p.StartDay >= Limit).ToListAsync();
-                await Context.Set<Payment>().Where(p1 => p1.Date >= Limit).ToListAsync();
+                await Context.Set<Apointment>().Where(p4 => p4.DateTime >= CloseLimit).ToListAsync();
+                await Context.Set<Program>().ToListAsync();
+                await Context.Set<Payment>().ToListAsync();
+                
+                //await Context.Set<ShowUp>().Where(p2 => p2.Arrived >= Limit).ToListAsync();
+                //await Context.Set<Change>().Where(p3 => p3.Date >= CloseLimit).ToListAsync();
+                //await Context.Set<Apointment>().Where(p4 => p4.DateTime >= Limit).ToListAsync();
+                //await Context.Set<Program>().Where(p => p.StartDay >= Limit).ToListAsync();
+                //await Context.Set<Payment>().Where(p1 => p1.Date >= Limit && (p1.Program == null || p1.Program.StartDay > Limit)).ToListAsync();
 
                 var x = (await Context.Set<Customer>().Where(c => c.Enabled)
                         //.Include(o => o.Programs.Select(t => t.Payments))
@@ -362,12 +371,12 @@ namespace BubbleStart.Database
                         {
                             c,
                             //Programs = c.Programs.Where(p => p.StartDay >= Limit),
-                           //Payments = c.Payments.Where(p1 => p1.Date >= Limit),
+                            //Payments = c.Payments.Where(p1 => p1.Date >= Limit),
                             c.WeightHistory,
                             c.Illness,
-                             //ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
-                              //Changes = c.Changes.Where(p3 => p3.Date >= CloseLimit),
-                             //Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
+                            //ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
+                            //Changes = c.Changes.Where(p3 => p3.Date >= CloseLimit),
+                            //Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
                         })
                         .ToListAsync())
                     .Select(x1 => x1.c);

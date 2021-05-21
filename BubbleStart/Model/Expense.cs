@@ -1,5 +1,5 @@
 ﻿using System;
-using static BubbleStart.Helpers.Enums;
+using BubbleStart.Helpers;
 
 namespace BubbleStart.Model
 {

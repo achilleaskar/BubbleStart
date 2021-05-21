@@ -1,7 +1,7 @@
-﻿namespace BubbleStart.Helpers
+﻿using System.ComponentModel;
+
+namespace BubbleStart.Helpers
 {
-    public static class Enums
-    {
         public enum ProgramMode
         {
             normal,
@@ -17,6 +17,15 @@
             forceEnable
         }
 
+        [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+        public enum PaymentType
+        {
+            [Description("Μετρητά")]
+            Cash=0,
+            [Description("VISA")]
+            Visa=5,
+        }
+
         public enum ExpenseCategory
         {
             pagia,
@@ -27,4 +36,3 @@
             timologia
         }
     }
-}

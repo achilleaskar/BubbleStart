@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
+using BubbleStart.Helpers;
 
 namespace BubbleStart.Model
 {
@@ -9,6 +11,59 @@ namespace BubbleStart.Model
     {
 
         private bool _IsSelected;
+
+        public IList<Change> Changes { get; set; }
+
+
+
+
+
+        private bool _Reciept;
+
+
+        public bool Reciept
+        {
+            get
+            {
+                return _Reciept;
+            }
+
+            set
+            {
+                if (_Reciept == value)
+                {
+                    return;
+                }
+
+                _Reciept = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private PaymentType _PaymentType;
+
+
+        public PaymentType PaymentType
+        {
+            get
+            {
+                return _PaymentType;
+            }
+
+            set
+            {
+                if (_PaymentType == value)
+                {
+                    return;
+                }
+
+                _PaymentType = value;
+                RaisePropertyChanged();
+            }
+        }
 
         [NotMapped]
         public bool IsSelected

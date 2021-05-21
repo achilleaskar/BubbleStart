@@ -16,6 +16,7 @@
         <Converters:FloadToStringValueConverter x:Key="FtoSConverter" />
         <Converters:IndexToENumConverter x:Key="IndexToENumConverter" />
         <Converters:DateTimeToString x:Key="DateTimeToString" />
+        <Converters:EnumConverter x:Key="EnumConverter" />
         <Style x:Key="DataGridCellStyle"
                TargetType="{x:Type DataGridCell}">
             <Setter Property="IsTabStop"
@@ -71,6 +72,11 @@
                         <DataGridTextColumn Header="Ημερομηνία"
                                             MaxWidth="120"
                                             Binding="{Binding Date, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
+                        <DataGridCheckBoxColumn Header="Απ."
+                                                Binding="{Binding Reciept}" />
+                        <DataGridTextColumn Header="Τρόπος"
+                                            Binding="{Binding PaymentType, Converter={StaticResource EnumConverter}}"
+                                            />
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel Orientation="Horizontal"

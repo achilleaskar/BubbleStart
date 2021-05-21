@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using static BubbleStart.Helpers.Enums;
+using BubbleStart.Helpers;
 
 namespace BubbleStart.Converters
 {
