@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Converters="clr-namespace:BubbleStart.Converters"
         xmlns:helpers="clr-namespace:BubbleStart.Helpers"
+        xmlns:enum="clr-namespace:BubbleStart.Helpers"
         xmlns:models="clr-namespace:BubbleStart.Model"
         d:DataContext="{d:DesignInstance models:Customer}"
         mc:Ignorable="d"
@@ -22,6 +23,7 @@
         <Converters:RemainingAmountToColorConverter x:Key="RemainingAmountToColorConverter" />
         <Converters:BoolToPaidConverter x:Key="BoolToShowedUp_Converter" />
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
+        <Converters:ClothToColorConverter x:Key="ClothToColorConverter" />
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
         <Converters:EnumConverter x:Key="EnumConverter" />
         <Style TargetType="DataGridCell">
@@ -156,8 +158,11 @@
                 </StackPanel>
                 <StackPanel Orientation="Vertical"
                             Grid.Row="4"
-                            Grid.Column="1">
-                    <Label Content=" " />
+                            Grid.Column="1"><StackPanel Orientation="Horizontal">
+                                <Label Content="" Padding="0 5"/>
+                    <CheckBox Content="Εμβόλιο" VerticalAlignment="Center"
+                              IsChecked="{Binding Vacinated}" />
+                            </StackPanel>
                     <TextBlock Text="{Binding RemainingTrainingDays}"
                                HorizontalAlignment="Left"
                                Margin="5 0 5 5" />
@@ -959,7 +964,6 @@
                                   VerticalAlignment="Stretch"
                                   SelectedItem="{Binding SelectedPaymentMass}"
                                   CanUserAddRows="False"
-                                  
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   CanUserDeleteRows="False"
                                   AutoGenerateColumns="False">
@@ -1363,18 +1367,94 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
-            <GroupBox Header="Σημειώσεις"
-                      Grid.Row="2"
-                      Margin="5 0 0 0"
-                      Width="420">
-                <TextBox Height="200"
-                         TextWrapping="Wrap"
-                         FontSize="13"
-                         MaxLength="1000"
-                         MaxLines="200"
-                         AcceptsReturn="True"
-                         Text="{Binding Notes,UpdateSourceTrigger=PropertyChanged}" />
-            </GroupBox>
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        Margin="5 0 0 0">
+                <GroupBox Header="Σημειώσεις"
+                          HorizontalAlignment="Left"
+                          Width="220">
+                    <TextBox Height="210"
+                             TextWrapping="Wrap"
+                             FontSize="13"
+                             MaxLength="1000"
+                             MaxLines="200"
+                             AcceptsReturn="True"
+                             Text="{Binding Notes,UpdateSourceTrigger=PropertyChanged}" />
+                </GroupBox>
+                <GroupBox Header="Ρούχα">
+                    <StackPanel>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox Width="80"
+                                          Margin="0 5"
+                                          SelectedItem="{Binding SelectedItem}"
+                                          VerticalAlignment="Center"
+                                          ItemsSource="{Binding BasicDataManager.Items}"
+                                          DisplayMemberPath="Name" />
+                                <ComboBox Width="60"
+                                          SelectedItem="{Binding SelectedSize}"
+                                          Margin="5 0 0 0 "
+                                          ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:SizeEnum}}}"
+                                          VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox Width="85"
+                                          SelectedItem="{Binding SelectedColor}"
+                                          Margin="0 5 5 5"
+                                          ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:ClothColors}}}"
+                                          VerticalAlignment="Center" />
+                                <Button Content="Προσθήκη"
+                                        Padding="5 0"
+                                        Height="22"
+                                        Command="{Binding AddItemCommand}"
+                                        VerticalAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
+                        <DataGrid ItemsSource="{Binding Items}"
+                                  CanUserAddRows="False"
+                                  VerticalAlignment="Stretch"
+                                  CanUserDeleteRows="False"
+                                  Height="145"
+                                  VirtualizingPanel.VirtualizationMode="Standard"
+                                  AutoGenerateColumns="False">
+                            <DataGrid.Resources>
+                                <ContextMenu x:Key="ItemsCM">
+                                    <MenuItem Header="Διαγραφή"
+                                              Command="{Binding DataContext.DeleteItemCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                              CommandParameter="{Binding}">
+                                        <MenuItem.Icon>
+                                            <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </DataGrid.Resources>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="{x:Type DataGridRow}"
+                                       BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                    <Setter Property="ContextMenu"
+                                            Value="{StaticResource ItemsCM}" />
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Ρούχο"
+                                                    Width="57"
+                                                    Binding="{Binding Item.Name}" />
+                                <DataGridTextColumn Header="No"
+                                                    Binding="{Binding Size}" />
+                                <DataGridTextColumn Header="Ημερ."
+                                                    Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Rectangle Fill="{Binding Converter={StaticResource ClothToColorConverter}}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
             <Grid Grid.Row="3">
                 <Button Content="Αποθήκευση αλλαγών"
                         HorizontalAlignment="Left"

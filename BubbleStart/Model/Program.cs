@@ -393,7 +393,7 @@ namespace BubbleStart.Model
                         ProgramType = ProgramTypes.PilatesFunctional;
                         break;
 
-                    case "Ελέυθερη Χρήση":
+                    case "Ελεύθερη Χρήση":
                         ProgramType = ProgramTypes.freeUse;
                         break;
 
@@ -472,7 +472,7 @@ namespace BubbleStart.Model
                     return "Pilates & Functional";
 
                 case ProgramTypes.freeUse:
-                    return "Ελέυθερη Χρήση";
+                    return "Ελεύθερη Χρήση";
 
                 case ProgramTypes.MedicalExersise:
                     return "Medical Exercise";

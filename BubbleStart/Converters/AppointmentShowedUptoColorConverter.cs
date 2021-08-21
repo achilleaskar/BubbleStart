@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
+using BubbleStart.Helpers;
 using BubbleStart.Model;
 
 namespace BubbleStart.Converters
@@ -15,18 +16,27 @@ namespace BubbleStart.Converters
         {
             if (value is Apointment a)
             {
-                if (a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date))
-                    return new SolidColorBrush(Colors.Red);
-                if (a.Person == 0)
+                if (a.Customer != null)
+                {
+                    if (a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date))
+                        return new SolidColorBrush(Colors.Red);
+                }
+                else
+                {
+
+                }
+                if (a.Person == SelectedPersonEnum.Gogo)
                     return new SolidColorBrush(Colors.LimeGreen);
-                if (a.Person == 1)
+                if (a.Person == SelectedPersonEnum.Dimitris)
                     return new SolidColorBrush(Colors.Orange);
-                if (a.Person == 2)
+                if (a.Person == SelectedPersonEnum.Yoga)
                     return new SolidColorBrush(Colors.LightBlue);
-                if (a.Person == 3)
+                if (a.Person == SelectedPersonEnum.Massage)
                     return new SolidColorBrush(Colors.HotPink);
-                if (a.Person == 4)
+                if (a.Person == SelectedPersonEnum.Online)
                     return new SolidColorBrush(Colors.Yellow);
+                if (a.Person == SelectedPersonEnum.Personal)
+                    return new SolidColorBrush(Colors.Cyan);
             }
             return new SolidColorBrush(Colors.Transparent);
         }

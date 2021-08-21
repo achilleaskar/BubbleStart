@@ -75,8 +75,7 @@
                         <DataGridCheckBoxColumn Header="Απ."
                                                 Binding="{Binding Reciept}" />
                         <DataGridTextColumn Header="Τρόπος"
-                                            Binding="{Binding PaymentType, Converter={StaticResource EnumConverter}}"
-                                            />
+                                            Binding="{Binding PaymentType, Converter={StaticResource EnumConverter}}" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel Orientation="Horizontal"
@@ -157,6 +156,8 @@
                                         <ComboBoxItem Content="Σπιτιού" />
                                         <ComboBoxItem Content="Γωγώ" />
                                         <ComboBoxItem Content="Τιμολόγια" />
+                                        <ComboBoxItem Content="Πιστωτικό" />
+                                        <ComboBoxItem Content="Φαινομενικό" />
                                     </ComboBox>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -169,11 +170,11 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBox Width="Auto"
-                                               MaxWidth="260"
-                                               VerticalAlignment="Top"
-                                               TextWrapping="Wrap"
-                                               MaxHeight="60"
-                                               Text="{Binding Reason,UpdateSourceTrigger=PropertyChanged}" />
+                                             MaxWidth="260"
+                                             VerticalAlignment="Top"
+                                             TextWrapping="Wrap"
+                                             MaxHeight="60"
+                                             Text="{Binding Reason,UpdateSourceTrigger=PropertyChanged}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -218,12 +219,15 @@
                                      Height="55" />
                         </StackPanel>
                         <Button Content="Καταχώρηση"
-                                Grid.Row="1" Grid.Column="2"
+                                Grid.Row="1"
+                                Grid.Column="2"
                                 VerticalAlignment="Bottom"
                                 HorizontalAlignment="Center"
-                                Margin="5" Width="90"
+                                Margin="5"
+                                Width="90"
                                 Command="{Binding RegisterExpenseCommand}" />
-                        <ComboBox VerticalAlignment="Top" Margin="5 0"
+                        <ComboBox VerticalAlignment="Top"
+                                  Margin="5 0"
                                   Grid.Column="2"
                                   Width="90"
                                   SelectedIndex="{Binding NewExpense.ExpenseCategory, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource IndexToENumConverter}}">
@@ -233,6 +237,8 @@
                             <ComboBoxItem Content="Σπιτιού" />
                             <ComboBoxItem Content="Γωγώ" />
                             <ComboBoxItem Content="Τιμολόγια" />
+                            <ComboBoxItem Content="Πιστωτικό" />
+                            <ComboBoxItem Content="Φαινομενικό" />
                         </ComboBox>
                     </Grid>
                 </GroupBox>
@@ -251,12 +257,19 @@
                             Margin="5 0"
                             Command="{Binding SaveChangesCommand}" />
                 </StackPanel>
-                <Grid Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Visibility="{Binding HasAmmounts}" Grid.RowSpan="2" Margin="5">
+                <Grid Grid.Column="1"
+                      Grid.Row="1"
+                      VerticalAlignment="Center"
+                      Visibility="{Binding HasAmmounts}"
+                      Grid.RowSpan="2"
+                      Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100" />
                         <ColumnDefinition Width="100" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -293,12 +306,24 @@
                            Grid.Column="0" />
                     <Label Content="{Binding Gwgw, Converter={StaticResource FtoSConverter}}"
                            Grid.Row="4"
-                           Grid.Column="1" /> 
+                           Grid.Column="1" />
                     <Label Content="Τιμολόγια:"
                            Grid.Row="5"
                            Grid.Column="0" />
                     <Label Content="{Binding Timologia, Converter={StaticResource FtoSConverter}}"
                            Grid.Row="5"
+                           Grid.Column="1" />
+                    <Label Content="Πιστωτικά:"
+                           Grid.Row="6"
+                           Grid.Column="0" />
+                    <Label Content="{Binding Pistotika, Converter={StaticResource FtoSConverter}}"
+                           Grid.Row="6"
+                           Grid.Column="1" />
+                    <Label Content="Φαινομενικά:"
+                           Grid.Row="7"
+                           Grid.Column="0" />
+                    <Label Content="{Binding Fainomenika, Converter={StaticResource FtoSConverter}}"
+                           Grid.Row="7"
                            Grid.Column="1" />
                 </Grid>
             </Grid>

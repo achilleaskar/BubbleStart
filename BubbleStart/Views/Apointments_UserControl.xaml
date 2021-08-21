@@ -18,6 +18,7 @@
              d:DesignWidth="1200">
     <UserControl.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
+        <Converters:HourClosedToColorConverter x:Key="HourClosedToColorConverter" />
         <Converters:AppointmentShowedUptoColorConverter x:Key="appointmentShowedUptoColorConverter" />
     </UserControl.Resources>
     <GroupBox Header="Πρόγραμμα Εβδομάδας"
@@ -77,6 +78,8 @@
                            Background="Orange" />
                     <Label Content="Yoga"
                            Background="LightBlue" />
+                    <Label Content="Personal"
+                           Background="Cyan" />
                     <Label Content="Massage"
                            Background="HotPink" />
                     <Label Content="Online"
@@ -210,15 +213,14 @@
                                                                             Height="20"
                                                                             BorderBrush="Gray">
                                                                         <Label   VerticalAlignment="Center"
-                                                                                 HorizontalAlignment="Center"
-                                                                                 Content="{Binding Time,ConverterParameter='HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                                 Content="{Binding Time,ConverterParameter='HH:mm', Converter={StaticResource DateTimeToString}}"
+                                                                                 HorizontalAlignment="Center"/>
                                                                     </Border>
                                                                     <ListBox BorderThickness="0"
                                                                              Grid.Row="1"
-                                                                             Background="LightYellow"
+                                                                             Background="{Binding Self, Converter={StaticResource HourClosedToColorConverter},ConverterParameter=0}"
                                                                              SelectedItem="{Binding SelectedApointmentFunctional}"
                                                                              ItemsSource="{Binding AppointmentsFunctional}">
-                                                                        <ListBox.Resources></ListBox.Resources>
                                                                         <ListBox.ItemTemplate>
                                                                             <DataTemplate>
                                                                                 <StackPanel Orientation="Horizontal">
@@ -251,7 +253,18 @@
                                                                                     Command="{Binding DeleteFunctionalApointmentCommand}"
                                                                                     Margin="5 0"
                                                                                     HorizontalAlignment="Right" />
+                                                                            
                                                                         </Grid>
+                                                                    </Border>
+                                                                    <Border Background="Transparent"  Grid.ColumnSpan="3"
+                                                                               Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
+                                                                            <Border.ContextMenu>
+                                                                                <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                                                                    <MenuItem Header="(Απ)ενεργοποίηση"
+                                                                                              Command="{Binding ToggleEnabled0Command}" />
+                                                                                </ContextMenu>
+                                                                            </Border.ContextMenu>
+                                                                        
                                                                     </Border>
                                                                 </Grid>
                                                             </Border>
@@ -284,11 +297,11 @@
                                                                             BorderBrush="Gray">
                                                                         <Label   VerticalAlignment="Center"
                                                                                  HorizontalAlignment="Center"
-                                                                                 Content="{Binding Time,ConverterParameter='hhh', Converter={StaticResource DateTimeToString}}" />
+                                                                                 Content="{Binding Time,ConverterParameter='hhh', Converter={StaticResource DateTimeToString}}"/>
                                                                     </Border>
                                                                     <ListBox BorderThickness="0"
                                                                              Grid.Row="1"
-                                                                             Background="BlanchedAlmond"
+                                                                             Background="{Binding Self, Converter={StaticResource HourClosedToColorConverter},ConverterParameter=1}"
                                                                              SelectedItem="{Binding SelectedApointmentReformer}"
                                                                              ItemsSource="{Binding AppointmentsReformer}">
                                                                         <ListBox.ItemTemplate>
@@ -324,6 +337,16 @@
                                                                                     Margin="5 0"
                                                                                     HorizontalAlignment="Right" />
                                                                         </Grid>
+                                                                    </Border>
+                                                                    <Border Background="Transparent"  Grid.ColumnSpan="3"
+                                                                               Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
+                                                                            <Border.ContextMenu>
+                                                                                <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                                                                    <MenuItem Header="(Απ)ενεργοποίηση"
+                                                                                              Command="{Binding ToggleEnabled1Command}" />
+                                                                                </ContextMenu>
+                                                                            </Border.ContextMenu>
+                                                                        
                                                                     </Border>
                                                                 </Grid>
                                                             </Border>

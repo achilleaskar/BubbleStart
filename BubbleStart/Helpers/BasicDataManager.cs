@@ -49,6 +49,32 @@ namespace BubbleStart.Helpers
         private ObservableCollection<District> _Districts;
 
 
+
+
+
+
+
+        private ObservableCollection<Item> _Items;
+
+
+        public ObservableCollection<Item> Items
+        {
+            get
+            {
+                return _Items;
+            }
+
+            set
+            {
+                if (_Items == value)
+                {
+                    return;
+                }
+
+                _Items = value;
+                RaisePropertyChanged();
+            }
+        }
         public ObservableCollection<District> Districts
         {
             get => _Districts;
@@ -134,7 +160,9 @@ namespace BubbleStart.Helpers
             Mouse.OverrideCursor = Cursors.Wait;
             Users = new ObservableCollection<User>(await Context.GetAllAsync<User>());
             Districts = new ObservableCollection<District>((await Context.GetAllAsync<District>()).OrderBy(d => d.Name));
-            Customers = new ObservableCollection<Customer>((await Context.LoadAllCustomersAsync()));
+            Customers = new ObservableCollection<Customer>(await Context.LoadAllCustomersAsync());
+            Items = new ObservableCollection<Item>(await Context.GetAllAsync<Item>());
+            _ = await Context.GetAllAsync<ItemPurchase>();
 
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
 

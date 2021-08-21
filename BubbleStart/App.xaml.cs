@@ -40,7 +40,7 @@ namespace BubbleStart
 
         private static void SelectivelyHandleMouseButton(object sender, MouseButtonEventArgs e)
         {
-            var textbox = (sender as TextBox);
+            var textbox = sender as TextBox;
             if (textbox != null && !textbox.IsKeyboardFocusWithin)
             {
                 if (e.OriginalSource.GetType().Name == "TextBoxView")

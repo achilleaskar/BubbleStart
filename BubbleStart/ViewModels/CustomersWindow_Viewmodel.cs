@@ -30,7 +30,7 @@ namespace BubbleStart.ViewModels
 
         private bool CanAdd(object p)
         {
-            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked|| IsMassageChecked|| IsOnlineChecked);
+            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked || IsMassageChecked || IsOnlineChecked || IsPersonalChecked);
         }
 
         #endregion Constructors
@@ -49,7 +49,7 @@ namespace BubbleStart.ViewModels
 
         private Customer _SelectedCustomer;
 
-        private int _SelectedPerson;
+        private SelectedPersonEnum _SelectedPerson;
 
         #endregion Fields
 
@@ -128,7 +128,36 @@ namespace BubbleStart.ViewModels
                 _IsDimitrisChecked = value;
                 if (value)
                 {
-                    SelectedPerson = 1;
+                    SelectedPerson = SelectedPersonEnum.Dimitris;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private bool _IsPersonalChecked;
+
+
+        public bool IsPersonalChecked
+        {
+            get
+            {
+                return _IsPersonalChecked;
+            }
+
+            set
+            {
+                if (_IsPersonalChecked == value)
+                {
+                    return;
+                }
+
+                _IsPersonalChecked = value;
+                if (value)
+                {
+                    SelectedPerson = SelectedPersonEnum.Personal;
                 }
                 RaisePropertyChanged();
             }
@@ -148,7 +177,7 @@ namespace BubbleStart.ViewModels
                 _IsGymnastChecked = value;
                 if (value)
                 {
-                    SelectedPerson = 2;
+                    SelectedPerson = SelectedPersonEnum.Yoga;
                 }
                 RaisePropertyChanged();
             }
@@ -176,7 +205,7 @@ namespace BubbleStart.ViewModels
                 }
                 if (value)
                 {
-                    SelectedPerson = 4;
+                    SelectedPerson = SelectedPersonEnum.Online;
                 }
                 _IsOnlineChecked = value;
                 RaisePropertyChanged();
@@ -200,7 +229,7 @@ namespace BubbleStart.ViewModels
                 _IsMassageChecked = value;
                 if (value)
                 {
-                    SelectedPerson = 3;
+                    SelectedPerson = SelectedPersonEnum.Massage;
                 }
                 RaisePropertyChanged();
             }
@@ -238,7 +267,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public int SelectedPerson
+        public SelectedPersonEnum SelectedPerson
         {
             get => _SelectedPerson;
 

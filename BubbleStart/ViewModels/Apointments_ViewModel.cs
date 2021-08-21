@@ -1,4 +1,11 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using BubbleStart.Migrations;
+using BubbleStart.Model;
+using BubbleStart.Views;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,18 +15,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using BubbleStart.Views;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
 
 namespace BubbleStart.ViewModels
 {
     public class Apointments_ViewModel : MyViewModelBase
     {
-
         #region Constructors
 
         public Apointments_ViewModel(BasicDataManager basicDataManager)
@@ -31,8 +31,7 @@ namespace BubbleStart.ViewModels
             ReformerVisible = FunctionalVisible = true;
             BasicDataManager = basicDataManager;
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
-            Messenger.Default.Register<UpdateProgramMessage>(this, async (msg) =>  await CreateProgram(false));
-
+            Messenger.Default.Register<UpdateProgramMessage>(this, async (msg) => await CreateProgram(false));
         }
 
         public bool HasDays => Days != null && Days.Count > 0;
@@ -113,7 +112,9 @@ namespace BubbleStart.ViewModels
                 }
             }
         }
+
         public RelayCommand NextWeekCommand { get; set; }
+
         public void OpenCustomerManagement(Customer c)
         {
             c.BasicDataManager = BasicDataManager;
@@ -172,6 +173,7 @@ namespace BubbleStart.ViewModels
                 }
             }
         }
+
         public DateTime StartDate
         {
             get => _StartDate;
@@ -196,9 +198,12 @@ namespace BubbleStart.ViewModels
         {
             Mouse.OverrideCursor = Cursors.Wait;
             DateTime tmpdate = StartDate.AddDays(6);
-          
-            List<Apointment> apointments = refresh? await BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToListAsync():
+
+            List<Apointment> apointments = refresh ? await BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToListAsync() :
                BasicDataManager.Context.Context.Apointments.Local.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToList();
+
+            List<ClosedHour> closedHours = refresh ? await BasicDataManager.Context.Context.ClosedHours.Where(a => a.Date >= StartDate && a.Date < tmpdate && a.Date >= BasicDataManager.Context.Limit).ToListAsync() :
+              BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate && a.Date >= BasicDataManager.Context.Limit).ToList();
 
             DateTime tmpDate = StartDate;
             Days.Clear();
@@ -209,10 +214,31 @@ namespace BubbleStart.ViewModels
             }
 
             int numOfDay;
+
+            foreach (var ap in closedHours)
+            {
+                numOfDay = ((int)ap.Date.DayOfWeek + 6) % 7;
+                if (numOfDay < 5 && ap.Date.Hour >= 8 && ap.Date.Hour <= 20)
+                {
+                    if (ap.Room == 0)
+                    {
+                        Days[numOfDay].Hours[ap.Date.Hour - 8].ClosedHour0 = ap;
+                    }
+                    else
+                    {
+                        Days[numOfDay].Hours[ap.Date.Hour - 8].ClosedHour1 = ap;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Ραντεβού εκτός εβδομάδας");
+                }
+            }
+
             foreach (var ap in apointments)
             {
                 numOfDay = ((int)ap.DateTime.DayOfWeek + 6) % 7;
-                if (numOfDay < 5 && ap.DateTime.Hour >= 8 || ap.DateTime.Hour <= 20)
+                if (numOfDay < 5 && ap.DateTime.Hour >= 8 && ap.DateTime.Hour <= 20)
                 {
                     if (ap.Room == 0)
                         Days[numOfDay].Hours[ap.DateTime.Hour - 8].AppointmentsFunctional.Add(ap);
@@ -227,21 +253,18 @@ namespace BubbleStart.ViewModels
             RaisePropertyChanged(nameof(HasDays));
             RaisePropertyChanged(nameof(Days));
             Mouse.OverrideCursor = Cursors.Arrow;
-
         }
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             StartDate = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek + 6) % 7);
-            Days=new ObservableCollection<Day>();
-            
+            Days = new ObservableCollection<Day>();
         }
 
         public override void Reload()
         {
             throw new NotImplementedException();
         }
-
 
         private async Task NextWeek()
         {
@@ -264,7 +287,6 @@ namespace BubbleStart.ViewModels
 
     public class Day : BaseModel
     {
-
         #region Constructors
 
         public Day(BasicDataManager basicDataManager, DateTime date)
@@ -335,12 +357,10 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Properties
-
     }
 
     public class Hour : BaseModel
     {
-
         #region Constructors
 
         public Hour(DateTime time, BasicDataManager basicDataManager)
@@ -350,8 +370,87 @@ namespace BubbleStart.ViewModels
             AddApointmentCommand = new RelayCommand<int>(AddApointment);
             DeleteFunctionalApointmentCommand = new RelayCommand(async () => { await DeleteApointment(0); }, CanDeleteFunctionalApointment);
             DeleteReformerApointmentCommand = new RelayCommand(async () => { await DeleteApointment(1); }, CanDeleteReformerApointment);
+            ToggleEnabled0Command = new RelayCommand(async () => await ToggleEnabled(0));
+            ToggleEnabled1Command = new RelayCommand(async () => await ToggleEnabled(1));
             AppointmentsFunctional = new ObservableCollection<Apointment>();
             AppointmentsReformer = new ObservableCollection<Apointment>();
+        }
+
+        private async Task ToggleEnabled(int room)
+        {
+            if (room == 0)
+            {
+                if (ClosedHour0 != null)
+                {
+                    BasicDataManager.Context.Delete(ClosedHour0);
+                    ClosedHour0=null;
+                }
+                else
+                {
+                    ClosedHour0 = new ClosedHour { Date = Time, Room = room };
+                    BasicDataManager.Add(ClosedHour0);
+                }
+            }
+            else if (room == 1)
+            {
+                if (ClosedHour1 != null)
+                {
+                    BasicDataManager.Context.Delete(ClosedHour1);
+                    ClosedHour1=null;
+                }
+                else
+                {
+                    ClosedHour1 = new ClosedHour { Date = Time, Room = room };
+                    BasicDataManager.Add(ClosedHour1);
+                }
+            }
+            await BasicDataManager.SaveAsync();
+            RaisePropertyChanged(nameof(Self));
+        }
+
+
+        public Hour Self => this;
+
+        private ClosedHour _ClosedHour0;
+
+        public ClosedHour ClosedHour0
+        {
+            get
+            {
+                return _ClosedHour0;
+            }
+
+            set
+            {
+                if (_ClosedHour0 == value)
+                {
+                    return;
+                }
+
+                _ClosedHour0 = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ClosedHour _ClosedHour1;
+
+        public ClosedHour ClosedHour1
+        {
+            get
+            {
+                return _ClosedHour1;
+            }
+
+            set
+            {
+                if (_ClosedHour1 == value)
+                {
+                    return;
+                }
+
+                _ClosedHour1 = value;
+                RaisePropertyChanged();
+            }
         }
 
         #endregion Constructors
@@ -373,6 +472,9 @@ namespace BubbleStart.ViewModels
         #region Properties
 
         public RelayCommand<int> AddApointmentCommand { get; set; }
+        public RelayCommand<int> CLoseHourCommand { get; set; }
+        public RelayCommand ToggleEnabled1Command { get; set; }
+        public RelayCommand ToggleEnabled0Command { get; set; }
 
         public ObservableCollection<Apointment> AppointmentsFunctional
         {
@@ -479,8 +581,9 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
-        public async Task AddCustomer(Customer customer, int selectedPerson, int type, bool forever = false)
+        public async Task AddCustomer(Customer customer, SelectedPersonEnum selectedPerson, int type, bool forever = false)
         {
+            var tmpTime = Time;
             if (customer != null)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
@@ -500,18 +603,17 @@ namespace BubbleStart.ViewModels
                     {
                         AppointmentsFunctional.Add(ap);
                         BasicDataManager.Add(ap);
-
                     }
                     else
                     {
                         AppointmentsReformer.Add(ap);
                         BasicDataManager.Add(ap);
-
                     }
                 }
                 await BasicDataManager.SaveAsync();
                 Mouse.OverrideCursor = Cursors.Arrow;
             }
+            Time = tmpTime;
         }
 
         private void AddApointment(int type)
@@ -527,7 +629,7 @@ namespace BubbleStart.ViewModels
 
         private bool AppointmensFilter(object obj)
         {
-            if (obj is Apointment a && (GymIndex == 0 || (GymIndex == a.Person + 1)))
+            if (obj is Apointment a && (GymIndex == 0 || (GymIndex == (int)a.Person + 1)))
             {
                 return true;
             }
@@ -543,6 +645,7 @@ namespace BubbleStart.ViewModels
         {
             return SelectedApointmentReformer != null;
         }
+
         private async Task DeleteApointment(int type)
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -562,6 +665,5 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Methods
-
     }
 }

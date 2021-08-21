@@ -68,7 +68,7 @@ namespace BubbleStart.ViewModels
 
         private async Task ShowShowUps()
         {
-            DailyShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(StartDate, EndDate.AddDays(1))));
+            DailyShowUps = new ObservableCollection<ShowUp>(await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(StartDate, EndDate.AddDays(1)));
         }
 
         private ObservableCollection<ShowUp> _DailyShowUps;

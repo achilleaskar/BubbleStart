@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using System;
 
 namespace BubbleStart.Model
 {
@@ -12,18 +13,20 @@ namespace BubbleStart.Model
             {
                 switch (Person)
                 {
-                    case 0:
+                    case SelectedPersonEnum.Gogo:
                         return "Γεωργία";
-                    case 1:
+                    case SelectedPersonEnum.Dimitris:
                         return "Dimitris";
-                    case 2:
-                        return "Yoga"; 
-                    case 3:
+                    case SelectedPersonEnum.Yoga:
+                        return "Yoga";
+                    case SelectedPersonEnum.Massage:
                         return "Massage";
-                    case 4:
+                    case SelectedPersonEnum.Online:
                         return "Online";
+                    case SelectedPersonEnum.Personal:
+                        return "Personal";
                     default:
-                        return "";
+                        return "Error";
                 }
             }
         }
@@ -34,10 +37,10 @@ namespace BubbleStart.Model
 
 
 
-        private int _person;
+        private SelectedPersonEnum _person;
 
 
-        public int Person
+        public SelectedPersonEnum Person
         {
             get => _person;
 
@@ -83,6 +86,8 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        //public int? CustomerId { get; set; }
 
         private Customer _Customer;
 

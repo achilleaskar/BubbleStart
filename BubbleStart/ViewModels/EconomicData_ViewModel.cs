@@ -1,11 +1,11 @@
-﻿using BubbleStart.Helpers;
-using BubbleStart.Model;
-using GalaSoft.MvvmLight.CommandWpf;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using BubbleStart.Helpers;
+using BubbleStart.Model;
+using GalaSoft.MvvmLight.CommandWpf;
 
 namespace BubbleStart.ViewModels
 {
@@ -13,11 +13,7 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-
-
-
         private decimal _Pagia;
-
 
         public decimal Pagia
         {
@@ -38,10 +34,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
         private decimal _Misthoi;
-
 
         public decimal Misthoi
         {
@@ -62,10 +55,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
         private decimal _Ektakta;
-
 
         public decimal Ektakta
         {
@@ -86,10 +76,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
         private decimal _Spitiou;
-
 
         public decimal Spitiou
         {
@@ -110,11 +97,49 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        private decimal _Fainomenika;
 
+        public decimal Fainomenika
+        {
+            get
+            {
+                return _Fainomenika;
+            }
 
+            set
+            {
+                if (_Fainomenika == value)
+                {
+                    return;
+                }
+
+                _Fainomenika = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _Pistotika;
+
+        public decimal Pistotika
+        {
+            get
+            {
+                return _Pistotika;
+            }
+
+            set
+            {
+                if (_Pistotika == value)
+                {
+                    return;
+                }
+
+                _Pistotika = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private decimal _Timologia;
-
 
         public decimal Timologia
         {
@@ -136,7 +161,6 @@ namespace BubbleStart.ViewModels
         }
 
         private decimal _Gwgw;
-
 
         public decimal Gwgw
         {
@@ -461,7 +485,6 @@ namespace BubbleStart.ViewModels
             await BasicDataManager.SaveAsync();
             Expenses.Remove(SelectedExpense);
             UpdateAmmounts();
-
         }
 
         private void Expenses_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -490,7 +513,7 @@ namespace BubbleStart.ViewModels
 
         public void UpdateAmmounts()
         {
-            Pagia = Ektakta = Spitiou = Gwgw = Misthoi = Timologia = 0;
+            Pagia = Ektakta = Spitiou = Gwgw = Misthoi = Timologia = Pistotika = Fainomenika = 0;
             foreach (var exp in Expenses)
             {
                 switch (exp.ExpenseCategory)
@@ -518,7 +541,12 @@ namespace BubbleStart.ViewModels
                     case ExpenseCategory.timologia:
                         Timologia += exp.Amount;
                         break;
-
+                    case ExpenseCategory.pistotika:
+                        Pistotika += exp.Amount;
+                        break;
+                    case ExpenseCategory.fainomenika:
+                        Fainomenika += exp.Amount;
+                        break;
                     default:
                         break;
                 }

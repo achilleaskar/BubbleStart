@@ -52,10 +52,12 @@ namespace BubbleStart.Model
         private bool _HistoryNotFirstTime;
         private int _HistoryTimesPerWeek;
         private Illness _Illness;
+        private bool _Is30min;
         private SolidColorBrush _IsActiveColor;
         private bool _IsDateValid;
         private bool _IsPracticing;
         private bool _IsSelected;
+        private ObservableCollection<ItemPurchase> _Items;
         private string _Job;
         private bool _Loaded;
         private bool _Medicine;
@@ -63,13 +65,16 @@ namespace BubbleStart.Model
         private string _Name;
         private decimal _NewWeight;
         private decimal _NextPayment;
+        private string _Notes;
         private int _NumOfShowUps;
         private DateTime _OldShowUpDate;
         private decimal _PaymentAmount;
+        private bool _PaymentReciept;
         private ObservableCollection<Payment> _Payments;
         private ICollectionView _PaymentsCollectionView;
         private ICollectionView _PaymentsMassCollectionView;
         private ICollectionView _PaymentsOnlineCollectionView;
+        private PaymentType _PaymentType;
         private bool _Popup1Open;
 
         private bool _PreferedHand;
@@ -156,80 +161,7 @@ namespace BubbleStart.Model
 
         #endregion Fields
 
-        [NotMapped]
-        public bool FromProgram { get; set; } = false;
         #region Properties
-
-        private bool _Is30min;
-
-
-
-
-        private PaymentType _PaymentType;
-
-        [NotMapped]
-        public PaymentType PaymentType
-        {
-            get
-            {
-                return _PaymentType;
-            }
-
-            set
-            {
-                if (_PaymentType == value)
-                {
-                    return;
-                }
-
-                _PaymentType = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-        private bool _PaymentReciept;
-
-        [NotMapped]
-        public bool PaymentReciept
-        {
-            get
-            {
-                return _PaymentReciept;
-            }
-
-            set
-            {
-                if (_PaymentReciept == value)
-                {
-                    return;
-                }
-
-                _PaymentReciept = value;
-                RaisePropertyChanged();
-            }
-        }
-
-
-        [NotMapped]
-        public bool Is30min
-        {
-            get
-            {
-                return _Is30min;
-            }
-
-            set
-            {
-                if (_Is30min == value)
-                {
-                    return;
-                }
-
-                _Is30min = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public string Active
         {
@@ -469,6 +401,9 @@ namespace BubbleStart.Model
         [NotMapped]
         public RelayCommand DeleteShowUpCommand { get; set; }
 
+        [NotMapped]
+        public RelayCommand<object> DeleteItemCommand { get; set; }
+
         public string DistrictText
         {
             get => _DistrictText;
@@ -506,7 +441,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public TimeSpan Duration => LastShowUp != null ? (DateTime.Now.Subtract(LastShowUp.Arrived)) : new TimeSpan(0);
+        public TimeSpan Duration => LastShowUp != null ? DateTime.Now.Subtract(LastShowUp.Arrived) : new TimeSpan(0);
 
         [StringLength(30, MinimumLength = 0)]
         [DataType(DataType.EmailAddress, ErrorMessage = "Το Email δεν έχει τη σωστή μορφή")]
@@ -592,6 +527,9 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        [NotMapped]
+        public bool FromProgram { get; set; } = false;
 
         public string FullName => Name + " " + SureName;
 
@@ -713,6 +651,26 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
+        public bool Is30min
+        {
+            get
+            {
+                return _Is30min;
+            }
+
+            set
+            {
+                if (_Is30min == value)
+                {
+                    return;
+                }
+
+                _Is30min = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [NotMapped]
         public SolidColorBrush IsActiveColor
         {
             get => _IsActiveColor ?? (_IsActiveColor = GetCustomerColor()); //TODO
@@ -779,6 +737,25 @@ namespace BubbleStart.Model
                 }
 
                 _IsSelected = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<ItemPurchase> Items
+        {
+            get
+            {
+                return _Items;
+            }
+
+            set
+            {
+                if (_Items == value)
+                {
+                    return;
+                }
+
+                _Items = value;
                 RaisePropertyChanged();
             }
         }
@@ -904,6 +881,26 @@ namespace BubbleStart.Model
             }
         }
 
+        [StringLength(1000)]
+        public string Notes
+        {
+            get
+            {
+                return _Notes;
+            }
+
+            set
+            {
+                if (_Notes == value)
+                {
+                    return;
+                }
+
+                _Notes = value;
+                RaisePropertyChanged();
+            }
+        }
+
         [NotMapped]
         public int NumOfShowUps
         {
@@ -965,6 +962,26 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand PaymentCommand { get; set; }
+
+        [NotMapped]
+        public bool PaymentReciept
+        {
+            get
+            {
+                return _PaymentReciept;
+            }
+
+            set
+            {
+                if (_PaymentReciept == value)
+                {
+                    return;
+                }
+
+                _PaymentReciept = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public ObservableCollection<Payment> Payments
         {
@@ -1040,6 +1057,26 @@ namespace BubbleStart.Model
                 }
 
                 _PaymentsOnlineCollectionView = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [NotMapped]
+        public PaymentType PaymentType
+        {
+            get
+            {
+                return _PaymentType;
+            }
+
+            set
+            {
+                if (_PaymentType == value)
+                {
+                    return;
+                }
+
+                _PaymentType = value;
                 RaisePropertyChanged();
             }
         }
@@ -1328,6 +1365,9 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand<object> ReleasePaymentCommand { get; set; }
+
+        [NotMapped]
+        public RelayCommand AddItemCommand { get; set; }
 
         [NotMapped]
         public decimal RemainingAmount
@@ -1844,6 +1884,12 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
+        public RelayCommand<object> Toggle30_60Command { get; set; }
+
+        [NotMapped]
+        public RelayCommand<object> ToggleIsPresentCommand { get; set; }
+
+        [NotMapped]
         public RelayCommand ToggleRealbCommand { get; set; }
 
         [NotMapped]
@@ -1857,12 +1903,6 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand<object> ToggleShowUpNormalCommand { get; set; }
-
-        [NotMapped]
-        public RelayCommand<object> Toggle30_60Command { get; set; }
-
-        [NotMapped]
-        public RelayCommand<object> ToggleIsPresentCommand { get; set; }
 
         [NotMapped]
         public RelayCommand<object> ToggleShowUpOutdoorCommand { get; set; }
@@ -1987,6 +2027,8 @@ namespace BubbleStart.Model
                 Changes = new ObservableCollection<Change>();
             if (Apointments == null)
                 Apointments = new ObservableCollection<Apointment>();
+            if (Items == null)
+                Items = new ObservableCollection<ItemPurchase>();
             var timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(19)
@@ -1995,6 +2037,7 @@ namespace BubbleStart.Model
             timer.Start();
             ShowPreviusDataCommand = new RelayCommand(async () => { await ShowPreviewsData(); });
             BookCommand = new RelayCommand<string>(async obj => { await MakeBooking(obj); }, CanMakeBooking);
+            DeleteItemCommand = new RelayCommand<object>((obj) => DeleteItem(obj));
             AddOldShowUpCommand = new RelayCommand<int>(async obj => { await AddOldShowUp(obj); });
             SaveChangesAsyncCommand = new RelayCommand(async () => { await SaveChanges(); }, CanSaveChanges);
             CancelChangesAsyncCommand = new RelayCommand(RollBackChanges, CanSaveChanges);
@@ -2023,6 +2066,7 @@ namespace BubbleStart.Model
 
             SetToProgramCommand = new RelayCommand(async () => { await SetToPayment(); }, CanSet);
             ReleasePaymentCommand = new RelayCommand<object>(ReleasePayment, CanSetP);
+            AddItemCommand = new RelayCommand(AddItem, CanAddItem);
 
             DeleteProgramCommand = new RelayCommand(async () => { await DeleteProgram(); }, SelectedProgramToDelete != null);
             DeleteProgramMassCommand = new RelayCommand(async () => { await DeleteProgramMass(); }, SelectedProgramMassageToDelete != null);
@@ -2033,26 +2077,113 @@ namespace BubbleStart.Model
             ProgramTypeIndex = -1;
         }
 
-        private bool CanToglePresent(object arg)
+        private void DeleteItem(object obj)
         {
-            return arg is ShowUp;
+            if (obj is ItemPurchase ip && Items.Contains(ip))
+            {
+                Items.Remove(ip);
+            }
         }
 
-        private void TogglePresent(object obj)
+        private void AddItem()
         {
-            if (obj is ShowUp su)
-                su.Present = !su.Present;
+            Items.Add(new ItemPurchase { Item = SelectedItem, Size = SelectedSize, Date = DateTime.Today, Color = SelectedColor });
         }
 
-        private bool CanTogle30_60(object v)
+        private ClothColors? _SelectedColor;
+
+        [NotMapped]
+        public ClothColors? SelectedColor
         {
-            return v is ShowUp;
+            get
+            {
+                return _SelectedColor;
+            }
+
+            set
+            {
+                if (_SelectedColor == value)
+                {
+                    return;
+                }
+
+                _SelectedColor = value;
+                RaisePropertyChanged();
+            }
         }
 
-        private void Toggle30_60(object obj)
+        private SizeEnum? _SelectedSize;
+
+        [NotMapped]
+        public SizeEnum? SelectedSize
         {
-            if (obj is ShowUp su)
-                su.Is30min = !su.Is30min;
+            get
+            {
+                return _SelectedSize;
+            }
+
+            set
+            {
+                if (_SelectedSize == value)
+                {
+                    return;
+                }
+
+                _SelectedSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Item _SelectedItem;
+
+        [NotMapped]
+        public Item SelectedItem
+        {
+            get
+            {
+                return _SelectedItem;
+            }
+
+            set
+            {
+                if (_SelectedItem == value)
+                {
+                    return;
+                }
+
+                _SelectedItem = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private bool _Vacinated;
+
+
+        public bool Vacinated
+        {
+            get
+            {
+                return _Vacinated;
+            }
+
+            set
+            {
+                if (_Vacinated == value)
+                {
+                    return;
+                }
+
+                _Vacinated = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool CanAddItem()
+        {
+            return (SelectedSize != null || SelectedItem?.Id == 3) && SelectedItem != null;
         }
 
         public void SetColors()
@@ -2412,7 +2543,7 @@ namespace BubbleStart.Model
 
         internal void AddNewProgram(int par)
         {
-            Programs.Add(new Program { Amount = ProgramPrice, DayOfIssue = DateOfIssue, Showups = NumOfShowUps, ProgramType = (ProgramTypes)ProgramTypeIndex, Months = ProgramDuration, StartDay = StartDate, Paid = (par == 1) });
+            Programs.Add(new Program { Amount = ProgramPrice, DayOfIssue = DateOfIssue, Showups = NumOfShowUps, ProgramType = (ProgramTypes)ProgramTypeIndex, Months = ProgramDuration, StartDay = StartDate, Paid = par == 1 });
             Changes.Add(new Change($"Προστέθηκε νέο ΠΑΚΕΤΟ {StaticResources.ProgramEnumToString((ProgramTypes)ProgramTypeIndex)} με {NumOfShowUps} συνεδρίες, κόστος {StaticResources.DecimalToString(ProgramPrice)}, έναρξη {StartDate:dd/MM/yy}{(par == 1 ? "," : " και")}" +
                 $" διάρκεια {ProgramDuration} μήνες {(par == 1 ? "και πληρώθηκε" : "χωρίς να πληρωθεί")}", StaticResources.User)
             { Program = Programs.Last() });
@@ -2462,13 +2593,13 @@ namespace BubbleStart.Model
             return ProgramPrice >= 0 && ProgramTypeIndex >= 0 && NumOfShowUps > 0 && ProgramDuration > 0;
         }
 
-        internal void ShowedUp(bool arrived, ProgramMode mode,bool is30min=false)
+        internal void ShowedUp(bool arrived, ProgramMode mode, bool is30min = false)
         {
             IsPracticing = arrived;
             if (mode == ProgramMode.massage)
             {
                 int remain = RemainingMassageDays;
-                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramMode = mode,Is30min=is30min });
+                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramMode = mode, Is30min = is30min });
                 if (RemainingMassageDays != 0) return;
                 MessageBox.Show(remain > 0
                     ? $"Αυτή ήταν η τελευταία συνεδρία μασάζ του {ToString()}"
@@ -2566,6 +2697,16 @@ namespace BubbleStart.Model
         private bool CanToggleOutDoor(object arg)
         {
             return SelectedOnlineShowUp != null && (int)SelectedOnlineShowUp.ProgramMode != Convert.ToInt32(arg);
+        }
+
+        private bool CanTogle30_60(object v)
+        {
+            return v is ShowUp;
+        }
+
+        private bool CanToglePresent(object arg)
+        {
+            return arg is ShowUp;
         }
 
         private void CaptureChanges()
@@ -2717,12 +2858,14 @@ namespace BubbleStart.Model
                             case nameof(Payment.Date):
                                 sb.Append($"Ημερομηνία '{(DateTime)original:dd/MM/yyyy}' σε '{p.Date:dd/MM/yyyy}', ");
                                 break;
+
                             case nameof(Payment.Reciept):
                                 if (p.Reciept)
                                     sb.Append($"Απόδειξη από ΌΧΙ σε ΝΑΊ, ");
                                 else
                                     sb.Append($"Απόδειξη από ΝΑΊ σε ΌΧΙ, ");
                                 break;
+
                             case nameof(Payment.PaymentType):
                                 if (p.PaymentType == PaymentType.Cash)
                                     sb.Append($"Τρ. Πληρωμής από ΚΆΡΤΑ σε ΜΕΤΡΗΤΆ, ");
@@ -3025,11 +3168,11 @@ namespace BubbleStart.Model
             GetRemainingDays();
             CaptureChanges();
             await BasicDataManager.SaveAsync();
-           // if (FromProgram)
-           // {
-                Messenger.Default.Send(new UpdateProgramMessage());
-                FromProgram = false;
-           // }
+            // if (FromProgram)
+            // {
+            Messenger.Default.Send(new UpdateProgramMessage());
+            FromProgram = false;
+            // }
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -3070,28 +3213,6 @@ namespace BubbleStart.Model
             GetRemainingDays();
         }
 
-        private string _Notes;
-
-        [StringLength(1000)]
-        public string Notes
-        {
-            get
-            {
-                return _Notes;
-            }
-
-            set
-            {
-                if (_Notes == value)
-                {
-                    return;
-                }
-
-                _Notes = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private async Task ShowPreviewsData()
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -3117,6 +3238,18 @@ namespace BubbleStart.Model
         private void Timer_Tick(object sender, EventArgs e)
         {
             RaisePropertyChanged(nameof(Duration));
+        }
+
+        private void Toggle30_60(object obj)
+        {
+            if (obj is ShowUp su)
+                su.Is30min = !su.Is30min;
+        }
+
+        private void TogglePresent(object obj)
+        {
+            if (obj is ShowUp su)
+                su.Present = !su.Present;
         }
 
         private void TogleMassage(object to)
