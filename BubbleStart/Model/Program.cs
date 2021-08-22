@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
 using BubbleStart.Helpers;
@@ -86,26 +87,46 @@ namespace BubbleStart.Model
             }
         }
 
+        [TypeConverter(typeof(EnumDescriptionTypeConverter))]
         public enum ProgramTypes
         {
+            [Description("Reformer Pilates")]
             ReformerPilates = 0,
+            [Description("Pilates")]
             Pilates = 1,
+            [Description("Functional")]
             Functional = 2,
+            [Description("Pilates &amp; Functional")]
             PilatesFunctional = 3,
+            [Description("Ελεύθερη Χρήση")]
             freeUse = 4,
+            [Description("Medical Exercise")]
             MedicalExersise = 5,
+            [Description("Personal")]
             dokimastiko = 6,
+            [Description("Yoga")]
             yoga = 7,
+            [Description("Aerial Yoga")]
             aerial = 8,
+            [Description("Μασάζ Χαλαρωτικό 30'")]
             masasRel30 = 9,
+            [Description("Μασάζ Χαλαρωτικό 50'")]
             masazRel50 = 10,
+            [Description("Μασάζ Θεραπευτικό 30'")]
             masazTher30 = 11,
+            [Description("Μασάζ Θεραπευτικό 50'")]
             masazTher50 = 12,
+            [Description("Black Friday Deal")]
             blackfriday = 13,
+            [Description("4+1 massage")]
             massage41 = 14,
+            [Description("Online")]
             online = 15,
+            [Description("Summer Deal")]
             summerDeal = 16,
+            [Description("OutDoor")]
             OutDoor = 17,
+            [Description("September Deal")]
             September = 18
         }
 
@@ -510,7 +531,7 @@ namespace BubbleStart.Model
                 case ProgramTypes.summerDeal:
                     return "Summer Deal";
                 case ProgramTypes.OutDoor:
-                    return "OutDoor"; 
+                    return "OutDoor";
                 case ProgramTypes.September:
                     return "September Deal";
             }

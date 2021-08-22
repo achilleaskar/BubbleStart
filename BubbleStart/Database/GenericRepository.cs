@@ -55,10 +55,10 @@ namespace BubbleStart.Database
             return await Context.Users.Where(u => u.UserName == userName).FirstOrDefaultAsync();
         }
 
-        internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate)
+        internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate, int CId = 0,bool nolimit = false)
         {
             return await Context.ShowUps
-           .Where(s => s.Arrived >= StartDate && s.Arrived < EndDate && s.Arrived >= Limit)
+           .Where(s => (s.Arrived >= StartDate && s.Arrived < EndDate && (nolimit||s.Arrived >= Limit)) && (CId == -1 || CId == s.Customer.Id))
            .Include(s => s.Customer)
            .OrderBy(s => s.Arrived)
            .ToListAsync();
@@ -342,7 +342,7 @@ namespace BubbleStart.Database
             dbSet.Remove(entity);
         }
 
-        
+
 
         public async Task<IEnumerable<User>> GetAllUsersAsyncSortedByUserName()
         {
@@ -358,7 +358,7 @@ namespace BubbleStart.Database
                 await Context.Set<Apointment>().Where(p4 => p4.DateTime >= CloseLimit).ToListAsync();
                 await Context.Set<Program>().ToListAsync();
                 await Context.Set<Payment>().ToListAsync();
-                
+
                 //await Context.Set<ShowUp>().Where(p2 => p2.Arrived >= Limit).ToListAsync();
                 //await Context.Set<Change>().Where(p3 => p3.Date >= CloseLimit).ToListAsync();
                 //await Context.Set<Apointment>().Where(p4 => p4.DateTime >= Limit).ToListAsync();

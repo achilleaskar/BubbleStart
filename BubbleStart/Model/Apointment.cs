@@ -15,30 +15,54 @@ namespace BubbleStart.Model
                 {
                     case SelectedPersonEnum.Gogo:
                         return "Γεωργία";
+
                     case SelectedPersonEnum.Dimitris:
                         return "Dimitris";
+
                     case SelectedPersonEnum.Yoga:
                         return "Yoga";
+
                     case SelectedPersonEnum.Massage:
                         return "Massage";
+
                     case SelectedPersonEnum.Online:
                         return "Online";
+
                     case SelectedPersonEnum.Personal:
                         return "Personal";
+
                     default:
                         return "Error";
                 }
             }
         }
 
+        public string Description => GetDescription();
+
+        private string GetDescription()
+        {
+            if (Person == SelectedPersonEnum.Massage)
+            {
+                return "Massage";
+            }
+            if (Person == SelectedPersonEnum.Yoga)
+            {
+                return "Yoga";
+            }
+            if (Room==0)
+            {
+                return "Functional, " + PersonName;
+            }
+            if (Room == 1)
+            {
+                return "Reformer, " + PersonName;
+            }
+            return "Σφάλμα";
+        }
 
         private int _room;
 
-
-
-
         private SelectedPersonEnum _person;
-
 
         public SelectedPersonEnum Person
         {
@@ -71,6 +95,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         public DateTime DateTime
         {
             get => _DateTime;

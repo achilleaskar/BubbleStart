@@ -1,8 +1,10 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using EnumsNET;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
-using BubbleStart.Helpers;
+using static BubbleStart.Model.Program;
 
 namespace BubbleStart.Model
 {
@@ -12,11 +14,7 @@ namespace BubbleStart.Model
 
         private bool _Is30min;
 
-
-
-
         private bool _Present;
-
 
         public bool Present
         {
@@ -217,6 +215,55 @@ namespace BubbleStart.Model
 
                 _Prog = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public string Description => GetDescription();
+
+        private string GetDescription()
+        {
+            var res = string.Empty;
+            res += GetProogramName();
+            if (Is30min)
+            {
+                res += ", 30'";
+            }
+
+            if (Present)
+            {
+                res += ", Δώρο";
+            }
+
+            if (!Real)
+            {
+                res += ", Δεν ήρθε";
+            }
+
+            return res;
+        }
+
+        private string GetProogramName()
+        {
+            if (Prog != null)
+            {
+                return ((ProgramTypes)Prog.ProgramType).AsString(EnumFormat.Description);
+            }
+            switch (ProgramMode)
+            {
+                case ProgramMode.normal:
+                    return "Γυμναστική";
+
+                case ProgramMode.massage:
+                    return "Massage";
+
+                case ProgramMode.online:
+                    return "Online";
+
+                case ProgramMode.outdoor:
+                    return "Outdoor";
+
+                default:
+                    return "Σφάλμα";
             }
         }
 

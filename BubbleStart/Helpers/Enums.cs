@@ -37,6 +37,8 @@ namespace BubbleStart.Helpers
 
         [Description("VISA")]
         Visa = 5,
+        [Description("Τραπεζικά")]
+        Bank = 6,
     }
 
     public enum SizeEnum

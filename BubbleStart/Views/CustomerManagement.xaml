@@ -158,11 +158,14 @@
                 </StackPanel>
                 <StackPanel Orientation="Vertical"
                             Grid.Row="4"
-                            Grid.Column="1"><StackPanel Orientation="Horizontal">
-                                <Label Content="" Padding="0 5"/>
-                    <CheckBox Content="Εμβόλιο" VerticalAlignment="Center"
-                              IsChecked="{Binding Vacinated}" />
-                            </StackPanel>
+                            Grid.Column="1">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content=""
+                               Padding="0 5" />
+                        <CheckBox Content="Εμβόλιο"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding Vacinated}" />
+                    </StackPanel>
                     <TextBlock Text="{Binding RemainingTrainingDays}"
                                HorizontalAlignment="Left"
                                Margin="5 0 5 5" />
@@ -188,14 +191,17 @@
                        Grid.Row="6"
                        Margin="0"
                        Padding="5 5 5 0"
+                       Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                        Grid.Column="0" />
                 <TextBlock Text="{Binding RemainingAmount, StringFormat=c1}"
                            Grid.Row="6"
+                           Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                            Grid.Column="1"
                            Margin="0,4,0,0" />
                 <GroupBox Grid.Row="7"
                           HorizontalAlignment="Left"
                           Grid.ColumnSpan="2"
+                          Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                           Header="Αγορά πακέτου">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -407,6 +413,7 @@
                 <GroupBox Grid.Row="8"
                           Grid.ColumnSpan="2"
                           HorizontalAlignment="Left"
+                          Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                           Header="Προσθήκη Παρουσίας">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Ημερομ.:" />
@@ -420,7 +427,8 @@
                 </GroupBox>
             </Grid>
             <StackPanel Grid.Column="1"
-                        Grid.RowSpan="4">
+                        Grid.RowSpan="4"
+                        Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal"
                             Height="250">
                     <GroupBox Header="Παρουσίες Γυμναστικής"
@@ -1326,6 +1334,7 @@
                       Margin="5 0 0 0"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left"
+                          Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                       Header="Αλλαγές">
                 <DataGrid ItemsSource="{Binding Changes}"
                           VerticalAlignment="Top"
@@ -1369,91 +1378,29 @@
             </GroupBox>
             <TabControl Grid.Row="2"
                         Margin="5 0 0 0">
-                <TabItem Header="Σημειώσεις">
+                <TabItem Header="Σημειώσεις"
+                         Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                     <TextBox Height="210"
                              TextWrapping="Wrap"
                              FontSize="13"
                              MaxLength="1000"
                              MaxLines="200"
+                             Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                              AcceptsReturn="True"
                              Text="{Binding Notes,UpdateSourceTrigger=PropertyChanged}" />
                 </TabItem>
                 <TabItem Header="Ρούχα">
-                        <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <ComboBox Width="80"
-                                              Margin="0 5"
-                                              SelectedItem="{Binding SelectedItem}"
-                                              VerticalAlignment="Center"
-                                              ItemsSource="{Binding BasicDataManager.Items}"
-                                              DisplayMemberPath="Name" />
-                                    <ComboBox Width="60"
-                                              SelectedItem="{Binding SelectedSize}"
-                                              Margin="5 0 0 0 "
-                                              ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:SizeEnum}}}"
-                                              VerticalAlignment="Center" />
-                                    <ComboBox Width="85"
-                                              SelectedItem="{Binding SelectedColor}"
-                                              Margin="0 5 5 5"
-                                              ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:ClothColors}}}"
-                                              VerticalAlignment="Center" />
-                                    <Button Content="Προσθήκη"
-                                            Padding="5 0"
-                                            Height="22"
-                                            Command="{Binding AddItemCommand}"
-                                            VerticalAlignment="Center" />
-                                </StackPanel>
-                            <DataGrid ItemsSource="{Binding Items}"
-                                      CanUserAddRows="False"
-                                      VerticalAlignment="Stretch"
-                                      CanUserDeleteRows="False"
-                                      Height="145"
-                                      VirtualizingPanel.VirtualizationMode="Standard"
-                                      AutoGenerateColumns="False">
-                                <DataGrid.Resources>
-                                    <ContextMenu x:Key="ItemsCM">
-                                        <MenuItem Header="Διαγραφή"
-                                                  Command="{Binding DataContext.DeleteItemCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                                                  CommandParameter="{Binding}">
-                                            <MenuItem.Icon>
-                                                <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </DataGrid.Resources>
-                                <DataGrid.RowStyle>
-                                    <Style TargetType="{x:Type DataGridRow}"
-                                           BasedOn="{StaticResource {x:Type DataGridRow}}">
-                                        <Setter Property="ContextMenu"
-                                                Value="{StaticResource ItemsCM}" />
-                                    </Style>
-                                </DataGrid.RowStyle>
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Ρούχο"
-                                                        Width="57"
-                                                        Binding="{Binding Item.Name}" />
-                                    <DataGridTextColumn Header="No"
-                                                        Binding="{Binding Size}" />
-                                    <DataGridTextColumn Header="Ημερ."
-                                                        Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                    <DataGridTemplateColumn>
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Rectangle Fill="{Binding Converter={StaticResource ClothToColorConverter}}" />
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </StackPanel>
-                </TabItem>
-                <TabItem Header="Ιστορικό Ραντεβού">
-                    <StackPanel>
+                    <StackPanel Height="210">
                         <StackPanel Orientation="Horizontal">
-                            <Label Content=""/>
+                            <ComboBox Width="80"
+                                      Margin="0 5"
+                                      SelectedItem="{Binding SelectedItem}"
+                                      VerticalAlignment="Center"
+                                      ItemsSource="{Binding BasicDataManager.Items}"
+                                      DisplayMemberPath="Name" />
                             <ComboBox Width="60"
                                       SelectedItem="{Binding SelectedSize}"
-                                      Margin="5 0 0 0 "
+                                      Margin="5 0 "
                                       ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:SizeEnum}}}"
                                       VerticalAlignment="Center" />
                             <ComboBox Width="85"
@@ -1471,7 +1418,7 @@
                                   CanUserAddRows="False"
                                   VerticalAlignment="Stretch"
                                   CanUserDeleteRows="False"
-                                  Height="145"
+                                  Height="175"
                                   VirtualizingPanel.VirtualizationMode="Standard"
                                   AutoGenerateColumns="False">
                             <DataGrid.Resources>
@@ -1511,8 +1458,57 @@
                         </DataGrid>
                     </StackPanel>
                 </TabItem>
+                <TabItem Header="Ιστορικό Ραντεβού">
+                    <StackPanel Height="210">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Από:" />
+                            <DatePicker SelectedDate="{Binding HistoryFrom}" />
+                            <Button Content="Προβολή"
+                                    Padding="5 0"
+                                    Height="22"
+                                    Command="{Binding ShowHistoryCommand}"
+                                    VerticalAlignment="Center" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Width='397'>
+                            <DataGrid ItemsSource="{Binding OldShowUps}"
+                                      Width="216"
+                                      CanUserAddRows="False"
+                                      VerticalAlignment="Stretch"
+                                      CanUserDeleteRows="False"
+                                      Height="175"
+                                      VirtualizingPanel.VirtualizationMode="Standard"
+                                      AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Ημερ."
+                                                        Width="55"
+                                                        Binding="{Binding Arrived,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                    <DataGridTextColumn Header="Τύπος"
+                                                        Width="131"
+                                                        Binding="{Binding Description}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <DataGrid ItemsSource="{Binding NextAppointments}"
+                                      CanUserAddRows="False"
+                                      Width="176"
+                                      VerticalAlignment="Stretch"
+                                      CanUserDeleteRows="False"
+                                      Height="175"
+                                      Margin="5 0 0 0"
+                                      VirtualizingPanel.VirtualizationMode="Standard"
+                                      AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Ημερ."
+                                                        Width="55"
+                                                        Binding="{Binding DateTime,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                    <DataGridTextColumn Header="Τύπος"
+                                                        Binding="{Binding Description}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
             </TabControl>
-           
             <Grid Grid.Row="3">
                 <Button Content="Αποθήκευση αλλαγών"
                         HorizontalAlignment="Left"

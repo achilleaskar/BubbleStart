@@ -161,6 +161,33 @@ namespace BubbleStart.Model
 
         #endregion Fields
 
+
+
+
+
+
+        private DateTime _HistoryFrom = DateTime.Today.AddMonths(-1);
+
+        [NotMapped]
+        public DateTime HistoryFrom
+        {
+            get
+            {
+                return _HistoryFrom;
+            }
+
+            set
+            {
+                if (_HistoryFrom == value)
+                {
+                    return;
+                }
+
+                _HistoryFrom = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #region Properties
 
         public string Active
@@ -1400,6 +1427,9 @@ namespace BubbleStart.Model
         public RelayCommand SaveChangesAsyncCommand { get; set; }
 
         [NotMapped]
+        public RelayCommand ShowHistoryCommand { get; set; }
+
+        [NotMapped]
         public Change SelectedChange
         {
             get
@@ -2039,6 +2069,7 @@ namespace BubbleStart.Model
             BookCommand = new RelayCommand<string>(async obj => { await MakeBooking(obj); }, CanMakeBooking);
             DeleteItemCommand = new RelayCommand<object>((obj) => DeleteItem(obj));
             AddOldShowUpCommand = new RelayCommand<int>(async obj => { await AddOldShowUp(obj); });
+            ShowHistoryCommand = new RelayCommand(async () => await ShowHistory());
             SaveChangesAsyncCommand = new RelayCommand(async () => { await SaveChanges(); }, CanSaveChanges);
             CancelChangesAsyncCommand = new RelayCommand(RollBackChanges, CanSaveChanges);
             PaymentCommand = new RelayCommand(async () => { await AddPayment(); }, CanAddPayment);
@@ -2072,9 +2103,69 @@ namespace BubbleStart.Model
             DeleteProgramMassCommand = new RelayCommand(async () => { await DeleteProgramMass(); }, SelectedProgramMassageToDelete != null);
             DeleteProgramOnlineCommand = new RelayCommand(async () => { await DeleteProgramOnline(); }, SelectedProgramOnlineToDelete != null);
 
+            OldShowUps = new ObservableCollection<ShowUp>();
+            NextAppointments = new ObservableCollection<Apointment>();
+
             //DisableCustomerCommand = new RelayCommand(DisableCustomer);
             OldShowUpDate = DateOfPayment = DateOfIssue = StartDate = DateTime.Today;
             ProgramTypeIndex = -1;
+        }
+
+
+
+
+
+        private ObservableCollection<Apointment> _NextAppointments;
+
+        [NotMapped]
+        public ObservableCollection<Apointment> NextAppointments
+        {
+            get
+            {
+                return _NextAppointments;
+            }
+
+            set
+            {
+                if (_NextAppointments == value)
+                {
+                    return;
+                }
+
+                _NextAppointments = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<ShowUp> _OldShowUps;
+
+        [NotMapped]
+        public ObservableCollection<ShowUp> OldShowUps
+        {
+            get
+            {
+                return _OldShowUps;
+            }
+
+            set
+            {
+                if (_OldShowUps == value)
+                {
+                    return;
+                }
+
+                _OldShowUps = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private async Task ShowHistory()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            var apps = await BasicDataManager.Context.Context.Apointments.Where(a => a.Customer.Id == Id && a.DateTime >= HistoryFrom).ToListAsync();
+            OldShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(HistoryFrom, DateTime.Now, Id,true)).OrderByDescending(a => a.Arrived));
+            NextAppointments = new ObservableCollection<Apointment>(apps.Where(a => a.DateTime > DateTime.Now).OrderBy(a => a.DateTime));
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private void DeleteItem(object obj)
