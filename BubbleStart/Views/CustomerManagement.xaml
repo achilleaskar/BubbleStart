@@ -1367,12 +1367,9 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
-            <StackPanel Grid.Row="2"
-                        Orientation="Horizontal"
+            <TabControl Grid.Row="2"
                         Margin="5 0 0 0">
-                <GroupBox Header="Σημειώσεις"
-                          HorizontalAlignment="Left"
-                          Width="220">
+                <TabItem Header="Σημειώσεις">
                     <TextBox Height="210"
                              TextWrapping="Wrap"
                              FontSize="13"
@@ -1380,35 +1377,95 @@
                              MaxLines="200"
                              AcceptsReturn="True"
                              Text="{Binding Notes,UpdateSourceTrigger=PropertyChanged}" />
-                </GroupBox>
-                <GroupBox Header="Ρούχα">
-                    <StackPanel>
+                </TabItem>
+                <TabItem Header="Ρούχα">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <ComboBox Width="80"
-                                          Margin="0 5"
-                                          SelectedItem="{Binding SelectedItem}"
-                                          VerticalAlignment="Center"
-                                          ItemsSource="{Binding BasicDataManager.Items}"
-                                          DisplayMemberPath="Name" />
-                                <ComboBox Width="60"
-                                          SelectedItem="{Binding SelectedSize}"
-                                          Margin="5 0 0 0 "
-                                          ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:SizeEnum}}}"
-                                          VerticalAlignment="Center" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <ComboBox Width="85"
-                                          SelectedItem="{Binding SelectedColor}"
-                                          Margin="0 5 5 5"
-                                          ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:ClothColors}}}"
-                                          VerticalAlignment="Center" />
-                                <Button Content="Προσθήκη"
-                                        Padding="5 0"
-                                        Height="22"
-                                        Command="{Binding AddItemCommand}"
-                                        VerticalAlignment="Center" />
-                            </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <ComboBox Width="80"
+                                              Margin="0 5"
+                                              SelectedItem="{Binding SelectedItem}"
+                                              VerticalAlignment="Center"
+                                              ItemsSource="{Binding BasicDataManager.Items}"
+                                              DisplayMemberPath="Name" />
+                                    <ComboBox Width="60"
+                                              SelectedItem="{Binding SelectedSize}"
+                                              Margin="5 0 0 0 "
+                                              ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:SizeEnum}}}"
+                                              VerticalAlignment="Center" />
+                                    <ComboBox Width="85"
+                                              SelectedItem="{Binding SelectedColor}"
+                                              Margin="0 5 5 5"
+                                              ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:ClothColors}}}"
+                                              VerticalAlignment="Center" />
+                                    <Button Content="Προσθήκη"
+                                            Padding="5 0"
+                                            Height="22"
+                                            Command="{Binding AddItemCommand}"
+                                            VerticalAlignment="Center" />
+                                </StackPanel>
+                            <DataGrid ItemsSource="{Binding Items}"
+                                      CanUserAddRows="False"
+                                      VerticalAlignment="Stretch"
+                                      CanUserDeleteRows="False"
+                                      Height="145"
+                                      VirtualizingPanel.VirtualizationMode="Standard"
+                                      AutoGenerateColumns="False">
+                                <DataGrid.Resources>
+                                    <ContextMenu x:Key="ItemsCM">
+                                        <MenuItem Header="Διαγραφή"
+                                                  Command="{Binding DataContext.DeleteItemCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                                  CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </DataGrid.Resources>
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="{x:Type DataGridRow}"
+                                           BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                        <Setter Property="ContextMenu"
+                                                Value="{StaticResource ItemsCM}" />
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Ρούχο"
+                                                        Width="57"
+                                                        Binding="{Binding Item.Name}" />
+                                    <DataGridTextColumn Header="No"
+                                                        Binding="{Binding Size}" />
+                                    <DataGridTextColumn Header="Ημερ."
+                                                        Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Rectangle Fill="{Binding Converter={StaticResource ClothToColorConverter}}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                </TabItem>
+                <TabItem Header="Ιστορικό Ραντεβού">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content=""/>
+                            <ComboBox Width="60"
+                                      SelectedItem="{Binding SelectedSize}"
+                                      Margin="5 0 0 0 "
+                                      ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:SizeEnum}}}"
+                                      VerticalAlignment="Center" />
+                            <ComboBox Width="85"
+                                      SelectedItem="{Binding SelectedColor}"
+                                      Margin="0 5 5 5"
+                                      ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:ClothColors}}}"
+                                      VerticalAlignment="Center" />
+                            <Button Content="Προσθήκη"
+                                    Padding="5 0"
+                                    Height="22"
+                                    Command="{Binding AddItemCommand}"
+                                    VerticalAlignment="Center" />
                         </StackPanel>
                         <DataGrid ItemsSource="{Binding Items}"
                                   CanUserAddRows="False"
@@ -1453,8 +1510,9 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </StackPanel>
-                </GroupBox>
-            </StackPanel>
+                </TabItem>
+            </TabControl>
+           
             <Grid Grid.Row="3">
                 <Button Content="Αποθήκευση αλλαγών"
                         HorizontalAlignment="Left"
