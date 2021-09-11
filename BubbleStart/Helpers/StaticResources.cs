@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using BubbleStart.Model;
+﻿using BubbleStart.Model;
+using System.Collections.Generic;
 using static BubbleStart.Model.Program;
 
 namespace BubbleStart.Helpers
@@ -10,9 +10,10 @@ namespace BubbleStart.Helpers
 
         //public static string[] Districts { get; set; } = { "Ευζώνων", "Λαογραφικό Μουσείο", "Μπότσαρη", "Πανόραμα", "Σχολή Τυφλων", "Φάληρο", "Άλλο" };
         public static List<int> Months { get; set; } = new List<int> { 0, 1, 2, 3, 6, 12 };
+
         //public static ObservableCollection<District> Districts { get; set; } = new ObservableCollection<District>();
 
-        public static string DecimalToString(decimal value) => value.ToString("C2").Replace(".00", "").Replace(",00", "").Replace(" ","");
+        public static string DecimalToString(decimal value) => value.ToString("C2").Replace(".00", "").Replace(",00", "").Replace(" ", "");
 
         public static string ProgramEnumToString(ProgramTypes ProgramType)
         {
@@ -68,13 +69,19 @@ namespace BubbleStart.Helpers
 
                 case ProgramTypes.summerDeal:
                     return "Summer Deal";
+
                 case ProgramTypes.OutDoor:
                     return "OutDoor";
+
                 case ProgramTypes.September:
                     return "September Deal";
+
+                case ProgramTypes.Month:
+                    return "Μηνιαίο πακέτο Γυμναστικής";
             }
             return "Σφάλμα";
         }
+
         public static string ToGreek(string searchTerm)
         {
             string toReturn = "";

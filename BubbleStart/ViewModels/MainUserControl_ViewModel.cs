@@ -52,6 +52,7 @@ namespace BubbleStart.ViewModels
             myWorksheet.Cells["D1"].Value = "Τηλέφωνο";
             myWorksheet.Cells["E1"].Value = "Email";
             myWorksheet.Cells["F1"].Value = "Ενεργός";
+            myWorksheet.Cells["G1"].Value = "Εμβόλιο";
             foreach (Customer customer in BasicDataManager.Customers)
             {
                 lineNum++;
@@ -61,6 +62,7 @@ namespace BubbleStart.ViewModels
                 myWorksheet.Cells["D" + lineNum].Value = !string.IsNullOrEmpty(customer.Tel) && customer.Tel.Length >= 10 && !customer.Tel.StartsWith("000") ? customer.Tel : "";
                 myWorksheet.Cells["E" + lineNum].Value = customer.Email;
                 myWorksheet.Cells["F" + lineNum].Value = customer.ActiveCustomer ? "ΝΑΙ" : "ΟΧΙ";
+                myWorksheet.Cells["G" + lineNum].Value = customer.Vacinated ? "Έκανε" : "Δεν έκανε";
 
             }
             myWorksheet.Column(1).Width = 4;
@@ -69,6 +71,7 @@ namespace BubbleStart.ViewModels
             myWorksheet.Column(4).Width = 12;
             myWorksheet.Column(5).Width = 30;
             myWorksheet.Column(6).Width = 8;
+            myWorksheet.Column(6).Width = 13;
 
 
             //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());

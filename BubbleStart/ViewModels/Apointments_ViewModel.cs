@@ -1,6 +1,5 @@
 ﻿using BubbleStart.Helpers;
 using BubbleStart.Messages;
-using BubbleStart.Migrations;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -15,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BubbleStart.ViewModels
 {
@@ -35,6 +35,28 @@ namespace BubbleStart.ViewModels
         }
 
         public bool HasDays => Days != null && Days.Count > 0;
+
+        private DateTime _SelectedDayToGo;
+
+        public DateTime SelectedDayToGo
+        {
+            get
+            {
+                return _SelectedDayToGo;
+            }
+
+            set
+            {
+                if (_SelectedDayToGo == value)
+                {
+                    return;
+                }
+
+                _SelectedDayToGo = value;
+
+                RaisePropertyChanged();
+            }
+        }
 
         public RelayCommand ShowProgramCommand { get; set; }
 
@@ -197,6 +219,7 @@ namespace BubbleStart.ViewModels
         public async Task CreateProgram(bool refresh = true)
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
             DateTime tmpdate = StartDate.AddDays(6);
 
             List<Apointment> apointments = refresh ? await BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToListAsync() :
@@ -218,7 +241,7 @@ namespace BubbleStart.ViewModels
             foreach (var ap in closedHours)
             {
                 numOfDay = ((int)ap.Date.DayOfWeek + 6) % 7;
-                if (numOfDay < 5 && ap.Date.Hour >= 8 && ap.Date.Hour <= 20)
+                if (numOfDay < 6 && ap.Date.Hour >= 8 && ap.Date.Hour <= 21)
                 {
                     if (ap.Room == 0)
                     {
@@ -238,7 +261,7 @@ namespace BubbleStart.ViewModels
             foreach (var ap in apointments)
             {
                 numOfDay = ((int)ap.DateTime.DayOfWeek + 6) % 7;
-                if (numOfDay < 5 && ap.DateTime.Hour >= 8 && ap.DateTime.Hour <= 20)
+                if (numOfDay < 6 && ap.DateTime.Hour >= 8 && ap.DateTime.Hour <= 21)
                 {
                     if (ap.Room == 0)
                         Days[numOfDay].Hours[ap.DateTime.Hour - 8].AppointmentsFunctional.Add(ap);
@@ -258,6 +281,7 @@ namespace BubbleStart.ViewModels
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             StartDate = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek + 6) % 7);
+            SelectedDayToGo = DateTime.Today;
             Days = new ObservableCollection<Day>();
         }
 
@@ -269,7 +293,7 @@ namespace BubbleStart.ViewModels
         private async Task NextWeek()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            StartDate = StartDate.AddDays(7);
+            SelectedDayToGo = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7 + 7);
             await CreateProgram();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -277,7 +301,8 @@ namespace BubbleStart.ViewModels
         private async Task PreviousWeek()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            StartDate = StartDate.AddDays(-7);
+            SelectedDayToGo = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7 - 7);
+
             await CreateProgram();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -376,6 +401,37 @@ namespace BubbleStart.ViewModels
             AppointmentsReformer = new ObservableCollection<Apointment>();
         }
 
+        public SolidColorBrush ClosedColor0 => GetClosedColor(0);
+
+        private SolidColorBrush GetClosedColor(int v)
+        {
+            if (v == 0)
+            {
+                if (ClosedHour0 != null)
+                {
+                    return new SolidColorBrush(Colors.Red);
+                }
+                else
+                {
+                    return new SolidColorBrush(Colors.LightYellow);
+                }
+            }
+            else if (v == 1)
+            {
+                if (ClosedHour1 != null)
+                {
+                    return new SolidColorBrush(Colors.Red);
+                }
+                else
+                {
+                    return new SolidColorBrush(Colors.BlanchedAlmond);
+                }
+            }
+            return new SolidColorBrush(Colors.BlanchedAlmond);
+        }
+
+        public SolidColorBrush ClosedColor1 => GetClosedColor(1);
+
         private async Task ToggleEnabled(int room)
         {
             if (room == 0)
@@ -383,7 +439,7 @@ namespace BubbleStart.ViewModels
                 if (ClosedHour0 != null)
                 {
                     BasicDataManager.Context.Delete(ClosedHour0);
-                    ClosedHour0=null;
+                    ClosedHour0 = null;
                 }
                 else
                 {
@@ -396,7 +452,7 @@ namespace BubbleStart.ViewModels
                 if (ClosedHour1 != null)
                 {
                     BasicDataManager.Context.Delete(ClosedHour1);
-                    ClosedHour1=null;
+                    ClosedHour1 = null;
                 }
                 else
                 {
@@ -405,9 +461,9 @@ namespace BubbleStart.ViewModels
                 }
             }
             await BasicDataManager.SaveAsync();
-            RaisePropertyChanged(nameof(Self));
+            RaisePropertyChanged(nameof(ClosedColor1));
+            RaisePropertyChanged(nameof(ClosedColor0));
         }
-
 
         public Hour Self => this;
 

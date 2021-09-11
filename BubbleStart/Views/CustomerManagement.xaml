@@ -191,17 +191,20 @@
                        Grid.Row="6"
                        Margin="0"
                        Padding="5 5 5 0"
-                       Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                       d:Visibility="Visible"
+                       Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                        Grid.Column="0" />
                 <TextBlock Text="{Binding RemainingAmount, StringFormat=c1}"
                            Grid.Row="6"
-                           Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                           d:Visibility="Visible"
+                           Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                            Grid.Column="1"
                            Margin="0,4,0,0" />
                 <GroupBox Grid.Row="7"
                           HorizontalAlignment="Left"
                           Grid.ColumnSpan="2"
-                          Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                          d:Visibility="Visible"
+                          Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                           Header="Αγορά πακέτου">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -247,6 +250,7 @@
                                     <ComboBoxItem Content="Summer Deal" />
                                     <ComboBoxItem Content="OutDoor" />
                                     <ComboBoxItem Content="September Deal" />
+                                    <ComboBoxItem Content="Μηνιαίο πακέτο Γυμναστικής" />
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Grid.Row="0"
@@ -413,7 +417,8 @@
                 <GroupBox Grid.Row="8"
                           Grid.ColumnSpan="2"
                           HorizontalAlignment="Left"
-                          Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                          d:Visibility="Visible"
+                          Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                           Header="Προσθήκη Παρουσίας">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Ημερομ.:" />
@@ -428,7 +433,8 @@
             </Grid>
             <StackPanel Grid.Column="1"
                         Grid.RowSpan="4"
-                        Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                        d:Visibility="Visible"
+                        Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}">
                 <StackPanel Orientation="Horizontal"
                             Height="250">
                     <GroupBox Header="Παρουσίες Γυμναστικής"
@@ -610,6 +616,7 @@
                                                 <ComboBoxItem Content="Summer Deal" />
                                                 <ComboBoxItem Content="OutDoor" />
                                                 <ComboBoxItem Content="September Deal" />
+                                                <ComboBoxItem Content="Μηνιαίο πακέτο Γυμναστικής" />
                                             </ComboBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -914,6 +921,7 @@
                                                 <ComboBoxItem Content="Summer Deal" />
                                                 <ComboBoxItem Content="OutDoor" />
                                                 <ComboBoxItem Content="September Deal" />
+                                                <ComboBoxItem Content="Μηνιαίο πακέτο Γυμναστικής" />
                                             </ComboBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -1216,6 +1224,7 @@
                                                 <ComboBoxItem Content="Summer Deal" />
                                                 <ComboBoxItem Content="OutDoor" />
                                                 <ComboBoxItem Content="September Deal" />
+                                                <ComboBoxItem Content="Μηνιαίο πακέτο Γυμναστικής" />
                                             </ComboBox>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -1334,7 +1343,8 @@
                       Margin="5 0 0 0"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left"
-                          Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                      d:Visibility="Visible"
+                      Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                       Header="Αλλαγές">
                 <DataGrid ItemsSource="{Binding Changes}"
                           VerticalAlignment="Top"
@@ -1379,13 +1389,14 @@
             <TabControl Grid.Row="2"
                         Margin="5 0 0 0">
                 <TabItem Header="Σημειώσεις"
-                         Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                         d:Visibility="Visible"
+                         Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}">
                     <TextBox Height="210"
                              TextWrapping="Wrap"
                              FontSize="13"
                              MaxLength="1000"
                              MaxLines="200"
-                             Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                             Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                              AcceptsReturn="True"
                              Text="{Binding Notes,UpdateSourceTrigger=PropertyChanged}" />
                 </TabItem>

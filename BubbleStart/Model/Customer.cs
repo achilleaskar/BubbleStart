@@ -1,4 +1,8 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -14,11 +18,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-
 using static BubbleStart.Model.Program;
 
 namespace BubbleStart.Model
@@ -161,12 +160,7 @@ namespace BubbleStart.Model
 
         #endregion Fields
 
-
-
-
-
-
-        private DateTime _HistoryFrom = DateTime.Today.AddMonths(-1);
+        private DateTime _HistoryFrom = DateTime.Today.AddMonths(-3);
 
         [NotMapped]
         public DateTime HistoryFrom
@@ -1321,7 +1315,11 @@ namespace BubbleStart.Model
                 }
 
                 _ProgramTypeIndex = value;
-
+                if ((ProgramTypes)value == ProgramTypes.Month)
+                {
+                    NumOfShowUps = 30;
+                    ProgramDuration = 1;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -2111,10 +2109,6 @@ namespace BubbleStart.Model
             ProgramTypeIndex = -1;
         }
 
-
-
-
-
         private ObservableCollection<Apointment> _NextAppointments;
 
         [NotMapped]
@@ -2162,8 +2156,8 @@ namespace BubbleStart.Model
         private async Task ShowHistory()
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            OldShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(HistoryFrom, DateTime.Now, Id, true)).OrderByDescending(a => a.Arrived));
             var apps = await BasicDataManager.Context.Context.Apointments.Where(a => a.Customer.Id == Id && a.DateTime >= HistoryFrom).ToListAsync();
-            OldShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(HistoryFrom, DateTime.Now, Id,true)).OrderByDescending(a => a.Arrived));
             NextAppointments = new ObservableCollection<Apointment>(apps.Where(a => a.DateTime > DateTime.Now).OrderBy(a => a.DateTime));
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -2247,11 +2241,7 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
         private bool _Vacinated;
-
 
         public bool Vacinated
         {
@@ -2292,18 +2282,37 @@ namespace BubbleStart.Model
                 var showUpsReserved = ShowUps.Where(s => s.Arrived >= Limit && s.ProgramMode == ProgramMode.normal).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList();
                 int counter = 0;
                 Program selProg = null;
+
+                if (Id==241)
+                {
+
+                }
+
                 foreach (var showUp in showUpsReserved)
                 {
-                    if ((selProg == null || selProg.RemainingDays == 0) && progIndex < programsReversed.Count)
+                    if (selProg == null || selProg.RemainingDays == 0 || (selProg.ProgramType == ProgramTypes.Month && showUp.Arrived.Date > selProg.AddMonth()))
                     {
+                        if (progIndex >= programsReversed.Count)
+                        {
+                            if (selProg != null)
+                            {
+                                selProg.RemainingDays = 0;
+                            }
+                            break;
+                        }
                         counter = 1;
                         selProg = programsReversed[progIndex];
+                        if (selProg.ProgramType == ProgramTypes.Month && showUp.Arrived.Date > selProg.AddMonth())
+                        {
+                            progIndex++;
+                            selProg = programsReversed[progIndex];
+                        }
                         selProg.RemainingDays = selProg.Showups;
                         selProg.Color = progIndex % 2 == 0 ? new SolidColorBrush(Colors.LightGreen) : new SolidColorBrush(Colors.Orange);
                         progIndex++;
                     }
 
-                    if (selProg == null || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
+                    if (selProg == null || selProg.StartDay > showUp.Arrived || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
                         continue;
                     showUp.Color = selProg.Color;
                     showUp.Prog = selProg;
@@ -2336,7 +2345,7 @@ namespace BubbleStart.Model
                         progIndex++;
                     }
 
-                    if (selProg == null || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
+                    if (selProg == null || selProg.StartDay > showUp.Arrived || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
                         continue;
                     showUp.Color = selProg.Color;
                     showUp.Count = counter++;
@@ -2369,7 +2378,7 @@ namespace BubbleStart.Model
                         progIndex++;
                     }
 
-                    if (selProg == null || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
+                    if (selProg == null || selProg.StartDay > showUp.Arrived || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
                         continue;
                     showUp.Color = selProg.Color;
                     showUp.Count = counter++;
@@ -2402,7 +2411,7 @@ namespace BubbleStart.Model
                         progIndex++;
                     }
 
-                    if (selProg == null || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
+                    if (selProg == null || selProg.StartDay > showUp.Arrived || (selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
                         continue;
                     showUp.Color = selProg.Color;
                     showUp.Count = counter++;

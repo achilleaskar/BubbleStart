@@ -122,6 +122,7 @@
                           Margin="-10,0,10,0">
                     <DataGrid.Resources>
                         <ContextMenu x:Key="searchContextMenu"
+                                     d:Visibility="Visible"
                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                             <MenuItem Header="Διαγραφή Πελάτη"
                                       Command="{Binding DataContext.DeleteCustomerCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />

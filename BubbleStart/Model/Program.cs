@@ -1,10 +1,10 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
-using BubbleStart.Helpers;
 
 namespace BubbleStart.Model
 {
@@ -66,7 +66,6 @@ namespace BubbleStart.Model
                     return true;
             }
             return false;
-
         }
 
         private ObservableCollection<Payment> _Payments = new ObservableCollection<Payment>();
@@ -92,42 +91,63 @@ namespace BubbleStart.Model
         {
             [Description("Reformer Pilates")]
             ReformerPilates = 0,
+
             [Description("Pilates")]
             Pilates = 1,
+
             [Description("Functional")]
             Functional = 2,
+
             [Description("Pilates &amp; Functional")]
             PilatesFunctional = 3,
+
             [Description("Ελεύθερη Χρήση")]
             freeUse = 4,
+
             [Description("Medical Exercise")]
             MedicalExersise = 5,
+
             [Description("Personal")]
             dokimastiko = 6,
+
             [Description("Yoga")]
             yoga = 7,
+
             [Description("Aerial Yoga")]
             aerial = 8,
+
             [Description("Μασάζ Χαλαρωτικό 30'")]
             masasRel30 = 9,
+
             [Description("Μασάζ Χαλαρωτικό 50'")]
             masazRel50 = 10,
+
             [Description("Μασάζ Θεραπευτικό 30'")]
             masazTher30 = 11,
+
             [Description("Μασάζ Θεραπευτικό 50'")]
             masazTher50 = 12,
+
             [Description("Black Friday Deal")]
             blackfriday = 13,
+
             [Description("4+1 massage")]
             massage41 = 14,
+
             [Description("Online")]
             online = 15,
+
             [Description("Summer Deal")]
             summerDeal = 16,
+
             [Description("OutDoor")]
             OutDoor = 17,
+
             [Description("September Deal")]
-            September = 18
+            September = 18,
+
+            [Description("Μηνιαίο πακέτο Γυμναστικής")]
+            Month = 19
         }
 
         #endregion Enums
@@ -305,12 +325,15 @@ namespace BubbleStart.Model
                 case ProgramTypes.massage41:
                     ProgramMode = ProgramMode.massage;
                     break;
+
                 case ProgramTypes.online:
                     ProgramMode = ProgramMode.online;
                     break;
+
                 case ProgramTypes.OutDoor:
                     ProgramMode = ProgramMode.outdoor;
                     break;
+
                 default:
                     ProgramMode = ProgramMode.normal;
                     break;
@@ -360,9 +383,6 @@ namespace BubbleStart.Model
         #endregion Properties
 
         #region Methods
-
-
-
 
         private bool _IsSelected;
 
@@ -465,11 +485,17 @@ namespace BubbleStart.Model
                     case "Summer Deal":
                         ProgramType = ProgramTypes.summerDeal;
                         break;
+
                     case "OutDoor":
                         ProgramType = ProgramTypes.OutDoor;
                         break;
+
                     case "September Deal":
                         ProgramType = ProgramTypes.September;
+                        break;
+
+                    case "Μηνιαίο πακέτο Γυμναστικής":
+                        ProgramType = ProgramTypes.Month;
                         break;
                 }
                 RaisePropertyChanged();
@@ -530,12 +556,22 @@ namespace BubbleStart.Model
 
                 case ProgramTypes.summerDeal:
                     return "Summer Deal";
+
                 case ProgramTypes.OutDoor:
                     return "OutDoor";
+
                 case ProgramTypes.September:
                     return "September Deal";
+
+                case ProgramTypes.Month:
+                    return "Μηνιαίο πακέτο Γυμναστικής";
             }
             return "Ανενεργό";
+        }
+
+        internal DateTime AddMonth()
+        {
+            return StartDay.AddMonths(1).AddDays(-1);
         }
 
         #endregion Methods

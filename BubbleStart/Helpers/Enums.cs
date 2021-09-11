@@ -20,8 +20,6 @@ namespace BubbleStart.Helpers
         Personal = 5
     }
 
-
-
     public enum ForceDisable
     {
         normal,
@@ -37,6 +35,7 @@ namespace BubbleStart.Helpers
 
         [Description("VISA")]
         Visa = 5,
+
         [Description("Τραπεζικά")]
         Bank = 6,
     }
@@ -57,10 +56,13 @@ namespace BubbleStart.Helpers
     {
         [Description("Μαύρο")]
         mavro,
+
         [Description("Άσπρο")]
         aspro,
+
         [Description("Πράσινο")]
         prasino,
+
         [Description("Γκρί")]
         gri
     }
