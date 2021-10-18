@@ -29,6 +29,8 @@ namespace BubbleStart.Database
             {
                 Limit = new DateTime(DateTime.Today.Year - 2, 8, 20);
             }
+            Limit = new DateTime();
+
             CloseLimit = (DateTime.Today - Limit).TotalDays > 20 ? DateTime.Today.AddDays(-20) : Limit;
             //Context.Database.Log = Console.Write;
         }
@@ -55,10 +57,10 @@ namespace BubbleStart.Database
             return await Context.Users.Where(u => u.UserName == userName).FirstOrDefaultAsync();
         }
 
-        internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate, int CId = 0,bool nolimit = false)
+        internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate, int CId = 0, bool nolimit = false)
         {
             return await Context.ShowUps
-           .Where(s => (s.Arrived >= StartDate && s.Arrived < EndDate && (nolimit||s.Arrived >= Limit)) && (CId == -1 || CId == s.Customer.Id))
+           .Where(s => (s.Arrived >= StartDate && s.Arrived < EndDate && (nolimit || s.Arrived >= Limit)) && (CId == -1 || CId == s.Customer.Id))
            .Include(s => s.Customer)
            .OrderBy(s => s.Arrived)
            .ToListAsync();
@@ -342,7 +344,18 @@ namespace BubbleStart.Database
             dbSet.Remove(entity);
         }
 
+        internal async Task<List<ClosedHour>> GetAllClosedHoursAsync(int room, DateTime time)
+        {
+            List<DateTime> dates = new List<DateTime>();
+            var limit = time.AddMonths(3);
+            while (time < limit)
+            {
+                dates.Add(time);
+                time = time.AddDays(7);
+            }
 
+            return await Context.ClosedHours.Where(e => e.Room == room && dates.Any(d => d == e.Date)).ToListAsync();
+        }
 
         public async Task<IEnumerable<User>> GetAllUsersAsyncSortedByUserName()
         {
@@ -356,7 +369,14 @@ namespace BubbleStart.Database
                 await Context.Set<ShowUp>().ToListAsync();
                 await Context.Set<Change>().Where(p3 => p3.Date >= CloseLimit).ToListAsync();
                 await Context.Set<Apointment>().Where(p4 => p4.DateTime >= CloseLimit).ToListAsync();
-                await Context.Set<Program>().ToListAsync();
+                var pr = await Context.Set<Program>().ToListAsync();
+                foreach (var p in pr)
+                {
+                    if (p.Id == 909)
+                    {
+
+                    }
+                }
                 await Context.Set<Payment>().ToListAsync();
 
                 //await Context.Set<ShowUp>().Where(p2 => p2.Arrived >= Limit).ToListAsync();

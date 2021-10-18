@@ -28,6 +28,30 @@ namespace BubbleStart.Helpers
 
 
 
+
+        private ObservableCollection<ProgramType> _ProgramTypes;
+
+
+        public ObservableCollection<ProgramType> ProgramTypes
+        {
+            get
+            {
+                return _ProgramTypes;
+            }
+
+            set
+            {
+                if (_ProgramTypes == value)
+                {
+                    return;
+                }
+
+                _ProgramTypes = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
         private ObservableCollection<Customer> _Customers;
 
 
@@ -158,16 +182,19 @@ namespace BubbleStart.Helpers
         public async Task LoadAsync()
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            ProgramTypes = new ObservableCollection<ProgramType>(await Context.GetAllAsync<ProgramType>());
             Users = new ObservableCollection<User>(await Context.GetAllAsync<User>());
             Districts = new ObservableCollection<District>((await Context.GetAllAsync<District>()).OrderBy(d => d.Name));
             Customers = new ObservableCollection<Customer>(await Context.LoadAllCustomersAsync());
+
             Items = new ObservableCollection<Item>(await Context.GetAllAsync<Item>());
             _ = await Context.GetAllAsync<ItemPurchase>();
 
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
 
-            foreach (var c in Customers)
+            foreach (var c in Customers.OrderBy(c => c.Id))
             {
+                c.BasicDataManager = this;
                 c.PropertyChanged += C_PropertyChanged;
                 c.InitialLoad();
             }

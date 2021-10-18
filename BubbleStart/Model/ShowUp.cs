@@ -81,11 +81,11 @@ namespace BubbleStart.Model
 
         private string GetShowUpType()
         {
-            if (ProgramMode == ProgramMode.online)
+            if (ProgramModeNew == ProgramMode.online)
             {
                 return "Onl";
             }
-            else if (ProgramMode == ProgramMode.outdoor)
+            else if (ProgramModeNew == ProgramMode.outdoor)
             {
                 return "Out";
             }
@@ -154,6 +154,31 @@ namespace BubbleStart.Model
                 }
 
                 _Massage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private ProgramMode _ProgramModeNew;
+
+
+        public ProgramMode ProgramModeNew
+        {
+            get
+            {
+                return _ProgramModeNew;
+            }
+
+            set
+            {
+                if (_ProgramModeNew == value)
+                {
+                    return;
+                }
+
+                _ProgramModeNew = value;
                 RaisePropertyChanged();
             }
         }
@@ -244,13 +269,13 @@ namespace BubbleStart.Model
 
         private string GetProogramName()
         {
-            if (Prog != null)
+            if (Prog != null && Prog.ProgramTypeO != null)
             {
-                return ((ProgramTypes)Prog.ProgramType).AsString(EnumFormat.Description);
+                return Prog.ProgramTypeO.ProgramName;
             }
-            switch (ProgramMode)
+            switch (ProgramModeNew)
             {
-                case ProgramMode.normal:
+                case ProgramMode.functional:
                     return "Γυμναστική";
 
                 case ProgramMode.massage:

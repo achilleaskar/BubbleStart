@@ -32,13 +32,16 @@
             </Grid.ColumnDefinitions>
             <Menu DockPanel.Dock="Top"
                   Height="30"
+                  d:Visibility="Visible"
                   Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                 <MenuItem Header="Διαχείριση">
                     <MenuItem Command="{Binding OpenUsersEditCommand}"
                               Header="Χρήστες"
+                              d:Visibility="Visible"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
                     <MenuItem Command="{Binding PrintCustomersCommand}"
                               Header="Εκτύπωση όλων"
+                              d:Visibility="Visible"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
                 </MenuItem>
             </Menu>

@@ -30,6 +30,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <GroupBox Header="Έσοδα"
+                  d:Visibility="Visible"
                   Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -99,6 +100,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal"
+                            d:Visibility="Visible"
                             Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                     <StackPanel>
                         <TextBlock Text="Aπό:" />
@@ -117,6 +119,7 @@
                 </StackPanel>
                 <DataGrid ItemsSource="{Binding Expenses}"
                           Grid.Row="1"
+                          d:Visibility="Visible"
                           Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                           CanUserAddRows="False"
                           SelectedItem="{Binding SelectedExpense}"

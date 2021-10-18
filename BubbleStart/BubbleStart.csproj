@@ -218,6 +218,7 @@
     <Compile Include="Converters\ClothToColorConverter.cs" />
     <Compile Include="Converters\ContentToColorConverter.cs" />
     <Compile Include="Converters\DateTimeToString.cs" />
+    <Compile Include="Converters\DoubleParameterConverter.cs" />
     <Compile Include="Converters\EnumConverter.cs" />
     <Compile Include="Converters\FloadToStringValueConverter.cs" />
     <Compile Include="Converters\GymToColorConverter.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="Messages\LoginLogOutMessage.cs" />
     <Compile Include="Messages\OpenChildWindowCommand.cs" />
     <Compile Include="Messages\ShowExceptionMessage_Message.cs" />
+    <Compile Include="Messages\UpdateClosedHoursMessage.cs" />
     <Compile Include="Messages\UpdateProgramMessage.cs" />
     <Compile Include="Migrations\201904030918422_first2.cs" />
     <Compile Include="Migrations\201904030918422_first2.Designer.cs">
@@ -494,6 +496,30 @@
     <Compile Include="Migrations\202107271602441_closedHours.designer.cs">
       <DependentUpon>202107271602441_closedHours.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202109260952383_CertifOfIllness.cs" />
+    <Compile Include="Migrations\202109260952383_CertifOfIllness.designer.cs">
+      <DependentUpon>202109260952383_CertifOfIllness.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110171001318_programtypes.cs" />
+    <Compile Include="Migrations\202110171001318_programtypes.designer.cs">
+      <DependentUpon>202110171001318_programtypes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110171049561_changes1.cs" />
+    <Compile Include="Migrations\202110171049561_changes1.designer.cs">
+      <DependentUpon>202110171049561_changes1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110171120566_repair.cs" />
+    <Compile Include="Migrations\202110171120566_repair.designer.cs">
+      <DependentUpon>202110171120566_repair.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110172110339_programmodenew.cs" />
+    <Compile Include="Migrations\202110172110339_programmodenew.designer.cs">
+      <DependentUpon>202110172110339_programmodenew.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110181715154_psekes.cs" />
+    <Compile Include="Migrations\202110181715154_psekes.designer.cs">
+      <DependentUpon>202110181715154_psekes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -509,6 +535,7 @@
     <Compile Include="Model\ItemPurchase.cs" />
     <Compile Include="Model\Payment.cs" />
     <Compile Include="Model\Program.cs" />
+    <Compile Include="Model\ProgramType.cs" />
     <Compile Include="Model\PropertyValidateModel.cs" />
     <Compile Include="Model\ShowUp.cs" />
     <Compile Include="Model\User.cs" />
@@ -773,6 +800,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107271602441_closedHours.resx">
       <DependentUpon>202107271602441_closedHours.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109260952383_CertifOfIllness.resx">
+      <DependentUpon>202109260952383_CertifOfIllness.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110171001318_programtypes.resx">
+      <DependentUpon>202110171001318_programtypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110171049561_changes1.resx">
+      <DependentUpon>202110171049561_changes1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110171120566_repair.resx">
+      <DependentUpon>202110171120566_repair.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110172110339_programmodenew.resx">
+      <DependentUpon>202110172110339_programmodenew.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110181715154_psekes.resx">
+      <DependentUpon>202110181715154_psekes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

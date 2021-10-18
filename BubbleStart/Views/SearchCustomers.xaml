@@ -36,10 +36,30 @@
                     Background="LightBlue">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Button Content="Gym"
+                        <Button Content="Functional"
                                 Width="100"
                                 Command="{Binding ShowedUpCommand}"
                                 CommandParameter="0"
+                                Margin="5" />
+                        <Label HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Pilates"
+                                Width="100"
+                                Command="{Binding ShowedUpCommand}"
+                                CommandParameter="4"
+                                Margin="5" />
+                        <Label HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Pilates-Functional"
+                                Width="100"
+                                Command="{Binding ShowedUpCommand}"
+                                CommandParameter="6"
                                 Margin="5" />
                         <Label HorizontalAlignment="Center"
                                VerticalAlignment="Center"
@@ -74,6 +94,28 @@
                         <Label HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Content="{Binding SelectedCustomer.RemainingOutDoorDays}" />
+                    </StackPanel>
+                  
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Yoga"
+                                Width="100"
+                                Command="{Binding ShowedUpCommand}"
+                                CommandParameter="5"
+                                Margin="5" />
+                        <Label HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Aerial Yoga"
+                                Width="100"
+                                Command="{Binding ShowedUpCommand}"
+                                CommandParameter="7"
+                                Margin="5" />
+                        <Label HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center">
@@ -122,6 +164,7 @@
                           Margin="-10,0,10,0">
                     <DataGrid.Resources>
                         <ContextMenu x:Key="searchContextMenu"
+                                     d:Visibility="Visible"
                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                             <MenuItem Header="Διαγραφή Πελάτη"
                                       Command="{Binding DataContext.DeleteCustomerCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
@@ -172,10 +215,13 @@
                         <DataGridTextColumn Header="Πρόγραμμα:"
                                             Width="105"
                                             Binding="{Binding TypeOfProgram}" />
+                        <DataGridTextColumn Header="Τελ. Αγορ."
+                                            Width="70"
+                                            Binding="{Binding LastBuy,Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
                         <DataGridTextColumn Header="Gym"
                                             Width="35"
                                             FontSize="15"
-                                            Binding="{Binding RemainingTrainingDays}" />
+                                            Binding="{Binding RemainingTrainingFullDays}" />
                         <DataGridTextColumn Header="Mass"
                                             Width="40"
                                             FontSize="15"
@@ -188,6 +234,10 @@
                                             Width="30"
                                             FontSize="15"
                                             Binding="{Binding RemainingOnlineDays}" />
+                        <DataGridTextColumn Header="Yog"
+                                            Width="30"
+                                            FontSize="15"
+                                            Binding="{Binding RemainingYogaFullDays}" />
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

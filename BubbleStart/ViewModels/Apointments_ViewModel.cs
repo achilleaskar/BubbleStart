@@ -3,6 +3,8 @@ using BubbleStart.Messages;
 using BubbleStart.Migrations;
 using BubbleStart.Model;
 using BubbleStart.Views;
+using DocumentFormat.OpenXml.Office2016.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using System;
@@ -15,6 +17,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BubbleStart.ViewModels
 {
@@ -32,9 +35,32 @@ namespace BubbleStart.ViewModels
             BasicDataManager = basicDataManager;
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
             Messenger.Default.Register<UpdateProgramMessage>(this, async (msg) => await CreateProgram(false));
+            Messenger.Default.Register<UpdateClosedHoursMessage>(this, msg => RefreshProgram());
         }
 
         public bool HasDays => Days != null && Days.Count > 0;
+
+        private DateTime _SelectedDayToGo;
+
+        public DateTime SelectedDayToGo
+        {
+            get
+            {
+                return _SelectedDayToGo;
+            }
+
+            set
+            {
+                if (_SelectedDayToGo == value)
+                {
+                    return;
+                }
+
+                _SelectedDayToGo = value;
+
+                RaisePropertyChanged();
+            }
+        }
 
         public RelayCommand ShowProgramCommand { get; set; }
 
@@ -194,9 +220,49 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
+
+        public void RefreshProgram()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
+            DateTime tmpdate = StartDate.AddDays(6);
+
+            List<ClosedHour> closedHours = BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate && a.Date >= BasicDataManager.Context.Limit).ToList();
+
+            DateTime tmpDate = StartDate;
+
+            int numOfDay;
+
+            foreach (var ch in closedHours)
+            {
+                numOfDay = ((int)ch.Date.DayOfWeek + 6) % 7;
+                if (numOfDay < 6 && ch.Date.Hour >= 8 && ch.Date.Hour <= 21)
+                {
+                    if (ch.Room == 0)
+                    {
+                        Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHour0 = ch;
+                    }
+                    else
+                    {
+                        Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHour1 = ch;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Ραντεβού εκτός εβδομάδας");
+                }
+            }
+
+            RaisePropertyChanged(nameof(HasDays));
+            RaisePropertyChanged(nameof(Days));
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+
         public async Task CreateProgram(bool refresh = true)
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
             DateTime tmpdate = StartDate.AddDays(6);
 
             List<Apointment> apointments = refresh ? await BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToListAsync() :
@@ -218,7 +284,7 @@ namespace BubbleStart.ViewModels
             foreach (var ap in closedHours)
             {
                 numOfDay = ((int)ap.Date.DayOfWeek + 6) % 7;
-                if (numOfDay < 5 && ap.Date.Hour >= 8 && ap.Date.Hour <= 20)
+                if (numOfDay < 6 && ap.Date.Hour >= 8 && ap.Date.Hour <= 21)
                 {
                     if (ap.Room == 0)
                     {
@@ -238,7 +304,7 @@ namespace BubbleStart.ViewModels
             foreach (var ap in apointments)
             {
                 numOfDay = ((int)ap.DateTime.DayOfWeek + 6) % 7;
-                if (numOfDay < 5 && ap.DateTime.Hour >= 8 && ap.DateTime.Hour <= 20)
+                if (numOfDay < 6 && ap.DateTime.Hour >= 8 && ap.DateTime.Hour <= 21)
                 {
                     if (ap.Room == 0)
                         Days[numOfDay].Hours[ap.DateTime.Hour - 8].AppointmentsFunctional.Add(ap);
@@ -258,6 +324,7 @@ namespace BubbleStart.ViewModels
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             StartDate = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek + 6) % 7);
+            SelectedDayToGo = DateTime.Today;
             Days = new ObservableCollection<Day>();
         }
 
@@ -269,7 +336,7 @@ namespace BubbleStart.ViewModels
         private async Task NextWeek()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            StartDate = StartDate.AddDays(7);
+            SelectedDayToGo = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7 + 7);
             await CreateProgram();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -277,7 +344,8 @@ namespace BubbleStart.ViewModels
         private async Task PreviousWeek()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            StartDate = StartDate.AddDays(-7);
+            SelectedDayToGo = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7 - 7);
+
             await CreateProgram();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -372,9 +440,80 @@ namespace BubbleStart.ViewModels
             DeleteReformerApointmentCommand = new RelayCommand(async () => { await DeleteApointment(1); }, CanDeleteReformerApointment);
             ToggleEnabled0Command = new RelayCommand(async () => await ToggleEnabled(0));
             ToggleEnabled1Command = new RelayCommand(async () => await ToggleEnabled(1));
+            ToggleEnabled0ForEverCommand = new RelayCommand(async () => await ToggleEnabledForEver(0));
+            ToggleEnabled1ForEverCommand = new RelayCommand(async () => await ToggleEnabledForEver(1));
+            Enable0ForEverCommand = new RelayCommand(async () => await EnableForEver(0));
+            Enable1ForEverCommand = new RelayCommand(async () => await EnableForEver(1));
             AppointmentsFunctional = new ObservableCollection<Apointment>();
             AppointmentsReformer = new ObservableCollection<Apointment>();
         }
+
+        private async Task EnableForEver(int room)
+        {
+            List<ClosedHour> ClosedHours = await BasicDataManager.Context.GetAllClosedHoursAsync(room, Time);
+
+            foreach (var item in ClosedHours)
+            {
+                BasicDataManager.Delete(item);
+            }
+            await BasicDataManager.SaveAsync();
+            ClosedHour0 = ClosedHour1 = null;
+            Messenger.Default.Send(new UpdateClosedHoursMessage());
+            RaisePropertyChanged(nameof(ClosedColor1));
+            RaisePropertyChanged(nameof(ClosedColor0));
+        }
+
+        private async Task ToggleEnabledForEver(int room)
+        {
+
+            List<ClosedHour> ClosedHours = await BasicDataManager.Context.GetAllClosedHoursAsync(room, Time);
+            var limit = Time.AddMonths(3);
+            var tmpTime = Time;
+            while (tmpTime < limit)
+            {
+                if (!ClosedHours.Any(c => c.Date == tmpTime))
+                {
+                    BasicDataManager.Add(new ClosedHour { Date = tmpTime, Room = room });
+                }
+                tmpTime = tmpTime.AddDays(7);
+            }
+
+            await BasicDataManager.SaveAsync();
+            Messenger.Default.Send(new UpdateClosedHoursMessage());
+            RaisePropertyChanged(nameof(ClosedColor1));
+            RaisePropertyChanged(nameof(ClosedColor0));
+        }
+
+        public SolidColorBrush ClosedColor0 => GetClosedColor(0);
+
+        private SolidColorBrush GetClosedColor(int v)
+        {
+            if (v == 0)
+            {
+                if (ClosedHour0 != null)
+                {
+                    return new SolidColorBrush(Colors.Red);
+                }
+                else
+                {
+                    return new SolidColorBrush(Colors.LightYellow);
+                }
+            }
+            else if (v == 1)
+            {
+                if (ClosedHour1 != null)
+                {
+                    return new SolidColorBrush(Colors.Red);
+                }
+                else
+                {
+                    return new SolidColorBrush(Colors.BlanchedAlmond);
+                }
+            }
+            return new SolidColorBrush(Colors.BlanchedAlmond);
+        }
+
+        public SolidColorBrush ClosedColor1 => GetClosedColor(1);
 
         private async Task ToggleEnabled(int room)
         {
@@ -383,7 +522,7 @@ namespace BubbleStart.ViewModels
                 if (ClosedHour0 != null)
                 {
                     BasicDataManager.Context.Delete(ClosedHour0);
-                    ClosedHour0=null;
+                    ClosedHour0 = null;
                 }
                 else
                 {
@@ -396,7 +535,7 @@ namespace BubbleStart.ViewModels
                 if (ClosedHour1 != null)
                 {
                     BasicDataManager.Context.Delete(ClosedHour1);
-                    ClosedHour1=null;
+                    ClosedHour1 = null;
                 }
                 else
                 {
@@ -405,9 +544,9 @@ namespace BubbleStart.ViewModels
                 }
             }
             await BasicDataManager.SaveAsync();
-            RaisePropertyChanged(nameof(Self));
+            RaisePropertyChanged(nameof(ClosedColor1));
+            RaisePropertyChanged(nameof(ClosedColor0));
         }
-
 
         public Hour Self => this;
 
@@ -475,6 +614,10 @@ namespace BubbleStart.ViewModels
         public RelayCommand<int> CLoseHourCommand { get; set; }
         public RelayCommand ToggleEnabled1Command { get; set; }
         public RelayCommand ToggleEnabled0Command { get; set; }
+        public RelayCommand ToggleEnabled0ForEverCommand { get; set; }
+        public RelayCommand ToggleEnabled1ForEverCommand { get; set; }
+        public RelayCommand Enable0ForEverCommand { get; set; }
+        public RelayCommand Enable1ForEverCommand { get; set; }
 
         public ObservableCollection<Apointment> AppointmentsFunctional
         {

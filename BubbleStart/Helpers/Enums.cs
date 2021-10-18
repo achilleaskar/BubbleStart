@@ -4,10 +4,86 @@ namespace BubbleStart.Helpers
 {
     public enum ProgramMode
     {
-        normal,
-        massage,
-        online,
-        outdoor
+        [Description("Γυμναστικής")]
+        functional = 0,
+        [Description("Massage")]
+        massage = 1,
+        [Description("Online")]
+        online = 2,
+        [Description("Outdoor")]
+        outdoor = 3,
+        [Description("Pilates")]
+        pilates = 4,
+        [Description("Yoga")]
+        yoga = 5,
+        [Description("Pilates-Functional")]
+        pilatesFunctional = 6,
+        [Description("Aerial Yoga")]
+        aerialYoga = 7
+    }
+
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum ProgramTypes
+    {
+        [Description("Reformer Pilates")]
+        ReformerPilates = 0,
+
+        [Description("Pilates")]
+        Pilates = 1,
+
+        [Description("Functional")]
+        Functional = 2,
+
+        [Description("Pilates &amp; Functional")]
+        PilatesFunctional = 3,
+
+        [Description("Ελεύθερη Χρήση")]
+        freeUse = 4,
+
+        [Description("Medical Exercise")]
+        MedicalExersise = 5,
+
+        [Description("Personal")]
+        dokimastiko = 6,
+
+        [Description("Yoga")]
+        yoga = 7,
+
+        [Description("Aerial Yoga")]
+        aerial = 8,
+
+        [Description("Μασάζ Χαλαρωτικό 30'")]
+        masasRel30 = 9,
+
+        [Description("Μασάζ Χαλαρωτικό 50'")]
+        masazRel50 = 10,
+
+        [Description("Μασάζ Θεραπευτικό 30'")]
+        masazTher30 = 11,
+
+        [Description("Μασάζ Θεραπευτικό 50'")]
+        masazTher50 = 12,
+
+        [Description("Black Friday Deal")]
+        blackfriday = 13,
+
+        [Description("4+1 massage")]
+        massage41 = 14,
+
+        [Description("Online")]
+        online = 15,
+
+        [Description("Summer Deal")]
+        summerDeal = 16,
+
+        [Description("OutDoor")]
+        OutDoor = 17,
+
+        [Description("September Deal")]
+        September = 18,
+
+        [Description("Μηνιαίο πακέτο Γυμναστικής")]
+        Month = 19
     }
 
     public enum SelectedPersonEnum
@@ -19,8 +95,6 @@ namespace BubbleStart.Helpers
         Online = 4,
         Personal = 5
     }
-
-
 
     public enum ForceDisable
     {
@@ -37,6 +111,7 @@ namespace BubbleStart.Helpers
 
         [Description("VISA")]
         Visa = 5,
+
         [Description("Τραπεζικά")]
         Bank = 6,
     }
@@ -57,10 +132,13 @@ namespace BubbleStart.Helpers
     {
         [Description("Μαύρο")]
         mavro,
+
         [Description("Άσπρο")]
         aspro,
+
         [Description("Πράσινο")]
         prasino,
+
         [Description("Γκρί")]
         gri
     }
