@@ -200,6 +200,31 @@ namespace BubbleStart.ViewModels
 
         public RelayCommand SaveCustomerCommand { get; set; }
 
+
+
+
+        private int _SelectedAciveIndex;
+
+
+        public int SelectedAciveIndex
+        {
+            get
+            {
+                return _SelectedAciveIndex;
+            }
+
+            set
+            {
+                if (_SelectedAciveIndex == value)
+                {
+                    return;
+                }
+
+                _SelectedAciveIndex = value;
+                CustomersCollectionView?.Refresh();
+                RaisePropertyChanged();
+            }
+        }
         public string SearchTerm
         {
             get => _SearchTerm;
@@ -360,12 +385,17 @@ namespace BubbleStart.ViewModels
         {
             Customer customer = item as Customer;
 
+            if((SelectedAciveIndex==1&&customer.IsActiveColor.ToString()!= "#FF008000") || (SelectedAciveIndex == 2 && customer.IsActiveColor.ToString() == "#FF008000"))
+            {
+                return false;
+            }
             if (string.IsNullOrEmpty(SearchTerm))
             {
                 return true;
             }
             SearchTerm = SearchTerm.ToUpper();
             string tmpTerm = ToGreek(SearchTerm);
+            Console.WriteLine(customer.IsActiveColor.ToString());
             return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
         }
 

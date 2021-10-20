@@ -53,7 +53,7 @@
                                 Margin="5" />
                         <Label HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                               Content="{Binding SelectedCustomer.RemainingPilatesDays}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Button Content="Pilates-Functional"
@@ -63,7 +63,7 @@
                                 Margin="5" />
                         <Label HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                               Content="{Binding SelectedCustomer.RemainingFunctionalPilatesDays}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Button Content="Massage"
@@ -83,7 +83,7 @@
                                 Margin="5" />
                         <Label HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingOutDoorDays}" />
+                               Content="{Binding SelectedCustomer.RemainingOnlineDays}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Button Content="OutDoor"
@@ -95,7 +95,6 @@
                                VerticalAlignment="Center"
                                Content="{Binding SelectedCustomer.RemainingOutDoorDays}" />
                     </StackPanel>
-                  
                     <StackPanel Orientation="Horizontal">
                         <Button Content="Yoga"
                                 Width="100"
@@ -104,9 +103,8 @@
                                 Margin="5" />
                         <Label HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                               Content="{Binding SelectedCustomer.RemainingYogaDays}" />
                     </StackPanel>
-                    
                     <StackPanel Orientation="Horizontal">
                         <Button Content="Aerial Yoga"
                                 Width="100"
@@ -115,18 +113,18 @@
                                 Margin="5" />
                         <Label HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                               Content="{Binding SelectedCustomer.RemainingAerialYogaDays}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Center">
+                                HorizontalAlignment="Center">
                         <RadioButton Content="30'"
-                                         IsChecked="{Binding Is30min}"
-                                         VerticalAlignment="Center"
-                                         GroupName="is30or60" />
+                                     IsChecked="{Binding Is30min}"
+                                     VerticalAlignment="Center"
+                                     GroupName="is30or60" />
                         <RadioButton Content="60'"
-                                         IsChecked="True"
-                                         VerticalAlignment="Center"
-                                         GroupName="is30or60" />
+                                     IsChecked="True"
+                                     VerticalAlignment="Center"
+                                     GroupName="is30or60" />
                     </StackPanel>
                     <TextBlock Foreground="Red"
                                FontSize="9"
@@ -147,7 +145,18 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <TextBlock Text="Λέξη Κλειδί:" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Λέξη Κλειδί:"
+                               Margin="0 0 100 0" />
+                    <Label Grid.Row="0"
+                           Content="Ενεργοί:" />
+                    <ComboBox SelectedIndex="{Binding SelectedAciveIndex}"
+                              Width="70">
+                        <ComboBoxItem>ΟΛΟΙ</ComboBoxItem>
+                        <ComboBoxItem>ΝΑΙ</ComboBoxItem>
+                        <ComboBoxItem>ΟΧΙ</ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
                 <TextBox Grid.Row="1"
                          FontSize="15"
                          Margin="0 0 0 4"
@@ -160,8 +169,7 @@
                           VirtualizingPanel.VirtualizationMode="Standard"
                           IsReadOnly="True"
                           CanUserDeleteRows="False"
-                          AutoGenerateColumns="False"
-                          Margin="-10,0,10,0">
+                          AutoGenerateColumns="False">
                     <DataGrid.Resources>
                         <ContextMenu x:Key="searchContextMenu"
                                      d:Visibility="Visible"

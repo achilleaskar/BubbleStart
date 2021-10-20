@@ -9,17 +9,16 @@ namespace BubbleStart.Views
     /// </summary>
     public partial class SearchCustomers : UserControl
     {
+        #region Constructors
+
         public SearchCustomers()
         {
             InitializeComponent();
         }
 
-        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ((SearchCustomer_ViewModel)DataContext).OpenCustomerManagementCommand.Execute(null);
-        }
+        #endregion Constructors
 
-       
+        #region Methods
 
         private void Button_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -31,17 +30,6 @@ namespace BubbleStart.Views
                     e.Handled = true;
                 }
             }
-        }
-        
-
-        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ((SearchCustomer_ViewModel)DataContext).OpenActiveCustomerManagementCommand.Execute(null);
-        }
-
-        private void DataGridRow_MouseDoubleClickSide(object sender, MouseButtonEventArgs e)
-        {
-            ((SearchCustomer_ViewModel)DataContext).OpenActiveCustomerSideManagementCommand.Execute(null);
         }
 
         private void Button_PreviewMouseLeftButtonDown_1(object sender, MouseButtonEventArgs e)
@@ -56,6 +44,20 @@ namespace BubbleStart.Views
             }
         }
 
+        private void DataGridRow_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ((SearchCustomer_ViewModel)DataContext).OpenActiveCustomerManagementCommand.Execute(null);
+        }
+
+        private void DataGridRow_MouseDoubleClickSide(object sender, MouseButtonEventArgs e)
+        {
+            ((SearchCustomer_ViewModel)DataContext).OpenActiveCustomerSideManagementCommand.Execute(null);
+        }
+
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ((SearchCustomer_ViewModel)DataContext).OpenCustomerManagementCommand.Execute(null);
+        }
         private void UserControl_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key==Key.Escape)
@@ -66,5 +68,7 @@ namespace BubbleStart.Views
                 }
             }
         }
+
+        #endregion Methods
     }
 }

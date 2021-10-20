@@ -454,6 +454,40 @@
                   d:Visibility="Visible"
                   Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}">
                 <TabControl Padding="5">
+                    <TabControl.Resources>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TabItem}">
+                                        <Grid x:Name="grid">
+                                            <Border Name="Border"
+                                                    BorderBrush="Gray"
+                                                    BorderThickness="1,1,1,1"
+                                                    CornerRadius="5,5,0,0">
+                                                <TextBlock x:Name="ContentSite"
+                                                           VerticalAlignment="Center"
+                                                           HorizontalAlignment="Center"
+                                                           FontSize="14"
+                                                           Text="{TemplateBinding Header}"
+                                                           Margin="12,2,12,2" />
+                                            </Border>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected"
+                                                     Value="True">
+                                                <Setter TargetName="ContentSite"
+                                                        Property="FontWeight"
+                                                        Value="Bold" />
+                                                <Setter TargetName="Border"
+                                                        Property="BorderBrush"
+                                                        Value="Black" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.Resources>
                     <TabItem Header="Indoor">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal"

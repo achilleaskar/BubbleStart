@@ -3967,41 +3967,76 @@ namespace BubbleStart.Model
         internal void ShowedUp(bool arrived, ProgramMode mode, bool is30min = false)
         {
             IsPracticing = arrived;
-            if (mode == ProgramMode.massage)
+            int remain;
+            switch (mode)
             {
-                int remain = RemainingMassageDays;
-                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
-                if (RemainingMassageDays != 0) return;
-                MessageBox.Show(remain > 0
-                    ? $"Αυτή ήταν η τελευταία συνεδρία μασάζ του {ToString()}"
-                    : $"Οι συνεδρίες μασάζ του {ToString()} έχουν τελειώσει");
-            }
-            else if (mode == ProgramMode.functional)
-            {
-                int remain = RemainingTrainingDays;
-                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
-                if (RemainingTrainingDays != 0) return;
-                MessageBox.Show(remain > 0
-                    ? $"Αυτή ήταν η τελευταία συνεδρία γυμναστικής του {ToString()}"
-                    : $"Οι συνεδρίες γυμναστικής του {ToString()} έχουν τελειώσει");
-            }
-            else if (mode == ProgramMode.online)
-            {
-                int remain = RemainingOnlineDays;
-                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
-                if (RemainingOnlineDays != 0) return;
-                MessageBox.Show(remain > 0
-                    ? $"Αυτή ήταν η τελευταία συνεδρία Online του {ToString()}"
-                    : $"Οι συνεδρίες Online του {ToString()} έχουν τελειώσει");
-            }
-            else if (mode == ProgramMode.outdoor)
-            {
-                int remain = RemainingOutDoorDays;
-                ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
-                if (RemainingOutDoorDays != 0) return;
-                MessageBox.Show(remain > 0
-                    ? $"Αυτή ήταν η τελευταία συνεδρία OutDoor του {ToString()}"
-                    : $"Οι συνεδρίες OutDoor του {ToString()} έχουν τελειώσει");
+                case ProgramMode.functional:
+                    remain = RemainingTrainingDays;
+                    ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
+                    if (RemainingTrainingDays != 0) return;
+                    MessageBox.Show(remain > 0
+                        ? $"Αυτή ήταν η τελευταία συνεδρία γυμναστικής του {ToString()}"
+                        : $"Οι συνεδρίες γυμναστικής του {ToString()} έχουν τελειώσει");
+                    break;
+                case ProgramMode.massage:
+                    remain = RemainingMassageDays;
+                    ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
+                    if (RemainingMassageDays != 0) return;
+                    MessageBox.Show(remain > 0
+                        ? $"Αυτή ήταν η τελευταία συνεδρία μασάζ του {ToString()}"
+                        : $"Οι συνεδρίες μασάζ του {ToString()} έχουν τελειώσει");
+                    break;
+                case ProgramMode.online:
+                    remain = RemainingOnlineDays;
+                    ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
+                    if (RemainingOnlineDays != 0) return;
+                    MessageBox.Show(remain > 0
+                        ? $"Αυτή ήταν η τελευταία συνεδρία Online του {ToString()}"
+                        : $"Οι συνεδρίες Online του {ToString()} έχουν τελειώσει");
+                    break;
+                case ProgramMode.outdoor:
+                    remain = RemainingOutDoorDays;
+                    ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
+                    if (RemainingOutDoorDays != 0) return;
+                    MessageBox.Show(remain > 0
+                        ? $"Αυτή ήταν η τελευταία συνεδρία OutDoor του {ToString()}"
+                        : $"Οι συνεδρίες OutDoor του {ToString()} έχουν τελειώσει");
+                    break;
+                case ProgramMode.pilates:
+                    remain = RemainingPilatesDays;
+                    ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
+                    if (RemainingPilatesDays != 0) return;
+                    MessageBox.Show(remain > 0
+                        ? $"Αυτή ήταν η τελευταία συνεδρία πιλάτες του {ToString()}"
+                        : $"Οι συνεδρίες πιλάτες του {ToString()} έχουν τελειώσει");
+                    break;
+                case ProgramMode.yoga:
+                    remain = RemainingYogaDays;
+                    ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
+                    if (RemainingYogaDays != 0) return;
+                    MessageBox.Show(remain > 0
+                        ? $"Αυτή ήταν η τελευταία συνεδρία yoga του {ToString()}"
+                        : $"Οι συνεδρίες yoga του {ToString()} έχουν τελειώσει");
+                    break;
+                case ProgramMode.pilatesFunctional:
+                    remain = RemainingFunctionalPilatesDays;
+                    ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
+                    if (RemainingFunctionalPilatesDays != 0) return;
+                    MessageBox.Show(remain > 0
+                        ? $"Αυτή ήταν η τελευταία functional-pilates yoga του {ToString()}"
+                        : $"Οι συνεδρίες functional-pilates του {ToString()} έχουν τελειώσει");
+                    break;
+                case ProgramMode.aerialYoga:
+                    remain = RemainingAerialYogaDays;
+                    ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
+                    if (RemainingAerialYogaDays != 0) return;
+                    MessageBox.Show(remain > 0
+                        ? $"Αυτή ήταν η τελευταία Aerial-Yoga του {ToString()}"
+                        : $"Οι συνεδρίες Aerial-Yoga του {ToString()} έχουν τελειώσει");
+                    break;
+                default:
+                    MessageBox.Show("Error");
+                    break;
             }
         }
 
