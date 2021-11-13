@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using BubbleStart.Model;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace BubbleStart.Database
 {
@@ -294,6 +295,8 @@ namespace BubbleStart.Database
 
             foreach (var relationship in deletedRelationships)
                 relationship.ChangeState(EntityState.Unchanged);
+
+
         }
 
         private bool RelationshipContainsKeyEntry(ObjectStateEntry stateEntry)
@@ -305,13 +308,13 @@ namespace BubbleStart.Database
             return keys.Any(key => objectContext.ObjectStateManager.GetObjectStateEntry(key).Entity == null);
         }
 
-        internal async Task<IEnumerable<Payment>> GetAllPaymentsAsync(DateTime startDateCash, DateTime endDateCash)
+        internal async Task<IEnumerable<Payment>> GetAllPaymentsAsync(DateTime startDateCash, DateTime endDateCash, bool limit = true)
         {
             try
             {
                 endDateCash = endDateCash.AddDays(1);
                 return await Context.Set<Payment>()
-                    .Where(p => p.Date >= startDateCash && p.Date < endDateCash && p.Date >= Limit)
+                    .Where(p => p.Date >= startDateCash && p.Date < endDateCash && (!limit || p.Date >= Limit))
                         .Include(p => p.Customer)
                         .ToListAsync();
             }
@@ -321,9 +324,9 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp)
+        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true)
         {
-            return await Context.Expenses.Where(e => e.Date >= Limit).Where(filterp)
+            return await Context.Expenses.Where(e => !limit || e.Date >= Limit).Where(filterp)
                 .Include(e => e.User)
                 .ToListAsync();
         }
@@ -366,18 +369,11 @@ namespace BubbleStart.Database
         {
             try
             {
-                await Context.Set<ShowUp>().ToListAsync();
-                await Context.Set<Change>().Where(p3 => p3.Date >= CloseLimit).ToListAsync();
+                await Context.Set<ShowUp>().Where(s => s.Arrived >= s.Customer.ResetDate).ToListAsync();
+                await Context.Set<Change>().Where(s => s.Date >= s.Customer.ResetDate).ToListAsync();
                 await Context.Set<Apointment>().Where(p4 => p4.DateTime >= CloseLimit).ToListAsync();
-                var pr = await Context.Set<Program>().ToListAsync();
-                foreach (var p in pr)
-                {
-                    if (p.Id == 909)
-                    {
-
-                    }
-                }
-                await Context.Set<Payment>().ToListAsync();
+                var pr = await Context.Set<Program>().Where(p => p.StartDay >= p.Customer.ResetDate).ToListAsync();
+                await Context.Set<Payment>().Where(s => s.Program.StartDay >= s.Customer.ResetDate ||(s.Program==null && s.Date>=s.Customer.ResetDate)).ToListAsync();
 
                 //await Context.Set<ShowUp>().Where(p2 => p2.Arrived >= Limit).ToListAsync();
                 //await Context.Set<Change>().Where(p3 => p3.Date >= CloseLimit).ToListAsync();
@@ -407,6 +403,20 @@ namespace BubbleStart.Database
             {
                 return null;
             }
+        }
+
+        internal async Task<List<Apointment>> GetAllAppointmentsThisDayAsync(int id, DateTime time, int type)
+        {
+            List<DateTime> dates = new List<DateTime>();
+            var limit = time.AddMonths(3);
+            while (time.Month != 8)
+            {
+                dates.Add(time);
+                time = time.AddDays(7);
+            }
+
+            return await Context.Apointments.Where(a => a.Customer.Id == id && dates.Any(d => d == a.DateTime)).ToListAsync();
+
         }
 
         //public async Task<IEnumerable<Customer>> LoadAllCustomersAsyncb()

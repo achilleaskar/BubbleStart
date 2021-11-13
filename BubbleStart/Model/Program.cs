@@ -144,6 +144,33 @@ namespace BubbleStart.Model
 
         #region Properties
 
+
+
+
+
+
+
+        private Customer _Customer;
+
+
+        public Customer Customer
+        {
+            get
+            {
+                return _Customer;
+            }
+
+            set
+            {
+                if (_Customer == value)
+                {
+                    return;
+                }
+
+                _Customer = value;
+                RaisePropertyChanged();
+            }
+        }
         public decimal Amount
         {
             get => _Amount;
@@ -452,74 +479,11 @@ namespace BubbleStart.Model
 
         public override string ToString()
         {
-            if (ProgramTypeO!=null)
+            if (ProgramTypeO != null)
             {
                 return ProgramTypeO.ProgramName;
             }
             return "Ανενεργό";
-
-            //switch (ProgramType)
-            //{
-            //    case ProgramTypes.ReformerPilates:
-            //        return "Reformer Pilates";
-
-            //    case ProgramTypes.Pilates:
-            //        return "Pilates";
-
-            //    case ProgramTypes.Functional:
-            //        return "Functional";
-
-            //    case ProgramTypes.PilatesFunctional:
-            //        return "Pilates & Functional";
-
-            //    case ProgramTypes.freeUse:
-            //        return "Ελεύθερη Χρήση";
-
-            //    case ProgramTypes.MedicalExersise:
-            //        return "Medical Exercise";
-
-            //    case ProgramTypes.dokimastiko:
-            //        return "Personal";
-
-            //    case ProgramTypes.yoga:
-            //        return "Yoga";
-
-            //    case ProgramTypes.aerial:
-            //        return "Aerial Yoga";
-
-            //    case ProgramTypes.masasRel30:
-            //        return "Μασάζ Χαλαρωτικό 30'";
-
-            //    case ProgramTypes.masazRel50:
-            //        return "Μασάζ Χαλαρωτικό 50'";
-
-            //    case ProgramTypes.masazTher30:
-            //        return "Μασάζ Θεραπευτικό 30'";
-
-            //    case ProgramTypes.masazTher50:
-            //        return "Μασάζ Θεραπευτικό 50'";
-
-            //    case ProgramTypes.blackfriday:
-            //        return "Black Friday Deal";
-
-            //    case ProgramTypes.massage41:
-            //        return "4+1 massage";
-
-            //    case ProgramTypes.online:
-            //        return "Online";
-
-            //    case ProgramTypes.summerDeal:
-            //        return "Summer Deal";
-
-            //    case ProgramTypes.OutDoor:
-            //        return "OutDoor";
-
-            //    case ProgramTypes.September:
-            //        return "September Deal";
-
-            //    case ProgramTypes.Month:
-            //        return "Μηνιαίο πακέτο Γυμναστικής";
-            //}
         }
 
         internal DateTime AddMonth()

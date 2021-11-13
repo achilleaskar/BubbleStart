@@ -21,6 +21,56 @@ namespace BubbleStart.Model
 
         #endregion Fields
 
+
+
+
+        private DateTime _From;
+
+
+        public DateTime From
+        {
+            get
+            {
+                return _From;
+            }
+
+            set
+            {
+                if (_From == value)
+                {
+                    return;
+                }
+
+                _From = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private DateTime _To;
+
+
+        public DateTime To
+        {
+            get
+            {
+                return _To;
+            }
+
+            set
+            {
+                if (_To == value)
+                {
+                    return;
+                }
+
+                _To = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #region Properties
 
 

@@ -21,7 +21,6 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <GroupBox Header="Γυμανστής">
-
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center">
                         <RadioButton Content="Γωγώ"
@@ -30,7 +29,7 @@
                         <RadioButton Content="Δημήτρης"
                                      IsChecked="{Binding IsDimitrisChecked}"
                                      GroupName="Options1"
-                                     Margin="5 0" /> 
+                                     Margin="5 0" />
                         <RadioButton Content="Yoga"
                                      IsChecked="{Binding IsYogaChecked}"
                                      GroupName="Options1"
@@ -85,13 +84,16 @@
                                             Binding="{Binding Age}" />
                     </DataGrid.Columns>
                 </DataGrid>
-                <StackPanel Grid.Row="4" Orientation="Horizontal">
+                <StackPanel Grid.Row="4"
+                            Orientation="Horizontal">
                     <Button Content="Προσθήκη για πάντα"
-                            Margin="5" CommandParameter="1"
-                            Command="{Binding AddCustomerCommand}"/>
+                            Margin="5"
+                            CommandParameter="1"
+                            Command="{Binding AddCustomerCommand}" />
                     <Button Content="Διαγραφή επόμενων"
-                            Margin="0 5 5 5" 
-                            Command="{Binding AddCustomerCommand}" CommandParameter="2" />
+                            Margin="0 5 5 5"
+                            Command="{Binding AddCustomerCommand}"
+                            CommandParameter="2" />
                 </StackPanel>
             </Grid>
         </GroupBox>

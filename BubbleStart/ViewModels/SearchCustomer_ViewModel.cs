@@ -23,6 +23,32 @@ namespace BubbleStart.ViewModels
         {
         }
 
+
+
+
+        private int _SelectedProgramModeIndex;
+
+
+        public int SelectedProgramModeIndex
+        {
+            get
+            {
+                return _SelectedProgramModeIndex;
+            }
+
+            set
+            {
+                if (_SelectedProgramModeIndex == value)
+                {
+                    return;
+                }
+
+                _SelectedProgramModeIndex = value;
+                CustomersCollectionView.Refresh();
+                RaisePropertyChanged();
+            }
+        }
+
         public SearchCustomer_ViewModel(BasicDataManager basicDataManager)
         {
             BasicDataManager = basicDataManager;
@@ -381,6 +407,8 @@ namespace BubbleStart.ViewModels
             SelectedCustomer.InitialLoad();
         }
 
+       
+
         private bool CustomerFilter(object item)
         {
             Customer customer = item as Customer;
@@ -389,13 +417,17 @@ namespace BubbleStart.ViewModels
             {
                 return false;
             }
+            if (SelectedProgramModeIndex>0 && !customer.HasActiveProgram(((ProgramMode)(SelectedProgramModeIndex - 1))))
+            {
+                return false;
+            }
+
             if (string.IsNullOrEmpty(SearchTerm))
             {
                 return true;
             }
             SearchTerm = SearchTerm.ToUpper();
             string tmpTerm = ToGreek(SearchTerm);
-            Console.WriteLine(customer.IsActiveColor.ToString());
             return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
         }
 

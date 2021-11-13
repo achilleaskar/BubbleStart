@@ -2,6 +2,7 @@
 
 namespace BubbleStart.Helpers
 {
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum ProgramMode
     {
         [Description("Γυμναστικής")]

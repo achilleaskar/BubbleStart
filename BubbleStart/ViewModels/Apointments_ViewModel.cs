@@ -1,10 +1,7 @@
 ﻿using BubbleStart.Helpers;
 using BubbleStart.Messages;
-using BubbleStart.Migrations;
 using BubbleStart.Model;
 using BubbleStart.Views;
-using DocumentFormat.OpenXml.Office2016.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using System;
@@ -220,7 +217,6 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
-
         public void RefreshProgram()
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -257,7 +253,6 @@ namespace BubbleStart.ViewModels
             RaisePropertyChanged(nameof(Days));
             Mouse.OverrideCursor = Cursors.Arrow;
         }
-
 
         public async Task CreateProgram(bool refresh = true)
         {
@@ -465,7 +460,6 @@ namespace BubbleStart.ViewModels
 
         private async Task ToggleEnabledForEver(int room)
         {
-
             List<ClosedHour> ClosedHours = await BasicDataManager.Context.GetAllClosedHoursAsync(room, Time);
             var limit = Time.AddMonths(3);
             var tmpTime = Time;
@@ -730,14 +724,20 @@ namespace BubbleStart.ViewModels
             if (customer != null)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
+
                 Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type };
                 if (forever)
                 {
+                    List<Apointment> nextAppoitments = await BasicDataManager.Context.GetAllAppointmentsThisDayAsync(customer.Id, Time, type);
+
                     DateTime tmpdate = Time;
                     while (Time.Month != 8)
                     {
                         Time = Time.AddDays(7);
-                        BasicDataManager.Add(new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type });
+                        if (!nextAppoitments.Any(c => c.DateTime == Time))
+                        {
+                            BasicDataManager.Add(new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type });
+                        }
                     }
                 }
                 if ((type == 0 && !AppointmentsFunctional.Any(a => a.Customer.Id == ap.Customer.Id)) || (type == 1 && !AppointmentsReformer.Any(api => api.Customer.Id == ap.Customer.Id)))

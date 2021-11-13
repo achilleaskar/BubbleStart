@@ -14,23 +14,87 @@ namespace BubbleStart.Helpers
 {
     public class BasicDataManager : ViewModelBase
     {
+        #region Constructors
+
         public BasicDataManager(GenericRepository genericRepository)
         {
             Context = genericRepository;
             RefreshCommand = new RelayCommand(async () => await Refresh());
         }
 
-
-        public bool HasChanges()
-        {
-            return Context.HasChanges();
-        }
+        #endregion Constructors
 
 
+        #region Fields
 
+        private ObservableCollection<Customer> _Customers;
+
+        private ObservableCollection<District> _Districts;
+
+        private ObservableCollection<Item> _Items;
 
         private ObservableCollection<ProgramType> _ProgramTypes;
 
+        private ObservableCollection<Customer> _TodaysApointments;
+
+        private ObservableCollection<User> _Users;
+
+        #endregion Fields
+
+        #region Properties
+
+        public GenericRepository Context { get; set; }
+
+        public ObservableCollection<Customer> Customers
+        {
+            get => _Customers;
+
+            set
+            {
+                if (_Customers == value)
+                {
+                    return;
+                }
+
+                _Customers = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<District> Districts
+        {
+            get => _Districts;
+
+            set
+            {
+                if (_Districts == value)
+                {
+                    return;
+                }
+
+                _Districts = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Item> Items
+        {
+            get
+            {
+                return _Items;
+            }
+
+            set
+            {
+                if (_Items == value)
+                {
+                    return;
+                }
+
+                _Items = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public ObservableCollection<ProgramType> ProgramTypes
         {
@@ -51,112 +115,7 @@ namespace BubbleStart.Helpers
             }
         }
 
-
-        private ObservableCollection<Customer> _Customers;
-
-
-        public ObservableCollection<Customer> Customers
-        {
-            get => _Customers;
-
-            set
-            {
-                if (_Customers == value)
-                {
-                    return;
-                }
-
-                _Customers = value;
-                RaisePropertyChanged();
-            }
-        }
-        private ObservableCollection<District> _Districts;
-
-
-
-
-
-
-
-        private ObservableCollection<Item> _Items;
-
-
-        public ObservableCollection<Item> Items
-        {
-            get
-            {
-                return _Items;
-            }
-
-            set
-            {
-                if (_Items == value)
-                {
-                    return;
-                }
-
-                _Items = value;
-                RaisePropertyChanged();
-            }
-        }
-        public ObservableCollection<District> Districts
-        {
-            get => _Districts;
-
-            set
-            {
-                if (_Districts == value)
-                {
-                    return;
-                }
-
-                _Districts = value;
-                RaisePropertyChanged();
-            }
-        }
-        public async Task Refresh()
-        {
-            var oldContext = Context;
-            Context = new GenericRepository();
-            oldContext.Dispose();
-            await LoadAsync();
-        }
-        internal void Delete<TEntity>(TEntity model) where TEntity : BaseModel, new()
-        {
-            Context.Delete(model);
-            if (model is Customer c)
-            {
-                Customers.Remove(c);
-            }
-
-        }
-
-        internal async Task SaveAsync()
-        {
-            Mouse.OverrideCursor = Cursors.Wait;
-
-            await Context.SaveAsync();
-            Mouse.OverrideCursor = Cursors.Arrow;
-
-        }
-        private ObservableCollection<User> _Users;
-        private ObservableCollection<Customer> _TodaysApointments;
-
-        public ObservableCollection<User> Users
-        {
-            get => _Users;
-
-            set
-            {
-                if (_Users == value)
-                {
-                    return;
-                }
-
-                _Users = value;
-                RaisePropertyChanged();
-            }
-        }
+        public RelayCommand RefreshCommand { get; set; }
 
         public ObservableCollection<Customer> TodaysApointments
         {
@@ -174,11 +133,30 @@ namespace BubbleStart.Helpers
             }
         }
 
-        internal void Add<TEntity>(TEntity model) where TEntity : BaseModel, new()
+        public ObservableCollection<User> Users
         {
-            Context.Add(model);
+            get => _Users;
+
+            set
+            {
+                if (_Users == value)
+                {
+                    return;
+                }
+
+                _Users = value;
+                RaisePropertyChanged();
+            }
         }
 
+        #endregion Properties
+
+        #region Methods
+
+        public bool HasChanges()
+        {
+            return Context.HasChanges();
+        }
         public async Task LoadAsync()
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -203,16 +181,45 @@ namespace BubbleStart.Helpers
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        private void C_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public async Task Refresh()
         {
+            var oldContext = Context;
+            Context = new GenericRepository();
+            oldContext.Dispose();
+            await LoadAsync();
+        }
+        internal void Add<TEntity>(TEntity model) where TEntity : BaseModel, new()
+        {
+            Context.Add(model);
         }
 
-        public RelayCommand RefreshCommand { get; set; }
-        public GenericRepository Context { get; set; }
+        internal void Delete<TEntity>(TEntity model) where TEntity : BaseModel, new()
+        {
+            Context.Delete(model);
+            if (model is Customer c)
+            {
+                Customers.Remove(c);
+            }
+
+        }
 
         internal void RollBack()
         {
             Context.RollBack();
         }
+
+        internal async Task SaveAsync()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            await Context.SaveAsync();
+            Mouse.OverrideCursor = Cursors.Arrow;
+
+        }
+        private void C_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+        }
+
+        #endregion Methods
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -53,6 +55,9 @@ namespace BubbleStart.ViewModels
             myWorksheet.Cells["E1"].Value = "Email";
             myWorksheet.Cells["F1"].Value = "Ενεργός";
             myWorksheet.Cells["G1"].Value = "Εμβόλιο";
+            myWorksheet.Cells["H1"].Value = "Μπλούζα";
+            myWorksheet.Cells["I1"].Value = "Φούτερ";
+            myWorksheet.Cells["J1"].Value = "Τσάντα";
             foreach (Customer customer in BasicDataManager.Customers)
             {
                 lineNum++;
@@ -63,6 +68,12 @@ namespace BubbleStart.ViewModels
                 myWorksheet.Cells["E" + lineNum].Value = customer.Email;
                 myWorksheet.Cells["F" + lineNum].Value = customer.ActiveCustomer ? "ΝΑΙ" : "ΟΧΙ";
                 myWorksheet.Cells["G" + lineNum].Value = customer.Vacinated ? "Έκανε" : "Δεν έκανε";
+                myWorksheet.Cells["H" + lineNum].Value = customer.Items.Where(t => t.ItemId == 2) is IEnumerable<ItemPurchase> l1 && l1.Count() > 0 ?
+                    string.Join(", ", l1.Select(i=>i.Size.ToString()).Distinct()) : "OXI";
+                myWorksheet.Cells["I" + lineNum].Value = customer.Items.Where(t => t.ItemId == 1) is IEnumerable<ItemPurchase> l2 && l2.Count() > 0 ?
+                    string.Join(", ", l2.Select(i => i.Size.ToString()).Distinct()) : "OXI";
+                myWorksheet.Cells["J" + lineNum].Value = customer.Items.Where(t => t.ItemId == 3) is IEnumerable<ItemPurchase> l3 && l3.Count() > 0 ?
+                    string.Join(", ", l3.Select(i => i.Size.ToString()).Distinct()) : "OXI";
 
             }
             myWorksheet.Column(1).Width = 4;
@@ -71,7 +82,10 @@ namespace BubbleStart.ViewModels
             myWorksheet.Column(4).Width = 12;
             myWorksheet.Column(5).Width = 30;
             myWorksheet.Column(6).Width = 8;
-            myWorksheet.Column(6).Width = 13;
+            myWorksheet.Column(7).Width = 13;
+            myWorksheet.Column(8).Width = 13;
+            myWorksheet.Column(9).Width = 13;
+            myWorksheet.Column(10).Width = 13;
 
 
             //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());

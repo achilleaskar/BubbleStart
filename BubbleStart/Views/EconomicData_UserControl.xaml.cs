@@ -11,5 +11,7 @@ namespace BubbleStart.Views
         {
             InitializeComponent();
         }
+
+        
     }
 }

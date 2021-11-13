@@ -183,6 +183,7 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -224,6 +225,7 @@
     <Compile Include="Converters\GymToColorConverter.cs" />
     <Compile Include="Converters\HourClosedToColorConverter.cs" />
     <Compile Include="Converters\IndexToENumConverter.cs" />
+    <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\IsCustomerNullToBoolConverter.cs" />
     <Compile Include="Converters\MeetingsToColorConverter.cs" />
     <Compile Include="Converters\RemainingAmountToColorConverter.cs" />
@@ -519,6 +521,14 @@
     <Compile Include="Migrations\202110181715154_psekes.cs" />
     <Compile Include="Migrations\202110181715154_psekes.designer.cs">
       <DependentUpon>202110181715154_psekes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111071035198_ResetDate.cs" />
+    <Compile Include="Migrations\202111071035198_ResetDate.designer.cs">
+      <DependentUpon>202111071035198_ResetDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111102318582_expense-duration.cs" />
+    <Compile Include="Migrations\202111102318582_expense-duration.designer.cs">
+      <DependentUpon>202111102318582_expense-duration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
@@ -818,6 +828,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202110181715154_psekes.resx">
       <DependentUpon>202110181715154_psekes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111071035198_ResetDate.resx">
+      <DependentUpon>202111071035198_ResetDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111102318582_expense-duration.resx">
+      <DependentUpon>202111102318582_expense-duration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

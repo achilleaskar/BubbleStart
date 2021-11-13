@@ -46,8 +46,8 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.5")]
-[assembly: AssemblyFileVersion("1.0.5")]
+[assembly: AssemblyVersion("1.1.3")]
+[assembly: AssemblyFileVersion("1.1.3")]
 [assembly: NeutralResourcesLanguage("el-GR")]
 //"nuget pack MyApp.nuspec -Version 0.6.2.0 -Properties Configuration=Release -OutputDirectory bin\Release\ -BasePath bin\Release\" exited with code 9009.	BubbleStart	C:\Users\achil\source\repos\BubbleStart\BubbleStart\BubbleStart.csproj	716	
 

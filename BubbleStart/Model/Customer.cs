@@ -430,6 +430,40 @@ namespace BubbleStart.Model
             }
         }
 
+        internal bool HasActiveProgram(ProgramMode programMode)
+        {
+
+            switch (programMode)
+            {
+                case ProgramMode.functional:
+                    return SelectedFunctionalProgram?.RemainingDays > 0;
+
+                case ProgramMode.massage:
+                    return SelectedMasageProgram?.RemainingDays > 0;
+
+                case ProgramMode.online:
+                    return SelectedOnlineProgram?.RemainingDays > 0;
+
+                case ProgramMode.outdoor:
+                    return SelectedOutdoorProgram?.RemainingDays > 0;
+
+                case ProgramMode.pilates:
+                    return SelectedPilatesProgram?.RemainingDays > 0;
+
+                case ProgramMode.yoga:
+                    return SelectedYogaProgram?.RemainingDays > 0;
+
+                case ProgramMode.pilatesFunctional:
+                    return SelectedPilatesProgram?.RemainingDays > 0;
+
+                case ProgramMode.aerialYoga:
+                    return SelectedAerialYogaProgram?.RemainingDays > 0;
+
+                default:
+                    return false;
+            }
+        }
+
         //[NotMapped]
         //public RelayCommand DisableCustomerCommand { get; set; }
         [Required]
@@ -1621,14 +1655,14 @@ namespace BubbleStart.Model
             }
         }
 
-        public int RemainingTrainingDays => Programs.Where(p => p.ProgramTypeO.ProgramMode == ProgramMode.functional).Sum(p => p.RemainingDays);
-        public int RemainingPilatesDays => Programs.Where(p => p.ProgramTypeO.ProgramMode == ProgramMode.pilates).Sum(p => p.RemainingDays);
-        public int RemainingFunctionalPilatesDays => Programs.Where(p => p.ProgramTypeO.ProgramMode == ProgramMode.pilatesFunctional).Sum(p => p.RemainingDays);
-        public int RemainingMassageDays => Programs.Where(p => p.ProgramTypeO.ProgramMode == ProgramMode.massage).Sum(p => p.RemainingDays);
-        public int RemainingOnlineDays => Programs.Where(p => p.ProgramTypeO.ProgramMode == ProgramMode.online).Sum(p => p.RemainingDays);
-        public int RemainingOutDoorDays => Programs.Where(p => p.ProgramTypeO.ProgramMode == ProgramMode.outdoor).Sum(p => p.RemainingDays);
-        public int RemainingYogaDays => Programs.Where(p => p.ProgramTypeO.ProgramMode == ProgramMode.yoga).Sum(p => p.RemainingDays);
-        public int RemainingAerialYogaDays => Programs.Where(p => p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga).Sum(p => p.RemainingDays);
+        public int RemainingTrainingDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.functional).Sum(p => p.RemainingDays);
+        public int RemainingPilatesDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.pilates).Sum(p => p.RemainingDays);
+        public int RemainingFunctionalPilatesDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.pilatesFunctional).Sum(p => p.RemainingDays);
+        public int RemainingMassageDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.massage).Sum(p => p.RemainingDays);
+        public int RemainingOnlineDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.online).Sum(p => p.RemainingDays);
+        public int RemainingOutDoorDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.outdoor).Sum(p => p.RemainingDays);
+        public int RemainingYogaDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.yoga).Sum(p => p.RemainingDays);
+        public int RemainingAerialYogaDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga).Sum(p => p.RemainingDays);
 
         public DateTime LastBuy => GetLastBuy();
 
@@ -2158,11 +2192,10 @@ namespace BubbleStart.Model
                 SelectedProgramYogaToDelete = null;
                 SelectedProgramAerialYogaToDelete = null;
 
-                PaymentAmount = SelectedProgramMassageToDelete != null && SelectedProgramMassageToDelete.RemainingAmount > 0
-                    ? SelectedProgramMassageToDelete.RemainingAmount
-                    : 0;
-
                 _SelectedProgramMassageToDelete = value;
+                PaymentAmount = SelectedProgramMassageToDelete != null && SelectedProgramMassageToDelete.RemainingAmount > 0
+                    ? SelectedProgramMassageToDelete.RemainingAmount : 0;
+
                 RaisePropertyChanged();
             }
         }
@@ -2191,8 +2224,8 @@ namespace BubbleStart.Model
                 SelectedProgramYogaToDelete = null;
                 SelectedProgramAerialYogaToDelete = null;
 
-                PaymentAmount = SelectedProgramPilatesToDelete != null && SelectedProgramPilatesToDelete.RemainingAmount > 0 ? SelectedProgramPilatesToDelete.RemainingAmount : 0;
                 _SelectedProgramPilatesToDelete = value;
+                PaymentAmount = SelectedProgramPilatesToDelete != null && SelectedProgramPilatesToDelete.RemainingAmount > 0 ? SelectedProgramPilatesToDelete.RemainingAmount : 0;
                 RaisePropertyChanged();
             }
         }
@@ -2221,8 +2254,8 @@ namespace BubbleStart.Model
                 SelectedProgramMassageToDelete = null;
                 SelectedProgramYogaToDelete = null;
                 SelectedProgramAerialYogaToDelete = null;
-                PaymentAmount = SelectedProgramFunctionalPilatesToDelete != null && SelectedProgramFunctionalPilatesToDelete.RemainingAmount > 0 ? SelectedProgramFunctionalPilatesToDelete.RemainingAmount : 0;
                 _SelectedProgramFunctionalPilatesToDelete = value;
+                PaymentAmount = SelectedProgramFunctionalPilatesToDelete != null && SelectedProgramFunctionalPilatesToDelete.RemainingAmount > 0 ? SelectedProgramFunctionalPilatesToDelete.RemainingAmount : 0;
                 RaisePropertyChanged();
             }
         }
@@ -2250,9 +2283,9 @@ namespace BubbleStart.Model
                 SelectedProgramMassageToDelete = null;
                 SelectedProgramYogaToDelete = null;
                 SelectedProgramAerialYogaToDelete = null;
-                PaymentAmount = SelectedProgramOutDoorToDelete != null && SelectedProgramOutDoorToDelete.RemainingAmount > 0 ? SelectedProgramOutDoorToDelete.RemainingAmount : 0;
 
                 _SelectedProgramOutDoorToDelete = value;
+                PaymentAmount = SelectedProgramOutDoorToDelete != null && SelectedProgramOutDoorToDelete.RemainingAmount > 0 ? SelectedProgramOutDoorToDelete.RemainingAmount : 0;
                 RaisePropertyChanged();
             }
         }
@@ -2281,9 +2314,9 @@ namespace BubbleStart.Model
                 SelectedProgramOutDoorToDelete = null;
                 SelectedProgramMassageToDelete = null;
                 SelectedProgramAerialYogaToDelete = null;
+                _SelectedProgramYogaToDelete = value;
                 PaymentAmount = SelectedProgramYogaToDelete != null && SelectedProgramYogaToDelete.RemainingAmount > 0 ? SelectedProgramYogaToDelete.RemainingAmount : 0;
 
-                _SelectedProgramYogaToDelete = value;
                 RaisePropertyChanged();
             }
         }
@@ -2312,10 +2345,10 @@ namespace BubbleStart.Model
                 SelectedProgramOutDoorToDelete = null;
                 SelectedProgramMassageToDelete = null;
                 SelectedProgramYogaToDelete = null;
+                _SelectedProgramAerialYogaToDelete = value;
 
                 PaymentAmount = SelectedProgramAerialYogaToDelete != null && SelectedProgramAerialYogaToDelete.RemainingAmount > 0 ? SelectedProgramAerialYogaToDelete.RemainingAmount : 0;
 
-                _SelectedProgramAerialYogaToDelete = value;
                 RaisePropertyChanged();
             }
         }
@@ -2359,9 +2392,9 @@ namespace BubbleStart.Model
                 SelectedProgramYogaToDelete = null;
                 SelectedProgramAerialYogaToDelete = null;
 
+                _SelectedProgramOnlineToDelete = value;
                 PaymentAmount = SelectedProgramOnlineToDelete != null && SelectedProgramOnlineToDelete.RemainingAmount > 0 ? SelectedProgramOnlineToDelete.RemainingAmount : 0;
 
-                _SelectedProgramOnlineToDelete = value;
                 RaisePropertyChanged();
             }
         }
@@ -2386,9 +2419,9 @@ namespace BubbleStart.Model
                 SelectedProgramYogaToDelete = null;
                 SelectedProgramAerialYogaToDelete = null;
 
+                _SelectedProgramFunctionalToDelete = value;
                 PaymentAmount = SelectedProgramFunctionalToDelete != null && SelectedProgramFunctionalToDelete.RemainingAmount > 0 ? SelectedProgramFunctionalToDelete.RemainingAmount : 0;
 
-                _SelectedProgramFunctionalToDelete = value;
                 RaisePropertyChanged();
             }
         }
@@ -2418,6 +2451,9 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand ShowPreviusDataCommand { get; set; }
+
+        [NotMapped]
+        public RelayCommand ShowSumsCommand { get; set; }
 
         [NotMapped]
         public decimal ShowUpPrice
@@ -2790,14 +2826,14 @@ namespace BubbleStart.Model
         public RelayCommand<object[]> ToggleShowUpCommand { get; set; }
 
         public string TypeOfProgram =>
-            SelectedFunctionalProgram != null ? SelectedFunctionalProgram.ToString() :
-            SelectedPilatesProgram != null ? SelectedPilatesProgram.ToString() :
-            SelectedFunctionalPilatesProgram != null ? SelectedFunctionalPilatesProgram.ToString() :
-            SelectedMasageProgram != null ? SelectedMasageProgram.ToString() :
-            SelectedOnlineProgram != null ? SelectedOnlineProgram.ToString() :
-            SelectedOutdoorProgram != null ? SelectedOutdoorProgram.ToString() :
-            SelectedYogaProgram != null ? SelectedYogaProgram.ToString() :
-            SelectedAerialYogaProgram != null ? SelectedAerialYogaProgram.ToString() :
+            SelectedFunctionalProgram?.RemainingDays > 0 ? SelectedFunctionalProgram.ToString() :
+            SelectedPilatesProgram?.RemainingDays > 0 ? SelectedPilatesProgram.ToString() :
+            SelectedFunctionalPilatesProgram?.RemainingDays > 0 ? SelectedFunctionalPilatesProgram.ToString() :
+            SelectedMasageProgram?.RemainingDays > 0 ? SelectedMasageProgram.ToString() :
+            SelectedOnlineProgram?.RemainingDays > 0 ? SelectedOnlineProgram.ToString() :
+            SelectedOutdoorProgram?.RemainingDays > 0 ? SelectedOutdoorProgram.ToString() :
+            SelectedYogaProgram?.RemainingDays > 0 ? SelectedYogaProgram.ToString() :
+            SelectedAerialYogaProgram?.RemainingDays > 0 ? SelectedAerialYogaProgram.ToString() :
             "Ανενεργό";
 
         public bool WantToQuit
@@ -2845,6 +2881,31 @@ namespace BubbleStart.Model
             return remainingAmount;
         }
 
+
+
+
+        private DateTime _ResetDate;
+
+
+        public DateTime ResetDate
+        {
+            get
+            {
+                return _ResetDate;
+            }
+
+            set
+            {
+                if (_ResetDate == value)
+                {
+                    return;
+                }
+
+                _ResetDate = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public SolidColorBrush GetCustomerColor()
         {
             if (!Loaded)
@@ -2890,11 +2951,7 @@ namespace BubbleStart.Model
             return new SolidColorBrush(Colors.Orange);
         }
 
-
-
-
         private bool _Psek;
-
 
         public bool Psek
         {
@@ -2945,6 +3002,7 @@ namespace BubbleStart.Model
             timer.Tick += Timer_Tick;
             timer.Start();
             ShowPreviusDataCommand = new RelayCommand(async () => { await ShowPreviewsData(); });
+            ShowSumsCommand = new RelayCommand(async () => { await ShowSums(); });
             BookCommand = new RelayCommand<string>(async obj => { await MakeBooking(obj); }, CanMakeBooking);
             DeleteItemCommand = new RelayCommand<object>((obj) => DeleteItem(obj));
             AddOldShowUpCommand = new RelayCommand<int>(async obj => { await AddOldShowUp(obj); });
@@ -2973,6 +3031,33 @@ namespace BubbleStart.Model
             //DisableCustomerCommand = new RelayCommand(DisableCustomer);
             OldShowUpDate = DateOfPayment = DateOfIssue = StartDate = DateTime.Today;
             SelectedProgramType = null;
+        }
+
+        private async Task ShowSums()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            var pays = new ObservableCollection<PaymentSum>();
+            var programs = await BasicDataManager.Context.Context.Programs.Where(c => c.Customer.Id == Id).ToListAsync();
+            PaymentSum paySum;
+            foreach (var prog in programs)
+            {
+                paySum = pays.FirstOrDefault(s => s.From <= prog.StartDay && s.To >= prog.StartDay);
+                if (paySum != null)
+                    paySum.Amount += prog.Amount;
+                else
+                    pays.Add(new PaymentSum
+                    {
+                        Amount = prog.Amount,
+                        From = new DateTime(prog.StartDay.Month >= 9 ? prog.StartDay.Year : (prog.StartDay.Year+1), 9, 1),
+                        To = new DateTime(prog.StartDay.Month >= 9 ? prog.StartDay.Year+1 : (prog.StartDay.Year), 9, 1)
+                    });
+            }
+            foreach (var p in pays)
+            {
+                p.Year = p.From.Year % 100 + "-" + p.To.Year % 100;
+            }
+            PaymentSums = new ObservableCollection<PaymentSum>(pays.OrderBy(o => o.From));
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private bool CanToggleReal(ShowUp arg)
@@ -3440,9 +3525,13 @@ namespace BubbleStart.Model
         //    //    Console.WriteLine($"Customer with id {Id} done");
         //    //}
         //}
+        [NotMapped]
+        public bool Full { get; set; }
 
         public async void SetColors()
         {
+            DateTime startDate = Full ? new DateTime() : ResetDate;
+
             if (!Loaded) return;
             if (Programs != null && ShowUps != null && ShowUps.Count > 0 && Programs.Count > 0)
             {
@@ -3459,9 +3548,9 @@ namespace BubbleStart.Model
                 Program selProg = null;
                 foreach (ProgramMode mode in (ProgramMode[])Enum.GetValues(typeof(ProgramMode)))
                 {
-                    programsReversed = Programs.Where(o => o.ProgramTypeO.ProgramMode == mode).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
+                    programsReversed = Programs.Where(o => o.StartDay >= startDate && o?.ProgramTypeO?.ProgramMode == mode).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
                     Limit = programsReversed.Count > 0 ? programsReversed[0].StartDay : new DateTime();
-                    showUpsReserved = ShowUps.Where(s => s.Arrived >= Limit && s.ProgramModeNew == mode).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList();
+                    showUpsReserved = ShowUps.Where(s => s.Arrived >= startDate && s.Arrived >= Limit && s.ProgramModeNew == mode).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList();
                     selProg = null; progIndex = 0;
                     foreach (var showUp in showUpsReserved)
                     {
@@ -3868,7 +3957,7 @@ namespace BubbleStart.Model
                     return;
                 }
 
-                if (value.Id == 20)
+                if (value?.Id == 20)
                 {
                     NumOfShowUps = 30;
                     ProgramDuration = 1;
@@ -3918,6 +4007,7 @@ namespace BubbleStart.Model
             Changes.Add(new Change($"Προστέθηκε νέο ΠΑΚΕΤΟ {(SelectedProgramType != null ? SelectedProgramType.ToString() : "Σφάλμα")} με {NumOfShowUps} συνεδρίες, κόστος {StaticResources.DecimalToString(ProgramPrice)}, έναρξη {StartDate:dd/MM/yy}{(par == 1 ? "," : " και")}" +
                 $" διάρκεια {ProgramDuration} μήνες {(par == 1 ? "και πληρώθηκε" : "χωρίς να πληρωθεί")}", StaticResources.User)
             { Program = Programs.Last() });
+            Programs.Last()?.CalculateRemainingAmount();
         }
 
         internal async Task AddPayment()
@@ -3930,6 +4020,22 @@ namespace BubbleStart.Model
                 RaisePropertyChanged(nameof(PaymentVisibility));
                 // await SaveChanges();
                 SelectedProgramFunctionalToDelete.CalculateRemainingAmount();
+            }
+            else if (SelectedProgramPilatesToDelete != null)
+            {
+                SelectedProgramPilatesToDelete.Payments.Add(p);
+                p.Program = SelectedProgramPilatesToDelete;
+                RaisePropertyChanged(nameof(PaymentVisibility));
+                // await SaveChanges();
+                SelectedProgramPilatesToDelete.CalculateRemainingAmount();
+            }
+            else if (SelectedProgramFunctionalPilatesToDelete != null)
+            {
+                SelectedProgramFunctionalPilatesToDelete.Payments.Add(p);
+                p.Program = SelectedProgramFunctionalPilatesToDelete;
+                RaisePropertyChanged(nameof(PaymentVisibility));
+                // await SaveChanges();
+                SelectedProgramFunctionalPilatesToDelete.CalculateRemainingAmount();
             }
             else if (SelectedProgramMassageToDelete != null)
             {
@@ -3946,6 +4052,30 @@ namespace BubbleStart.Model
                 RaisePropertyChanged(nameof(PaymentVisibility));
                 // await SaveChanges();
                 SelectedProgramOnlineToDelete.CalculateRemainingAmount();
+            }
+            else if (SelectedProgramOutDoorToDelete != null)
+            {
+                SelectedProgramOutDoorToDelete.Payments.Add(p);
+                p.Program = SelectedProgramOutDoorToDelete;
+                RaisePropertyChanged(nameof(PaymentVisibility));
+                // await SaveChanges();
+                SelectedProgramOutDoorToDelete.CalculateRemainingAmount();
+            }
+            else if (SelectedProgramYogaToDelete != null)
+            {
+                SelectedProgramYogaToDelete.Payments.Add(p);
+                p.Program = SelectedProgramYogaToDelete;
+                RaisePropertyChanged(nameof(PaymentVisibility));
+                // await SaveChanges();
+                SelectedProgramYogaToDelete.CalculateRemainingAmount();
+            }
+            else if (SelectedProgramAerialYogaToDelete != null)
+            {
+                SelectedProgramAerialYogaToDelete.Payments.Add(p);
+                p.Program = SelectedProgramAerialYogaToDelete;
+                RaisePropertyChanged(nameof(PaymentVisibility));
+                // await SaveChanges();
+                SelectedProgramAerialYogaToDelete.CalculateRemainingAmount();
             }
             Payments.Add(p);
             GetRemainingDays();
@@ -3978,6 +4108,7 @@ namespace BubbleStart.Model
                         ? $"Αυτή ήταν η τελευταία συνεδρία γυμναστικής του {ToString()}"
                         : $"Οι συνεδρίες γυμναστικής του {ToString()} έχουν τελειώσει");
                     break;
+
                 case ProgramMode.massage:
                     remain = RemainingMassageDays;
                     ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
@@ -3986,6 +4117,7 @@ namespace BubbleStart.Model
                         ? $"Αυτή ήταν η τελευταία συνεδρία μασάζ του {ToString()}"
                         : $"Οι συνεδρίες μασάζ του {ToString()} έχουν τελειώσει");
                     break;
+
                 case ProgramMode.online:
                     remain = RemainingOnlineDays;
                     ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
@@ -3994,6 +4126,7 @@ namespace BubbleStart.Model
                         ? $"Αυτή ήταν η τελευταία συνεδρία Online του {ToString()}"
                         : $"Οι συνεδρίες Online του {ToString()} έχουν τελειώσει");
                     break;
+
                 case ProgramMode.outdoor:
                     remain = RemainingOutDoorDays;
                     ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
@@ -4002,6 +4135,7 @@ namespace BubbleStart.Model
                         ? $"Αυτή ήταν η τελευταία συνεδρία OutDoor του {ToString()}"
                         : $"Οι συνεδρίες OutDoor του {ToString()} έχουν τελειώσει");
                     break;
+
                 case ProgramMode.pilates:
                     remain = RemainingPilatesDays;
                     ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
@@ -4010,6 +4144,7 @@ namespace BubbleStart.Model
                         ? $"Αυτή ήταν η τελευταία συνεδρία πιλάτες του {ToString()}"
                         : $"Οι συνεδρίες πιλάτες του {ToString()} έχουν τελειώσει");
                     break;
+
                 case ProgramMode.yoga:
                     remain = RemainingYogaDays;
                     ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
@@ -4018,6 +4153,7 @@ namespace BubbleStart.Model
                         ? $"Αυτή ήταν η τελευταία συνεδρία yoga του {ToString()}"
                         : $"Οι συνεδρίες yoga του {ToString()} έχουν τελειώσει");
                     break;
+
                 case ProgramMode.pilatesFunctional:
                     remain = RemainingFunctionalPilatesDays;
                     ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
@@ -4026,6 +4162,7 @@ namespace BubbleStart.Model
                         ? $"Αυτή ήταν η τελευταία functional-pilates yoga του {ToString()}"
                         : $"Οι συνεδρίες functional-pilates του {ToString()} έχουν τελειώσει");
                     break;
+
                 case ProgramMode.aerialYoga:
                     remain = RemainingAerialYogaDays;
                     ShowUps.Add(new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min });
@@ -4034,6 +4171,7 @@ namespace BubbleStart.Model
                         ? $"Αυτή ήταν η τελευταία Aerial-Yoga του {ToString()}"
                         : $"Οι συνεδρίες Aerial-Yoga του {ToString()} έχουν τελειώσει");
                     break;
+
                 default:
                     MessageBox.Show("Error");
                     break;
@@ -4053,8 +4191,13 @@ namespace BubbleStart.Model
         {
             return PaymentAmount > 0 && PaymentAmount <= RemainingAmount && (
                 (SelectedProgramFunctionalToDelete != null && PaymentAmount <= SelectedProgramFunctionalToDelete.RemainingAmount) ||
+                (SelectedProgramPilatesToDelete != null && PaymentAmount <= SelectedProgramPilatesToDelete.RemainingAmount) ||
+                (SelectedProgramFunctionalPilatesToDelete != null && PaymentAmount <= SelectedProgramFunctionalPilatesToDelete.RemainingAmount) ||
                 (SelectedProgramMassageToDelete != null && PaymentAmount <= SelectedProgramMassageToDelete.RemainingAmount) ||
-                (SelectedProgramOnlineToDelete != null && PaymentAmount <= SelectedProgramOnlineToDelete.RemainingAmount));
+                (SelectedProgramOnlineToDelete != null && PaymentAmount <= SelectedProgramOnlineToDelete.RemainingAmount) ||
+                (SelectedProgramOutDoorToDelete != null && PaymentAmount <= SelectedProgramOutDoorToDelete.RemainingAmount) ||
+                (SelectedProgramYogaToDelete != null && PaymentAmount <= SelectedProgramYogaToDelete.RemainingAmount) ||
+                (SelectedProgramAerialYogaToDelete != null && PaymentAmount <= SelectedProgramAerialYogaToDelete.RemainingAmount));
         }
 
         private bool CanMakeBooking(string arg) => ProgramDataCheck();
@@ -4410,9 +4553,14 @@ namespace BubbleStart.Model
         {
             try
             {
-                return (obj is Program p && p.ProgramTypeO.ProgramMode == ProgramMode.functional) ||
-                    (obj is ShowUp s && s.ProgramModeNew == ProgramMode.functional) ||
-                    (obj is Payment a && (a.Program == null || a.Program.ProgramTypeO.ProgramMode == ProgramMode.functional));
+                if (StaticResources.User.Level > 2)
+                {
+                    return (obj is ShowUp s1 && s1.Arrived.Date == DateTime.Today && s1.ProgramModeNew == ProgramMode.functional);
+                }
+
+                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.functional) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.functional) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && (a.Program == null || a.Program.ProgramTypeO?.ProgramMode == ProgramMode.functional));
             }
             catch (Exception)
             {
@@ -4424,9 +4572,14 @@ namespace BubbleStart.Model
         {
             try
             {
-                return (obj is Program p && p.ProgramTypeO.ProgramMode == ProgramMode.pilates) ||
-                    (obj is ShowUp s && s.ProgramModeNew == ProgramMode.pilates) ||
-                    (obj is Payment a && a.Program != null && a.Program.ProgramTypeO.ProgramMode == ProgramMode.pilates);
+                if (StaticResources.User.Level > 2)
+                {
+                    return (obj is ShowUp s1 && s1.Arrived.Date == DateTime.Today && s1.ProgramModeNew == ProgramMode.pilates);
+                }
+
+                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.pilates) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.pilates) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.pilates);
             }
             catch (Exception)
             {
@@ -4438,9 +4591,14 @@ namespace BubbleStart.Model
         {
             try
             {
-                return (obj is Program p && p.ProgramTypeO.ProgramMode == ProgramMode.pilatesFunctional) ||
-                    (obj is ShowUp s && s.ProgramModeNew == ProgramMode.pilatesFunctional) ||
-                    (obj is Payment a && a.Program != null && a.Program.ProgramTypeO.ProgramMode == ProgramMode.pilatesFunctional);
+                if (StaticResources.User.Level > 2)
+                {
+                    return (obj is ShowUp s1 && s1.Arrived.Date == DateTime.Today && s1.ProgramModeNew == ProgramMode.pilatesFunctional);
+                }
+
+                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.pilatesFunctional) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.pilatesFunctional) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.pilatesFunctional);
             }
             catch (Exception)
             {
@@ -4452,9 +4610,14 @@ namespace BubbleStart.Model
         {
             try
             {
-                return (obj is Program p && p.ProgramTypeO.ProgramMode == ProgramMode.massage) ||
-                    (obj is ShowUp s && s.ProgramModeNew == ProgramMode.massage) ||
-                    (obj is Payment a && a.Program != null && a.Program.ProgramTypeO.ProgramMode == ProgramMode.massage);
+                if (StaticResources.User.Level > 2)
+                {
+                    return (obj is ShowUp s1 && s1.Arrived.Date == DateTime.Today && s1.ProgramModeNew == ProgramMode.massage);
+                }
+
+                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.massage) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.massage) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.massage);
             }
             catch (Exception)
             {
@@ -4466,9 +4629,14 @@ namespace BubbleStart.Model
         {
             try
             {
-                return (obj is Program p && p.ProgramTypeO.ProgramMode == ProgramMode.online) ||
-                    (obj is ShowUp s && s.ProgramModeNew == ProgramMode.online) ||
-                  (obj is Payment a && a.Program != null && a.Program.ProgramTypeO.ProgramMode == ProgramMode.online);
+                if (StaticResources.User.Level > 2)
+                {
+                    return (obj is ShowUp s1 && s1.Arrived.Date == DateTime.Today && s1.ProgramModeNew == ProgramMode.online);
+                }
+
+                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.online) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.online) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.online);
             }
             catch (Exception)
             {
@@ -4480,9 +4648,14 @@ namespace BubbleStart.Model
         {
             try
             {
-                return (obj is Program p && p.ProgramTypeO.ProgramMode == ProgramMode.outdoor) ||
-                    (obj is ShowUp s && s.ProgramModeNew == ProgramMode.outdoor) ||
-                   (obj is Payment a && a.Program != null && a.Program.ProgramTypeO.ProgramMode == ProgramMode.outdoor);
+                if (StaticResources.User.Level > 2)
+                {
+                    return (obj is ShowUp s1 && s1.Arrived.Date == DateTime.Today && s1.ProgramModeNew == ProgramMode.outdoor);
+                }
+
+                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.outdoor) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.outdoor) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.outdoor);
             }
             catch (Exception)
             {
@@ -4494,9 +4667,14 @@ namespace BubbleStart.Model
         {
             try
             {
-                return (obj is Program p && p.ProgramTypeO.ProgramMode == ProgramMode.yoga) ||
-                    (obj is ShowUp s && s.ProgramModeNew == ProgramMode.yoga) ||
-                   (obj is Payment a && a.Program != null && a.Program.ProgramTypeO.ProgramMode == ProgramMode.yoga);
+                if (StaticResources.User.Level > 2)
+                {
+                    return (obj is ShowUp s1 && s1.Arrived.Date == DateTime.Today && s1.ProgramModeNew == ProgramMode.yoga);
+                }
+
+                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.yoga) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.yoga) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.yoga);
             }
             catch (Exception)
             {
@@ -4508,9 +4686,14 @@ namespace BubbleStart.Model
         {
             try
             {
-                return (obj is Program p && p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga) ||
-                    (obj is ShowUp s && s.ProgramModeNew == ProgramMode.aerialYoga) ||
-                   (obj is Payment a && a.Program != null && a.Program.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga);
+                if (StaticResources.User.Level > 2)
+                {
+                    return (obj is ShowUp s1 && s1.Arrived.Date == DateTime.Today && s1.ProgramModeNew == ProgramMode.aerialYoga);
+                }
+
+                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.aerialYoga) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga);
             }
             catch (Exception)
             {
@@ -4548,30 +4731,15 @@ namespace BubbleStart.Model
             CommandManager.InvalidateRequerySuggested();
         }
 
-        //private bool ProgramsOutDoorFilter(object obj)
-        //{
-        //    try
-        //    {
-        //        return (obj is Program p && p.ProgramMode == ProgramMode.outdoor) ||
-        //            (obj is ShowUp s && s.ProgramMode == ProgramMode.outdoor) ||
-        //            (obj is Payment a && a.Program != null && a.Program.ProgramMode == ProgramMode.outdoor);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-        //}
         private async Task SaveChanges()
         {
             Mouse.OverrideCursor = Cursors.Wait;
             GetRemainingDays();
             CaptureChanges();
             await BasicDataManager.SaveAsync();
-            // if (FromProgram)
-            // {
             Messenger.Default.Send(new UpdateProgramMessage());
             FromProgram = false;
-            // }
+            CalculateRemainingAmount();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -4644,7 +4812,7 @@ namespace BubbleStart.Model
             Mouse.OverrideCursor = Cursors.Wait;
             Loaded = false;
             var c = await BasicDataManager.Context.GetFullCustomerById(Id);
-            Loaded = true;
+            Loaded = Full = true;
 
             SetColors();
             IsActiveColor = GetCustomerColor();
@@ -4767,5 +4935,129 @@ namespace BubbleStart.Model
             }
             RaisePropertyChanged(nameof(BMI));
         }
+
+
+
+
+        private ObservableCollection<PaymentSum> _PaymentSums;
+
+        [NotMapped]
+        public ObservableCollection<PaymentSum> PaymentSums
+        {
+            get
+            {
+                return _PaymentSums;
+            }
+
+            set
+            {
+                if (_PaymentSums == value)
+                {
+                    return;
+                }
+
+                _PaymentSums = value;
+                RaisePropertyChanged();
+            }
+        }
+
+    }
+    public class PaymentSum : BaseModel
+    {
+
+
+
+        private DateTime _From;
+
+
+        public DateTime From
+        {
+            get
+            {
+                return _From;
+            }
+
+            set
+            {
+                if (_From == value)
+                {
+                    return;
+                }
+
+                _From = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private DateTime _To;
+
+
+        public DateTime To
+        {
+            get
+            {
+                return _To;
+            }
+
+            set
+            {
+                if (_To == value)
+                {
+                    return;
+                }
+
+                _To = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private decimal _Amount;
+
+
+        public decimal Amount
+        {
+            get
+            {
+                return _Amount;
+            }
+
+            set
+            {
+                if (_Amount == value)
+                {
+                    return;
+                }
+
+                _Amount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private string _Year;
+
+        public string Year
+        {
+            get
+            {
+                return _Year;
+            }
+
+            set
+            {
+                if (_Year == value)
+                {
+                    return;
+                }
+
+                _Year = value;
+                RaisePropertyChanged();
+            }
+        }
+
     }
 }

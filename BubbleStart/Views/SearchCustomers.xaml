@@ -3,7 +3,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
-             xmlns:models="clr-namespace:BubbleStart.Model"
+             xmlns:helpers="clr-namespace:BubbleStart.Helpers"
              xmlns:views="clr-namespace:BubbleStart.Views"
              xmlns:Converters="clr-namespace:BubbleStart.Converters"
              x:Class="BubbleStart.Views.SearchCustomers"
@@ -156,6 +156,27 @@
                         <ComboBoxItem>ΝΑΙ</ComboBoxItem>
                         <ComboBoxItem>ΟΧΙ</ComboBoxItem>
                     </ComboBox>
+                    <Label Grid.Row="0"
+                           Content="Τύπος:" />
+                    <ComboBox  Width="80"
+                               VerticalAlignment="Center"
+                               SelectedIndex="{Binding SelectedProgramModeIndex}">
+                        <ComboBox.Resources>
+                            <CollectionViewSource x:Key="CityList"
+                                                  Source="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProgramMode}}}" />
+                        </ComboBox.Resources>
+                        <ComboBox.ItemsSource>
+                            <CompositeCollection>
+                                <ComboBoxItem Content="Όλοι" />
+                                <CollectionContainer Collection="{Binding Source={StaticResource CityList}}" />
+                            </CompositeCollection>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <!--<ComboBox Grid.Column="1"
+                              Width="100"
+                              VerticalAlignment="Center"
+                              ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProgramMode}}}"
+                              SelectedItem="{Binding ProgramMode}" />-->
                 </StackPanel>
                 <TextBox Grid.Row="1"
                          FontSize="15"
@@ -220,7 +241,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Πρόγραμμα:"
+                        <DataGridTextColumn Header="Πρόγραμμα"
                                             Width="105"
                                             Binding="{Binding TypeOfProgram}" />
                         <DataGridTextColumn Header="Τελ. Αγορ."
