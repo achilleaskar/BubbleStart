@@ -163,8 +163,13 @@ namespace BubbleStart.ViewModels
                 }
 
                 _SelectedEntity = value;
+                SelectedEntityChanged();
                 RaisePropertyChanged();
             }
+        }
+
+        public virtual void SelectedEntityChanged()
+        {
         }
 
         /// <summary>

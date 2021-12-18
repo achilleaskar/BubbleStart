@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-
 namespace BubbleStart.ViewModels
 {
     public class SearchCustomer_ViewModel : MyViewModelBase
@@ -23,11 +22,7 @@ namespace BubbleStart.ViewModels
         {
         }
 
-
-
-
         private int _SelectedProgramModeIndex;
-
 
         public int SelectedProgramModeIndex
         {
@@ -226,11 +221,7 @@ namespace BubbleStart.ViewModels
 
         public RelayCommand SaveCustomerCommand { get; set; }
 
-
-
-
         private int _SelectedAciveIndex;
-
 
         public int SelectedAciveIndex
         {
@@ -251,6 +242,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public string SearchTerm
         {
             get => _SearchTerm;
@@ -360,12 +352,67 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
+
+
+
+
+
+
+
+
+
+        private BodyPart _SelectedBodyPart;
+
+
+        public BodyPart SelectedBodyPart
+        {
+            get
+            {
+                return _SelectedBodyPart;
+            }
+
+            set
+            {
+                if (_SelectedBodyPart == value)
+                {
+                    return;
+                }
+
+                _SelectedBodyPart = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _PopupFinishOpen;
+
+
+        public bool PopupFinishOpen
+        {
+            get
+            {
+                return _PopupFinishOpen;
+            }
+
+            set
+            {
+                if (_PopupFinishOpen == value)
+                {
+                    return;
+                }
+
+                _PopupFinishOpen = value;
+                RaisePropertyChanged();
+            }
+        }
         public async Task CustomerLeft()
         {
             SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
+            SelectedPracticingCustomer.LastShowUp.BodyPart = SelectedBodyPart;
             SelectedPracticingCustomer.IsPracticing = false;
+            SelectedPracticingCustomer.RaisePropertyChanged(nameof(SelectedPracticingCustomer.LastPart));
             CustomersPracticing.Remove(SelectedPracticingCustomer);
             await BasicDataManager.SaveAsync();
+            PopupFinishOpen = false;
         }
 
         public async Task CustomerShowedUp(int programMode)
@@ -374,7 +421,10 @@ namespace BubbleStart.ViewModels
             if (SelectedCustomer != null)
             {
                 CustomersPracticing.Add(SelectedCustomer);
-                SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min);
+                if (programMode > 50)
+                    SelectedCustomer.ShowedUp(true, (ProgramMode)(programMode / 10), Is30min, (programMode % 10));
+                else
+                    SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min);
                 await BasicDataManager.SaveAsync();
                 SelectedCustomer.SetColors();
                 Is30min = false;
@@ -407,17 +457,15 @@ namespace BubbleStart.ViewModels
             SelectedCustomer.InitialLoad();
         }
 
-       
-
         private bool CustomerFilter(object item)
         {
             Customer customer = item as Customer;
 
-            if((SelectedAciveIndex==1&&customer.IsActiveColor.ToString()!= "#FF008000") || (SelectedAciveIndex == 2 && customer.IsActiveColor.ToString() == "#FF008000"))
+            if ((SelectedAciveIndex == 1 && customer.IsActiveColor.ToString() != "#FF008000") || (SelectedAciveIndex == 2 && customer.IsActiveColor.ToString() == "#FF008000"))
             {
                 return false;
             }
-            if (SelectedProgramModeIndex>0 && !customer.HasActiveProgram(((ProgramMode)(SelectedProgramModeIndex - 1))))
+            if (SelectedProgramModeIndex > 0 && !customer.HasActiveProgram(((ProgramMode)(SelectedProgramModeIndex - 1))))
             {
                 return false;
             }

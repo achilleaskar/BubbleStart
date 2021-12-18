@@ -42,6 +42,10 @@ namespace BubbleStart.Database
                 .WithOptional(r => r.Program)
                 .HasForeignKey(t => t.Program_Id)
                 .WillCascadeOnDelete(true);
+            modelBuilder.Entity<Program>().HasMany(p => p.ShowUpsList)
+                .WithOptional(r => r.Prog)
+                .HasForeignKey(t => t.Prog_Id)
+                .WillCascadeOnDelete(false);
             modelBuilder.Entity<Payment>().HasMany(p => p.Changes)
               .WithOptional(r => r.Payment)
               .HasForeignKey(t => t.Payment_Id)

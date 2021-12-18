@@ -16,6 +16,35 @@ namespace BubbleStart.Model
 
         private bool _Present;
 
+
+
+
+        private BodyPart _BodyPart;
+
+
+        public BodyPart BodyPart
+        {
+            get
+            {
+                return _BodyPart;
+            }
+
+            set
+            {
+                if (_BodyPart == value)
+                {
+                    return;
+                }
+
+                _BodyPart = value;
+                RaisePropertyChanged();
+                if (Customer != null)
+                {
+                    Customer.RaisePropertyChanged(nameof(Customer.LastPart));
+                }
+            }
+        }
+
         public bool Present
         {
             get
@@ -226,7 +255,6 @@ namespace BubbleStart.Model
 
         private Program _Prog;
 
-        [NotMapped]
         public Program Prog
         {
             get => _Prog;
@@ -347,6 +375,8 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        public int? Prog_Id { get; set; }
 
         #endregion Properties
     }

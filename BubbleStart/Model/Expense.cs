@@ -1,15 +1,15 @@
-﻿using System;
-using BubbleStart.Helpers;
+﻿using BubbleStart.Helpers;
+using System;
 
 namespace BubbleStart.Model
 {
     public class Expense : BaseModel
     {
-
         public Expense()
         {
-            Date = DateTime.Now;
+            Date = From = To = DateTime.Now;
         }
+
         #region Fields
 
         private decimal _Amount;
@@ -21,11 +21,7 @@ namespace BubbleStart.Model
 
         #endregion Fields
 
-
-
-
         private DateTime _From;
-
 
         public DateTime From
         {
@@ -42,15 +38,15 @@ namespace BubbleStart.Model
                 }
 
                 _From = value;
+                if (To <= value)
+                {
+                    To = value;
+                }
                 RaisePropertyChanged();
             }
         }
 
-
-
-
         private DateTime _To;
-
 
         public DateTime To
         {
@@ -67,17 +63,17 @@ namespace BubbleStart.Model
                 }
 
                 _To = value;
+                if (value < From)
+                {
+                    From = value;
+                }
                 RaisePropertyChanged();
             }
         }
 
         #region Properties
 
-
-
-
         private ExpenseCategory _ExpenseCategory;
-
 
         public ExpenseCategory ExpenseCategory
         {
@@ -98,7 +94,6 @@ namespace BubbleStart.Model
             }
         }
 
-        
         public decimal Amount
         {
             get => _Amount;
@@ -127,6 +122,7 @@ namespace BubbleStart.Model
                 }
 
                 _Date = value;
+               // From = value;
                 RaisePropertyChanged();
             }
         }

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ap="clr-namespace:BubbleStart.AttachedProperties"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         FontSize="14"
         WindowStartupLocation="CenterOwner"
@@ -30,6 +31,7 @@
                     <ColumnDefinition Width="130" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -101,9 +103,16 @@
                     <ComboBoxItem>Διαχειριστής</ComboBoxItem>
                     <ComboBoxItem>Υπεύθυνος</ComboBoxItem>                   
                     <ComboBoxItem>Πωλητής</ComboBoxItem>
+                    <ComboBoxItem>Γυμναστής</ComboBoxItem>
                 </ComboBox>
+                <Label Content="Χρώμα:"
+                       Grid.Row="8"
+                       Grid.Column="0" />
+                <wpfx:ColorPicker Grid.Row="8"
+                                  Grid.Column="1"
+                                  SelectedColor="{Binding SelectedColor}" />
                 <StackPanel Orientation="Vertical"
-                            Grid.Row="8"
+                            Grid.Row="9"
                             Grid.ColumnSpan="2">
                     <Button Content="Προσθήκη"
                             Margin="5,5,5,0"
@@ -116,7 +125,7 @@
                             Command="{Binding ClearEntityCommand}" />
                 </StackPanel>
                 <TextBlock Text="{Binding ResultMessage}"
-                           Grid.Row="9"
+                           Grid.Row="10"
                            Grid.ColumnSpan="2"
                            Width="230"
                            TextWrapping="Wrap"

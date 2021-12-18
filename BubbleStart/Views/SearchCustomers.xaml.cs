@@ -60,15 +60,35 @@ namespace BubbleStart.Views
         }
         private void UserControl_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key==Key.Escape)
+            if (e.Key == Key.Escape)
             {
                 if (DataContext is SearchCustomer_ViewModel sc && sc.PopupOpen)
                 {
                     sc.PopupOpen = false;
+                    PilFunToggle.IsChecked = false;
                 }
             }
         }
 
         #endregion Methods
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (DataContext is SearchCustomer_ViewModel sc && (sc.PopupOpen || sc.PopupFinishOpen))
+            {
+                sc.PopupOpen = false;
+                sc.PopupFinishOpen = false;
+
+                PilFunToggle.IsChecked = false;
+            }
+        }
+
+        private void ButtonFinishClicked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (DataContext is SearchCustomer_ViewModel sc && !sc.PopupFinishOpen)
+            {
+                sc.PopupFinishOpen = true;
+            }
+        }
     }
 }

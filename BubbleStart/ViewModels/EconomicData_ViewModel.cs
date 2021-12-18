@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Helpers;
+using BubbleStart.Migrations;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
@@ -15,36 +16,8 @@ namespace BubbleStart.ViewModels
 {
     public class EconomicData_ViewModel : MyViewModelBase
     {
-
         #region Constructors
 
-
-
-        private string _ExpensesTextFilter;
-
-
-        public string ExpensesTextFilter
-        {
-            get
-            {
-                return _ExpensesTextFilter;
-            }
-
-            set
-            {
-                if (_ExpensesTextFilter == value)
-                {
-                    return;
-                }
-
-                _ExpensesTextFilter = value;
-                if (Expenses!=null)
-                {
-                    CollectionViewSource.GetDefaultView(Expenses).Refresh();
-                }
-                RaisePropertyChanged();
-            }
-        }
         public EconomicData_ViewModel(BasicDataManager basicDataManager)
         {
             BasicDataManager = basicDataManager;
@@ -60,21 +33,6 @@ namespace BubbleStart.ViewModels
             DeleteExpenseCommand = new RelayCommand(async () => { await DeleteExpense(); });
         }
 
-        public decimal TotalPayments => GetSum();
-
-        private decimal GetSum()
-        {
-            decimal sum = 0;
-            if (PaymentsCV != null)
-            {
-                foreach (Payment p in PaymentsCV)
-                {
-                    sum += p.Amount;
-                }
-            }
-            return sum;
-        }
-
         #endregion Constructors
 
         #region Fields
@@ -85,12 +43,10 @@ namespace BubbleStart.ViewModels
         private DateTime _EndDateCash;
         private DateTime _EndDateExpenses;
         private DateTime _EndDatePayments;
-
         private DateTime _EndDatePreview;
-
         private ObservableCollection<Expense> _Expenses;
-
         private decimal _ExpensesSum;
+        private string _ExpensesTextFilter;
 
         private decimal _Fainomenika;
 
@@ -109,6 +65,8 @@ namespace BubbleStart.ViewModels
         private decimal _Pistotika;
 
         private ObservableCollection<PreviewData> _Preview;
+
+        private ObservableCollection<PreviewData> _RealPreview;
 
         private int _RecieptIndex;
 
@@ -253,6 +211,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public DateTime EndDatePreview
         {
             get
@@ -296,13 +255,6 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        private bool ExpensesFilter(object obj)
-        {
-            if (string.IsNullOrEmpty(ExpensesTextFilter))
-                return true;
-            return obj is Expense e && e.Reason.ToUpperInvariant().Contains(ExpensesTextFilter.ToUpperInvariant());
-        }
-
         public decimal ExpensesSum
         {
             get => _ExpensesSum;
@@ -315,6 +267,29 @@ namespace BubbleStart.ViewModels
                 }
 
                 _ExpensesSum = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string ExpensesTextFilter
+        {
+            get
+            {
+                return _ExpensesTextFilter;
+            }
+
+            set
+            {
+                if (_ExpensesTextFilter == value)
+                {
+                    return;
+                }
+
+                _ExpensesTextFilter = value;
+                if (Expenses != null)
+                {
+                    CollectionViewSource.GetDefaultView(Expenses).Refresh();
+                }
                 RaisePropertyChanged();
             }
         }
@@ -493,6 +468,25 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public ObservableCollection<PreviewData> RealPreview
+        {
+            get
+            {
+                return _RealPreview;
+            }
+
+            set
+            {
+                if (_RealPreview == value)
+                {
+                    return;
+                }
+
+                _RealPreview = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public int RecieptIndex
         {
             get
@@ -515,7 +509,6 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand RegisterExpenseCommand { get; set; }
-
         public RelayCommand SaveChangesCommand { get; set; }
 
         public Expense SelectedExpense
@@ -552,16 +545,12 @@ namespace BubbleStart.ViewModels
                 PaymentsCV.Refresh();
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(TotalPayments));
-
             }
         }
 
         public RelayCommand ShowCashDataCommand { get; set; }
-
         public RelayCommand ShowExpensesDataCommand { get; set; }
-
         public RelayCommand ShowPaymentsDataCommand { get; set; }
-
         public RelayCommand ShowPreviewDataCommand { get; set; }
 
         public decimal Spitiou
@@ -646,6 +635,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public DateTime StartDatePreview
         {
             get
@@ -704,6 +694,8 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public decimal TotalPayments => GetSum();
 
         #endregion Properties
 
@@ -816,6 +808,26 @@ namespace BubbleStart.ViewModels
             CalculateAmounts();
         }
 
+        private bool ExpensesFilter(object obj)
+        {
+            if (string.IsNullOrEmpty(ExpensesTextFilter))
+                return true;
+            return obj is Expense e && e.Reason.ToUpperInvariant().Contains(ExpensesTextFilter.ToUpperInvariant());
+        }
+
+        private decimal GetSum()
+        {
+            decimal sum = 0;
+            if (PaymentsCV != null)
+            {
+                foreach (Payment p in PaymentsCV)
+                {
+                    sum += p.Amount;
+                }
+            }
+            return sum;
+        }
+
         private bool PaymentsFilter(object obj)
         {
             return obj is Payment p &&
@@ -825,8 +837,11 @@ namespace BubbleStart.ViewModels
                     (SelectedPaymentMethodIndexIndex == 3 && p.PaymentType == PaymentType.Bank))
                 && (RecieptIndex == 0 || (RecieptIndex == 1 && p.Reciept) || (RecieptIndex == 2 && !p.Reciept));
         }
+
         private async Task RegisterExpense()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
+
             NewExpense.User = StaticResources.User;
             BasicDataManager.Add(NewExpense);
             await BasicDataManager.SaveAsync();
@@ -836,32 +851,42 @@ namespace BubbleStart.ViewModels
             }
             NewExpense = new Expense();
             UpdateAmmounts();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private async Task SaveChanges()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
+
             await BasicDataManager.SaveAsync();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private async Task ShowCashData()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             DailyPayments = new ObservableCollection<Payment>((await BasicDataManager.Context.GetAllPaymentsAsync(StartDateCash, EndDateCash)).OrderBy(a => a.Date));
             CalculateAmounts();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private async Task ShowExpensesData()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             DateTime enddate = EndDateExpenses.AddDays(1);
             Expenses = new ObservableCollection<Expense>((await BasicDataManager.Context.GetAllExpensesAsync(e => e.Date >= StartDateExpenses && e.Date < enddate)).OrderBy(a => a.Date));
             NewExpense = new Expense();
 
             UpdateAmmounts();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private async Task ShowPaymentsData()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             Payments = new ObservableCollection<Payment>(await BasicDataManager.Context.GetAllPaymentsAsync(StartDatePayments, EndDatePayments, false));
             RaisePropertyChanged(nameof(TotalPayments));
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private async Task ShowPreviewData()
@@ -871,6 +896,10 @@ namespace BubbleStart.ViewModels
             List<Expense> expenses = await BasicDataManager.Context.GetAllExpensesAsync(e => e.Date >= StartDatePreview && e.Date <= EndDatePreview, false);
             List<Payment> payments = (await BasicDataManager.Context.GetAllPaymentsAsync(StartDatePreview, EndDatePreview, false)).ToList();
             List<Program> programs = (await BasicDataManager.Context.GetAllAsync<Program>(p => p.DayOfIssue >= StartDatePreview && p.DayOfIssue <= EndDatePreview)).ToList();
+
+            List<PreviewData> realpreviewData = new List<PreviewData>();
+            List<Expense> expensesPreview = await BasicDataManager.Context.GetAllExpensesAsync(e => (e.To >= StartDatePreview && e.To <= EndDatePreview) || (e.From >= StartDatePreview && e.From <= EndDatePreview), false);
+            List<Program> programsPreview = (await BasicDataManager.Context.GetProgramsFullAsync(p => p.ShowUpsList.Any(s => s.Arrived >= StartDatePreview && s.Arrived <= EndDatePreview))).ToList();
 
             PreviewData tmpMonth;
             foreach (var expense in expenses)
@@ -906,9 +935,96 @@ namespace BubbleStart.ViewModels
                 }
             }
 
-            Preview = new ObservableCollection<PreviewData>(previewData.OrderBy(r => r.Date));
 
+            //real
+            var firstmonth = new DateTime(StartDatePreview.Year, StartDatePreview.Month, 1);
+            var lastMonth = new DateTime(EndDatePreview.Year, EndDatePreview.Month, 1);
+            while (firstmonth <= lastMonth)
+            {
+                realpreviewData.Add(new PreviewData { Date = firstmonth });
+                firstmonth = firstmonth.AddMonths(1);
+            }
+            IEnumerable<PreviewData> months = new List<PreviewData>();
+            foreach (var expense in expensesPreview)
+            {
+                months = realpreviewData.Where(m => (expense.To >= m.Date && expense.To < m.Date.AddMonths(1)) || (expense.From >= m.Date && expense.From < m.Date.AddMonths(1)));
+                if (months?.Count() > 0)
+                {
+                    foreach (var mon in months)
+                    {
+                        mon.Expenses += GetAmountInMonth(mon, expense);
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+
+            months = new List<PreviewData>();
+            DateTime firstProgMonth;
+            DateTime LastProgMonth;
+            foreach (var program in programsPreview)
+            {
+                program.ShowUpsList = program.ShowUpsList.OrderBy(s => s.Arrived).ToList();
+                if (!program.ShowUpsList.Any())
+                {
+                    continue;
+                }
+                firstProgMonth = new DateTime(program.ShowUpsList.First().Arrived.Year, program.ShowUpsList.First().Arrived.Month, 1);
+                LastProgMonth = new DateTime(program.ShowUpsList.Last().Arrived.Year, program.ShowUpsList.Last().Arrived.Month, 1);
+                months = realpreviewData.Where(m => m.Date >= firstProgMonth && m.Date <= LastProgMonth);
+                if (months.Count() > 0)
+                    foreach (var mon in months)
+                    {
+                        mon.Recieved += GetProgramAmountInMonth(mon, program);
+                    }
+                else
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+
+            Preview = new ObservableCollection<PreviewData>(previewData.OrderBy(r => r.Date));
+            RealPreview = new ObservableCollection<PreviewData>(realpreviewData.OrderBy(r => r.Date));
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private decimal GetProgramAmountInMonth(PreviewData mon, Program program)
+        {
+            if (program == null || mon == null)
+            {
+                throw new ArgumentNullException(nameof(program));
+            }
+            return program.ShowUpPrice * program.ShowUpsList.Where(s => s.Arrived >= mon.Date && s.Arrived < mon.Date.AddMonths(1)).Count();
+
+            throw new InvalidOperationException(nameof(program));
+        }
+
+        private decimal GetAmountInMonth(PreviewData mon, Expense expense)
+        {
+            if (expense == null || mon == null)
+            {
+                throw new ArgumentNullException(nameof(expense));
+            }
+            if (expense.From.Date == expense.To.Date && expense.From.Month == mon.Date.Month)
+            {
+                return expense.Amount;
+            }
+            var addedMonth = mon.Date.AddMonths(1);
+            if (expense.From.Date >= mon.Date && expense.To.Date < addedMonth)
+            {
+                return expense.Amount;
+            }
+            if (expense.From.Date >= mon.Date && expense.From.Date < addedMonth && expense.To.Date > addedMonth)
+            {
+                return expense.Amount / ((expense.To.Date - expense.From.Date).Days + 1) * (addedMonth - expense.From.Date).Days;
+            }
+            if (expense.To.Date >= mon.Date && expense.To.Date < addedMonth && expense.From.Date < mon.Date)
+            {
+                return expense.Amount / ((expense.To.Date - expense.From.Date).Days + 1) * ((expense.To.Date - mon.Date).Days + 1);
+            }
+            throw new InvalidOperationException(nameof(expense));
         }
 
         #endregion Methods
@@ -947,6 +1063,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public decimal Expenses
         {
             get
@@ -986,6 +1103,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public decimal Sold
         {
             get

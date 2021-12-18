@@ -88,6 +88,14 @@ namespace BubbleStart.Database
                 .Include(a => a.Customer.ShowUps)
                 .ToListAsync();
         }
+        public async Task<List<Program>> GetProgramsFullAsync(Expression<Func<Program, bool>> filter)
+        {
+
+            return await Context.Programs
+                .Where(filter)
+                .Include(a => a.ShowUpsList)
+                .ToListAsync();
+        }
 
         //public TEntity GetById<TEntity>(int id) where TEntity : BaseModel
         //{
@@ -373,13 +381,13 @@ namespace BubbleStart.Database
                 await Context.Set<Change>().Where(s => s.Date >= s.Customer.ResetDate).ToListAsync();
                 await Context.Set<Apointment>().Where(p4 => p4.DateTime >= CloseLimit).ToListAsync();
                 var pr = await Context.Set<Program>().Where(p => p.StartDay >= p.Customer.ResetDate).ToListAsync();
-                await Context.Set<Payment>().Where(s => s.Program.StartDay >= s.Customer.ResetDate ||(s.Program==null && s.Date>=s.Customer.ResetDate)).ToListAsync();
+                await Context.Set<Payment>().Where(s => s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate)).ToListAsync();
 
-                //await Context.Set<ShowUp>().Where(p2 => p2.Arrived >= Limit).ToListAsync();
-                //await Context.Set<Change>().Where(p3 => p3.Date >= CloseLimit).ToListAsync();
-                //await Context.Set<Apointment>().Where(p4 => p4.DateTime >= Limit).ToListAsync();
-                //await Context.Set<Program>().Where(p => p.StartDay >= Limit).ToListAsync();
-                //await Context.Set<Payment>().Where(p1 => p1.Date >= Limit && (p1.Program == null || p1.Program.StartDay > Limit)).ToListAsync();
+                //await Context.Set<ShowUp>().Where(s => s.Arrived >= Limit).ToListAsync();
+                //await Context.Set<Change>().Where(s => s.Date >= s.Customer.ResetDate).ToListAsync();
+                //await Context.Set<Apointment>().Where(p4 => p4.DateTime >= CloseLimit).ToListAsync();
+                //var pr = await Context.Set<Program>().Where(p => p.StartDay >= Limit).ToListAsync();
+                //await Context.Set<Payment>().Where(s => s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate)).ToListAsync();
 
                 var x = (await Context.Set<Customer>().Where(c => c.Enabled)
                         //.Include(o => o.Programs.Select(t => t.Payments))

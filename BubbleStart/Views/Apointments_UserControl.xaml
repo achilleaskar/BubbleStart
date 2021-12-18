@@ -30,10 +30,12 @@
             </Grid.RowDefinitions>
             <Grid Margin="0 0 0 2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel HorizontalAlignment="Right"
@@ -51,14 +53,16 @@
                               Margin="5 0">
                         <ComboBoxItem Content="Όλοι" />
                         <ComboBoxItem Content="Γωγώ" />
-                        <ComboBoxItem Content="Δημήτρης" />
+                        <ComboBoxItem Content="Functional" />
                         <ComboBoxItem Content="Yoga" />
                         <ComboBoxItem Content="Massage" />
+                        <ComboBoxItem Content="Online" />
+                        <ComboBoxItem Content="Pilates Mat" />
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Grid.Column="2"
                             Orientation="Horizontal"
-                            HorizontalAlignment="Center">
+                            HorizontalAlignment="Right">
                     <Button  Margin="25 0"
                              Command="{Binding PreviousWeekCommand}">
                         <iconPacks:PackIconFontAwesome Kind="ArrowCircleLeftSolid" />
@@ -68,26 +72,83 @@
                         <iconPacks:PackIconFontAwesome Kind="ArrowCircleRightSolid" />
                     </Button>
                 </StackPanel>
-                <StackPanel Grid.Column="3"
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Grid.Column="4">
+                    <RadioButton Content="Τύπος"
+                                 GroupName="rbos"
+                                 IsChecked="True"
+                                 VerticalAlignment="Center"
+                                 Name="typeRB" />
+                    <RadioButton Content="Γυμναστής"
+                                 VerticalAlignment="Center"
+                                 Margin="5 0 10 0"
+                                 IsChecked="{Binding IsGymChecked}"
+                                 GroupName="rbos"
+                                 Name="gymnastRB" />
+                </StackPanel>
+                <StackPanel Grid.Column="5"
                             Orientation="Horizontal"
                             Margin="0 0 10 0"
-                            HorizontalAlignment="Right">
+                            Visibility="{Binding IsChecked,ElementName=typeRB,Converter={StaticResource booleanToVisibilityConverter}}"
+                            HorizontalAlignment="Left">
                     <Label Content="Γεωργία"
+                           MinWidth="55"
+                           HorizontalContentAlignment="Center"
                            Background="LimeGreen" />
-                    <Label Content="Δημήτρης"
+                    <Label Content="Functional"
+                           MinWidth="55"
+                           HorizontalContentAlignment="Center"
                            Background="Orange" />
                     <Label Content="Yoga"
+                           MinWidth="55"
+                           HorizontalContentAlignment="Center"
                            Background="LightBlue" />
                     <Label Content="Personal"
+                           MinWidth="55"
+                           HorizontalContentAlignment="Center"
                            Background="Cyan" />
                     <Label Content="Massage"
+                           MinWidth="55"
+                           HorizontalContentAlignment="Center"
                            Background="HotPink" />
                     <Label Content="Online"
+                           MinWidth="55"
+                           HorizontalContentAlignment="Center"
                            Background="Yellow" />
+                    <Label Content="Pilates Mat"
+                           MinWidth="55"
+                           HorizontalContentAlignment="Center"
+                           Background="Pink" />
                 </StackPanel>
-                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel Grid.Column="5"
+                            Orientation="Horizontal"
+                            Margin="0 0 10 0"
+                            Visibility="{Binding IsChecked,ElementName=gymnastRB,Converter={StaticResource booleanToVisibilityConverter}}"
+                            HorizontalAlignment="Right">
+                    <ItemsControl ItemsSource="{Binding Gymnasts}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Name}"
+                                       MinWidth="55"
+                                       HorizontalContentAlignment="Center"
+                                       Background="{Binding ColorHash}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                <StackPanel Grid.Column="6"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
                     <DatePicker Margin="5 0"
-                                SelectedDate="{Binding SelectedDayToGo}"  VerticalAlignment="Center"/>
+                                Width="100"
+                                SelectedDate="{Binding SelectedDayToGo}"
+                                VerticalAlignment="Center" />
                     <Button Content="Φόρτωση"
                             Command="{Binding ShowProgramCommand}"
                             VerticalAlignment="Center"
@@ -202,7 +263,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <Border BorderBrush="Gray"
-                                                                    Width="92"
+                                                                    Width="110"
                                                                     Height="120"
                                                                     BorderThickness="1 1 0 0">
                                                                 <Grid>
@@ -229,11 +290,49 @@
                                                                                 <StackPanel Orientation="Horizontal">
                                                                                     <ContentControl MouseDoubleClick="OnDoubleClick">
                                                                                         <TextBlock Text="{Binding Customer}"
-                                                                                                   Padding="1"
-                                                                                                   Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}">
+                                                                                                   Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                                                   Padding="1">
+                                                                                            <TextBlock.Style>
+                                                                                                <Style TargetType="TextBlock">
+                                                                                                    <Style.Triggers>
+                                                                                                        <DataTrigger Binding="{Binding IsChecked,ElementName=gymnastRB}"
+                                                                                                                     Value="True">
+                                                                                                            <Setter Property="Background"
+                                                                                                                    Value="{Binding GymColor}" />
+                                                                                                        </DataTrigger>
+                                                                                                    </Style.Triggers>
+                                                                                                    <Setter Property="Background"
+                                                                                                            Value="{Binding ApColor}" />
+                                                                                                </Style>
+                                                                                            </TextBlock.Style>
                                                                                             <TextBlock.ToolTip>
                                                                                                 <TextBlock Text="{Binding PersonName}" />
                                                                                             </TextBlock.ToolTip>
+                                                                                            <TextBlock.ContextMenu>
+                                                                                                <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag,RelativeSource={RelativeSource Self}}">
+                                                                                                    <MenuItem Header="Γυμναστής"
+                                                                                                              ItemsSource="{Binding DataContext.Gymnasts}">
+                                                                                                            <MenuItem.ItemTemplate>
+                                                                                                                <DataTemplate>
+                                                                                                                    <TextBlock Text="{Binding Name}" />
+                                                                                                                </DataTemplate>
+                                                                                                            </MenuItem.ItemTemplate>                                        
+                                                                                                        <MenuItem.ItemContainerStyle>
+                                                                                                            <Style TargetType="{x:Type MenuItem}">
+                                                                                                                <Setter Property="Command"
+                                                                                                                        Value="{Binding DataContext.ChangeGymnastFunctionalCommand, 
+                                                                                                                    RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                                                                                                                <Setter Property="CommandParameter"
+                                                                                                                        Value="{Binding}" />
+                                                                                                            </Style>
+                                                                                                        </MenuItem.ItemContainerStyle>
+                                                                                                    </MenuItem>
+                                                                                                    <MenuItem Header="Χωρίς Γυμναστή"
+                                                                                                              Command="{Binding DataContext.NoGymnastCommand}"
+                                                                                                              CommandParameter="{Binding PlacementTarget.DataContext, 
+                                                                                                                RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                                                                                </ContextMenu>
+                                                                                            </TextBlock.ContextMenu>
                                                                                     </TextBlock>
                                                                                     </ContentControl>
                                                                                 </StackPanel>
@@ -288,7 +387,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <Border BorderBrush="Gray"
-                                                                    Width="92"
+                                                                    Width="110"
                                                                     Height="120"
                                                                     BorderThickness="1 1 0 0">
                                                                 <Grid>
@@ -315,11 +414,49 @@
                                                                                 <StackPanel Orientation="Horizontal">
                                                                                     <ContentControl MouseDoubleClick="OnDoubleClick">
                                                                                         <TextBlock Text="{Binding Customer}"
-                                                                                                   Padding="1"
-                                                                                                   Background="{Binding  Converter={StaticResource appointmentShowedUptoColorConverter}}">
+                                                                                                   Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                                                   Padding="1">
+                                                                                            <TextBlock.Style>
+                                                                                                <Style TargetType="TextBlock">
+                                                                                                    <Style.Triggers>
+                                                                                                        <DataTrigger Binding="{Binding IsChecked,ElementName=gymnastRB}"
+                                                                                                                     Value="True">
+                                                                                                            <Setter Property="Background"
+                                                                                                                    Value="{Binding GymColor}" />
+                                                                                                        </DataTrigger>
+                                                                                                    </Style.Triggers>
+                                                                                                    <Setter Property="Background"
+                                                                                                            Value="{Binding ApColor}" />
+                                                                                                </Style>
+                                                                                            </TextBlock.Style>
                                                                                             <TextBlock.ToolTip>
                                                                                                 <TextBlock Text="{Binding PersonName}" />
                                                                                             </TextBlock.ToolTip>
+                                                                                            <TextBlock.ContextMenu>
+                                                                                                <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag,RelativeSource={RelativeSource Self}}">
+                                                                                                    <MenuItem Header="Γυμναστής"
+                                                                                                              ItemsSource="{Binding DataContext.Gymnasts}">
+                                                                                                            <MenuItem.ItemTemplate>
+                                                                                                                <DataTemplate>
+                                                                                                                    <TextBlock Text="{Binding Name}" />
+                                                                                                                </DataTemplate>
+                                                                                                            </MenuItem.ItemTemplate>                                        
+                                                                                                        <MenuItem.ItemContainerStyle>
+                                                                                                            <Style TargetType="{x:Type MenuItem}">
+                                                                                                                <Setter Property="Command"
+                                                                                                                        Value="{Binding DataContext.ChangeGymnastReformerCommand, 
+                                                                                                                    RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                                                                                                                <Setter Property="CommandParameter"
+                                                                                                                        Value="{Binding}" />
+                                                                                                            </Style>
+                                                                                                        </MenuItem.ItemContainerStyle>
+                                                                                                    </MenuItem>
+                                                                                                      <MenuItem Header="Χωρίς Γυμναστή"
+                                                                                                                Command="{Binding DataContext.NoGymnastCommand}"
+                                                                                                                CommandParameter="{Binding PlacementTarget.DataContext, 
+                                                                                                                RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                                                                                                </ContextMenu>
+                                                                                            </TextBlock.ContextMenu>
                                                                                     </TextBlock>
                                                                                     </ContentControl>
                                                                                 </StackPanel>

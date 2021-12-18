@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using BubbleStart.Helpers;
@@ -25,18 +26,31 @@ namespace BubbleStart.Converters
                 {
 
                 }
-                if (a.Person == SelectedPersonEnum.Gogo)
-                    return new SolidColorBrush(Colors.LimeGreen);
-                if (a.Person == SelectedPersonEnum.Dimitris)
-                    return new SolidColorBrush(Colors.Orange);
-                if (a.Person == SelectedPersonEnum.Yoga)
-                    return new SolidColorBrush(Colors.LightBlue);
-                if (a.Person == SelectedPersonEnum.Massage)
-                    return new SolidColorBrush(Colors.HotPink);
-                if (a.Person == SelectedPersonEnum.Online)
-                    return new SolidColorBrush(Colors.Yellow);
-                if (a.Person == SelectedPersonEnum.Personal)
-                    return new SolidColorBrush(Colors.Cyan);
+                if (parameter == null || parameter is RadioButton b && b.IsChecked == true)
+                {
+
+                    if (a.Person == SelectedPersonEnum.Gogo)
+                        return new SolidColorBrush(Colors.LimeGreen);
+                    if (a.Person == SelectedPersonEnum.Functional)
+                        return new SolidColorBrush(Colors.Orange);
+                    if (a.Person == SelectedPersonEnum.Yoga)
+                        return new SolidColorBrush(Colors.LightBlue);
+                    if (a.Person == SelectedPersonEnum.Massage)
+                        return new SolidColorBrush(Colors.HotPink);
+                    if (a.Person == SelectedPersonEnum.Online)
+                        return new SolidColorBrush(Colors.Yellow);
+                    if (a.Person == SelectedPersonEnum.Personal)
+                        return new SolidColorBrush(Colors.Cyan);
+                    if (a.Person == SelectedPersonEnum.PilatesMat)
+                        return new SolidColorBrush(Colors.Pink);
+                }
+                else
+                {
+                    if (a.Gymnast == null)
+                        return new SolidColorBrush(Colors.Transparent);
+                    if (a.Gymnast == null)
+                        return new SolidColorBrush(Colors.White);
+                }
             }
             return new SolidColorBrush(Colors.Transparent);
         }

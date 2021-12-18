@@ -149,8 +149,8 @@
                                 <DataGridTextColumn Header="Ποσό"
                                                     MaxWidth="60"
                                                     Binding="{Binding Amount,StringFormat=c2,UpdateSourceTrigger=PropertyChanged}" />
-                                <DataGridTextColumn Header="Ημερομηνία"
-                                                    MaxWidth="120"
+                                <DataGridTextColumn Header="Ημερομ."
+                                                    Width="70"
                                                     Binding="{Binding Date,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
                                 <DataGridTemplateColumn Header="Κατηγορία"
                                                         Width="110"
@@ -188,6 +188,25 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Από"
+                                                        SortMemberPath="From"
+                                                        Width="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DatePicker SelectedDate="{Binding From,UpdateSourceTrigger=PropertyChanged}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Έως"
+                                                        SortMemberPath="To"
+                                                        Width="100">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DatePicker SelectedDate="{Binding To,UpdateSourceTrigger=PropertyChanged}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <GroupBox Grid.Row="2"
@@ -207,12 +226,30 @@
                                     <StackPanel>
                                         <TextBlock Text="Ημερομηνία:" />
                                         <DatePicker VerticalAlignment="Bottom"
+                                                    Width="120"
                                                     SelectedDate="{Binding NewExpense.Date,  UpdateSourceTrigger=PropertyChanged}" />
                                     </StackPanel>
-                                    <StackPanel Margin=" 5 0 0 0"
+                                    <StackPanel Margin=" 40 0 0 0"
+                                                HorizontalAlignment="Center"
                                                 VerticalAlignment="Bottom">
-                                        <TextBlock Text="Ποσό:" />
+                                        <TextBlock Text="Ποσό:"
+                                                   Width="50" />
                                         <TextBox Text="{Binding NewExpense.Amount,Converter={StaticResource FtoSConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal"
+                                            Grid.Row="1">
+                                    <StackPanel>
+                                        <TextBlock Text="Από:" />
+                                        <DatePicker VerticalAlignment="Bottom"
+                                                    Width="120"
+                                                    SelectedDate="{Binding NewExpense.From,  UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                    <StackPanel Margin="5 0 0 0">
+                                        <TextBlock Text="Έως:" />
+                                        <DatePicker VerticalAlignment="Bottom"
+                                                    Width="120"
+                                                    SelectedDate="{Binding NewExpense.To,  UpdateSourceTrigger=PropertyChanged}" />
                                     </StackPanel>
                                 </StackPanel>
                                 <StackPanel Margin=" 5 0 0 0"
@@ -226,7 +263,7 @@
                                              AllowDrop="True"
                                              VerticalScrollBarVisibility="Auto"
                                              TextWrapping="Wrap"
-                                             Height="55" />
+                                             Height="70" />
                                 </StackPanel>
                                 <Button Content="Καταχώρηση"
                                         Grid.Row="1"
@@ -359,12 +396,16 @@
         <TabItem Header="Προεπισκόπηση"
                  d:Visibility="Visible"
                  Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
-            <Grid HorizontalAlignment="Left">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
                     <StackPanel>
                         <TextBlock Text="Aπό:" />
                         <DatePicker VerticalAlignment="Center"
@@ -376,64 +417,122 @@
                                     SelectedDate="{Binding EndDatePreview, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                     <Button Content="Προβολή"
-                            Margin="5"
+                            Margin="5" Padding="7 3"
                             VerticalAlignment="Bottom"
                             Command="{Binding ShowPreviewDataCommand}" />
                 </StackPanel>
-                <DataGrid ItemsSource="{Binding Preview}"
-                          Grid.Row="1"
-                          CanUserAddRows="False"
-                          IsReadOnly="True"
-                          HorizontalAlignment="Left"
-                          CanUserDeleteRows="False"
-                          AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Μήνας"
-                                            Width="120"
-                                            Binding="{Binding Date,Converter={StaticResource DateTimeToString},ConverterParameter='MMMM yyyy'}" />
-                        <DataGridTemplateColumn Header="Πωλήσεις"
-                                                Width="80">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Sold,StringFormat=C2}"
-                                               HorizontalAlignment="Right"
-                                               Margin="0 0 5 0" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Εισπράξεις"
-                                                Width="80">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Recieved,StringFormat=C2}"
-                                               HorizontalAlignment="Right"
-                                               Margin="0 0 5 0" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Έξοδα"
-                                                Width="80">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Expenses,StringFormat=C2}"
-                                               HorizontalAlignment="Right"
-                                               Margin="0 0 5 0" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Διαφορά"
-                                                Width="80">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Profit,StringFormat=C2}"
-                                               HorizontalAlignment="Right"
-                                               Margin="0 0 5 0" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                <GroupBox Header="Λογιστικό" Margin="5 0 15 0"
+                          Grid.Row="1">
+
+
+                    <DataGrid ItemsSource="{Binding Preview}"
+                              Grid.Row="1"
+                              CanUserAddRows="False"
+                              IsReadOnly="True"
+                              HorizontalAlignment="Left"
+                              CanUserDeleteRows="False"
+                              AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Μήνας"
+                                                Width="120"
+                                                Binding="{Binding Date,Converter={StaticResource DateTimeToString},ConverterParameter='MMMM yyyy'}" />
+                            <DataGridTemplateColumn Header="Πωλήσεις"
+                                                    Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Sold,StringFormat=C2}"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0 0 5 0" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Εισπράξεις"
+                                                    Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Recieved,StringFormat=C2}"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0 0 5 0" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Έξοδα"
+                                                    Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Expenses,StringFormat=C2}"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0 0 5 0" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Διαφορά"
+                                                    Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Profit,StringFormat=C2}"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0 0 5 0" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </GroupBox>
+
+                <GroupBox Header="Πραγματικό"
+                          Grid.Column="1"
+                          Grid.Row="1">
+
+
+                    <DataGrid ItemsSource="{Binding RealPreview}"
+                              Grid.Row="1"
+                              CanUserAddRows="False"
+                              IsReadOnly="True"
+                              HorizontalAlignment="Left"
+                              CanUserDeleteRows="False"
+                              AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Μήνας"
+                                                Width="120"
+                                                Binding="{Binding Date,Converter={StaticResource DateTimeToString},ConverterParameter='MMMM yyyy'}" />
+                            <DataGridTemplateColumn Header="Έσοδα"
+                                                    Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Recieved,StringFormat=C2}"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0 0 5 0" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Έξοδα"
+                                                    Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Expenses,StringFormat=C2}"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0 0 5 0" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Διαφορά"
+                                                    Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Profit,StringFormat=C2}"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0 0 5 0" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </GroupBox>
             </Grid>
+
         </TabItem>
         <TabItem Header="Πληρωμές"
                  d:Visibility="Visible"

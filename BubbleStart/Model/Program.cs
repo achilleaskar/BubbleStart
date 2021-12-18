@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
 
@@ -26,6 +25,69 @@ namespace BubbleStart.Model
         public IList<Change> Changes { get; set; }
 
         #region Enums
+
+        private bool _StrictDuration;
+
+        public bool StrictDuration
+        {
+            get
+            {
+                return _StrictDuration;
+            }
+
+            set
+            {
+                if (_StrictDuration == value)
+                {
+                    return;
+                }
+
+                _StrictDuration = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Deal _Deal;
+
+        public Deal Deal
+        {
+            get
+            {
+                return _Deal;
+            }
+
+            set
+            {
+                if (_Deal == value)
+                {
+                    return;
+                }
+
+                _Deal = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int? _DealId;
+
+        public int? DealId
+        {
+            get
+            {
+                return _DealId;
+            }
+
+            set
+            {
+                if (_DealId == value)
+                {
+                    return;
+                }
+
+                _DealId = value;
+                RaisePropertyChanged();
+            }
+        }
 
         [NotMapped]
         public int RemainingDays { get; set; }
@@ -144,14 +206,28 @@ namespace BubbleStart.Model
 
         #region Properties
 
+        private List<ShowUp> _ShowUpsList;
 
+        public List<ShowUp> ShowUpsList
+        {
+            get
+            {
+                return _ShowUpsList;
+            }
 
+            set
+            {
+                if (_ShowUpsList == value)
+                {
+                    return;
+                }
 
-
-
+                _ShowUpsList = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private Customer _Customer;
-
 
         public Customer Customer
         {
@@ -171,6 +247,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         public decimal Amount
         {
             get => _Amount;
@@ -313,7 +390,6 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
-
 
         [NotMapped]
         public decimal ShowUpPrice => Amount > 0 ? Amount / Showups : 0;
@@ -486,18 +562,14 @@ namespace BubbleStart.Model
             return "Ανενεργό";
         }
 
-        internal DateTime AddMonth()
+        internal DateTime AddMonth(int months)
         {
-            return StartDay.AddMonths(1).AddDays(-1);
+            return StartDay.AddMonths(months);
         }
 
         #endregion Methods
 
-
-
-
         private int _ProgramType;
-
 
         public int ProgramType
         {
@@ -518,10 +590,7 @@ namespace BubbleStart.Model
             }
         }
 
-
-
         private ProgramType _ProgramTypeO;
-
 
         public ProgramType ProgramTypeO
         {

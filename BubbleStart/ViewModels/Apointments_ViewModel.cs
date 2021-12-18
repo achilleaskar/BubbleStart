@@ -28,11 +28,71 @@ namespace BubbleStart.ViewModels
             NextWeekCommand = new RelayCommand(async () => { await NextWeek(); });
             PreviousWeekCommand = new RelayCommand(async () => { await PreviousWeek(); });
             ShowProgramCommand = new RelayCommand(async () => { await CreateProgram(); });
+            NoGymnastCommand = new RelayCommand<Apointment>(async (obj) => await NoGymnast(obj));
+
             ReformerVisible = FunctionalVisible = true;
             BasicDataManager = basicDataManager;
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
             Messenger.Default.Register<UpdateProgramMessage>(this, async (msg) => await CreateProgram(false));
             Messenger.Default.Register<UpdateClosedHoursMessage>(this, msg => RefreshProgram());
+        }
+
+        private async Task NoGymnast(Apointment apo)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            if (apo.Gymnast != null)
+            {
+                apo.Gymnast = null;
+                apo.RaisePropertyChanged(nameof(apo.GymColor));
+                await BasicDataManager.SaveAsync();
+            }
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+
+        public RelayCommand<Apointment> NoGymnastCommand { get; set; }
+
+
+        private ObservableCollection<User> _Gymnasts;
+
+        public ObservableCollection<User> Gymnasts
+        {
+            get
+            {
+                return _Gymnasts;
+            }
+
+            set
+            {
+                if (_Gymnasts == value)
+                {
+                    return;
+                }
+
+                _Gymnasts = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _IsGymChecked;
+
+        public bool IsGymChecked
+        {
+            get
+            {
+                return _IsGymChecked;
+            }
+
+            set
+            {
+                if (_IsGymChecked == value)
+                {
+                    return;
+                }
+
+                _IsGymChecked = value;
+                RaisePropertyChanged();
+            }
         }
 
         public bool HasDays => Days != null && Days.Count > 0;
@@ -217,6 +277,8 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
+        public string MyProperty { get; set; } = "satser";
+
         public void RefreshProgram()
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -319,6 +381,7 @@ namespace BubbleStart.ViewModels
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             StartDate = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek + 6) % 7);
+            Gymnasts = new ObservableCollection<User>(BasicDataManager.Users.Where(u => u.Id == 4 || u.Level == 4));
             SelectedDayToGo = DateTime.Today;
             Days = new ObservableCollection<Day>();
         }
@@ -432,6 +495,8 @@ namespace BubbleStart.ViewModels
             BasicDataManager = basicDataManager;
             AddApointmentCommand = new RelayCommand<int>(AddApointment);
             DeleteFunctionalApointmentCommand = new RelayCommand(async () => { await DeleteApointment(0); }, CanDeleteFunctionalApointment);
+            ChangeGymnastFunctionalCommand = new RelayCommand<object>(async (obj) => await ChangeGymnast(obj, 0));
+            ChangeGymnastReformerCommand = new RelayCommand<object>(async (obj) => await ChangeGymnast(obj, 1));
             DeleteReformerApointmentCommand = new RelayCommand(async () => { await DeleteApointment(1); }, CanDeleteReformerApointment);
             ToggleEnabled0Command = new RelayCommand(async () => await ToggleEnabled(0));
             ToggleEnabled1Command = new RelayCommand(async () => await ToggleEnabled(1));
@@ -441,6 +506,27 @@ namespace BubbleStart.ViewModels
             Enable1ForEverCommand = new RelayCommand(async () => await EnableForEver(1));
             AppointmentsFunctional = new ObservableCollection<Apointment>();
             AppointmentsReformer = new ObservableCollection<Apointment>();
+        }
+
+        private async Task ChangeGymnast(object obj, int v)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            if (obj is User u)
+            {
+                if (v == 0)
+                {
+                    SelectedApointmentFunctional.Gymnast = u;
+                    SelectedApointmentFunctional.RaisePropertyChanged(nameof(SelectedApointmentFunctional.GymColor));
+                }
+                else if (v == 1)
+                {
+                    SelectedApointmentReformer.Gymnast = u;
+                    SelectedApointmentReformer.RaisePropertyChanged(nameof(SelectedApointmentReformer.GymColor));
+
+                }
+            }
+            await BasicDataManager.SaveAsync();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private async Task EnableForEver(int room)
@@ -718,14 +804,14 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
-        public async Task AddCustomer(Customer customer, SelectedPersonEnum selectedPerson, int type, bool forever = false)
+        public async Task AddCustomer(Customer customer, SelectedPersonEnum selectedPerson, int type, User SelectedGymnast, bool forever = false)
         {
             var tmpTime = Time;
             if (customer != null)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
 
-                Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type };
+                Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type, Gymnast = SelectedGymnast };
                 if (forever)
                 {
                     List<Apointment> nextAppoitments = await BasicDataManager.Context.GetAllAppointmentsThisDayAsync(customer.Id, Time, type);
@@ -736,7 +822,7 @@ namespace BubbleStart.ViewModels
                         Time = Time.AddDays(7);
                         if (!nextAppoitments.Any(c => c.DateTime == Time))
                         {
-                            BasicDataManager.Add(new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type });
+                            BasicDataManager.Add(new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = type, Gymnast = SelectedGymnast });
                         }
                     }
                 }
@@ -769,6 +855,9 @@ namespace BubbleStart.ViewModels
             };
             window.ShowDialog();
         }
+
+        public RelayCommand<object> ChangeGymnastFunctionalCommand { get; set; }
+        public RelayCommand<object> ChangeGymnastReformerCommand { get; set; }
 
         private bool AppointmensFilter(object obj)
         {

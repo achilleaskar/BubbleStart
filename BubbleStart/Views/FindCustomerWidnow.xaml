@@ -20,9 +20,14 @@
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <GroupBox Header="Γυμανστής">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="Γυμανστής"
+                          Grid.ColumnSpan="2">
+                    <WrapPanel Orientation="Horizontal"
+                               HorizontalAlignment="Center">
                         <RadioButton Content="Γωγώ"
                                      IsChecked="{Binding IsGogoChecked}"
                                      GroupName="Options1" />
@@ -46,11 +51,17 @@
                                      IsChecked="{Binding IsOnlineChecked}"
                                      GroupName="Options1"
                                      Margin="5 0" />
-                    </StackPanel>
+                        <RadioButton Content="Pilates Mat"
+                                     IsChecked="{Binding IsPilatesMatChecked}"
+                                     GroupName="Options1"
+                                     Margin="5 0" />
+                    </WrapPanel>
                 </GroupBox>
                 <TextBlock Grid.Row="1"
                            Text="Λέξη Κλειδί:" />
                 <TextBox Grid.Row="2"
+                         Width="320"
+                         HorizontalAlignment="Left"
                          FontSize="15"
                          Margin="0 0 0 4"
                          Text="{Binding SearchTerm, Delay=100, UpdateSourceTrigger=PropertyChanged}" />
@@ -84,6 +95,15 @@
                                             Binding="{Binding Age}" />
                     </DataGrid.Columns>
                 </DataGrid>
+                <StackPanel Grid.Row="3"
+                            Grid.Column="1">
+                    <Label Content="Χρήστης:" />
+                    <ComboBox ItemsSource="{Binding Gymnasts}"
+                              SelectedItem="{Binding SelectedGymnast}"
+                              Margin="5 0"
+                              Width="100"
+                              HorizontalAlignment="Left" />
+                </StackPanel>
                 <StackPanel Grid.Row="4"
                             Orientation="Horizontal">
                     <Button Content="Προσθήκη για πάντα"

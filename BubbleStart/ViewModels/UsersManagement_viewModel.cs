@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using BubbleStart.Database;
 using BubbleStart.Model;
 using BubbleStart.Security;
@@ -136,5 +137,38 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Methods
+
+        private Color? _SelectedColor;
+
+        public override void SelectedEntityChanged()
+        {
+            if (!string.IsNullOrEmpty(SelectedEntity?.ColorHash))
+            {
+                SelectedColor = (Color)ColorConverter.ConvertFromString(SelectedEntity.ColorHash);
+            }
+            else
+                SelectedColor = null;
+        }
+        public Color? SelectedColor
+        {
+            get
+            {
+                return _SelectedColor;
+            }
+
+            set
+            {
+                if (_SelectedColor == value)
+                {
+                    return;
+                }
+                if (SelectedEntity is UserWrapper u && value != null)
+                {
+                    u.ColorHash = value.ToString();
+                }
+                _SelectedColor = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

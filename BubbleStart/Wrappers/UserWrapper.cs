@@ -57,6 +57,12 @@ namespace BubbleStart.Wrappers
 
         #endregion Properties
 
+        public string ColorHash
+        {
+            get { return GetValue<string>(); }
+            set { SetValue(value); }
+        }
+
         #region Methods
 
         public override string ToString()

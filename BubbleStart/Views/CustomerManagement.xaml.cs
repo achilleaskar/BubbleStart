@@ -96,5 +96,14 @@ namespace BubbleStart.Views
             ResetDayPicker.SelectedDate = System.DateTime.Today;
 
         }
+
+        private void Button_Click2(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is Customer sc && sc.Popup1Open)
+            {
+                sc.Popup1Open = false;
+                PilFunToggle.IsChecked = false;
+            }
+        }
     }
 }

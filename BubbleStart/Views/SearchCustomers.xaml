@@ -25,6 +25,35 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <Popup Name="PopupFinish"
+               IsOpen="{Binding PopupFinishOpen}"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Width="150"
+               Height="130"
+               Placement="Center">
+            <Border BorderBrush="Black"
+                    BorderThickness="1"
+                    Padding="5 17 5 5 "
+                    Background="LightBlue">
+                <Grid >
+                    <ComboBox  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:BodyPart}}}"
+                               Margin="5" VerticalAlignment="Top"
+                               SelectedItem="{Binding SelectedBodyPart,UpdateSourceTrigger=PropertyChanged}" />
+                    <StackPanel Orientation="Horizontal" Margin="5 5 5 20"
+                                HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                        <Button Content="ΟΚ"
+                                Margin="5"
+                                Padding="5"
+                                Command="{Binding CustomerLeftCommand}" />
+                        <Button Content="Άκυρο"
+                                Margin="5"
+                                Padding="5"
+                                Click="Button_Click" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Popup>
         <Popup Name="Popup"
                IsOpen="{Binding PopupOpen}"
                HorizontalAlignment="Center"
@@ -32,106 +61,178 @@
                Placement="Center">
             <Border BorderBrush="Black"
                     BorderThickness="1"
-                    Padding="5"
+                    Padding="5 17 5 5 "
                     Background="LightBlue">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                <Grid>
+                    <TextBlock Foreground="Red"
+                               FontSize="11"
+                               Text="Press ESC or X to close"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               Margin="-2 -16 0 0" />
+                    <Button Foreground="Red"
+                            Click="Button_Click"
+                            Margin=" 0 -15 -2 0"
+                            VerticalContentAlignment="Center"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right">
+                        <TextBlock Text="x"
+                                   Margin="4 -3 4 0" />
+                    </Button>
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsChecked, ElementName=PilFunToggle}"
+                                                 Value="False">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Resources>
                         <Button Content="Functional"
                                 Width="100"
                                 Command="{Binding ShowedUpCommand}"
-                                CommandParameter="0"
+                                Click="Button_Click"
+                                CommandParameter="60"
                                 Margin="5" />
-                        <Label HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
                         <Button Content="Pilates"
                                 Width="100"
+                                Click="Button_Click"
                                 Command="{Binding ShowedUpCommand}"
-                                CommandParameter="4"
+                                CommandParameter="64"
                                 Margin="5" />
-                        <Label HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingPilatesDays}" />
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Pilates-Functional"
-                                Width="100"
-                                Command="{Binding ShowedUpCommand}"
-                                CommandParameter="6"
-                                Margin="5" />
-                        <Label HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingFunctionalPilatesDays}" />
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsChecked, ElementName=PilFunToggle}"
+                                                 Value="True">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Resources>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Functional"
+                                    Width="120"
+                                    Command="{Binding ShowedUpCommand}"
+                                    CommandParameter="0"
+                                    Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Pilates"
+                                    Width="120"
+                                    Command="{Binding ShowedUpCommand}"
+                                    CommandParameter="4"
+                                    Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingPilatesDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleButton Content="Pilates-Functional"
+                                          Width="120"
+                                          Name="PilFunToggle"
+                                          Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingFunctionalPilatesDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Massage"
+                                    Width="120"
+                                    CommandParameter="1"
+                                    Command="{Binding ShowedUpCommand}"
+                                    Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingMassageDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Online"
+                                    CommandParameter="2"
+                                    Width="120"
+                                    Command="{Binding ShowedUpCommand}"
+                                    Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingOnlineDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="OutDoor"
+                                    CommandParameter="3"
+                                    Width="120"
+                                    Command="{Binding ShowedUpCommand}"
+                                    Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingOutDoorDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Yoga"
+                                    Width="120"
+                                    Command="{Binding ShowedUpCommand}"
+                                    CommandParameter="5"
+                                    Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingYogaDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Aerial Yoga"
+                                    Width="120"
+                                    Command="{Binding ShowedUpCommand}"
+                                    CommandParameter="7"
+                                    Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingAerialYogaDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Personal"
+                                    Width="120"
+                                    Command="{Binding ShowedUpCommand}"
+                                    CommandParameter="8"
+                                    Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingPersonalDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Medical"
+                                    Width="120"
+                                    Command="{Binding ShowedUpCommand}"
+                                    CommandParameter="9"
+                                    Margin="5" />
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="{Binding SelectedCustomer.RemainingMedicalDays}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 0 15 0"
+                                    HorizontalAlignment="Center">
+                            <RadioButton Content="30'"
+                                         IsChecked="{Binding Is30min}"
+                                         VerticalAlignment="Center"
+                                         GroupName="is30or60" />
+                            <RadioButton Content="60'"
+                                         IsChecked="True"
+                                         VerticalAlignment="Center"
+                                         GroupName="is30or60" />
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Massage"
-                                Width="100"
-                                CommandParameter="1"
-                                Command="{Binding ShowedUpCommand}"
-                                Margin="5" />
-                        <Label HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingMassageDays}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Online"
-                                CommandParameter="2"
-                                Width="100"
-                                Command="{Binding ShowedUpCommand}"
-                                Margin="5" />
-                        <Label HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingOnlineDays}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="OutDoor"
-                                CommandParameter="3"
-                                Width="100"
-                                Command="{Binding ShowedUpCommand}"
-                                Margin="5" />
-                        <Label HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingOutDoorDays}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Yoga"
-                                Width="100"
-                                Command="{Binding ShowedUpCommand}"
-                                CommandParameter="5"
-                                Margin="5" />
-                        <Label HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingYogaDays}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Aerial Yoga"
-                                Width="100"
-                                Command="{Binding ShowedUpCommand}"
-                                CommandParameter="7"
-                                Margin="5" />
-                        <Label HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Content="{Binding SelectedCustomer.RemainingAerialYogaDays}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center">
-                        <RadioButton Content="30'"
-                                     IsChecked="{Binding Is30min}"
-                                     VerticalAlignment="Center"
-                                     GroupName="is30or60" />
-                        <RadioButton Content="60'"
-                                     IsChecked="True"
-                                     VerticalAlignment="Center"
-                                     GroupName="is30or60" />
-                    </StackPanel>
-                    <TextBlock Foreground="Red"
-                               FontSize="9"
-                               Text="Press ESC to close"
-                               HorizontalAlignment="Left"
-                               Margin="-4 0 0 -4" />
-                </StackPanel>
+                </Grid>
             </Border>
         </Popup>
         <GroupBox Margin="5"
@@ -226,14 +327,14 @@
                                             Width="110"
                                             Binding="{Binding Name}" />
                         <DataGridTextColumn Header="Επίθετο"
-                                            Width="120"
+                                            Width="110"
                                             Binding="{Binding SureName}" />
                         <DataGridTextColumn Header="Ηλικ."
                                             Width="35"
                                             Binding="{Binding Age}" />
                         <DataGridTemplateColumn Header="Εν."
                                                 SortMemberPath="IsActiveColor.Color.G"
-                                                Width="30">
+                                                Width="25">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border Background="{Binding IsActiveColor}"
@@ -251,8 +352,8 @@
                                             Width="35"
                                             FontSize="15"
                                             Binding="{Binding RemainingTrainingFullDays}" />
-                        <DataGridTextColumn Header="Mass"
-                                            Width="40"
+                        <DataGridTextColumn Header="Mas"
+                                            Width="35"
                                             FontSize="15"
                                             Binding="{Binding RemainingMassageDays}" />
                         <DataGridTextColumn Header="Out"
@@ -285,18 +386,9 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <!--<DataGridTemplateColumn>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button FontSize="25"
-                                            VerticalContentAlignment="Center"
-                                            Padding="0 0 0 3"
-                                            Height="21"
-                                            Content="•"
-                                            Command="{Binding DisableCustomerCommand}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>-->
+                        <DataGridTextColumn Header="Last"
+                                            Width="75"
+                                            Binding="{Binding LastPart}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
@@ -331,7 +423,7 @@
                                         <Button Content="Τέλος"
                                                 HorizontalAlignment="Center"
                                                 Margin="5 0"
-                                                Command="{Binding DataContext.CustomerLeftCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}, Mode=FindAncestor}}" />
+                                                Click="ButtonFinishClicked" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -369,12 +461,13 @@
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Όνομα"
-                                                    Width="75"
+                                                    Width="95"
                                                     Binding="{Binding Name}" />
                                 <DataGridTextColumn Header="Επίθετο"
-                                                    Width="85"
+                                                    Width="105"
                                                     Binding="{Binding SureName}" />
                                 <DataGridTextColumn Header="Ώρα"
+                                                    Width="40"
                                                     Binding="{Binding AppointmentTime,Converter={StaticResource DateTimeToString},ConverterParameter='HH:mm'}" />
                             </DataGrid.Columns>
                         </DataGrid>

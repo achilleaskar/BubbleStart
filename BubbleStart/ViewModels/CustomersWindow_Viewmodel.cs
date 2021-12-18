@@ -128,12 +128,41 @@ namespace BubbleStart.ViewModels
                 _IsDimitrisChecked = value;
                 if (value)
                 {
-                    SelectedPerson = SelectedPersonEnum.Dimitris;
+                    SelectedPerson = SelectedPersonEnum.Functional;
                 }
                 RaisePropertyChanged();
             }
         }
 
+
+
+
+
+        private bool _IsPilatesMatChecked;
+
+
+        public bool IsPilatesMatChecked
+        {
+            get
+            {
+                return _IsPilatesMatChecked;
+            }
+
+            set
+            {
+                if (_IsPilatesMatChecked == value)
+                {
+                    return;
+                }
+
+                _IsPilatesMatChecked = value;
+                if (value)
+                {
+                    SelectedPerson = SelectedPersonEnum.PilatesMat;
+                }
+                RaisePropertyChanged();
+            }
+        }
 
 
 
@@ -291,6 +320,51 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
+        private User _SelectedGymnast;
+
+
+        public User SelectedGymnast
+        {
+            get
+            {
+                return _SelectedGymnast;
+            }
+
+            set
+            {
+                if (_SelectedGymnast == value)
+                {
+                    return;
+                }
+
+                _SelectedGymnast = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private ObservableCollection<User> _Gymnasts;
+
+
+        public ObservableCollection<User> Gymnasts
+        {
+            get
+            {
+                return _Gymnasts;
+            }
+
+            set
+            {
+                if (_Gymnasts == value)
+                {
+                    return;
+                }
+
+                _Gymnasts = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private async Task AddCustomer(string p)
         {
             Busy = true;
@@ -305,7 +379,7 @@ namespace BubbleStart.ViewModels
             }
             else
             {
-                await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Type, p == "1");
+                await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Type, SelectedGymnast: SelectedGymnast, p == "1");
             }
             Busy = false;
         }
@@ -328,7 +402,7 @@ namespace BubbleStart.ViewModels
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             Customers = new ObservableCollection<Customer>(BasicDataManager.Customers);
-
+            Gymnasts = new ObservableCollection<User>(BasicDataManager.Users.Where(u => u.Id == 4 || u.Level == 4));
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;
         }

@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BubbleStart.Wrappers;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Windows.Media;
 
 namespace BubbleStart.Model
 {
@@ -49,5 +51,10 @@ namespace BubbleStart.Model
         }
 
         #endregion Methods
+
+       
+
+        [StringLength(10)]
+        public string ColorHash { get; set; }
     }
 }

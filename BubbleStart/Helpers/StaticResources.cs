@@ -12,6 +12,10 @@ namespace BubbleStart.Helpers
 
         public static string GetDescription(Enum en)
         {
+            if (en==null)
+            {
+                return "";
+            }
             Type type = en.GetType();
             MemberInfo[] memInfo = type.GetMember(en.ToString());
             if (memInfo != null && memInfo.Length > 0)
