@@ -1,4 +1,11 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using BubbleStart.Views;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,13 +13,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using BubbleStart.Views;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using OfficeOpenXml;
 
 namespace BubbleStart.ViewModels
 {
@@ -25,6 +25,8 @@ namespace BubbleStart.ViewModels
             BasicDataManager = basicDataManager;
             LogOutCommand = new RelayCommand(TryLogOut);
             OpenUsersEditCommand = new RelayCommand(async () => await OpenUsersWindow(), CanEditWindows);
+            OpenSfiftsEditCommand = new RelayCommand(async () => await OpenShiftsWindow(), CanEditWindows);
+            OpenExpenseCategoriesCommand = new RelayCommand(async () => await OpenExpenseCategories(), CanEditWindows);
             PrintCustomersCommand = new RelayCommand(PrintCustomers);
 
             RefreshAllDataCommand = new RelayCommand(async () => { await RefreshAllData(); });
@@ -33,9 +35,23 @@ namespace BubbleStart.ViewModels
             EconomicData_ViewModel = new EconomicData_ViewModel(basicDataManager);
             Apointments_ViewModel = new Apointments_ViewModel(BasicDataManager);
             ShowUpsPerDay_ViewModel = new ShowUpsPerDay_ViewModel(BasicDataManager);
+            EmployeeManagement_ViewModel = new EmployeeManagement_ViewModel(BasicDataManager);
 
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+        }
 
+        private async Task OpenExpenseCategories()
+        {
+            var vm = new ExpenseCategoriesManagement_Viewmodel(BasicDataManager);
+            await vm.LoadAsync();
+            MessengerInstance.Send(new OpenChildWindowCommand(new ExpenseCategories_ManagementWindow { DataContext = vm }));
+        }
+
+        private async Task OpenShiftsWindow()
+        {
+            var vm = new ShiftsManagement_Viewmodel(BasicDataManager);
+            await vm.LoadAsync();
+            MessengerInstance.Send(new OpenChildWindowCommand(new ShiftsManagement_Window { DataContext = vm }));
         }
 
         private void PrintCustomers()
@@ -69,12 +85,11 @@ namespace BubbleStart.ViewModels
                 myWorksheet.Cells["F" + lineNum].Value = customer.ActiveCustomer ? "ΝΑΙ" : "ΟΧΙ";
                 myWorksheet.Cells["G" + lineNum].Value = customer.Vacinated ? "Έκανε" : "Δεν έκανε";
                 myWorksheet.Cells["H" + lineNum].Value = customer.Items.Where(t => t.ItemId == 2) is IEnumerable<ItemPurchase> l1 && l1.Count() > 0 ?
-                    string.Join(", ", l1.Select(i=>i.Size.ToString()).Distinct()) : "OXI";
+                    string.Join(", ", l1.Select(i => i.Size.ToString()).Distinct()) : "OXI";
                 myWorksheet.Cells["I" + lineNum].Value = customer.Items.Where(t => t.ItemId == 1) is IEnumerable<ItemPurchase> l2 && l2.Count() > 0 ?
                     string.Join(", ", l2.Select(i => i.Size.ToString()).Distinct()) : "OXI";
                 myWorksheet.Cells["J" + lineNum].Value = customer.Items.Where(t => t.ItemId == 3) is IEnumerable<ItemPurchase> l3 && l3.Count() > 0 ?
                     string.Join(", ", l3.Select(i => i.Size.ToString()).Distinct()) : "OXI";
-
             }
             myWorksheet.Column(1).Width = 4;
             myWorksheet.Column(2).Width = 16;
@@ -86,7 +101,6 @@ namespace BubbleStart.ViewModels
             myWorksheet.Column(8).Width = 13;
             myWorksheet.Column(9).Width = 13;
             myWorksheet.Column(10).Width = 13;
-
 
             //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());
             p.SaveAs(fileInfo);
@@ -148,7 +162,9 @@ namespace BubbleStart.ViewModels
         public RelayCommand LogOutCommand { get; set; }
 
         public RelayCommand OpenUsersEditCommand { get; set; }
+        public RelayCommand OpenSfiftsEditCommand { get; set; }
         public RelayCommand PrintCustomersCommand { get; set; }
+        public RelayCommand OpenExpenseCategoriesCommand { get; set; }
 
         public RelayCommand RefreshAllDataCommand { get; set; }
 
@@ -164,6 +180,27 @@ namespace BubbleStart.ViewModels
                 }
 
                 _SearchCustomer_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private EmployeeManagement_ViewModel _EmployeeManagement_ViewModel;
+
+        public EmployeeManagement_ViewModel EmployeeManagement_ViewModel
+        {
+            get
+            {
+                return _EmployeeManagement_ViewModel;
+            }
+
+            set
+            {
+                if (_EmployeeManagement_ViewModel == value)
+                {
+                    return;
+                }
+
+                _EmployeeManagement_ViewModel = value;
                 RaisePropertyChanged();
             }
         }
@@ -184,7 +221,6 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
         public string Username => StaticResources.User.Name;
 
         #endregion Properties
@@ -193,7 +229,6 @@ namespace BubbleStart.ViewModels
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-
         }
 
         public override void Reload()
@@ -224,7 +259,7 @@ namespace BubbleStart.ViewModels
 
         private async Task OpenUsersWindow()
         {
-            var vm = new UsersManagement_viewModel(BasicDataManager.Context);
+            var vm = new UsersManagement_viewModel(BasicDataManager);
             await vm.LoadAsync();
             MessengerInstance.Send(new OpenChildWindowCommand(new UsersManagement_Window { DataContext = vm }));
         }
@@ -240,7 +275,6 @@ namespace BubbleStart.ViewModels
                     {
                         return;
                     }
-
                 }
                 Mouse.OverrideCursor = Cursors.Wait;
                 await BasicDataManager.Refresh();

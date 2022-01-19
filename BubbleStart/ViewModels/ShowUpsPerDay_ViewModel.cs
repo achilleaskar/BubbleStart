@@ -7,6 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace BubbleStart.ViewModels
 {
@@ -68,7 +69,9 @@ namespace BubbleStart.ViewModels
 
         private async Task ShowShowUps()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             DailyShowUps = new ObservableCollection<ShowUp>(await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(StartDate, EndDate.AddDays(1)));
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private ObservableCollection<ShowUp> _DailyShowUps;

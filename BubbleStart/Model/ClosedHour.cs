@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using System;
 
 namespace BubbleStart.Model
 {
@@ -28,10 +29,10 @@ namespace BubbleStart.Model
 
 
 
-        private int _Room;
+        private RoomEnum _Room;
 
 
-        public int Room
+        public RoomEnum Room
         {
             get
             {

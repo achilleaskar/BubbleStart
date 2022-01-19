@@ -1,4 +1,11 @@
-﻿using System;
+﻿using BubbleStart.Database;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -7,13 +14,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using BubbleStart.Database;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using OfficeOpenXml;
 
 namespace BubbleStart.Helpers
 {
@@ -28,7 +28,6 @@ namespace BubbleStart.Helpers
         }
 
         #endregion Constructors
-
 
         #region Fields
 
@@ -47,6 +46,27 @@ namespace BubbleStart.Helpers
         #endregion Fields
 
         #region Properties
+
+        private ObservableCollection<Shift> _Shifts;
+
+        public ObservableCollection<Shift> Shifts
+        {
+            get
+            {
+                return _Shifts;
+            }
+
+            set
+            {
+                if (_Shifts == value)
+                {
+                    return;
+                }
+
+                _Shifts = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public GenericRepository Context { get; set; }
 
@@ -138,10 +158,7 @@ namespace BubbleStart.Helpers
             }
         }
 
-
-
         private ObservableCollection<Deal> _Deals;
-
 
         public ObservableCollection<Deal> Deals
         {
@@ -161,6 +178,7 @@ namespace BubbleStart.Helpers
                 RaisePropertyChanged();
             }
         }
+
         public ObservableCollection<User> Users
         {
             get => _Users;
@@ -185,23 +203,48 @@ namespace BubbleStart.Helpers
         {
             return Context.HasChanges();
         }
+
+        private ObservableCollection<ExpenseCategoryClass> _ExpenseCategoryClasses;
+
+        public ObservableCollection<ExpenseCategoryClass> ExpenseCategoryClasses
+        {
+            get
+            {
+                return _ExpenseCategoryClasses;
+            }
+
+            set
+            {
+                if (_ExpenseCategoryClasses == value)
+                {
+                    return;
+                }
+
+                _ExpenseCategoryClasses = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public async Task LoadAsync()
         {
             Mouse.OverrideCursor = Cursors.Wait;
             ProgramTypes = new ObservableCollection<ProgramType>(await Context.GetAllAsync<ProgramType>());
-            Deals = new ObservableCollection<Deal>(await Context.GetAllAsync<Deal>());
+            Shifts = new ObservableCollection<Shift>(await Context.GetAllAsync<Shift>());
             Users = new ObservableCollection<User>(await Context.GetAllAsync<User>());
+            _ = await Context.GetAllRulesAsync();
+            Deals = new ObservableCollection<Deal>(await Context.GetAllAsync<Deal>());
             Districts = new ObservableCollection<District>((await Context.GetAllAsync<District>()).OrderBy(d => d.Name));
             Customers = new ObservableCollection<Customer>(await Context.LoadAllCustomersAsync());
+            ExpenseCategoryClasses = new ObservableCollection<ExpenseCategoryClass>(await Context.GetAllAsync<ExpenseCategoryClass>());
+
+            StaticResources.context = this;
 
             Items = new ObservableCollection<Item>(await Context.GetAllAsync<Item>());
             _ = await Context.GetAllAsync<ItemPurchase>();
 
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
 
-
             //Create();
-
 
             foreach (var c in Customers.OrderBy(c => c.Id))
             {
@@ -237,7 +280,7 @@ namespace BubbleStart.Helpers
 
             var ints = new List<int>
             {
-                14,15,17,19,20,21,5
+                14,15,17,19,20,21,5,6,7
             };
             bool first = true;
 
@@ -249,11 +292,9 @@ namespace BubbleStart.Helpers
                     if (first)
                     {
                         myWorksheet.Cells["A" + lineNum].Value = customer.FullName;
-
                     }
                     myWorksheet.Cells["B" + lineNum].Value = program.DayOfIssue.ToShortDateString();
                     myWorksheet.Cells["C" + lineNum].Value = program.ProgramTypeO.ProgramName;
-
                 }
                 myWorksheet.Column(1).Width = 16;
                 myWorksheet.Column(2).Width = 16;
@@ -272,8 +313,17 @@ namespace BubbleStart.Helpers
             oldContext.Dispose();
             await LoadAsync();
         }
+
         internal void Add<TEntity>(TEntity model) where TEntity : BaseModel, new()
         {
+            if (model is Shift s)
+            {
+                Shifts.Add(s);
+            }
+            else if (model is ExpenseCategoryClass e)
+            {
+                ExpenseCategoryClasses.Add(e);
+            }
             Context.Add(model);
         }
 
@@ -283,12 +333,19 @@ namespace BubbleStart.Helpers
             {
                 p.ShowUpsList = null;
             }
-            Context.Delete(model);
-            if (model is Customer c)
+            else if (model is Customer c)
             {
                 Customers.Remove(c);
             }
-
+            if (model is Shift s)
+            {
+                Shifts.Remove(s);
+            }
+            else if (model is ExpenseCategoryClass e)
+            {
+                ExpenseCategoryClasses.Remove(e);
+            }
+            Context.Delete(model);
         }
 
         internal void RollBack()
@@ -302,8 +359,8 @@ namespace BubbleStart.Helpers
 
             await Context.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
-
         }
+
         private void C_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
         }

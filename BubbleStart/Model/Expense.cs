@@ -5,94 +5,30 @@ namespace BubbleStart.Model
 {
     public class Expense : BaseModel
     {
+        #region Constructors
+
         public Expense()
         {
-            Date = From = To = DateTime.Now;
+            Date = From = To = DateTime.Today;
         }
+
+        #endregion Constructors
 
         #region Fields
 
         private decimal _Amount;
         private DateTime _Date;
-
+        private DateTime _From;
+        private bool _Income;
+        private ExpenseCategoryClass _MainCategory;
         private string _Reason;
-
+        private ExpenseCategoryClass _SecondaryCategory;
+        private DateTime _To;
         private User _User;
 
         #endregion Fields
 
-        private DateTime _From;
-
-        public DateTime From
-        {
-            get
-            {
-                return _From;
-            }
-
-            set
-            {
-                if (_From == value)
-                {
-                    return;
-                }
-
-                _From = value;
-                if (To <= value)
-                {
-                    To = value;
-                }
-                RaisePropertyChanged();
-            }
-        }
-
-        private DateTime _To;
-
-        public DateTime To
-        {
-            get
-            {
-                return _To;
-            }
-
-            set
-            {
-                if (_To == value)
-                {
-                    return;
-                }
-
-                _To = value;
-                if (value < From)
-                {
-                    From = value;
-                }
-                RaisePropertyChanged();
-            }
-        }
-
         #region Properties
-
-        private ExpenseCategory _ExpenseCategory;
-
-        public ExpenseCategory ExpenseCategory
-        {
-            get
-            {
-                return _ExpenseCategory;
-            }
-
-            set
-            {
-                if (_ExpenseCategory == value)
-                {
-                    return;
-                }
-
-                _ExpenseCategory = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public decimal Amount
         {
@@ -121,11 +57,78 @@ namespace BubbleStart.Model
                     return;
                 }
 
+                if (From == To && To == _Date)
+                {
+                    From = To = value;
+                }
                 _Date = value;
-               // From = value;
+
                 RaisePropertyChanged();
             }
         }
+
+        public DateTime From
+        {
+            get
+            {
+                return _From;
+            }
+
+            set
+            {
+                if (_From == value)
+                {
+                    return;
+                }
+
+                _From = value;
+                if (To <= value)
+                {
+                    To = value;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool Income
+        {
+            get
+            {
+                return _Income;
+            }
+
+            set
+            {
+                if (_Income == value)
+                {
+                    return;
+                }
+
+                _Income = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ExpenseCategoryClass MainCategory
+        {
+            get
+            {
+                return _MainCategory;
+            }
+
+            set
+            {
+                if (_MainCategory == value)
+                {
+                    return;
+                }
+
+                _MainCategory = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int? MainCategoryId { get; set; }
 
         public string Reason
         {
@@ -138,7 +141,51 @@ namespace BubbleStart.Model
                     return;
                 }
 
-                _Reason = value;
+                _Reason = value.ToUpper();
+                RaisePropertyChanged();
+            }
+        }
+
+        public ExpenseCategoryClass SecondaryCategory
+        {
+            get
+            {
+                return _SecondaryCategory;
+            }
+
+            set
+            {
+                if (_SecondaryCategory == value)
+                {
+                    return;
+                }
+
+                _SecondaryCategory = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int? SecondaryCategoryId { get; set; }
+
+        public DateTime To
+        {
+            get
+            {
+                return _To;
+            }
+
+            set
+            {
+                if (_To == value)
+                {
+                    return;
+                }
+
+                _To = value;
+                if (value < From)
+                {
+                    From = value;
+                }
                 RaisePropertyChanged();
             }
         }

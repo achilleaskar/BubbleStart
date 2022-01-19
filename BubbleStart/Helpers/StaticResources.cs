@@ -10,6 +10,27 @@ namespace BubbleStart.Helpers
     public static class StaticResources
     {
 
+        public static List<DateTime> GetHours(int minHour, int minMin, int maxHour, int maxMin, int interval)
+        {
+            List<DateTime> List = new List<DateTime>();
+            DateTime tmpTime = new DateTime(2019, 1, 1, minHour, minMin, 0);
+            DateTime maxTime = new DateTime(2019, 1, 1, maxHour, maxMin, 0);
+
+            while (tmpTime <= maxTime)
+            {
+                List.Add(new DateTime(tmpTime.Ticks));
+                tmpTime = tmpTime.AddMinutes(interval);
+            }
+            return List;
+        }
+
+        public static DateTime GetNextWeekday(DateTime start, DayOfWeek day)
+        {
+            int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
+            return start.AddDays(daysToAdd);
+
+        }
+
         public static string GetDescription(Enum en)
         {
             if (en==null)
@@ -29,6 +50,8 @@ namespace BubbleStart.Helpers
             return en.ToString();
         }
         public static User User { get; set; }
+
+        internal static BasicDataManager context;
 
         //public static string[] Districts { get; set; } = { "Ευζώνων", "Λαογραφικό Μουσείο", "Μπότσαρη", "Πανόραμα", "Σχολή Τυφλων", "Φάληρο", "Άλλο" };
         public static List<int> Months { get; set; } = new List<int> { 0, 1, 2, 3, 6, 12 };

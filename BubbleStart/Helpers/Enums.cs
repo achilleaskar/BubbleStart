@@ -5,7 +5,7 @@ namespace BubbleStart.Helpers
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum ProgramMode
     {
-        [Description("Γυμναστικής")]
+        [Description("Functional")]
         functional = 0,
         [Description("Massage")]
         massage = 1,
@@ -116,6 +116,25 @@ namespace BubbleStart.Helpers
         Triceps = 9
     }
 
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum SecBodyPart
+    {
+        [Description("Πόδια")]
+        Legs = 4,
+        [Description("Πλάτη")]
+        Back = 5,
+        [Description("Στήθος")]
+        Chest = 6,
+        [Description("Ώμοι")]
+        Shoulders = 7,
+        [Description("Δικέφαλος")]
+        Biceps = 8,
+        [Description("Τρικέφαλος")]
+        Triceps = 9,
+        [Description("Κορμός")]
+        Main = 10
+    }
+
     public enum SelectedPersonEnum
     {
         Gogo = 0,
@@ -124,7 +143,7 @@ namespace BubbleStart.Helpers
         Massage = 3,
         Online = 4,
         Personal = 5,
-        PilatesMat=6
+        PilatesMat = 6
 
     }
 
@@ -175,15 +194,32 @@ namespace BubbleStart.Helpers
         gri
     }
 
-    public enum ExpenseCategory
+    //[TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    //public enum ExpenseCategory
+    //{
+    //    [Description("Πάγια")]
+    //    pagia,
+    //    [Description("Μισθοί")]
+    //    misthoi,
+    //    [Description("Έκτακτα")]
+    //    ektakta,
+    //    [Description("Σπιτιού")]
+    //    spitiou,
+    //    [Description("Γωγώ")]
+    //    gwgw,
+    //    [Description("Τιμολόγια")]
+    //    timologia,
+    //    [Description("Πιστωτικά")]
+    //    pistotika,
+    //    [Description("Φαινομενικά")]
+    //    fainomenika
+    //}
+
+    public enum RoomEnum
     {
-        pagia,
-        misthoi,
-        ektakta,
-        spitiou,
-        gwgw,
-        timologia,
-        pistotika,
-        fainomenika
+        Functional = 0,
+        Pilates = 1,
+        Massage = 2,
+        Outdoor = 3
     }
 }

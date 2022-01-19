@@ -26,27 +26,6 @@ namespace BubbleStart.Model
 
         #region Enums
 
-        private bool _StrictDuration;
-
-        public bool StrictDuration
-        {
-            get
-            {
-                return _StrictDuration;
-            }
-
-            set
-            {
-                if (_StrictDuration == value)
-                {
-                    return;
-                }
-
-                _StrictDuration = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private Deal _Deal;
 
         public Deal Deal
@@ -312,7 +291,8 @@ namespace BubbleStart.Model
                 {
                     return;
                 }
-
+                if (value > 0 && Showups > 0)
+                    value = 0;
                 _Months = value;
                 RaisePropertyChanged();
             }
@@ -392,7 +372,7 @@ namespace BubbleStart.Model
         }
 
         [NotMapped]
-        public decimal ShowUpPrice => Amount > 0 ? Amount / Showups : 0;
+        public decimal ShowUpPrice => Amount > 0 && Showups > 0 ? Amount / Showups : 0;
 
         public int Showups
         {
@@ -405,6 +385,8 @@ namespace BubbleStart.Model
                     return;
                 }
 
+                if (value > 0 && Months > 0)
+                    value = 0;
                 _Showups = value;
                 RaisePropertyChanged();
             }
@@ -564,7 +546,12 @@ namespace BubbleStart.Model
 
         internal DateTime AddMonth(int months)
         {
-            return StartDay.AddMonths(months);
+            var x = StartDay.AddMonths(months);
+            if (StartDay>=new DateTime(2022,1,17))
+            {
+                return x.AddDays(-1);
+            }
+            return x;
         }
 
         #endregion Methods
@@ -609,6 +596,12 @@ namespace BubbleStart.Model
                 _ProgramTypeO = value;
                 RaisePropertyChanged();
             }
+        }
+
+        internal void SetRemainingDays()
+        {
+            var r = (int)(AddMonth(Months) - DateTime.Today).TotalDays+1;
+            RemainingDays= r > 0 ? r : 0;
         }
     }
 }

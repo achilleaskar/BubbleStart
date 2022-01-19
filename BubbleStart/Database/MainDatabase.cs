@@ -6,14 +6,18 @@ namespace BubbleStart.Database
 {
     // Code-Based Configuration and Dependency resolution
     //[DbConfigurationType(typeof(MySqlEFConfiguration))]
-   // [DbConfigurationType(typeof(ContextConfiguration))]
+    // [DbConfigurationType(typeof(ContextConfiguration))]
     public class MainDatabase : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<ExpenseCategoryClass> ExpenseCategoryClasses { get; set; }
+        public DbSet<WorkingRule> WorkingRules { get; set; }
+        public DbSet<DayWorkingShift> DailyWorkingShifts { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<District> Districts { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Apointment> Apointments { get; set; }
+        public DbSet<CustomeTime> CustomeTimes { get; set; }
         public DbSet<Program> Programs { get; set; }
         public DbSet<ShowUp> ShowUps { get; set; }
         public DbSet<Payment> Payments { get; set; }
@@ -21,7 +25,7 @@ namespace BubbleStart.Database
 
         public MainDatabase() : base(normal)
         {
-           // DbConfiguration.SetConfiguration(new ContextConfiguration());
+            // DbConfiguration.SetConfiguration(new ContextConfiguration());
             Configuration.ValidateOnSaveEnabled = false;
             Configuration.LazyLoadingEnabled = false;
 
@@ -54,6 +58,11 @@ namespace BubbleStart.Database
               .WithOptional(r => r.ShowUp)
               .HasForeignKey(t => t.ShowUp_Id)
               .WillCascadeOnDelete(true);
+            modelBuilder.Entity<WorkingRule>()
+                .HasMany(p => p.DailyWorkingShifts)
+             .WithOptional(r => r.WorkingRule)
+             .HasForeignKey(t => t.WorkingRule_Id);
+
             //modelBuilder.Entity<ShowUp>()
             //        .Property(p => p.Arrive)
             //        .HasColumnType("bit");

@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Wrappers;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Media;
@@ -8,12 +9,14 @@ namespace BubbleStart.Model
     [Table("BubbleUsers")]
     public class User : BaseModel, INamed
     {
+        private ObservableCollection<WorkingRule> _WorkingRules;
         #region Constructors
 
         public User()
         {
             HashedPassword = new byte[0];
             Surename = string.Empty;
+            WorkingRules = new ObservableCollection<WorkingRule>();
         }
 
         #endregion Constructors
@@ -51,8 +54,25 @@ namespace BubbleStart.Model
         }
 
         #endregion Methods
+        public ObservableCollection<WorkingRule> WorkingRules
+        {
+            get
+            {
+                return _WorkingRules;
+            }
 
-       
+            set
+            {
+                if (_WorkingRules == value)
+                {
+                    return;
+                }
+
+                _WorkingRules = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         [StringLength(10)]
         public string ColorHash { get; set; }

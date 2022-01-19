@@ -2,8 +2,13 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using BubbleStart.Database;
+using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Wrappers;
@@ -17,7 +22,7 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-        public AddEditBase(GenericRepository context)
+        public AddEditBase(BasicDataManager context)
         {
             AddEntityCommand = new RelayCommand(AddEntity, CanAddEntity);
             UpdateEntitiesCommand = new RelayCommand(async () => { await ReloadEntities(); }, true);
@@ -94,7 +99,7 @@ namespace BubbleStart.ViewModels
         /// </summary>
         public RelayCommand ClearEntityCommand { get; }
 
-        public GenericRepository Context { get; set; }
+        public BasicDataManager Context { get; set; }
 
         /// <summary>
         /// Sets and gets the MainCollection property. Changes to that property's value raise the
@@ -195,8 +200,11 @@ namespace BubbleStart.ViewModels
         {
             try
             {
+                Mouse.OverrideCursor = Cursors.Wait;
                 await Context.SaveAsync();
+                SelectedEntity = new TWrapper();
                 ResultMessage = "Όι αλλαγές αποθηκεύτηκαν επιτυχώς";
+                Mouse.OverrideCursor = Cursors.Arrow;
             }
             catch (Exception ex)
             {
@@ -204,13 +212,23 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public virtual void AddedItem(TEntity entity, bool removed)
+        {
+
+        }
+
         private void AddEntity()
         {
             try
             {
+                if (SelectedEntity is ExpenseCategoryClassWrapper e && e.Parent?.Id == -1)
+                {
+                    e.Parent = null;
+                }
                 Context.Add(SelectedEntity.Model);
                 MainCollection.Add(SelectedEntity);
-                ClearEntity();
+                AddedItem(SelectedEntity.Model, false);
+                //ClearEntity();
                 ResultMessage = SelectedEntity.Title + " προστέθηκε επιτυχώς";
                 RemoveEntityCommand.RaiseCanExecuteChanged();
             }
@@ -246,8 +264,8 @@ namespace BubbleStart.ViewModels
             try
             {
                 ResultMessage = "";
-                Context = new GenericRepository();
-                if (SelectedEntity.Id > 0)
+                await Context.Refresh();
+                if (SelectedEntity?.Id > 0)
                 {
                     SelectedEntity = new TWrapper();
                 }
@@ -260,13 +278,27 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        private void RemoveEntity()
+        private async void RemoveEntity()
         {
             try
             {
+                if (SelectedEntity is ExpenseCategoryClassWrapper ec && ec.Id > 0 && (
+                    ec.Id == 1 ||
+                    ((ec.Parent == null || ec.ParentId == 1) && await Context.Context.Context.ExpenseCategoryClasses.AnyAsync(e => e.ParentId == ec.Id)) ||
+                    (await Context.Context.Context.Expenses.AnyAsync(e => e.MainCategoryId == ec.Id || e.SecondaryCategoryId == ec.Id))))
+                {
+                    MessageBox.Show("Δεν μπορεί να διαγραφεί");
+                    return;
+                }
+                AddedItem(SelectedEntity.Model, true);
                 Context.Delete(SelectedEntity.Model);
                 MainCollection.Remove(SelectedEntity);
-                SelectedEntity = new TWrapper();
+                if (MainCollection.Count > 0)
+                {
+                    SelectedEntity = MainCollection.Last();
+                }
+                else
+                    SelectedEntity = new TWrapper();
             }
             catch (Exception ex)
             {

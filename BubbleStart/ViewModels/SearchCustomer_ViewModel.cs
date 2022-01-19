@@ -5,6 +5,7 @@ using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -17,6 +18,57 @@ namespace BubbleStart.ViewModels
     public class SearchCustomer_ViewModel : MyViewModelBase
     {
         #region Constructors
+
+
+
+
+
+        private bool _EnableStartAfterFilter;
+
+
+        public bool EnableStartAfterFilter
+        {
+            get
+            {
+                return _EnableStartAfterFilter;
+            }
+
+            set
+            {
+                if (_EnableStartAfterFilter == value)
+                {
+                    return;
+                }
+
+                _EnableStartAfterFilter = value;
+                CustomersCollectionView.Refresh();
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private DateTime _StartAfterFilter = DateTime.Today;
+
+
+        public DateTime StartAfterFilter
+        {
+            get
+            {
+                return _StartAfterFilter;
+            }
+
+            set
+            {
+                if (_StartAfterFilter == value)
+                {
+                    return;
+                }
+
+                _StartAfterFilter = value;
+                CustomersCollectionView.Refresh();
+                RaisePropertyChanged();
+            }
+        }
 
         public SearchCustomer_ViewModel()
         {
@@ -352,17 +404,28 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
+        private List<BodyPartSelection> _SecBodyParts;
 
+        public List<BodyPartSelection> SecBodyParts
+        {
+            get
+            {
+                return _SecBodyParts;
+            }
 
+            set
+            {
+                if (_SecBodyParts == value)
+                {
+                    return;
+                }
 
-
-
-
-
-
+                _SecBodyParts = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private BodyPart _SelectedBodyPart;
-
 
         public BodyPart SelectedBodyPart
         {
@@ -377,6 +440,7 @@ namespace BubbleStart.ViewModels
                 {
                     return;
                 }
+                CanAdd = value != BodyPart.Unknown;
 
                 _SelectedBodyPart = value;
                 RaisePropertyChanged();
@@ -384,7 +448,6 @@ namespace BubbleStart.ViewModels
         }
 
         private bool _PopupFinishOpen;
-
 
         public bool PopupFinishOpen
         {
@@ -404,13 +467,16 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public async Task CustomerLeft()
         {
             SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
             SelectedPracticingCustomer.LastShowUp.BodyPart = SelectedBodyPart;
+            SelectedPracticingCustomer.LastShowUp.SecBodyPartsString = string.Join(",", SecBodyParts.Where(x => x.Selected).Select(t => ((int)t.SecBodyPart)));
             SelectedPracticingCustomer.IsPracticing = false;
             SelectedPracticingCustomer.RaisePropertyChanged(nameof(SelectedPracticingCustomer.LastPart));
             CustomersPracticing.Remove(SelectedPracticingCustomer);
+            ResetList();
             await BasicDataManager.SaveAsync();
             PopupFinishOpen = false;
         }
@@ -469,13 +535,17 @@ namespace BubbleStart.ViewModels
             {
                 return false;
             }
+            if (EnableStartAfterFilter && customer.FirstDate < StartAfterFilter)
+            {
+                return false;
+            }
 
             if (string.IsNullOrEmpty(SearchTerm))
             {
                 return true;
             }
             SearchTerm = SearchTerm.ToUpper();
-            string tmpTerm = ToGreek(SearchTerm);
+            string tmpTerm = StaticResources.ToGreek(SearchTerm);
             return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
         }
 
@@ -535,16 +605,7 @@ namespace BubbleStart.ViewModels
         {
             if (c != null)
             {
-                //if (BasicDataManager.HasChanges())
-                //{
-                //    MessageBoxResult result = MessageBox.Show("Υπάρχουν μη αποθηκευμένες αλλαγές, θέλετε σίγουρα να συνεχίσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                //    if (result == MessageBoxResult.No)
-                //    {
-                //        return;
-                //    }
-                //    BasicDataManager.RollBack();
-                //}
-
+                c.EditedInCustomerManagement = true;
                 c.BasicDataManager = BasicDataManager;
                 c.UpdateCollections();
                 Window window = new CustomerManagement
@@ -628,111 +689,7 @@ namespace BubbleStart.ViewModels
         //    return toReturn;
         //}
 
-        private string ToGreek(string searchTerm)
-        {
-            string toReturn = "";
-            foreach (char c in searchTerm)
-            {
-                if (c < 65 || c > 90)
-                {
-                    toReturn += c;
-                }
-                else
-                {
-                    switch ((int)c)
-                    {
-                        case 65:
-                            toReturn += 'Α';
-                            break;
 
-                        case 66:
-                            toReturn += 'Β';
-                            break;
-
-                        case 68:
-                            toReturn += 'Δ';
-                            break;
-
-                        case 69:
-                            toReturn += 'Ε';
-                            break;
-
-                        case 70:
-                            toReturn += 'Φ';
-                            break;
-
-                        case 71:
-                            toReturn += 'Γ';
-                            break;
-
-                        case 72:
-                            toReturn += 'Η';
-                            break;
-
-                        case 73:
-                            toReturn += 'Ι';
-                            break;
-
-                        case 75:
-                            toReturn += 'Κ';
-                            break;
-
-                        case 76:
-                            toReturn += 'Λ';
-                            break;
-
-                        case 77:
-                            toReturn += 'Μ';
-                            break;
-
-                        case 78:
-                            toReturn += 'Ν';
-                            break;
-
-                        case 79:
-                            toReturn += 'Ο';
-                            break;
-
-                        case 80:
-                            toReturn += 'Π';
-                            break;
-
-                        case 82:
-                            toReturn += 'Ρ';
-                            break;
-
-                        case 83:
-                            toReturn += 'Σ';
-                            break;
-
-                        case 84:
-                            toReturn += 'Τ';
-                            break;
-
-                        case 86:
-                            toReturn += 'Β';
-                            break;
-
-                        case 88:
-                            toReturn += 'Χ';
-                            break;
-
-                        case 89:
-                            toReturn += 'Υ';
-                            break;
-
-                        case 90:
-                            toReturn += 'Ζ';
-                            break;
-
-                        default:
-                            toReturn += c;
-                            break;
-                    }
-                }
-            }
-            return toReturn;
-        }
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
@@ -772,6 +729,44 @@ namespace BubbleStart.ViewModels
 
             CustomersCollectionView.Refresh();
             TodaysApointments = new ObservableCollection<Customer>(TodaysApointments.OrderBy(ta => ta.AppointmentTime));
+            SecBodyParts = new List<BodyPartSelection>();
+            foreach (var part in (SecBodyPart[])Enum.GetValues(typeof(SecBodyPart)))
+            {
+                SecBodyParts.Add(new BodyPartSelection { SecBodyPart = part });
+            }
+        }
+
+        public void ResetList()
+        {
+            foreach (var item in SecBodyParts)
+            {
+                item.Selected = false;
+            }
+        }
+
+
+
+
+        private bool _CanAdd;
+
+
+        public bool CanAdd
+        {
+            get
+            {
+                return _CanAdd;
+            }
+
+            set
+            {
+                if (_CanAdd == value)
+                {
+                    return;
+                }
+
+                _CanAdd = value;
+                RaisePropertyChanged();
+            }
         }
 
         public override void Reload()

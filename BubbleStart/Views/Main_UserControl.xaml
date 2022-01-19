@@ -18,7 +18,6 @@
         <DataTemplate DataType="{x:Type viewmodels:EconomicData_ViewModel}">
             <views:EconomicData_UserControl />
         </DataTemplate>
-      
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -37,6 +36,14 @@
                 <MenuItem Header="Διαχείριση">
                     <MenuItem Command="{Binding OpenUsersEditCommand}"
                               Header="Χρήστες"
+                              d:Visibility="Visible"
+                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
+                    <MenuItem Command="{Binding OpenSfiftsEditCommand}"
+                              Header="Βάρδιες"
+                              d:Visibility="Visible"
+                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
+                    <MenuItem Command="{Binding OpenExpenseCategoriesCommand}"
+                              Header="Κατηγορίες Εξόδων"
                               d:Visibility="Visible"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
                     <MenuItem Command="{Binding PrintCustomersCommand}"
@@ -88,8 +95,12 @@
                 <TabItem Header="Οικονομικά Στοιχεία">
                     <ContentControl Content="{Binding EconomicData_ViewModel}" />
                 </TabItem>
-                <TabItem Header="Πρόγραμμα">
+                <TabItem Header=" - Πρόγραμμα -  ">
                     <views:Apointments_UserControl DataContext="{Binding Apointments_ViewModel}" />
+                </TabItem>
+                <TabItem Header="Βάρδιες"
+                         Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                    <views:EmployeeManagement_UserControl DataContext="{Binding  EmployeeManagement_ViewModel}" />
                 </TabItem>
                 <TabItem Header="Παρουσίες">
                     <views:ShowUpsPerDay_UserControl DataContext="{Binding ShowUpsPerDay_ViewModel }" />

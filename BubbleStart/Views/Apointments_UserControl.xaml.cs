@@ -24,5 +24,17 @@ namespace BubbleStart.Views
                 ((Apointments_ViewModel)DataContext).OpenCustomerManagement(ap.Customer);
             }
         }
+
+        private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            TimePopup.IsOpen = false;
+            ((Apointments_ViewModel)DataContext).CustomTime = "";
+
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            TimePopup.IsOpen = true;
+        }
     }
 }

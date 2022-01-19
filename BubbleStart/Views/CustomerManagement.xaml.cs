@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using BubbleStart.Helpers;
 using BubbleStart.Model;
 using BubbleStart.ViewModels;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -32,7 +34,7 @@ namespace BubbleStart.Views
                 }
                 else
                     e.Cancel = true;
-
+                c.EditedInCustomerManagement = false;
             }
 
         }
@@ -103,6 +105,36 @@ namespace BubbleStart.Views
             {
                 sc.Popup1Open = false;
                 PilFunToggle.IsChecked = false;
+            }
+        }
+
+        private void DataGridCell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is Customer c && sender is DataGridCell dc)
+            {
+                c.SelectedShowUpToEditBP = dc.DataContext as ShowUp;
+                if (c.SecBodyParts.Count == 0)
+                    foreach (var part in (SecBodyPart[])Enum.GetValues(typeof(SecBodyPart)))
+                    {
+                        c.SecBodyParts.Add(new BodyPartSelection { SecBodyPart = part });
+                    }
+                if (!string.IsNullOrWhiteSpace(c.SelectedShowUpToEditBP.SecBodyPartsString))
+                {
+                    foreach (var item in c.SelectedShowUpToEditBP.SecBodyPartsString.Split(new char[] { ',' }))
+                    {
+                        c.SecBodyParts.FirstOrDefault(b => (int)b.SecBodyPart == Int32.Parse(item)).Selected = true;
+                    }
+                }
+                c.PopupFinishOpen = true;
+
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is Customer c)
+            {
+                c.PopupFinishOpen = false;
             }
         }
     }

@@ -1,14 +1,20 @@
 ﻿using BubbleStart.Helpers;
-using BubbleStart.Migrations;
+using BubbleStart.Messages;
 using BubbleStart.Model;
+using BubbleStart.Views;
+using DocumentFormat.OpenXml.Wordprocessing;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -23,6 +29,7 @@ namespace BubbleStart.ViewModels
             BasicDataManager = basicDataManager;
             NewExpense = new Expense();
             ShowCashDataCommand = new RelayCommand(async () => { await ShowCashData(); });
+            ShowOwningCustomersCommand = new RelayCommand(ShowOwningCustomers);
             StartDateCash = StartDateExpenses = StartDatePreview = StartDatePayments = DateTime.Today;
             Expenses = new ObservableCollection<Expense>();
             RegisterExpenseCommand = new RelayCommand(async () => { await RegisterExpense(); }, CanRegisterExpense);
@@ -30,7 +37,13 @@ namespace BubbleStart.ViewModels
             ShowExpensesDataCommand = new RelayCommand(async () => { await ShowExpensesData(); });
             ShowPreviewDataCommand = new RelayCommand(async () => { await ShowPreviewData(); });
             ShowPaymentsDataCommand = new RelayCommand(async () => { await ShowPaymentsData(); });
+            OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
+
             DeleteExpenseCommand = new RelayCommand(async () => { await DeleteExpense(); });
+            Messenger.Default.Register<UpdateExpenseCategoriesMessage>(this, msg => Load());
+            Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+
+            Load();
         }
 
         #endregion Constructors
@@ -38,19 +51,34 @@ namespace BubbleStart.ViewModels
         #region Fields
 
         private decimal _Cleanse;
+
+        private ObservableCollection<Customer> _CustomersWhoOwn;
+
         private ObservableCollection<Payment> _DailyPayments;
+
         private decimal _Ektakta;
+
         private DateTime _EndDateCash;
+
         private DateTime _EndDateExpenses;
+
         private DateTime _EndDatePayments;
+
         private DateTime _EndDatePreview;
+
         private ObservableCollection<Expense> _Expenses;
+
         private decimal _ExpensesSum;
+
         private string _ExpensesTextFilter;
+
+        private ObservableCollection<ExpenseCheck> _ExpenseTypes;
 
         private decimal _Fainomenika;
 
         private decimal _Gwgw;
+
+        private ObservableCollection<ExpenseCategoryClass> _MainCategories;
 
         private decimal _Misthoi;
 
@@ -70,6 +98,10 @@ namespace BubbleStart.ViewModels
 
         private int _RecieptIndex;
 
+        private ObservableCollection<ExpenseCategoryClass> _SecondaryCategories;
+
+        private Customer _SelectedCustomer;
+
         private Expense _SelectedExpense;
 
         private int _SelectedPaymentMethodIndexIndex;
@@ -87,6 +119,8 @@ namespace BubbleStart.ViewModels
         private decimal _Sum;
 
         private decimal _Timologia;
+
+        private decimal _TotalRemaining;
 
         #endregion Fields
 
@@ -106,6 +140,25 @@ namespace BubbleStart.ViewModels
                 }
 
                 _Cleanse = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Customer> CustomersWhoOwn
+        {
+            get
+            {
+                return _CustomersWhoOwn;
+            }
+
+            set
+            {
+                if (_CustomersWhoOwn == value)
+                {
+                    return;
+                }
+
+                _CustomersWhoOwn = value;
                 RaisePropertyChanged();
             }
         }
@@ -289,7 +342,27 @@ namespace BubbleStart.ViewModels
                 if (Expenses != null)
                 {
                     CollectionViewSource.GetDefaultView(Expenses).Refresh();
+                    UpdateAmmounts();
                 }
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<ExpenseCheck> ExpenseTypes
+        {
+            get
+            {
+                return _ExpenseTypes;
+            }
+
+            set
+            {
+                if (_ExpenseTypes == value)
+                {
+                    return;
+                }
+
+                _ExpenseTypes = value;
                 RaisePropertyChanged();
             }
         }
@@ -332,6 +405,25 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public ObservableCollection<ExpenseCategoryClass> MainCategories
+        {
+            get
+            {
+                return _MainCategories;
+            }
+
+            set
+            {
+                if (_MainCategories == value)
+                {
+                    return;
+                }
+
+                _MainCategories = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public decimal Misthoi
         {
             get
@@ -366,6 +458,8 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public RelayCommand OpenCustomerManagementCommand { get; set; }
 
         public decimal Pagia
         {
@@ -509,7 +603,47 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand RegisterExpenseCommand { get; set; }
+
         public RelayCommand SaveChangesCommand { get; set; }
+
+        public ObservableCollection<ExpenseCategoryClass> SecondaryCategories
+        {
+            get
+            {
+                return _SecondaryCategories;
+            }
+
+            set
+            {
+                if (_SecondaryCategories == value)
+                {
+                    return;
+                }
+
+                _SecondaryCategories = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Customer SelectedCustomer
+        {
+            get => _SelectedCustomer;
+
+            set
+            {
+                if (_SelectedCustomer == value)
+                {
+                    return;
+                }
+                if (_SelectedCustomer != null)
+                {
+                    _SelectedCustomer.IsSelected = false;
+                }
+                _SelectedCustomer = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Enabled));
+            }
+        }
 
         public Expense SelectedExpense
         {
@@ -549,8 +683,13 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand ShowCashDataCommand { get; set; }
+
         public RelayCommand ShowExpensesDataCommand { get; set; }
+
+        public RelayCommand ShowOwningCustomersCommand { get; set; }
+
         public RelayCommand ShowPaymentsDataCommand { get; set; }
+
         public RelayCommand ShowPreviewDataCommand { get; set; }
 
         public decimal Spitiou
@@ -607,7 +746,7 @@ namespace BubbleStart.ViewModels
                 _StartDateExpenses = value;
                 if (EndDateExpenses < value)
                 {
-                    _EndDateExpenses = value;
+                    EndDateExpenses = value;
                 }
                 RaisePropertyChanged();
             }
@@ -697,6 +836,25 @@ namespace BubbleStart.ViewModels
 
         public decimal TotalPayments => GetSum();
 
+        public decimal TotalRemaining
+        {
+            get
+            {
+                return _TotalRemaining;
+            }
+
+            set
+            {
+                if (_TotalRemaining == value)
+                {
+                    return;
+                }
+
+                _TotalRemaining = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -715,7 +873,7 @@ namespace BubbleStart.ViewModels
             ExpensesSum = 0;
             if (Expenses != null)
             {
-                foreach (var item in Expenses)
+                foreach (Expense item in CollectionViewSource.GetDefaultView(Expenses))
                 {
                     ExpensesSum += item.Amount;
                 }
@@ -725,6 +883,16 @@ namespace BubbleStart.ViewModels
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
+            if (BasicDataManager.ExpenseCategoryClasses != null)
+            {
+                MainCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses.Where(e => e.Id > 1 && (e.ParentId == 1 || e.Parent == null)));
+                SecondaryCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses.Where(e => e.ParentId > 1));
+                ExpenseTypes = new ObservableCollection<ExpenseCheck>(MainCategories.Select(e => new ExpenseCheck { ExpenseCategory = e, IsChecked = true }));
+                foreach (var e in ExpenseTypes)
+                {
+                    e.PropertyChanged += E_PropertyChanged;
+                }
+            }
         }
 
         public override void Reload()
@@ -735,39 +903,39 @@ namespace BubbleStart.ViewModels
         public void UpdateAmmounts()
         {
             Pagia = Ektakta = Spitiou = Gwgw = Misthoi = Timologia = Pistotika = Fainomenika = 0;
-            foreach (var exp in Expenses)
+            foreach (Expense exp in CollectionViewSource.GetDefaultView(Expenses))
             {
-                switch (exp.ExpenseCategory)
+                switch (exp.MainCategory?.Id)
                 {
-                    case ExpenseCategory.pagia:
+                    case 2:
                         Pagia += exp.Amount;
                         break;
 
-                    case ExpenseCategory.misthoi:
+                    case 3:
                         Misthoi += exp.Amount;
                         break;
 
-                    case ExpenseCategory.ektakta:
+                    case 4:
                         Ektakta += exp.Amount;
                         break;
 
-                    case ExpenseCategory.spitiou:
+                    case 19:
                         Spitiou += exp.Amount;
                         break;
 
-                    case ExpenseCategory.gwgw:
+                    case 17:
                         Gwgw += exp.Amount;
                         break;
 
-                    case ExpenseCategory.timologia:
+                    case 6:
                         Timologia += exp.Amount;
                         break;
 
-                    case ExpenseCategory.pistotika:
+                    case 7:
                         Pistotika += exp.Amount;
                         break;
 
-                    case ExpenseCategory.fainomenika:
+                    case 8:
                         Fainomenika += exp.Amount;
                         break;
 
@@ -791,7 +959,7 @@ namespace BubbleStart.ViewModels
 
         private void DailyPayments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            CalculateAmounts();
+            UpdateAmmounts();
         }
 
         private async Task DeleteExpense()
@@ -803,16 +971,67 @@ namespace BubbleStart.ViewModels
             UpdateAmmounts();
         }
 
+        private void E_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ExpenseCheck.IsChecked))
+            {
+                CollectionViewSource.GetDefaultView(Expenses).Refresh();
+                UpdateAmmounts();
+            }
+        }
+
         private void Expenses_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            CalculateAmounts();
+            UpdateAmmounts();
         }
 
         private bool ExpensesFilter(object obj)
         {
+            if (!(obj is Expense e) || !ExpenseTypes.Any(ex => ex.ExpenseCategory == e.MainCategory && ex.IsChecked))
+            {
+                return false;
+            }
             if (string.IsNullOrEmpty(ExpensesTextFilter))
                 return true;
-            return obj is Expense e && e.Reason.ToUpperInvariant().Contains(ExpensesTextFilter.ToUpperInvariant());
+            return (e.Reason.Contains(ExpensesTextFilter.ToUpperInvariant()) || e.Reason.Contains(StaticResources.ToGreek(ExpensesTextFilter.ToUpperInvariant())));
+        }
+
+        private decimal GetAmountInMonth(PreviewData mon, Expense expense)
+        {
+            if (expense == null || mon == null)
+            {
+                throw new ArgumentNullException(nameof(expense));
+            }
+            if (expense.From.Date == expense.To.Date && expense.From.Month == mon.Date.Month)
+            {
+                return expense.Amount;
+            }
+            var addedMonth = mon.Date.AddMonths(1);
+            if (expense.From.Date >= mon.Date && expense.To.Date < addedMonth)
+            {
+                return expense.Amount;
+            }
+            if (expense.From.Date >= mon.Date && expense.From.Date < addedMonth && expense.To.Date >= addedMonth)
+            {
+                var x = expense.Amount / ((expense.To.Date - expense.From.Date).Days + 1) * (addedMonth - expense.From.Date).Days;
+                return x;
+            }
+            if (expense.To.Date >= mon.Date && expense.To.Date < addedMonth && expense.From.Date < mon.Date)
+            {
+                return expense.Amount / ((expense.To.Date - expense.From.Date).Days + 1) * ((expense.To.Date - mon.Date).Days + 1);
+            }
+            throw new InvalidOperationException(nameof(expense));
+        }
+
+        private decimal GetProgramAmountInMonth(PreviewData mon, Program program)
+        {
+            if (program == null || mon == null)
+            {
+                throw new ArgumentNullException(nameof(program));
+            }
+            return program.ShowUpPrice * program.ShowUpsList.Where(s => s.Arrived >= mon.Date && s.Arrived < mon.Date.AddMonths(1)).Count();
+
+            throw new InvalidOperationException(nameof(program));
         }
 
         private decimal GetSum()
@@ -826,6 +1045,21 @@ namespace BubbleStart.ViewModels
                 }
             }
             return sum;
+        }
+
+        private void OpenCustomerManagement(Customer c)
+        {
+            if (c != null)
+            {
+                c.EditedInCustomerManagement = true;
+                c.BasicDataManager = BasicDataManager;
+                c.UpdateCollections();
+                Window window = new CustomerManagement
+                {
+                    DataContext = c
+                };
+                Messenger.Default.Send(new OpenChildWindowCommand(window));
+            }
         }
 
         private bool PaymentsFilter(object obj)
@@ -843,6 +1077,16 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
 
             NewExpense.User = StaticResources.User;
+            if ((await BasicDataManager.Context.Context.Expenses.AnyAsync(e => e.MainCategoryId == NewExpense.MainCategoryId && e.Amount == NewExpense.Amount &&
+            e.From.Day == NewExpense.From.Day && e.From.Month == NewExpense.From.Month && e.From.Year == NewExpense.From.Year &&
+            e.To.Day == NewExpense.To.Day && e.To.Month == NewExpense.To.Month && e.To.Year == NewExpense.To.Year)))
+            {
+                if (MessageBox.Show("Υπάρχει ήδη καταχώρηση με ίδιες ημερομηνίες, κατηγορία και ποσό. Θέλετε σίγουρα να συνεχίσετε?", "Προσοχή!", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                {
+                    Mouse.OverrideCursor = Cursors.Arrow;
+                    return;
+                }
+            }
             BasicDataManager.Add(NewExpense);
             await BasicDataManager.SaveAsync();
             if (NewExpense.Date >= StartDateExpenses && NewExpense.Date < EndDateExpenses.AddDays(1))
@@ -866,7 +1110,7 @@ namespace BubbleStart.ViewModels
         {
             Mouse.OverrideCursor = Cursors.Wait;
             DailyPayments = new ObservableCollection<Payment>((await BasicDataManager.Context.GetAllPaymentsAsync(StartDateCash, EndDateCash)).OrderBy(a => a.Date));
-            CalculateAmounts();
+            UpdateAmmounts();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -881,6 +1125,12 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
+        private void ShowOwningCustomers()
+        {
+            CustomersWhoOwn = new ObservableCollection<Customer>(BasicDataManager.Customers.Where(c => c.RemainingAmount > 0));
+            TotalRemaining = CustomersWhoOwn.Sum(t => t.RemainingAmount);
+        }
+
         private async Task ShowPaymentsData()
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -893,12 +1143,12 @@ namespace BubbleStart.ViewModels
         {
             Mouse.OverrideCursor = Cursors.Wait;
             List<PreviewData> previewData = new List<PreviewData>();
-            List<Expense> expenses = await BasicDataManager.Context.GetAllExpensesAsync(e => e.Date >= StartDatePreview && e.Date <= EndDatePreview, false);
+            List<Expense> expenses = await BasicDataManager.Context.GetAllExpensesAsync(e => e.Date >= StartDatePreview && e.Date <= EndDatePreview, false, ExpenseTypes.Where(e => e.IsChecked).Select(e => e.ExpenseCategory).ToList());
             List<Payment> payments = (await BasicDataManager.Context.GetAllPaymentsAsync(StartDatePreview, EndDatePreview, false)).ToList();
             List<Program> programs = (await BasicDataManager.Context.GetAllAsync<Program>(p => p.DayOfIssue >= StartDatePreview && p.DayOfIssue <= EndDatePreview)).ToList();
 
             List<PreviewData> realpreviewData = new List<PreviewData>();
-            List<Expense> expensesPreview = await BasicDataManager.Context.GetAllExpensesAsync(e => (e.To >= StartDatePreview && e.To <= EndDatePreview) || (e.From >= StartDatePreview && e.From <= EndDatePreview), false);
+            List<Expense> expensesPreview = await BasicDataManager.Context.GetAllExpensesAsync(e => (e.To >= StartDatePreview && e.To <= EndDatePreview) || (e.From >= StartDatePreview && e.From <= EndDatePreview), false, ExpenseTypes.Where(e => e.IsChecked).Select(e => e.ExpenseCategory).ToList());
             List<Program> programsPreview = (await BasicDataManager.Context.GetProgramsFullAsync(p => p.ShowUpsList.Any(s => s.Arrived >= StartDatePreview && s.Arrived <= EndDatePreview))).ToList();
 
             PreviewData tmpMonth;
@@ -934,7 +1184,6 @@ namespace BubbleStart.ViewModels
                     previewData.Add(new PreviewData { Date = new DateTime(program.DayOfIssue.Year, program.DayOfIssue.Month, 1), Expenses = program.Amount });
                 }
             }
-
 
             //real
             var firstmonth = new DateTime(StartDatePreview.Year, StartDatePreview.Month, 1);
@@ -990,44 +1239,59 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        private decimal GetProgramAmountInMonth(PreviewData mon, Program program)
-        {
-            if (program == null || mon == null)
-            {
-                throw new ArgumentNullException(nameof(program));
-            }
-            return program.ShowUpPrice * program.ShowUpsList.Where(s => s.Arrived >= mon.Date && s.Arrived < mon.Date.AddMonths(1)).Count();
-
-            throw new InvalidOperationException(nameof(program));
-        }
-
-        private decimal GetAmountInMonth(PreviewData mon, Expense expense)
-        {
-            if (expense == null || mon == null)
-            {
-                throw new ArgumentNullException(nameof(expense));
-            }
-            if (expense.From.Date == expense.To.Date && expense.From.Month == mon.Date.Month)
-            {
-                return expense.Amount;
-            }
-            var addedMonth = mon.Date.AddMonths(1);
-            if (expense.From.Date >= mon.Date && expense.To.Date < addedMonth)
-            {
-                return expense.Amount;
-            }
-            if (expense.From.Date >= mon.Date && expense.From.Date < addedMonth && expense.To.Date > addedMonth)
-            {
-                return expense.Amount / ((expense.To.Date - expense.From.Date).Days + 1) * (addedMonth - expense.From.Date).Days;
-            }
-            if (expense.To.Date >= mon.Date && expense.To.Date < addedMonth && expense.From.Date < mon.Date)
-            {
-                return expense.Amount / ((expense.To.Date - expense.From.Date).Days + 1) * ((expense.To.Date - mon.Date).Days + 1);
-            }
-            throw new InvalidOperationException(nameof(expense));
-        }
-
         #endregion Methods
+    }
+
+    public class ExpenseCheck : ObservableObject
+    {
+        #region Fields
+
+        private ExpenseCategoryClass _ExpenseCategory;
+        private bool _IsChecked;
+
+        #endregion Fields
+
+        #region Properties
+
+        public ExpenseCategoryClass ExpenseCategory
+        {
+            get
+            {
+                return _ExpenseCategory;
+            }
+
+            set
+            {
+                if (_ExpenseCategory == value)
+                {
+                    return;
+                }
+
+                _ExpenseCategory = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool IsChecked
+        {
+            get
+            {
+                return _IsChecked;
+            }
+
+            set
+            {
+                if (_IsChecked == value)
+                {
+                    return;
+                }
+
+                _IsChecked = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        #endregion Properties
     }
 
     public class PreviewData : BaseModel

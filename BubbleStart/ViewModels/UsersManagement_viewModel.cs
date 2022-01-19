@@ -5,6 +5,7 @@ using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using BubbleStart.Database;
+using BubbleStart.Helpers;
 using BubbleStart.Model;
 using BubbleStart.Security;
 using BubbleStart.Wrappers;
@@ -15,7 +16,7 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-        public UsersManagement_viewModel(GenericRepository context) : base(context)
+        public UsersManagement_viewModel(BasicDataManager context) : base(context)
         {
             ControlName = "Διαχείριση Χρηστών";
             PassWord = new SecureString();
@@ -128,7 +129,7 @@ namespace BubbleStart.ViewModels
 
         public override async Task LoadAsync(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-            MainCollection = new ObservableCollection<UserWrapper>((await Context.GetAllUsersAsyncSortedByUserName()).Select(u => new UserWrapper(u)));
+            MainCollection = new ObservableCollection<UserWrapper>((await Context.Context.GetAllUsersAsyncSortedByUserName()).Select(u => new UserWrapper(u)));
         }
 
         public override Task ReloadAsync()

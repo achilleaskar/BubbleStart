@@ -33,6 +33,10 @@
             <Setter Property="IsTabStop"
                     Value="False" />
         </Style>
+        <Style TargetType="{x:Type ToolTip}">
+            <Setter Property="FontSize"
+                    Value="14" />
+        </Style>
     </Window.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
@@ -50,6 +54,60 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Popup Name="PopupFinish"
+                   IsOpen="{Binding PopupFinishOpen}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Width="150"
+                   Placement="Center">
+                <Border BorderBrush="Black"
+                        BorderThickness="1"
+                        Padding="5 17 5 5 "
+                        Background="LightBlue">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ComboBox  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:BodyPart}}}"
+                                   Margin="5"
+                                   VerticalAlignment="Top"
+                                   SelectedItem="{Binding SelectedBodyPart,UpdateSourceTrigger=PropertyChanged}" />
+                        <ItemsControl ItemsSource="{Binding SecBodyParts}"
+                                      Grid.Row="1"
+                                      IsEnabled="{Binding CanAdd}"
+                                      Margin="5 0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding SecBodyPart, Converter={StaticResource EnumConverter}}"
+                                              IsChecked="{Binding Selected}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Row="2"
+                                    Margin="5 5 5 20"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Bottom">
+                            <Button Content="ΟΚ"
+                                    Margin="5"
+                                    Padding="5"
+                                    Command="{Binding CustomerLeftCommand}" />
+                            <Button Content="Άκυρο"
+                                    Margin="5"
+                                    Padding="5"
+                                    Click="CloseButton_Click" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Popup>
             <Popup Name="Popup1"
                    IsOpen="{Binding Popup1Open}"
                    HorizontalAlignment="Center"
@@ -276,6 +334,9 @@
                         <CheckBox Content="Ανεμβολίαστος"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding Psek}" />
+                        <CheckBox Content="Χαρτί Γιατρού"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding Doctor}" />
                         <TextBlock Text="Ημ. Εκκαθάρισης:"
                                    Margin="0 3 0 5" />
                         <StackPanel Orientation="Horizontal">
@@ -364,14 +425,7 @@
                                                ItemsSource="{x:Static helpers:StaticResources.Months}"
                                                SelectedItem="{Binding ProgramDuration,  UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
-                                <StackPanel Margin="5 0 0 0"
-                                            VerticalAlignment="Top">
-                                    <TextBlock Text="Αυστ.:"
-                                               HorizontalAlignment="Left" />
-                                    <CheckBox Margin="5"
-                                              VerticalAlignment="Bottom"
-                                              IsChecked="{Binding Strict}" />
-                                </StackPanel>
+                               
                             </StackPanel>
                             <StackPanel Orientation="Horizontal"
                                         Grid.Row="1"
@@ -600,7 +654,7 @@
                                               Name="testtt"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="250"
+                                              Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -725,10 +779,18 @@
                                                                     Width="79">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ComboBox  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:BodyPart}}}"
-                                                                   SelectedItem="{Binding BodyPart,UpdateSourceTrigger=PropertyChanged}" />
+                                                        <TextBlock Text="{Binding BodyPart}"
+                                                                   Background="Transparent" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <EventSetter Event="MouseDoubleClick"
+                                                                     Handler="DataGridCell_MouseDoubleClick" />
+                                                        <Setter Property="ToolTip"
+                                                                Value="{Binding SecBodyPartsDesc}" />
+                                                    </Style>
+                                                </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
@@ -753,10 +815,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                          CommandParameter="{Binding}"
-                                                          Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </ContextMenu>
+                                                         </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -787,10 +846,10 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups}" />
+                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
-                                                                Binding="{Binding Months}">
+                                                                Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="{x:Type DataGridCell}">
                                                         <Setter Property="Template">
@@ -944,7 +1003,7 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="250"
+                                              Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -1069,10 +1128,18 @@
                                                                     Width="79">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ComboBox  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:BodyPart}}}"
-                                                                   SelectedItem="{Binding BodyPart,UpdateSourceTrigger=PropertyChanged}" />
+                                                        <TextBlock Text="{Binding BodyPart}"
+                                                                   Background="Transparent" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <EventSetter Event="MouseDoubleClick"
+                                                                     Handler="DataGridCell_MouseDoubleClick" />
+                                                        <Setter Property="ToolTip"
+                                                                Value="{Binding SecBodyPartsDesc}" />
+                                                    </Style>
+                                                </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
@@ -1097,10 +1164,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                          CommandParameter="{Binding}"
-                                                          Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </ContextMenu>
+                                                     </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -1131,10 +1195,10 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups}" />
+                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
-                                                                Binding="{Binding Months}">
+                                                                Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="{x:Type DataGridCell}">
                                                         <Setter Property="Template">
@@ -1288,7 +1352,7 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="250"
+                                              Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -1446,10 +1510,18 @@
                                                                     Width="79">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ComboBox  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:BodyPart}}}"
-                                                                   SelectedItem="{Binding BodyPart,UpdateSourceTrigger=PropertyChanged}" />
+                                                        <TextBlock Text="{Binding BodyPart}"
+                                                                   Background="Transparent" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <EventSetter Event="MouseDoubleClick"
+                                                                     Handler="DataGridCell_MouseDoubleClick" />
+                                                        <Setter Property="ToolTip"
+                                                                Value="{Binding SecBodyPartsDesc}" />
+                                                    </Style>
+                                                </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
@@ -1474,10 +1546,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                          CommandParameter="{Binding}"
-                                                          Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </ContextMenu>
+                                                  </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -1508,10 +1577,10 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups}" />
+                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
-                                                                Binding="{Binding Months}">
+                                                                Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="{x:Type DataGridCell}">
                                                         <Setter Property="Template">
@@ -1817,10 +1886,7 @@
                                                     <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                 </MenuItem.Icon>
                                             </MenuItem>
-                                            <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                      CommandParameter="{Binding}"
-                                                      Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                        </ContextMenu>
+                                                      </ContextMenu>
                                     </DataGrid.Resources>
                                     <DataGrid.RowStyle>
                                         <Style TargetType="{x:Type DataGridRow}"
@@ -1851,10 +1917,10 @@
                                         </DataGridTemplateColumn>
                                         <DataGridTextColumn Header="Συν."
                                                             Width="30"
-                                                            Binding="{Binding Showups}" />
+                                                            Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                         <DataGridTextColumn Header="Μήνες"
                                                             Width="35"
-                                                            Binding="{Binding Months}">
+                                                            Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                             <DataGridTextColumn.CellStyle>
                                                 <Style TargetType="{x:Type DataGridCell}">
                                                     <Setter Property="Template">
@@ -2011,7 +2077,7 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="250"
+                                              Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2136,10 +2202,18 @@
                                                                     Width="79">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ComboBox  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:BodyPart}}}"
-                                                                   SelectedItem="{Binding BodyPart,UpdateSourceTrigger=PropertyChanged}" />
+                                                        <TextBlock Text="{Binding BodyPart}"
+                                                                   Background="Transparent" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <EventSetter Event="MouseDoubleClick"
+                                                                     Handler="DataGridCell_MouseDoubleClick" />
+                                                        <Setter Property="ToolTip"
+                                                                Value="{Binding SecBodyPartsDesc}" />
+                                                    </Style>
+                                                </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
@@ -2164,10 +2238,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                          CommandParameter="{Binding}"
-                                                          Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </ContextMenu>
+                                                    </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -2198,10 +2269,10 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups}" />
+                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
-                                                                Binding="{Binding Months}">
+                                                                Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="{x:Type DataGridCell}">
                                                         <Setter Property="Template">
@@ -2355,7 +2426,7 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="250"
+                                              Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2480,10 +2551,18 @@
                                                                     Width="79">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ComboBox  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:BodyPart}}}"
-                                                                   SelectedItem="{Binding BodyPart,UpdateSourceTrigger=PropertyChanged}" />
+                                                        <TextBlock Text="{Binding BodyPart}"
+                                                                   Background="Transparent" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <EventSetter Event="MouseDoubleClick"
+                                                                     Handler="DataGridCell_MouseDoubleClick" />
+                                                        <Setter Property="ToolTip"
+                                                                Value="{Binding SecBodyPartsDesc}" />
+                                                    </Style>
+                                                </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
@@ -2508,10 +2587,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                          CommandParameter="{Binding}"
-                                                          Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </ContextMenu>
+                                                  </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -2542,10 +2618,10 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups}" />
+                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
-                                                                Binding="{Binding Months}">
+                                                                Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="{x:Type DataGridCell}">
                                                         <Setter Property="Template">
@@ -2703,7 +2779,7 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="250"
+                                              Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2828,10 +2904,18 @@
                                                                     Width="79">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ComboBox  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:BodyPart}}}"
-                                                                   SelectedItem="{Binding BodyPart,UpdateSourceTrigger=PropertyChanged}" />
+                                                        <TextBlock Text="{Binding BodyPart}"
+                                                                   Background="Transparent" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <EventSetter Event="MouseDoubleClick"
+                                                                     Handler="DataGridCell_MouseDoubleClick" />
+                                                        <Setter Property="ToolTip"
+                                                                Value="{Binding SecBodyPartsDesc}" />
+                                                    </Style>
+                                                </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
@@ -2856,10 +2940,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                          CommandParameter="{Binding}"
-                                                          Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </ContextMenu>
+                                                    </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -2890,10 +2971,10 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups}" />
+                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
-                                                                Binding="{Binding Months}">
+                                                                Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="{x:Type DataGridCell}">
                                                         <Setter Property="Template">
@@ -3047,7 +3128,7 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="250"
+                                              Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -3172,10 +3253,18 @@
                                                                     Width="79">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ComboBox  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:BodyPart}}}"
-                                                                   SelectedItem="{Binding BodyPart,UpdateSourceTrigger=PropertyChanged}" />
+                                                        <TextBlock Text="{Binding BodyPart}"
+                                                                   Background="Transparent" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
+                                                <DataGridTemplateColumn.CellStyle>
+                                                    <Style TargetType="DataGridCell">
+                                                        <EventSetter Event="MouseDoubleClick"
+                                                                     Handler="DataGridCell_MouseDoubleClick" />
+                                                        <Setter Property="ToolTip"
+                                                                Value="{Binding SecBodyPartsDesc}" />
+                                                    </Style>
+                                                </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
@@ -3200,10 +3289,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                          CommandParameter="{Binding}"
-                                                          Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </ContextMenu>
+                                                       </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -3234,10 +3320,10 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups}" />
+                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
-                                                                Binding="{Binding Months}">
+                                                                Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="{x:Type DataGridCell}">
                                                         <Setter Property="Template">
@@ -3539,10 +3625,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                          CommandParameter="{Binding}"
-                                                          Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </ContextMenu>
+                                                    </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -3573,10 +3656,10 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups}" />
+                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
-                                                                Binding="{Binding Months}">
+                                                                Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="{x:Type DataGridCell}">
                                                         <Setter Property="Template">
@@ -3874,10 +3957,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                <MenuItem Header="Αυστηρή Διάρκεια Ναί/Όχι"
-                                                          CommandParameter="{Binding}"
-                                                          Command="{Binding DataContext.ToggleStrictDurationCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </ContextMenu>
+                                                      </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -3908,10 +3988,10 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups}" />
+                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
-                                                                Binding="{Binding Months}">
+                                                                Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}">
                                                 <DataGridTextColumn.CellStyle>
                                                     <Style TargetType="{x:Type DataGridCell}">
                                                         <Setter Property="Template">
@@ -4067,8 +4147,10 @@
                     <TextBox Height="210"
                              TextWrapping="Wrap"
                              FontSize="13"
+                             Width="320"
                              MaxLength="1000"
                              MaxLines="200"
+                             d:Visibility="Visible"
                              Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                              AcceptsReturn="True"
                              Text="{Binding Notes,UpdateSourceTrigger=PropertyChanged}" />

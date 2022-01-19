@@ -18,6 +18,12 @@ namespace BubbleStart.Converters
                     return Visibility.Visible;
                 return Visibility.Collapsed;
             }
+            if (parameter == null && value is string)
+            {
+                if (string.IsNullOrWhiteSpace((string)value))
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
             if (StaticResources.User != null && parameter != null)
             {
                 //if (value is Reservation r && StaticResources.User.Level == StaticResources.UserLevel.OfficeManager)

@@ -45,6 +45,7 @@ namespace BubbleStart.Model
 
         }
 
+        public string CustomerWithGym => (Gymnast != null ? Gymnast.Name.Substring(0, 3)+" | ":"") + Customer.ToString();
 
         public int? GymnastId { get; set; }
 
@@ -76,7 +77,7 @@ namespace BubbleStart.Model
                 switch (Person)
                 {
                     case SelectedPersonEnum.Gogo:
-                        return "Γεωργία" + (Gymnast != null ? " - " + Gymnast.Name : "");
+                        return "Reformer" + (Gymnast != null ? " - " + Gymnast.Name : "");
 
                     case SelectedPersonEnum.Functional:
                         return "Functional" + (Gymnast != null ? " - " + Gymnast.Name : "");
@@ -106,26 +107,30 @@ namespace BubbleStart.Model
 
         private string GetDescription()
         {
-            if (Person == SelectedPersonEnum.Massage)
-            {
-                return "Massage";
-            }
             if (Person == SelectedPersonEnum.Yoga)
             {
                 return "Yoga";
             }
-            if (Room == 0)
+            if (Room == RoomEnum.Functional)
             {
                 return "Functional, " + PersonName;
             }
-            if (Room == 1)
+            if (Room == RoomEnum.Pilates)
             {
                 return "Reformer, " + PersonName;
+            }
+            if (Room == RoomEnum.Massage)
+            {
+                return "Massage, " + PersonName;
+            }
+            if (Room == RoomEnum.Outdoor)
+            {
+                return "Outdoor, " + PersonName;
             }
             return "Σφάλμα";
         }
 
-        private int _room;
+        private RoomEnum _room;
 
         private SelectedPersonEnum _person;
 
@@ -145,7 +150,7 @@ namespace BubbleStart.Model
             }
         }
 
-        public int Room
+        public RoomEnum Room
         {
             get => _room;
 

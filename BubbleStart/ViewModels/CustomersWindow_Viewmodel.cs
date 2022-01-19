@@ -16,10 +16,10 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-        public CustomersWindow_Viewmodel(BasicDataManager basicDataManager, int type, Hour hour)
+        public CustomersWindow_Viewmodel(BasicDataManager basicDataManager, RoomEnum room, Hour hour)
         {
             BasicDataManager = basicDataManager;
-            Type = type;
+            Room = room;
             Hour = hour;
             AddCustomerCommand = new RelayCommand<string>(async obj => { await AddCustomer(obj); }, CanAdd);
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
@@ -30,7 +30,7 @@ namespace BubbleStart.ViewModels
 
         private bool CanAdd(object p)
         {
-            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked || IsMassageChecked || IsOnlineChecked || IsPersonalChecked);
+            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked || IsMassageChecked || IsOnlineChecked || IsPersonalChecked||IsPilatesMatChecked);
         }
 
         #endregion Constructors
@@ -313,7 +313,7 @@ namespace BubbleStart.ViewModels
         }
 
         public BasicDataManager BasicDataManager { get; }
-        public int Type { get; }
+        public RoomEnum Room { get; }
         public Hour Hour { get; }
 
         #endregion Properties
@@ -379,7 +379,7 @@ namespace BubbleStart.ViewModels
             }
             else
             {
-                await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Type, SelectedGymnast: SelectedGymnast, p == "1");
+                await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Room, SelectedGymnast: SelectedGymnast, p == "1");
             }
             Busy = false;
         }

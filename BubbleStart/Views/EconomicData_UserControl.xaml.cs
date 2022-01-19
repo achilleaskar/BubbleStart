@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using BubbleStart.Model;
+using BubbleStart.ViewModels;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace BubbleStart.Views
 {
@@ -12,6 +15,19 @@ namespace BubbleStart.Views
             InitializeComponent();
         }
 
-        
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow d && d.DataContext is Payment p)
+                ((EconomicData_ViewModel)DataContext).SelectedCustomer = p.Customer;
+            ((EconomicData_ViewModel)DataContext).OpenCustomerManagementCommand.Execute(null);
+        }
+
+        private void DatePicker_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && DataContext is EconomicData_ViewModel ed && ed.ShowExpensesDataCommand.CanExecute(null))
+            {
+                ed.ShowExpensesDataCommand.Execute(null);
+            }
+        }
     }
 }

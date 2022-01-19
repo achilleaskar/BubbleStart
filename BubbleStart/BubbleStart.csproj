@@ -239,7 +239,7 @@
     <Compile Include="Converters\FloadToStringValueConverter.cs" />
     <Compile Include="Converters\GymToColorConverter.cs" />
     <Compile Include="Converters\HourClosedToColorConverter.cs" />
-    <Compile Include="Converters\IndexToENumConverter.cs" />
+    <Compile Include="Converters\IntToDayConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\IsCustomerNullToBoolConverter.cs" />
     <Compile Include="Converters\MeetingsToColorConverter.cs" />
@@ -249,6 +249,7 @@
     <Compile Include="Database\GenericRepository.cs" />
     <Compile Include="Database\MainDatabase.cs" />
     <Compile Include="Helpers\BasicDataManager.cs" />
+    <Compile Include="Helpers\DbContextExtensions.cs" />
     <Compile Include="Helpers\EnumBindingSourceExtension.cs" />
     <Compile Include="Helpers\EnumDescriptionTypeConverter.cs" />
     <Compile Include="Helpers\Enums.cs" />
@@ -258,8 +259,10 @@
     <Compile Include="Messages\ChangeVisibilityMessage.cs" />
     <Compile Include="Messages\LoginLogOutMessage.cs" />
     <Compile Include="Messages\OpenChildWindowCommand.cs" />
+    <Compile Include="Messages\OpenPopupUpMessage.cs" />
     <Compile Include="Messages\ShowExceptionMessage_Message.cs" />
     <Compile Include="Messages\UpdateClosedHoursMessage.cs" />
+    <Compile Include="Messages\UpdateExpenseCategoriesMessage.cs" />
     <Compile Include="Messages\UpdateProgramMessage.cs" />
     <Compile Include="Migrations\201904030918422_first2.cs" />
     <Compile Include="Migrations\201904030918422_first2.Designer.cs">
@@ -585,16 +588,48 @@
     <Compile Include="Migrations\202112181233153_color.designer.cs">
       <DependentUpon>202112181233153_color.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201121102334_SecBodyPart_Doctor.cs" />
+    <Compile Include="Migrations\202201121102334_SecBodyPart_Doctor.designer.cs">
+      <DependentUpon>202201121102334_SecBodyPart_Doctor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201131939407_expenseCategories.cs" />
+    <Compile Include="Migrations\202201131939407_expenseCategories.designer.cs">
+      <DependentUpon>202201131939407_expenseCategories.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201140000066_CustomeTimes.cs" />
+    <Compile Include="Migrations\202201140000066_CustomeTimes.designer.cs">
+      <DependentUpon>202201140000066_CustomeTimes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201161630100_shifts.cs" />
+    <Compile Include="Migrations\202201161630100_shifts.designer.cs">
+      <DependentUpon>202201161630100_shifts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201161806386_incomes.cs" />
+    <Compile Include="Migrations\202201161806386_incomes.designer.cs">
+      <DependentUpon>202201161806386_incomes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201171929170_corrections.cs" />
+    <Compile Include="Migrations\202201171929170_corrections.designer.cs">
+      <DependentUpon>202201171929170_corrections.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201182110543_Clearing.cs" />
+    <Compile Include="Migrations\202201182110543_Clearing.designer.cs">
+      <DependentUpon>202201182110543_Clearing.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
     <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\BodyPartSelection.cs" />
     <Compile Include="Model\Change.cs" />
     <Compile Include="Model\ClosedHour.cs" />
     <Compile Include="Model\Customer.cs" />
+    <Compile Include="Model\CustomeTime.cs" />
+    <Compile Include="Model\DayWorkingShift.cs" />
     <Compile Include="Model\Deal.cs" />
     <Compile Include="Model\District.cs" />
     <Compile Include="Model\Expense.cs" />
+    <Compile Include="Model\ExpenseCategory.cs" />
     <Compile Include="Model\Illness.cs" />
     <Compile Include="Model\INamed.cs" />
     <Compile Include="Model\Item.cs" />
@@ -603,14 +638,18 @@
     <Compile Include="Model\Program.cs" />
     <Compile Include="Model\ProgramType.cs" />
     <Compile Include="Model\PropertyValidateModel.cs" />
+    <Compile Include="Model\Shift.cs" />
     <Compile Include="Model\ShowUp.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\Weight.cs" />
+    <Compile Include="Model\WorkingRule.cs" />
     <Compile Include="Security\PasswordHashing.cs" />
     <Compile Include="Security\SecureStringManipulation.cs" />
     <Compile Include="ViewModels\AddEditBase.cs" />
     <Compile Include="ViewModels\Apointments_ViewModel.cs" />
     <Compile Include="ViewModels\EconomicData_ViewModel.cs" />
+    <Compile Include="ViewModels\EmployeeManagement_ViewModel.cs" />
+    <Compile Include="ViewModels\ExpenseCategoriesManagement_Viewmodel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainUserControl_ViewModel.cs" />
@@ -618,6 +657,7 @@
     <Compile Include="ViewModels\MyViewModelBase.cs" />
     <Compile Include="ViewModels\MyViewModelBaseAsync.cs" />
     <Compile Include="ViewModels\SearchCustomer_ViewModel.cs" />
+    <Compile Include="ViewModels\ShiftsManagement_Viewmodel.cs" />
     <Compile Include="ViewModels\ShowUpsPerDay_ViewModel.cs" />
     <Compile Include="ViewModels\UsersManagement_viewModel.cs" />
     <Compile Include="ViewModels\CustomersWindow_Viewmodel.cs" />
@@ -630,6 +670,12 @@
     </Compile>
     <Compile Include="Views\EconomicData_UserControl.xaml.cs">
       <DependentUpon>EconomicData_UserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EmployeeManagement_UserControl.xaml.cs">
+      <DependentUpon>EmployeeManagement_UserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExpenseCategories_ManagementWindow.xaml.cs">
+      <DependentUpon>ExpenseCategories_ManagementWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FindCustomerWidnow.xaml.cs">
       <DependentUpon>FindCustomerWidnow.xaml</DependentUpon>
@@ -650,6 +696,9 @@
     <Compile Include="Views\SearchCustomers.xaml.cs">
       <DependentUpon>SearchCustomers.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ShiftsManagement_Window.xaml.cs">
+      <DependentUpon>ShiftsManagement_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ShowUpsPerDay_UserControl.xaml.cs">
       <DependentUpon>ShowUpsPerDay_UserControl.xaml</DependentUpon>
     </Compile>
@@ -659,8 +708,10 @@
     <Compile Include="Views\UsersManagement_Window.xaml.cs">
       <DependentUpon>UsersManagement_Window.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Wrappers\ExpenseCategoryClassWrapper.cs" />
     <Compile Include="Wrappers\ModelWrapper.cs" />
     <Compile Include="Wrappers\NotifyDataErrorInfoBase.cs" />
+    <Compile Include="Wrappers\ShiftWrapper.cs" />
     <Compile Include="Wrappers\UserWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -921,6 +972,27 @@
     <EmbeddedResource Include="Migrations\202112181233153_color.resx">
       <DependentUpon>202112181233153_color.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201121102334_SecBodyPart_Doctor.resx">
+      <DependentUpon>202201121102334_SecBodyPart_Doctor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201131939407_expenseCategories.resx">
+      <DependentUpon>202201131939407_expenseCategories.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201140000066_CustomeTimes.resx">
+      <DependentUpon>202201140000066_CustomeTimes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201161630100_shifts.resx">
+      <DependentUpon>202201161630100_shifts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201161806386_incomes.resx">
+      <DependentUpon>202201161806386_incomes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201171929170_corrections.resx">
+      <DependentUpon>202201171929170_corrections.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201182110543_Clearing.resx">
+      <DependentUpon>202201182110543_Clearing.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -954,6 +1026,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EmployeeManagement_UserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ExpenseCategories_ManagementWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FindCustomerWidnow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -975,6 +1055,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SearchCustomers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShiftsManagement_Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

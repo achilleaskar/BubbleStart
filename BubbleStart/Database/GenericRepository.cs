@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using BubbleStart.Model;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
@@ -6,8 +8,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using BubbleStart.Model;
-using DocumentFormat.OpenXml.Wordprocessing;
+using System.Windows;
 
 namespace BubbleStart.Database
 {
@@ -20,7 +21,7 @@ namespace BubbleStart.Database
         public GenericRepository()
         {
             Context = new MainDatabase();
-            // Context.Database.Log = Console.Write;
+            Context.Database.Log = Console.Write;
 
             if (DateTime.Today.Month > 7 && DateTime.Today.Day >= 20)
             {
@@ -34,6 +35,23 @@ namespace BubbleStart.Database
 
             CloseLimit = (DateTime.Today - Limit).TotalDays > 20 ? DateTime.Today.AddDays(-20) : Limit;
             //Context.Database.Log = Console.Write;
+        }
+
+        internal bool HasChanges<TEntity>(TEntity entity) where TEntity : BaseModel
+        {
+            if (entity is WorkingRule wr)
+            {
+                if (Context.Entry(entity).State != EntityState.Unchanged)
+                    return true;
+                else if (wr.DailyWorkingShifts.Any(t => Context.Entry(t).State != EntityState.Unchanged))
+                    return true;
+            }
+            return false;
+        }
+
+        internal void RollBack<TEntity>(TEntity entity) where TEntity : BaseModel
+        {
+            Context.Entry(entity).State = EntityState.Unchanged;
         }
 
         protected virtual void Dispose(bool b)
@@ -58,7 +76,7 @@ namespace BubbleStart.Database
             return await Context.Users.Where(u => u.UserName == userName).FirstOrDefaultAsync();
         }
 
-        internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate, int CId = 0, bool nolimit = false)
+        internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate, int CId = -1, bool nolimit = false)
         {
             return await Context.ShowUps
            .Where(s => (s.Arrived >= StartDate && s.Arrived < EndDate && (nolimit || s.Arrived >= Limit)) && (CId == -1 || CId == s.Customer.Id))
@@ -88,9 +106,9 @@ namespace BubbleStart.Database
                 .Include(a => a.Customer.ShowUps)
                 .ToListAsync();
         }
+
         public async Task<List<Program>> GetProgramsFullAsync(Expression<Func<Program, bool>> filter)
         {
-
             return await Context.Programs
                 .Where(filter)
                 .Include(a => a.ShowUpsList)
@@ -131,6 +149,14 @@ namespace BubbleStart.Database
             {
                 return null;
             }
+        }
+
+        internal async Task<List<WorkingRule>> GetAllRulesAsync()
+        {
+            return await Context.WorkingRules
+                .Where(w => w.To >= DateTime.Today)
+                .Include(t => t.DailyWorkingShifts)
+                .ToListAsync();
         }
 
         public bool HasChanges()
@@ -263,33 +289,42 @@ namespace BubbleStart.Database
             await Context.SaveChangesAsync();
         }
 
-        public void RollBack()
+        public bool RollBack()
         {
-            foreach (var entry in Context.ChangeTracker.Entries())
+            try
             {
-                switch (entry.State)
+                foreach (var entry in Context.ChangeTracker.Entries())
                 {
-                    case EntityState.Modified:
-                    case EntityState.Deleted:
-                        entry.State = EntityState.Modified; //Revert changes made to deleted entity.
-                        entry.State = EntityState.Unchanged;
-                        break;
+                    switch (entry.State)
+                    {
+                        case EntityState.Modified:
+                        case EntityState.Deleted:
+                            entry.State = EntityState.Modified; //Revert changes made to deleted entity.
+                            entry.State = EntityState.Unchanged;
+                            break;
 
-                    case EntityState.Added:
-                        entry.State = EntityState.Detached;
-                        break;
+                        case EntityState.Added:
+                            entry.State = EntityState.Detached;
+                            break;
 
-                    case EntityState.Detached:
-                        break;
+                        case EntityState.Detached:
+                            break;
 
-                    case EntityState.Unchanged:
-                        break;
+                        case EntityState.Unchanged:
+                            break;
 
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
+                RejectNavigationChanges();
+                return true;
             }
-            RejectNavigationChanges();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Η επαναφορά απέτυχε, παρακαλώ βγείτε και ξαναμπείτε");
+                return false;
+            }
         }
 
         private void RejectNavigationChanges()
@@ -303,8 +338,6 @@ namespace BubbleStart.Database
 
             foreach (var relationship in deletedRelationships)
                 relationship.ChangeState(EntityState.Unchanged);
-
-
         }
 
         private bool RelationshipContainsKeyEntry(ObjectStateEntry stateEntry)
@@ -332,11 +365,16 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true)
+        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<ExpenseCategoryClass> expensetypes = null)
         {
-            return await Context.Expenses.Where(e => !limit || e.Date >= Limit).Where(filterp)
-                .Include(e => e.User)
-                .ToListAsync();
+            if (expensetypes == null || expensetypes.Count == 0)
+                return await Context.Expenses.Where(e => !limit || e.Date >= Limit).Where(filterp)
+                   .Include(e => e.User)
+                   .ToListAsync();
+            else
+                return await Context.Expenses.Where(e => (!limit || e.Date >= Limit) && expensetypes.Any(r => r == e.MainCategory)).Where(filterp)
+                    .Include(e => e.User)
+                    .ToListAsync();
         }
 
         public void Add<TEntity>(TEntity model) where TEntity : BaseModel
@@ -355,7 +393,7 @@ namespace BubbleStart.Database
             dbSet.Remove(entity);
         }
 
-        internal async Task<List<ClosedHour>> GetAllClosedHoursAsync(int room, DateTime time)
+        internal async Task<List<ClosedHour>> GetAllClosedHoursAsync(RoomEnum room, DateTime time)
         {
             List<DateTime> dates = new List<DateTime>();
             var limit = time.AddMonths(3);
@@ -413,7 +451,7 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<Apointment>> GetAllAppointmentsThisDayAsync(int id, DateTime time, int type)
+        internal async Task<List<Apointment>> GetAllAppointmentsThisDayAsync(int id, DateTime time, RoomEnum room)
         {
             List<DateTime> dates = new List<DateTime>();
             var limit = time.AddMonths(3);
@@ -424,7 +462,6 @@ namespace BubbleStart.Database
             }
 
             return await Context.Apointments.Where(a => a.Customer.Id == id && dates.Any(d => d == a.DateTime)).ToListAsync();
-
         }
 
         //public async Task<IEnumerable<Customer>> LoadAllCustomersAsyncb()

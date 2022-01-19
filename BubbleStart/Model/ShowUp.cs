@@ -2,7 +2,9 @@
 using EnumsNET;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Windows.Media;
 using static BubbleStart.Model.Program;
 
@@ -18,6 +20,38 @@ namespace BubbleStart.Model
 
 
 
+
+        public string SecBodyPartsDesc => GetSecBodyPartsDesc();
+
+        private string GetSecBodyPartsDesc()
+        {
+            if (string.IsNullOrWhiteSpace(SecBodyPartsString))
+            {
+                return "";
+            }
+            return string.Join(", ", SecBodyPartsString.Split(new[] { ',' }).Select(r => StaticResources.GetDescription((SecBodyPart)int.Parse(r))));
+        }
+
+        private string _SecBodyPartsString;
+
+        public string SecBodyPartsString
+        {
+            get
+            {
+                return _SecBodyPartsString;
+            }
+
+            set
+            {
+                if (_SecBodyPartsString == value)
+                {
+                    return;
+                }
+
+                _SecBodyPartsString = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private BodyPart _BodyPart;
 
@@ -214,7 +248,7 @@ namespace BubbleStart.Model
 
         private ProgramMode _ProgramMode;
 
-        public ProgramMode ProgramMode
+        public ProgramMode ProgramMode // secondary program mode. For Pilates - Functional
         {
             get
             {
