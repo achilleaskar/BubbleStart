@@ -28,10 +28,10 @@
                           Grid.ColumnSpan="2">
                     <WrapPanel Orientation="Horizontal"
                                HorizontalAlignment="Center">
-                        <RadioButton Content="Γωγώ"
+                        <RadioButton Content="Reformer"
                                      IsChecked="{Binding IsGogoChecked}"
                                      GroupName="Options1" />
-                        <RadioButton Content="Δημήτρης"
+                        <RadioButton Content="Functional"
                                      IsChecked="{Binding IsDimitrisChecked}"
                                      GroupName="Options1"
                                      Margin="5 0" />

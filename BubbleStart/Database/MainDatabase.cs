@@ -14,6 +14,7 @@ namespace BubbleStart.Database
         public DbSet<WorkingRule> WorkingRules { get; set; }
         public DbSet<DayWorkingShift> DailyWorkingShifts { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<GymnastHour> GymnastHours { get; set; }
         public DbSet<District> Districts { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Apointment> Apointments { get; set; }

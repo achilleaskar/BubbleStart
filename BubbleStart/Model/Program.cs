@@ -291,8 +291,8 @@ namespace BubbleStart.Model
                 {
                     return;
                 }
-                if (value > 0 && Showups > 0)
-                    value = 0;
+                //if (value > 0 && Showups > 0)
+                //    value = 0;
                 _Months = value;
                 RaisePropertyChanged();
             }
@@ -385,8 +385,8 @@ namespace BubbleStart.Model
                     return;
                 }
 
-                if (value > 0 && Months > 0)
-                    value = 0;
+                //if (value > 0 && Months > 0)
+                //    value = 0;
                 _Showups = value;
                 RaisePropertyChanged();
             }

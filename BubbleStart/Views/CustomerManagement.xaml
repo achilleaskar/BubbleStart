@@ -652,6 +652,7 @@
                                               SelectedItem="{Binding SelectedFunctionalShowUp}"
                                               CanUserAddRows="False"
                                               Name="testtt"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
                                               Width="278"
@@ -804,6 +805,7 @@
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -933,6 +935,7 @@
                                               VerticalAlignment="Stretch"
                                               SelectedItem="{Binding SelectedFunctionalPayment}"
                                               CanUserAddRows="False"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -1001,6 +1004,7 @@
                                     <DataGrid ItemsSource="{Binding ShowUpsPilatesCollectionView}"
                                               SelectedItem="{Binding SelectedPilatesShowUp}"
                                               CanUserAddRows="False"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
                                               Width="278"
@@ -1150,6 +1154,7 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramPilatesToDelete}"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -1283,6 +1288,7 @@
                                               SelectedItem="{Binding SelectedPilatesPayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -1353,6 +1359,7 @@
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
                                               Width="278"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -1532,6 +1539,7 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramFunctionalPilatesToDelete}"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -1664,6 +1672,7 @@
                                               VerticalAlignment="Stretch"
                                               SelectedItem="{Binding SelectedFunctionalPilatesPayment}"
                                               CanUserAddRows="False"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -1739,6 +1748,7 @@
                                           SelectedItem="{Binding SelectedMassShowUp}"
                                           CanUserAddRows="False"
                                           VerticalAlignment="Stretch"
+                                          EnableRowVirtualization="False"
                                           CanUserDeleteRows="False"
                                           Width="200"
                                           VirtualizingPanel.VirtualizationMode="Standard"
@@ -1870,6 +1880,7 @@
                                            ItemsSource="{Binding ProgramsMassageColelctionView}"
                                            VerticalAlignment="Stretch"
                                            CanUserAddRows="False"
+                                           EnableRowVirtualization="False"
                                            CellEditEnding="DataGrid_CellEditEnding"
                                            SelectedItem="{Binding SelectedProgramMassageToDelete}"
                                            VirtualizingPanel.VirtualizationMode="Standard"
@@ -2004,6 +2015,7 @@
                                           VerticalAlignment="Stretch"
                                           SelectedItem="{Binding SelectedMassPayment}"
                                           CanUserAddRows="False"
+                                          EnableRowVirtualization="False"
                                           VirtualizingPanel.VirtualizationMode="Standard"
                                           CanUserDeleteRows="False"
                                           AutoGenerateColumns="False">
@@ -2076,6 +2088,7 @@
                                               SelectedItem="{Binding SelectedOnlineShowUp}"
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -2224,6 +2237,7 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramOnlineToDelete}"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -2357,6 +2371,7 @@
                                               SelectedItem="{Binding SelectedOnlinePayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2424,6 +2439,7 @@
                                     <DataGrid ItemsSource="{Binding ShowUpsOutDoorCollectionView}"
                                               SelectedItem="{Binding SelectedOutdoorShowUp}"
                                               CanUserAddRows="False"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
                                               Width="278"
@@ -2574,6 +2590,7 @@
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramOutDoorToDelete}"
                                               VirtualizingPanel.VirtualizationMode="Standard"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
@@ -2706,6 +2723,7 @@
                                               SelectedItem="{Binding SelectedOutdoorPayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2778,6 +2796,7 @@
                                               SelectedItem="{Binding SelectedPersonalShowUp}"
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -2926,6 +2945,7 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramPersonalToDelete}"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -3057,6 +3077,7 @@
                                     <DataGrid ItemsSource="{Binding PaymentsPersonalCollectionView}"
                                               VerticalAlignment="Stretch"
                                               SelectedItem="{Binding SelectedPersonalPayment}"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               CanUserDeleteRows="False"
@@ -3128,6 +3149,7 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
@@ -3275,6 +3297,7 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramMedicalToDelete}"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -3407,6 +3430,7 @@
                                               VerticalAlignment="Stretch"
                                               SelectedItem="{Binding SelectedMedicalPayment}"
                                               CanUserAddRows="False"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -3480,6 +3504,7 @@
                                               SelectedItem="{Binding SelectedYogaShowUp}"
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               Width="200"
                                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -3611,6 +3636,7 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramYogaToDelete}"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -3741,6 +3767,7 @@
                                           HorizontalAlignment="Left">
                                     <DataGrid ItemsSource="{Binding PaymentsYogaCollectionView}"
                                               VerticalAlignment="Stretch"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               SelectedItem="{Binding SelectedYogaPayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -3813,6 +3840,7 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               Width="200"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
@@ -3944,6 +3972,7 @@
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramAerialYogaToDelete}"
                                               VirtualizingPanel.VirtualizationMode="Standard"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
@@ -4076,6 +4105,7 @@
                                               SelectedItem="{Binding SelectedAerialYogaPayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
+                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>

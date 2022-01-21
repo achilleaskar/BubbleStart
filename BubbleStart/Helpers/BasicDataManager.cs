@@ -244,7 +244,7 @@ namespace BubbleStart.Helpers
 
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
 
-            //Create();
+            //await Create(true);
 
             foreach (var c in Customers.OrderBy(c => c.Id))
             {
@@ -257,8 +257,9 @@ namespace BubbleStart.Helpers
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        private void Create()
+        private async Task Create(bool massage)
         {
+
             int lineNum = 1;
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Paketa.xlsx";
 
@@ -266,6 +267,39 @@ namespace BubbleStart.Helpers
             ExcelPackage p = new ExcelPackage();
             p.Workbook.Worksheets.Add("Customers");
             ExcelWorksheet myWorksheet = p.Workbook.Worksheets[1];
+
+            if (massage)
+            {
+                var massages = await Context.GetAllAsync<ShowUp>(s => s.ProgramModeNew == ProgramMode.massage);
+
+                myWorksheet.Cells["A1"].Value = "#";
+                myWorksheet.Cells["B1"].Value = "Μηνας";
+                myWorksheet.Cells["C1"].Value = "ΠΛηρωμένα";
+                myWorksheet.Cells["D1"].Value = "Δωρεάν";
+                myWorksheet.Cells["E1"].Value = "Σύνολο";
+
+                foreach (var month in massages.GroupBy(m => new DateTime(m.Arrived.Year, m.Arrived.Month, 1)).OrderBy(r=>r.Key))
+                {
+                    lineNum++;
+                    myWorksheet.Cells["B" + lineNum].Value = month.Key.ToString("MMM yyyy");
+                    myWorksheet.Cells["C" + lineNum].Value = month.Where(t => !t.Present).Count();
+                    myWorksheet.Cells["D" + lineNum].Value = month.Where(t => t.Present).Count();
+                    myWorksheet.Cells["E" + lineNum].Value = month.Count();
+
+                }
+
+                //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());
+                p.SaveAs(fileInfo);
+                Process.Start(path);
+                return;
+            }
+            lineNum = 1;
+            path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Paketa.xlsx";
+
+            fileInfo = new FileInfo(path);
+            p = new ExcelPackage();
+            p.Workbook.Worksheets.Add("Customers");
+            myWorksheet = p.Workbook.Worksheets[1];
 
             myWorksheet.Cells["A1"].Value = "#";
             myWorksheet.Cells["B1"].Value = "Όνομα";

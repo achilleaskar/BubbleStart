@@ -544,7 +544,7 @@ namespace BubbleStart.ViewModels
             {
                 return true;
             }
-            SearchTerm = SearchTerm.ToUpper();
+            SearchTerm = SearchTerm.Trim().ToUpper();
             string tmpTerm = StaticResources.ToGreek(SearchTerm);
             return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
         }

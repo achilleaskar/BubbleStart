@@ -114,7 +114,6 @@ namespace BubbleStart.ViewModels
             await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
             TimePopupOpen = false;
-
         }
 
         private bool _OutdoorVisible;
@@ -487,8 +486,6 @@ namespace BubbleStart.ViewModels
 
         public async Task CreateProgram(bool refresh = true)
         {
-
-
             Mouse.OverrideCursor = Cursors.Wait;
             StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
             DateTime tmpdate = StartDate.AddDays(6);
@@ -577,12 +574,15 @@ namespace BubbleStart.ViewModels
                         case RoomEnum.Functional:
                             t.CustomTime1 = ct;
                             break;
+
                         case RoomEnum.Pilates:
                             t.CustomTime2 = ct;
                             break;
+
                         case RoomEnum.Massage:
                             t.CustomTime3 = ct;
                             break;
+
                         case RoomEnum.Outdoor:
                             t.CustomTime4 = ct;
                             break;
@@ -619,10 +619,8 @@ namespace BubbleStart.ViewModels
                         }
                     }
                     hour.GymnastsWorking = hour.GymnastsWorking.TrimEnd(' ').TrimEnd(',');
-
                 }
             }
-
 
             RaisePropertyChanged(nameof(HasDays));
             RaisePropertyChanged(nameof(Days));
@@ -740,11 +738,7 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-
-
-
         private string _GymnastsWorking;
-
 
         public string GymnastsWorking
         {
@@ -764,6 +758,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public CustomeTime CustomTime1 { get; set; }
         public CustomeTime CustomTime2 { get; set; }
         public CustomeTime CustomTime3 { get; set; }

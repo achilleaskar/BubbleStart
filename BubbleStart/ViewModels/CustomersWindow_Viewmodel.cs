@@ -374,6 +374,10 @@ namespace BubbleStart.ViewModels
                     Hour.AppointmentsFunctional.Remove(Hour.AppointmentsFunctional.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
                 if (Hour.AppointmentsReformer.Any(q => q.Customer.Id == SelectedCustomer.Id))
                     Hour.AppointmentsReformer.Remove(Hour.AppointmentsReformer.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
+                if (Hour.AppointmentsMassage.Any(q => q.Customer.Id == SelectedCustomer.Id))
+                    Hour.AppointmentsMassage.Remove(Hour.AppointmentsMassage.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
+                if (Hour.AppointemntsOutdoor.Any(q => q.Customer.Id == SelectedCustomer.Id))
+                    Hour.AppointemntsOutdoor.Remove(Hour.AppointemntsOutdoor.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
                 await BasicDataManager.Context.DeleteFromThis(SelectedCustomer, Hour.Time);
                 await BasicDataManager.SaveAsync();
             }

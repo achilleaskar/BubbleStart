@@ -101,19 +101,19 @@ namespace BubbleStart.Helpers
         [Description("Lower Body")]
         LowerBody = 2,
         [Description("Upper Body")]
-        UpperBody = 3,
-        [Description("Πόδια")]
-        Legs = 4,
-        [Description("Πλάτη")]
-        Back = 5,
-        [Description("Στήθος")]
-        Chest = 6,
-        [Description("Ώμοι")]
-        Shoulders = 7,
-        [Description("Δικέφαλος")]
-        Biceps = 8,
-        [Description("Τρικέφαλος")]
-        Triceps = 9
+        UpperBody = 3
+        //[Description("Πόδια")]
+        //Legs = 4,
+        //[Description("Πλάτη")]
+        //Back = 5,
+        //[Description("Στήθος")]
+        //Chest = 6,
+        //[Description("Ώμοι")]
+        //Shoulders = 7,
+        //[Description("Δικέφαλος")]
+        //Biceps = 8,
+        //[Description("Τρικέφαλος")]
+        //Triceps = 9
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

@@ -137,5 +137,14 @@ namespace BubbleStart.Views
                 c.PopupFinishOpen = false;
             }
         }
+
+        private void Showups_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is DataGrid d && d.SelectedItem != null)
+            {
+                d.ScrollIntoView(d.SelectedItem);
+            }
+        }
+
     }
 }
