@@ -159,6 +159,12 @@
                                     Width="120"
                                     Command="{Binding AddOldShowUpCommand}"
                                     Margin="5" />
+                            <Button Content="Yoga"
+                                    Width="100"
+                                    Click="Button_Click"
+                                    Command="{Binding AddOldShowUpCommand}"
+                                    CommandParameter="65"
+                                    Margin="5" />
                         </StackPanel>
                         <StackPanel>
                             <StackPanel.Resources>
@@ -337,6 +343,9 @@
                         <CheckBox Content="Χαρτί Γιατρού"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding Doctor}" />
+                        <CheckBox Content="3η δόση"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding ThirdDose}" />
                         <TextBlock Text="Ημ. Εκκαθάρισης:"
                                    Margin="0 3 0 5" />
                         <StackPanel Orientation="Horizontal">
@@ -425,7 +434,6 @@
                                                ItemsSource="{x:Static helpers:StaticResources.Months}"
                                                SelectedItem="{Binding ProgramDuration,  UpdateSourceTrigger=PropertyChanged}" />
                                 </StackPanel>
-                               
                             </StackPanel>
                             <StackPanel Orientation="Horizontal"
                                         Grid.Row="1"
@@ -586,6 +594,7 @@
                   Grid.RowSpan="4"
                   d:Visibility="Visible">
                 <TabControl Padding="5"
+                            Name="Tabs"
                             VerticalAlignment="Top"
                             Margin="5 0">
                     <TabControl.Resources>
@@ -652,7 +661,8 @@
                                               SelectedItem="{Binding SelectedFunctionalShowUp}"
                                               CanUserAddRows="False"
                                               Name="testtt"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
                                               Width="278"
@@ -708,6 +718,9 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -805,7 +818,8 @@
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -817,7 +831,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                         </ContextMenu>
+                                            </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -935,7 +949,8 @@
                                               VerticalAlignment="Stretch"
                                               SelectedItem="{Binding SelectedFunctionalPayment}"
                                               CanUserAddRows="False"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -1004,7 +1019,8 @@
                                     <DataGrid ItemsSource="{Binding ShowUpsPilatesCollectionView}"
                                               SelectedItem="{Binding SelectedPilatesShowUp}"
                                               CanUserAddRows="False"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
                                               Width="278"
@@ -1060,6 +1076,9 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -1154,7 +1173,8 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramPilatesToDelete}"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -1169,7 +1189,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                     </ContextMenu>
+                                            </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -1288,7 +1308,8 @@
                                               SelectedItem="{Binding SelectedPilatesPayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -1359,7 +1380,8 @@
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
                                               Width="278"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -1412,12 +1434,18 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                 <MenuItem Header="Pilates/Functional'">
                                                     <MenuItem Header="Pilates"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=4}"
                                                               Command="{Binding DataContext.TogglePilFuncCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Functional"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=0}"
+                                                              Command="{Binding DataContext.TogglePilFuncCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                    <MenuItem Header="Yoga"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=5}"
                                                               Command="{Binding DataContext.TogglePilFuncCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                 </MenuItem>
                                             </ContextMenu>
@@ -1482,6 +1510,13 @@
                                                                             <Setter Property="Foreground"
                                                                                     Value="Blue" />
                                                                         </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding ProgramMode}"
+                                                                                     Value="5">
+                                                                            <Setter Property="Text"
+                                                                                    Value="Yog" />
+                                                                            <Setter Property="Foreground"
+                                                                                    Value="DeepPink" />
+                                                                        </DataTrigger>
                                                                     </Style.Triggers>
                                                                 </Style>
                                                             </TextBlock.Style></TextBlock>
@@ -1539,7 +1574,8 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramFunctionalPilatesToDelete}"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -1554,7 +1590,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                  </ContextMenu>
+                                            </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -1672,7 +1708,8 @@
                                               VerticalAlignment="Stretch"
                                               SelectedItem="{Binding SelectedFunctionalPilatesPayment}"
                                               CanUserAddRows="False"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -1803,6 +1840,9 @@
                                             <MenuItem Header="Δώρο Ναί/Όχι'"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                            <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                      CommandParameter="{Binding}"
+                                                      Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                         </ContextMenu>
                                     </DataGrid.Resources>
                                     <DataGrid.RowStyle>
@@ -1897,7 +1937,7 @@
                                                     <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                 </MenuItem.Icon>
                                             </MenuItem>
-                                                      </ContextMenu>
+                                        </ContextMenu>
                                     </DataGrid.Resources>
                                     <DataGrid.RowStyle>
                                         <Style TargetType="{x:Type DataGridRow}"
@@ -2088,7 +2128,8 @@
                                               SelectedItem="{Binding SelectedOnlineShowUp}"
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -2143,6 +2184,9 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -2237,7 +2281,8 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramOnlineToDelete}"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -2252,7 +2297,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                    </ContextMenu>
+                                            </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -2371,7 +2416,8 @@
                                               SelectedItem="{Binding SelectedOnlinePayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2439,7 +2485,8 @@
                                     <DataGrid ItemsSource="{Binding ShowUpsOutDoorCollectionView}"
                                               SelectedItem="{Binding SelectedOutdoorShowUp}"
                                               CanUserAddRows="False"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
                                               Width="278"
@@ -2495,6 +2542,9 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -2590,7 +2640,8 @@
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramOutDoorToDelete}"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
@@ -2604,7 +2655,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                  </ContextMenu>
+                                            </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -2723,7 +2774,8 @@
                                               SelectedItem="{Binding SelectedOutdoorPayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2796,7 +2848,8 @@
                                               SelectedItem="{Binding SelectedPersonalShowUp}"
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -2851,6 +2904,9 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -2945,7 +3001,8 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramPersonalToDelete}"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -2960,7 +3017,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                    </ContextMenu>
+                                            </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -3077,7 +3134,8 @@
                                     <DataGrid ItemsSource="{Binding PaymentsPersonalCollectionView}"
                                               VerticalAlignment="Stretch"
                                               SelectedItem="{Binding SelectedPersonalPayment}"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               CanUserDeleteRows="False"
@@ -3149,7 +3207,8 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               Width="278"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
@@ -3203,6 +3262,9 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -3297,7 +3359,8 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramMedicalToDelete}"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -3312,7 +3375,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                       </ContextMenu>
+                                            </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -3430,7 +3493,8 @@
                                               VerticalAlignment="Stretch"
                                               SelectedItem="{Binding SelectedMedicalPayment}"
                                               CanUserAddRows="False"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -3504,7 +3568,8 @@
                                               SelectedItem="{Binding SelectedYogaShowUp}"
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               Width="200"
                                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -3559,6 +3624,9 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -3636,7 +3704,8 @@
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramYogaToDelete}"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
@@ -3651,7 +3720,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                    </ContextMenu>
+                                            </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -3767,7 +3836,8 @@
                                           HorizontalAlignment="Left">
                                     <DataGrid ItemsSource="{Binding PaymentsYogaCollectionView}"
                                               VerticalAlignment="Stretch"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               SelectedItem="{Binding SelectedYogaPayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -3840,7 +3910,8 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               Width="200"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
@@ -3894,6 +3965,9 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -3972,7 +4046,8 @@
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramAerialYogaToDelete}"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               Width="600"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
@@ -3986,7 +4061,7 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
-                                                      </ContextMenu>
+                                            </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="{x:Type DataGridRow}"
@@ -4105,7 +4180,8 @@
                                               SelectedItem="{Binding SelectedAerialYogaPayment}"
                                               CanUserAddRows="False"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              EnableRowVirtualization="False"  SelectionChanged="Showups_SelectionChanged"
+                                              EnableRowVirtualization="False"
+                                              SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>

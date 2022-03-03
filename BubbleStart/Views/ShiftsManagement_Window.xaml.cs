@@ -1,4 +1,6 @@
-﻿using BubbleStart.ViewModels;
+﻿using BubbleStart.Messages;
+using BubbleStart.ViewModels;
+using GalaSoft.MvvmLight.Messaging;
 using System.Windows;
 
 namespace BubbleStart.Views
@@ -30,6 +32,7 @@ namespace BubbleStart.Views
                 if (failed)
                     u.Context.RefreshCommand.Execute(null);
             }
+            Messenger.Default.Send(new UpdateShifts_Message());
         }
     }
 }

@@ -264,6 +264,7 @@
     <Compile Include="Messages\UpdateClosedHoursMessage.cs" />
     <Compile Include="Messages\UpdateExpenseCategoriesMessage.cs" />
     <Compile Include="Messages\UpdateProgramMessage.cs" />
+    <Compile Include="Messages\UpdateShifts_Message.cs" />
     <Compile Include="Migrations\201904030918422_first2.cs" />
     <Compile Include="Migrations\201904030918422_first2.Designer.cs">
       <DependentUpon>201904030918422_first2.cs</DependentUpon>
@@ -619,6 +620,18 @@
     <Compile Include="Migrations\202201201901229_gymnastHours.cs" />
     <Compile Include="Migrations\202201201901229_gymnastHours.designer.cs">
       <DependentUpon>202201201901229_gymnastHours.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201250945271_required.cs" />
+    <Compile Include="Migrations\202201250945271_required.designer.cs">
+      <DependentUpon>202201250945271_required.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201251443498_required1.cs" />
+    <Compile Include="Migrations\202201251443498_required1.designer.cs">
+      <DependentUpon>202201251443498_required1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201271031315_thrdDose.cs" />
+    <Compile Include="Migrations\202201271031315_thrdDose.designer.cs">
+      <DependentUpon>202201271031315_thrdDose.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
@@ -1000,6 +1013,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201201901229_gymnastHours.resx">
       <DependentUpon>202201201901229_gymnastHours.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201250945271_required.resx">
+      <DependentUpon>202201250945271_required.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201251443498_required1.resx">
+      <DependentUpon>202201251443498_required1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201271031315_thrdDose.resx">
+      <DependentUpon>202201271031315_thrdDose.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

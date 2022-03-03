@@ -225,6 +225,31 @@ namespace BubbleStart.Helpers
             }
         }
 
+
+
+
+        private ObservableCollection<User> _Gymnasts;
+
+
+        public ObservableCollection<User> Gymnasts
+        {
+            get
+            {
+                return _Gymnasts;
+            }
+
+            set
+            {
+                if (_Gymnasts == value)
+                {
+                    return;
+                }
+
+                _Gymnasts = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public async Task LoadAsync()
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -236,7 +261,8 @@ namespace BubbleStart.Helpers
             Districts = new ObservableCollection<District>((await Context.GetAllAsync<District>()).OrderBy(d => d.Name));
             Customers = new ObservableCollection<Customer>(await Context.LoadAllCustomersAsync());
             ExpenseCategoryClasses = new ObservableCollection<ExpenseCategoryClass>(await Context.GetAllAsync<ExpenseCategoryClass>());
-
+            ExpenseCategoryClasses.Insert(0, new ExpenseCategoryClass { Id = -1, Name = " " });
+            Gymnasts = new ObservableCollection<User>(Users.Where(u => u.Id == 4 || u.Level == 4));
             StaticResources.context = this;
 
             Items = new ObservableCollection<Item>(await Context.GetAllAsync<Item>());
@@ -270,24 +296,32 @@ namespace BubbleStart.Helpers
 
             if (massage)
             {
-                var massages = await Context.GetAllAsync<ShowUp>(s => s.ProgramModeNew == ProgramMode.massage);
+                var massages = (await Context.GetAllShowUpsAsync(ProgramMode.massage)).GroupBy(m => new DateTime(m.Arrived.Year, m.Arrived.Month, 1)).OrderBy(r => r.Key);
+                var programs = (await Context.GetAllAsync<Program>(r=>r.ProgramTypeO.ProgramMode==ProgramMode.massage)).GroupBy(m => new DateTime(m.StartDay.Year, m.StartDay.Month, 1)).OrderBy(r => r.Key);
 
                 myWorksheet.Cells["A1"].Value = "#";
                 myWorksheet.Cells["B1"].Value = "Μηνας";
                 myWorksheet.Cells["C1"].Value = "ΠΛηρωμένα";
-                myWorksheet.Cells["D1"].Value = "Δωρεάν";
-                myWorksheet.Cells["E1"].Value = "Σύνολο";
+                myWorksheet.Cells["D1"].Value = "Δεν έγιναν";
+                myWorksheet.Cells["E1"].Value = "Δωρεάν";
+                myWorksheet.Cells["F1"].Value = "Σύνολο";
+                myWorksheet.Cells["G1"].Value = "Πωλήσεις";
 
-                foreach (var month in massages.GroupBy(m => new DateTime(m.Arrived.Year, m.Arrived.Month, 1)).OrderBy(r=>r.Key))
+                var dates = massages.Select(s => s.Key).ToList();
+                dates.AddRange(programs.Select(t => t.Key));
+                foreach (var month in dates.OrderBy(s => s).ToHashSet())
                 {
+                    var masses = massages.FirstOrDefault(m => m.Key == month);
+                    var progs = programs.FirstOrDefault(m => m.Key == month);
                     lineNum++;
-                    myWorksheet.Cells["B" + lineNum].Value = month.Key.ToString("MMM yyyy");
-                    myWorksheet.Cells["C" + lineNum].Value = month.Where(t => !t.Present).Count();
-                    myWorksheet.Cells["D" + lineNum].Value = month.Where(t => t.Present).Count();
-                    myWorksheet.Cells["E" + lineNum].Value = month.Count();
+                    myWorksheet.Cells["B" + lineNum].Value = month.ToString("MMM yyyy");
+                    myWorksheet.Cells["C" + lineNum].Value = masses?.Where(t => !t.Present).Count() ?? 0;
+                    myWorksheet.Cells["D" + lineNum].Value = masses?.Where(t => !t.Real).Count() ?? 0;
+                    myWorksheet.Cells["E" + lineNum].Value = masses?.Where(t => t.Present).Count() ?? 0;
+                    myWorksheet.Cells["F" + lineNum].Value = masses?.Count() ?? 0;
+                    myWorksheet.Cells["G" + lineNum].Value = (progs?.Sum(s => s.Amount) ?? 0) + " €";
 
                 }
-
                 //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());
                 p.SaveAs(fileInfo);
                 Process.Start(path);

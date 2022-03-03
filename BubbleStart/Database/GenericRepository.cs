@@ -21,7 +21,6 @@ namespace BubbleStart.Database
         public GenericRepository()
         {
             Context = new MainDatabase();
-            Context.Database.Log = Console.Write;
 
             if (DateTime.Today.Month > 7 && DateTime.Today.Day >= 20)
             {
@@ -80,15 +79,18 @@ namespace BubbleStart.Database
         {
             return await Context.ShowUps
            .Where(s => (s.Arrived >= StartDate && s.Arrived < EndDate && (nolimit || s.Arrived >= Limit)) && (CId == -1 || CId == s.Customer.Id))
-           .Include(s => s.Customer)
            .OrderBy(s => s.Arrived)
            .ToListAsync();
         }
 
-        //public async Task<Payment> Gettest()
-        //{
-        //    return await Context.Payments.Where(p => p.Id == 67).FirstOrDefaultAsync();
-        //}
+        internal async Task<List<ShowUp>> GetAllShowUpsAsync(ProgramMode pMode)
+        {
+            return await Context.ShowUps
+           .Where(s => s.ProgramModeNew == pMode)
+           .Include(s => s.Prog)
+           .OrderBy(s => s.Arrived)
+           .ToListAsync();
+        }
 
         public async Task DeleteFromThis(Customer c, DateTime date)
         {
@@ -102,7 +104,6 @@ namespace BubbleStart.Database
             DateTime tmpEndDate = date.AddDays(6);
 
             return await Context.Apointments.Where(a => a.DateTime >= date && a.DateTime < tmpEndDate && a.DateTime >= Limit)
-                .Include(a => a.Customer)
                 .Include(a => a.Customer.ShowUps)
                 .ToListAsync();
         }
@@ -114,11 +115,6 @@ namespace BubbleStart.Database
                 .Include(a => a.ShowUpsList)
                 .ToListAsync();
         }
-
-        //public TEntity GetById<TEntity>(int id) where TEntity : BaseModel
-        //{
-        //    return Context.Set<TEntity>().Where(p => p.Id == id).FirstOrDefault();
-        //}
 
         public async Task<IEnumerable<TEntity>> GetAllAsync<TEntity>(Expression<Func<TEntity, bool>> filter = null) where TEntity : BaseModel
         {
@@ -355,8 +351,7 @@ namespace BubbleStart.Database
             {
                 endDateCash = endDateCash.AddDays(1);
                 return await Context.Set<Payment>()
-                    .Where(p => p.Date >= startDateCash && p.Date < endDateCash && (!limit || p.Date >= Limit))
-                        .Include(p => p.Customer)
+                    .Where(p => p.Date >= startDateCash && p.Date <= endDateCash && (!limit || p.Date >= Limit))
                         .ToListAsync();
             }
             catch (Exception)
@@ -365,16 +360,15 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<ExpenseCategoryClass> expensetypes = null)
+        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null)
         {
             if (expensetypes == null || expensetypes.Count == 0)
                 return await Context.Expenses.Where(e => !limit || e.Date >= Limit).Where(filterp)
-                   .Include(e => e.User)
                    .ToListAsync();
             else
-                return await Context.Expenses.Where(e => (!limit || e.Date >= Limit) && expensetypes.Any(r => r == e.MainCategory)).Where(filterp)
-                    .Include(e => e.User)
-                    .ToListAsync();
+                return await Context.Expenses.Where(e => e.MainCategoryId != null && (!limit || e.Date >= Limit) && expensetypes.Contains((int)e.MainCategoryId)).Where(filterp)
+                   .Include(e => e.User)
+                   .ToListAsync();
         }
 
         public void Add<TEntity>(TEntity model) where TEntity : BaseModel
@@ -415,11 +409,22 @@ namespace BubbleStart.Database
         {
             try
             {
-                await Context.Set<ShowUp>().Where(s => s.Arrived >= s.Customer.ResetDate).ToListAsync();
-                await Context.Set<Change>().Where(s => s.Date >= s.Customer.ResetDate).ToListAsync();
-                await Context.Set<Apointment>().Where(p4 => p4.DateTime >= CloseLimit).ToListAsync();
-                var pr = await Context.Set<Program>().Where(p => p.StartDay >= p.Customer.ResetDate).ToListAsync();
-                await Context.Set<Payment>().Where(s => s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate)).ToListAsync();
+                var thisWeek = StaticResources.GetNextWeekday(DateTime.Today, DayOfWeek.Monday).AddDays(-7);
+                await Context.Set<ShowUp>()
+                    .Where(s => s.Arrived >= s.Customer.ResetDate || s.Arrived >= thisWeek)
+                    .ToListAsync();
+                await Context.Set<Change>()
+                    .Where(s => s.Date >= s.Customer.ResetDate)
+                    .ToListAsync();
+                await Context.Set<Apointment>()
+                    .Where(p4 => p4.DateTime >= CloseLimit)
+                    .ToListAsync();
+                var pr = await Context.Set<Program>()
+                    .Where(p => p.StartDay >= p.Customer.ResetDate)
+                    .ToListAsync();
+                await Context.Set<Payment>()
+                    .Where(s => s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate))
+                    .ToListAsync();
 
                 //await Context.Set<ShowUp>().Where(s => s.Arrived >= Limit).ToListAsync();
                 //await Context.Set<Change>().Where(s => s.Date >= s.Customer.ResetDate).ToListAsync();
@@ -428,17 +433,11 @@ namespace BubbleStart.Database
                 //await Context.Set<Payment>().Where(s => s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate)).ToListAsync();
 
                 var x = (await Context.Set<Customer>().Where(c => c.Enabled)
-                        //.Include(o => o.Programs.Select(t => t.Payments))
                         .Select(c => new
                         {
                             c,
-                            //Programs = c.Programs.Where(p => p.StartDay >= Limit),
-                            //Payments = c.Payments.Where(p1 => p1.Date >= Limit),
                             c.WeightHistory,
                             c.Illness,
-                            //ShowUps = c.ShowUps.Where(p2 => p2.Arrived >= Limit),
-                            //Changes = c.Changes.Where(p3 => p3.Date >= CloseLimit),
-                            //Apointments = c.Apointments.Where(p4 => p4.DateTime >= Limit)
                         })
                         .ToListAsync())
                     .Select(x1 => x1.c);
@@ -463,22 +462,5 @@ namespace BubbleStart.Database
 
             return await Context.Apointments.Where(a => a.Customer.Id == id && dates.Any(d => d == a.DateTime)).ToListAsync();
         }
-
-        //public async Task<IEnumerable<Customer>> LoadAllCustomersAsyncb()
-        //{
-        //    try
-        //    {
-        //        var x = await Context.Set<Customer>()
-        //            .Where(c => c.Enabled)
-        //            .Include(z => z.Illness)
-        //            .Include(z => z.ShowUps)
-        //            .ToListAsync();
-        //        return x.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return null;
-        //    }
-        //}
     }
 }

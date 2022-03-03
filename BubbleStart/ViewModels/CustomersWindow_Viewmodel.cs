@@ -30,7 +30,7 @@ namespace BubbleStart.ViewModels
 
         private bool CanAdd(object p)
         {
-            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked || IsMassageChecked || IsOnlineChecked || IsPersonalChecked||IsPilatesMatChecked);
+            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked || IsMassageChecked || IsOnlineChecked || IsPersonalChecked || IsPilatesMatChecked);
         }
 
         #endregion Constructors
@@ -384,6 +384,8 @@ namespace BubbleStart.ViewModels
             else
             {
                 await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Room, SelectedGymnast: SelectedGymnast, p == "1");
+                if (SelectedGymnast != null)
+                    await Hour.ChangeGymnast(new object[] { SelectedGymnast, ((int)Room).ToString() });
             }
             Busy = false;
         }

@@ -23,6 +23,7 @@ namespace BubbleStart.ViewModels
             SaveWorkingRuleCommand = new RelayCommand(async () => await SaveWorkingRule(), CanSaveWorkingRule);
             ClearRuleCommand = new RelayCommand(ClearRule);
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+            Messenger.Default.Register<UpdateShifts_Message>(this, msg => Load());
         }
 
         #endregion Constructors
@@ -163,7 +164,19 @@ namespace BubbleStart.ViewModels
         {
             Employees = new ObservableCollection<User>(BasicDataManager.Users.Where(e => e.Level == 4));
 
-            Shifts = new ObservableCollection<Shift>(BasicDataManager.Shifts);
+            Shifts = BasicDataManager.Shifts;
+            RaisePropertyChanged(nameof(Shifts));
+            NewRule.RaisePropertyChanged(nameof(NewRule.DailyWorkingShifts));
+            NewRule.RaisePropertyChanged(null);
+            foreach (var day in NewRule.DailyWorkingShifts)
+            {
+                day.RaisePropertyChanged(nameof(Shift));
+            }
+            if (SelectedRule != null)
+                foreach (var day in SelectedRule.DailyWorkingShifts)
+                {
+                    day.RaisePropertyChanged(nameof(Shift));
+                }
         }
 
         public override void Reload()

@@ -29,5 +29,13 @@ namespace BubbleStart.Views
                 ed.ShowExpensesDataCommand.Execute(null);
             }
         }
+
+        private void DatePickerInc_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && DataContext is EconomicData_ViewModel ed && ed.ShowIncomesDataCommand.CanExecute(null))
+            {
+                ed.ShowIncomesDataCommand.Execute(null);
+            }
+        }
     }
 }

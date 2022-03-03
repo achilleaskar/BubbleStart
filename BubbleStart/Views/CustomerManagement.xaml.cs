@@ -91,6 +91,52 @@ namespace BubbleStart.Views
                         lcv2.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Descending));
                 }
             }
+
+            if (DataContext is Customer c)
+            {
+                object tab = null;
+                var typeOfLast = c.ShowUps.OrderByDescending(r => r.Arrived).FirstOrDefault()?.ProgramModeNew;
+                switch (typeOfLast)
+                {
+                    case ProgramMode.functional:
+                    case ProgramMode.pilatesFunctional:
+                    case ProgramMode.pilates:
+                        return;
+                    case ProgramMode.massage:
+                        tab = Tabs.Items[1];
+                        break;
+                    case ProgramMode.online:
+                    case ProgramMode.outdoor:
+                        tab = Tabs.Items[2];
+                        break;
+                    case ProgramMode.personal:
+                    case ProgramMode.medical:
+                        tab = Tabs.Items[3];
+                        break;
+                    case ProgramMode.aerialYoga:
+                    case ProgramMode.yoga:
+                        tab = Tabs.Items[4];
+                        break;
+                    default:
+                        break;
+                }
+                if (tab is TabItem tabIt)
+                {
+                    Tabs.Items.Remove(tabIt);
+                    Tabs.Items.Insert(0, tabIt);
+                    Tabs.SelectedIndex = 0;
+                    foreach (var item in (tabIt.Content as StackPanel).Children)
+                    {
+                        if (item is StackPanel sp && sp.Children[0] is GroupBox gb && gb.Content is DataGrid dg && dg.ItemsSource is ListCollectionView lcv && lcv.SortDescriptions.Count == 0)
+                            lcv.SortDescriptions.Add(new SortDescription("Arrived", ListSortDirection.Descending));
+                        if (item is StackPanel sp1 && sp1.Children[1] is GroupBox gb1 && gb1.Content is DataGrid dg1 && dg1.ItemsSource is ListCollectionView lcv1 && lcv1.SortDescriptions.Count == 0)
+                            lcv1.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
+                        if (item is StackPanel sp2 && sp2.Children[2] is GroupBox gb2 && gb2.Content is DataGrid dg2 && dg2.ItemsSource is ListCollectionView lcv2 && lcv2.SortDescriptions.Count == 0)
+                            lcv2.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Descending));
+                    }
+                }
+            }
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -142,7 +188,14 @@ namespace BubbleStart.Views
         {
             if (sender is DataGrid d && d.SelectedItem != null)
             {
-                d.ScrollIntoView(d.SelectedItem);
+
+                try
+                {
+                    d.ScrollIntoView(d.SelectedItem);
+                }
+                catch (Exception ex)
+                {
+                }
             }
         }
 

@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Converters="clr-namespace:BubbleStart.Converters"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:helpers="clr-namespace:BubbleStart.Helpers"
              xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
              d:DataContext="{d:DesignInstance {x:Type viewmodels:EconomicData_ViewModel}}"
@@ -88,351 +89,595 @@
                         </StackPanel>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Έξοδα"
-                          Grid.Column="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <StackPanel Orientation="Horizontal"
-                                    d:Visibility="Visible"
-                                    Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
-                            <StackPanel>
-                                <TextBlock Text="Aπό:" />
-                                <DatePicker VerticalAlignment="Center"
-                                            PreviewKeyDown="DatePicker_KeyDown"
-                                            Text="{Binding StartDateExpenses,Mode=TwoWay,
-                                    UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, StringFormat='dd/MM/yyyy',
-                                    TargetNullValue=''}" />
-                            </StackPanel>
-                            <StackPanel Margin=" 5 0 0 5">
-                                <TextBlock Text="Έως:" />
-                                <DatePicker VerticalAlignment="Center"
-                                            PreviewKeyDown="DatePicker_KeyDown"
-                                            Text="{Binding EndDateExpenses,Mode=TwoWay,
-                                    UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, StringFormat='dd/MM/yyyy',
-                                    TargetNullValue=''}" />
-                            </StackPanel>
-                            <Button Content="Προβολή"
-                                    Margin="5"
-                                    IsDefault="True"
-                                    VerticalAlignment="Bottom"
-                                    Command="{Binding ShowExpensesDataCommand}" />
-                            <TextBox Width="120"
-                                     VerticalAlignment="Bottom"
-                                     Margin="5"
-                                     Height="21"
-                                     Text="{Binding ExpensesTextFilter,UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                        <DataGrid ItemsSource="{Binding Expenses}"
-                                  Grid.Row="1"
-                                  d:Visibility="Visible"
-                                  Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
-                                  CanUserAddRows="False"
-                                  SelectedItem="{Binding SelectedExpense}"
-                                  IsReadOnly="False"
-                                  CanUserDeleteRows="False"
-                                  AutoGenerateColumns="False">
-                            <DataGrid.Resources>
-                                <ContextMenu x:Key="expensesContextMenu">
-                                    <MenuItem Header="Διαγραφή"
-                                              Command="{Binding DataContext.DeleteExpenseCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                </ContextMenu>
-                            </DataGrid.Resources>
-                            <DataGrid.RowStyle>
-                                <Style TargetType="{x:Type DataGridRow}">
-                                    <Setter Property="ContextMenu"
-                                            Value="{StaticResource expensesContextMenu}" />
-                                </Style>
-                            </DataGrid.RowStyle>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Ποσό"
-                                                    MaxWidth="60"
-                                                    Binding="{Binding Amount,StringFormat=c2,UpdateSourceTrigger=PropertyChanged}" />
-                                <DataGridTextColumn Header="Ημερομ."
-                                                    Width="70"
-                                                    Binding="{Binding Date,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
-                                <DataGridTemplateColumn Header="Κατηγ."
-                                                        Width="80"
-                                                        CellStyle="{StaticResource DataGridCellStyle}">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ComboBox Width="Auto"
-                                                      VerticalAlignment="Top"
-                                                      DisplayMemberPath="Name"
-                                                      ItemsSource="{Binding DataContext.MainCategories,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                                      SelectedItem="{Binding MainCategory, UpdateSourceTrigger=PropertyChanged}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="Υποκατηγ."
-                                                        Width="80"
-                                                        CellStyle="{StaticResource DataGridCellStyle}">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ComboBox Width="Auto"
-                                                      VerticalAlignment="Top"
-                                                      DisplayMemberPath="Name"
-                                                      ItemsSource="{Binding DataContext.SecondaryCategories,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                                      SelectedItem="{Binding SecondaryCategory, UpdateSourceTrigger=PropertyChanged}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Χρήστης"
-                                                    MaxWidth="120"
-                                                    IsReadOnly="True"
-                                                    Binding="{Binding User.Name}" />
-                                <DataGridTemplateColumn Header="Αιτιολογία"
-                                                        Width="280">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBox 
-                                                     VerticalAlignment="Top"
-                                                     TextWrapping="Wrap"
-                                                     MaxHeight="60"
-                                                     Text="{Binding Reason,UpdateSourceTrigger=PropertyChanged}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="Από"
-                                                        SortMemberPath="From"
-                                                        Width="100">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <DatePicker VerticalAlignment="Top"
-                                                        SelectedDate="{Binding From,UpdateSourceTrigger=PropertyChanged}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="Έως"
-                                                        SortMemberPath="To"
-                                                        Width="100">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <DatePicker VerticalAlignment="Top"
-                                                        SelectedDate="{Binding To,UpdateSourceTrigger=PropertyChanged}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <GroupBox Grid.Row="2"
-                                  Header="Προσθήκη Εξόδου">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Orientation="Horizontal">
-                                    <StackPanel>
-                                        <TextBlock Text="Ημερομηνία:" />
-                                        <DatePicker VerticalAlignment="Bottom"
-                                                    Width="120"
-                                                    SelectedDate="{Binding NewExpense.Date,  UpdateSourceTrigger=PropertyChanged}" />
-                                    </StackPanel>
-                                    <StackPanel Margin=" 40 5 0 0"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Top">
-                                        <TextBlock Text="Ποσό:"
-                                                   Width="50" />
-                                        <TextBox Text="{Binding NewExpense.Amount,Converter={StaticResource FtoSConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal"
-                                            Grid.Row="1">
-                                    <StackPanel>
-                                        <TextBlock Text="Από:" />
-                                        <DatePicker VerticalAlignment="Bottom"
-                                                    Width="120"
-                                                    SelectedDate="{Binding NewExpense.From,  UpdateSourceTrigger=PropertyChanged}" />
-                                    </StackPanel>
-                                    <StackPanel Margin="5 0 0 0">
-                                        <TextBlock Text="Έως:" />
-                                        <DatePicker VerticalAlignment="Bottom"
-                                                    Width="120"
-                                                    SelectedDate="{Binding NewExpense.To,  UpdateSourceTrigger=PropertyChanged}" />
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Margin=" 5 0 0 0"
-                                            Grid.RowSpan="2"
-                                            Grid.Column="1"
-                                            VerticalAlignment="Top"
-                                            HorizontalAlignment="Left">
-                                    <TextBlock Text="Αιτιολογία:" />
-                                    <TextBox Text="{Binding NewExpense.Reason, UpdateSourceTrigger=PropertyChanged}"
-                                             Width="250"
-                                             AllowDrop="True"
-                                             VerticalScrollBarVisibility="Auto"
-                                             TextWrapping="Wrap"
-                                             Height="70" />
-                                </StackPanel>
-                                <Button Content="Καταχώρηση"
-                                        Grid.Row="1"
-                                        Grid.Column="2"
-                                        VerticalAlignment="Bottom"
-                                        HorizontalAlignment="Center"
-                                        Margin="5"
-                                        Width="90"
-                                        Command="{Binding RegisterExpenseCommand}" />
-                                <StackPanel Orientation="Vertical"
-                                            Margin="5 0"
-                                            Grid.Column="2">
-                                    <TextBlock Text="Κατηγορία" />
-                                    <ComboBox VerticalAlignment="Top"
-                                              Width="90"
-                                              ItemsSource="{Binding MainCategories}"
-                                              DisplayMemberPath="Name"
-                                              SelectedItem="{Binding NewExpense.MainCategory, UpdateSourceTrigger=PropertyChanged}" />
-                                    <TextBlock Text="Υποκατηγορία" />
-                                    <ComboBox VerticalAlignment="Top"
-                                              Width="90"
-                                              DisplayMemberPath="Name"
-                                              ItemsSource="{Binding SecondaryCategories}"
-                                              SelectedItem="{Binding NewExpense.SecondaryCategory, UpdateSourceTrigger=PropertyChanged}" />
-                                </StackPanel>
-                            </Grid>
-                        </GroupBox>
-                        <StackPanel Orientation="Horizontal"
-                                    Grid.Row="3">
-                            <Label Content="Σύνολο Εξόδων:" />
-                            <Label Content="{Binding ExpensesSum, Converter={StaticResource FtoSConverter}}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal"
-                                    HorizontalAlignment="Right"
-                                    Grid.Row="3">
-                            <Label Content="Ταμείο:" />
-                            <Label Content="{Binding Cleanse, Converter={StaticResource FtoSConverter}}" />
-                            <Button Content="Αποθήκευση"
-                                    VerticalAlignment="Center"
-                                    Margin="5 0"
-                                    Command="{Binding SaveChangesCommand}" />
-                        </StackPanel>
-                        <Grid Grid.Column="1"
-                              Grid.Row="1"
-                              VerticalAlignment="Stretch"
-                              Visibility="{Binding HasAmmounts}"
-                              Grid.RowSpan="2"
-                              Margin="5">
+                <TabControl Grid.Column="1">
+                    <TabItem Header="Έξοδα"
+                             Padding="15 0">
+                        <Grid Margin="5 0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Orientation="Horizontal"
+                                        d:Visibility="Visible"
+                                        Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                                <StackPanel>
+                                    <TextBlock Text="Aπό:" />
+                                    <DatePicker VerticalAlignment="Center"
+                                                PreviewKeyDown="DatePicker_KeyDown"
+                                                Text="{Binding StartDateExpenses,Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, StringFormat='dd/MM/yyyy',
+                                    TargetNullValue=''}" />
+                                </StackPanel>
+                                <StackPanel Margin=" 5 0 0 5">
+                                    <TextBlock Text="Έως:" />
+                                    <DatePicker VerticalAlignment="Center"
+                                                PreviewKeyDown="DatePicker_KeyDown"
+                                                Text="{Binding EndDateExpenses,Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, StringFormat='dd/MM/yyyy',
+                                    TargetNullValue=''}" />
+                                </StackPanel>
+                                <Button Content="Προβολή"
+                                        Margin="5"
+                                        IsDefault="True"
+                                        VerticalAlignment="Bottom"
+                                        Command="{Binding ShowExpensesDataCommand}" />
+                                <TextBox Width="120"
+                                         VerticalAlignment="Bottom"
+                                         Margin="5"
+                                         Height="21"
+                                         Text="{Binding ExpensesTextFilter,UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <DataGrid ItemsSource="{Binding Expenses}"
+                                      Grid.Row="1"
+                                      d:Visibility="Visible"
+                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                                      CanUserAddRows="False"
+                                      SelectedItem="{Binding SelectedExpense}"
+                                      IsReadOnly="False"
+                                      CanUserDeleteRows="False"
+                                      AutoGenerateColumns="False">
+                                <DataGrid.Resources>
+                                    <ContextMenu x:Key="expensesContextMenu">
+                                        <MenuItem Header="Διαγραφή"
+                                                  Command="{Binding DataContext.DeleteExpenseCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    </ContextMenu>
+                                </DataGrid.Resources>
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="{x:Type DataGridRow}">
+                                        <Setter Property="ContextMenu"
+                                                Value="{StaticResource expensesContextMenu}" />
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Ποσό"
+                                                        MaxWidth="60"
+                                                        Binding="{Binding Amount,StringFormat=c2,UpdateSourceTrigger=PropertyChanged}" />
+                                    <DataGridTextColumn Header="Ημερομ."
+                                                        Width="70"
+                                                        Binding="{Binding Date,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
+                                    <DataGridTemplateColumn Header="Κατηγ."
+                                                            Width="80"
+                                                            CellStyle="{StaticResource DataGridCellStyle}">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox Width="Auto"
+                                                          VerticalAlignment="Top"
+                                                          DisplayMemberPath="Name"
+                                                          ItemsSource="{Binding DataContext.MainCategories,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                          SelectedItem="{Binding MainCategory, UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Υποκατηγ."
+                                                            Width="80"
+                                                            CellStyle="{StaticResource DataGridCellStyle}">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox Width="Auto"
+                                                          VerticalAlignment="Top"
+                                                          DisplayMemberPath="Name"
+                                                          ItemsSource="{Binding SecondaryCategories}"
+                                                          SelectedItem="{Binding SecondaryCategory, UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Χρήστης"
+                                                        MaxWidth="120"
+                                                        IsReadOnly="True"
+                                                        Binding="{Binding User.Name}" />
+                                    <DataGridTemplateColumn Header="Αιτιολογία"
+                                                            Width="280">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox VerticalAlignment="Top"
+                                                         TextWrapping="Wrap"
+                                                         MaxHeight="60"
+                                                         Text="{Binding Reason,UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Από"
+                                                            SortMemberPath="From"
+                                                            Width="100">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <DatePicker VerticalAlignment="Top"
+                                                            SelectedDate="{Binding From,UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Έως"
+                                                            SortMemberPath="To"
+                                                            Width="100">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <DatePicker VerticalAlignment="Top"
+                                                            SelectedDate="{Binding To,UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <GroupBox Grid.Row="2"
+                                      Header="Προσθήκη Εξόδου">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <StackPanel>
+                                            <TextBlock Text="Ημερομηνία:" />
+                                            <DatePicker VerticalAlignment="Bottom"
+                                                        Width="120"
+                                                        SelectedDate="{Binding NewExpense.Date,  UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <StackPanel Margin=" 40 5 0 0"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Top">
+                                            <TextBlock Text="Ποσό:"
+                                                       Width="50" />
+                                            <TextBox Text="{Binding NewExpense.Amount,Converter={StaticResource FtoSConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal"
+                                                Grid.Row="1">
+                                        <StackPanel>
+                                            <TextBlock Text="Από:" />
+                                            <DatePicker VerticalAlignment="Bottom"
+                                                        Width="120"
+                                                        SelectedDate="{Binding NewExpense.From,  UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <StackPanel Margin="5 0 0 0">
+                                            <TextBlock Text="Έως:" />
+                                            <DatePicker VerticalAlignment="Bottom"
+                                                        Width="120"
+                                                        SelectedDate="{Binding NewExpense.To,  UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Margin=" 5 0 0 0"
+                                                Grid.RowSpan="2"
+                                                Grid.Column="1"
+                                                VerticalAlignment="Top"
+                                                HorizontalAlignment="Left">
+                                        <TextBlock Text="Αιτιολογία:" />
+                                        <TextBox Text="{Binding NewExpense.Reason, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="250"
+                                                 AllowDrop="True"
+                                                 VerticalScrollBarVisibility="Auto"
+                                                 TextWrapping="Wrap"
+                                                 Height="70" />
+                                    </StackPanel>
+                                    <Button Content="Καταχώρηση"
+                                            Grid.Row="1"
+                                            Grid.Column="2"
+                                            VerticalAlignment="Bottom"
+                                            HorizontalAlignment="Center"
+                                            Margin="5"
+                                            Width="90"
+                                            Command="{Binding RegisterExpenseCommand}" />
+                                    <StackPanel Orientation="Vertical"
+                                                Margin="5 0"
+                                                Grid.Column="2">
+                                        <TextBlock Text="Κατηγορία" />
+                                        <ComboBox VerticalAlignment="Top"
+                                                  Width="90"
+                                                  ItemsSource="{Binding MainCategories}"
+                                                  DisplayMemberPath="Name"
+                                                  SelectedItem="{Binding MainCategory, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBlock Text="Υποκατηγορία" />
+                                        <ComboBox VerticalAlignment="Top"
+                                                  Width="90"
+                                                  DisplayMemberPath="Name"
+                                                  ItemsSource="{Binding SecondaryCategories}"
+                                                  SelectedItem="{Binding NewExpense.SecondaryCategory, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                </Grid>
+                            </GroupBox>
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="3">
+                                <Label Content="Σύνολο Εξόδων:" />
+                                <Label Content="{Binding ExpensesSum, Converter={StaticResource FtoSConverter}}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        Grid.Row="3">
+                                <Label Content="Ταμείο:" />
+                                <Label Content="{Binding Cleanse, Converter={StaticResource FtoSConverter}}" />
+                                <Button Content="Αποθήκευση"
+                                        VerticalAlignment="Center"
+                                        Margin="5 0"
+                                        Command="{Binding SaveChangesCommand}" />
+                            </StackPanel>
+                            <Grid Grid.Column="1"
+                                  Grid.Row="0"
+                                  d:Visibility="Visible"
+                                  Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                                  VerticalAlignment="Stretch"
+                                  Grid.RowSpan="5"
+                                  Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <GroupBox Header="Τύποι Εξόδων"
+                                          Grid.Row="0"
+                                          Grid.ColumnSpan="2"
+                                          HorizontalAlignment="Left"
+                                          Padding="5"
+                                          VerticalAlignment="Top"
+                                          Margin="0 0">
+                                    <StackPanel Orientation="Vertical">
+                                        <Button Content="(Απο)Επιλογή όλων"
+                                                Command="{Binding SelectAllCommand}"
+                                                Margin="0 0 5 5"
+                                                Padding="5 3" />
+                                        <ItemsControl ItemsSource="{Binding ExpenseTypes}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <CheckBox Content="{Binding ExpenseCategory.Name}"
+                                                                  IsChecked="{Binding IsChecked}"
+                                                                  Margin="5"
+                                                                  Width="100"
+                                                                  FontSize="14" />
+                                                        <Button Command="{Binding DataContext.ShowEconomicDetailsCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                                                CommandParameter="{Binding}"
+                                                                Background="White"
+                                                                BorderBrush="White"
+                                                                Cursor="Hand"
+                                                                Margin="2">
+                                                            <iconPacks:PackIconFontAwesome Kind="ArrowCircleRightSolid"
+                                                                                           Height="13" />
+                                                        </Button>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Vertical" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </GroupBox>
+                                <DataGrid Grid.Row="1"
+                                          Grid.ColumnSpan="2"
+                                          AutoGenerateColumns="False"
+                                          CanUserAddRows="False"
+                                          Margin="0 10"
+                                          CanUserDeleteRows="False"
+                                          Visibility="{Binding AnyDetails, Converter={StaticResource booleanToVisibilityConverter}}"
+                                          ItemsSource="{Binding EconomicDetails}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Υποκατηγορία"
+                                                            Width="122"
+                                                            Binding="{Binding Category.Name}" />
+                                        <DataGridTextColumn Header="Ποσό"
+                                                            Width="70"
+                                                            Binding="{Binding Amount,Converter={StaticResource FtoSConverter}}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <Label Content="Πάγια:"
+                                       Grid.Row="2"
+                                       Visibility="{Binding Pagia,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Column="0" />
+                                <Label Content="{Binding Pagia, Converter={StaticResource FtoSConverter}}"
+                                       Grid.Row="2"
+                                       Visibility="{Binding Pagia,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Column="1" />
+                                <Label Content="Μισθοδοσίες:"
+                                       Grid.Row="3"
+                                       Visibility="{Binding Misthoi,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Column="0" />
+                                <Label Content="{Binding Misthoi, Converter={StaticResource FtoSConverter}}"
+                                       Grid.Row="3"
+                                       Visibility="{Binding Misthoi,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Column="1" />
+                                <Label Content="Έκτακτα:"
+                                       Grid.Row="4"
+                                       Visibility="{Binding Ektakta,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Column="0" />
+                                <Label Content="{Binding Ektakta, Converter={StaticResource FtoSConverter}}"
+                                       Grid.Row="4"
+                                       Visibility="{Binding Ektakta,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Column="1" />
+                                <Label Content="Σπιτιού:"
+                                       Visibility="{Binding Spitiou,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="5"
+                                       Grid.Column="0" />
+                                <Label Content="{Binding Spitiou, Converter={StaticResource FtoSConverter}}"
+                                       Visibility="{Binding Spitiou,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="5"
+                                       Grid.Column="1" />
+                                <Label Content="Γωγώ:"
+                                       Visibility="{Binding Gwgw,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="6"
+                                       Grid.Column="0" />
+                                <Label Content="{Binding Gwgw, Converter={StaticResource FtoSConverter}}"
+                                       Visibility="{Binding Gwgw,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="6"
+                                       Grid.Column="1" />
+                                <Label Content="Τιμολόγια:"
+                                       Visibility="{Binding Timologia,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="7"
+                                       Grid.Column="0" />
+                                <Label Content="{Binding Timologia, Converter={StaticResource FtoSConverter}}"
+                                       Visibility="{Binding Timologia,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="7"
+                                       Grid.Column="1" />
+                                <Label Content="Πιστωτικά:"
+                                       Visibility="{Binding Pistotika,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="8"
+                                       Grid.Column="0" />
+                                <Label Content="{Binding Pistotika, Converter={StaticResource FtoSConverter}}"
+                                       Visibility="{Binding Pistotika,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="8"
+                                       Grid.Column="1" />
+                                <Label Content="Φαινομενικά:"
+                                       Visibility="{Binding Fainomenika,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="9"
+                                       Grid.Column="0" />
+                                <Label Content="{Binding Fainomenika, Converter={StaticResource FtoSConverter}}"
+                                       Visibility="{Binding Fainomenika,Converter={StaticResource IntToVisibilityConverter}}"
+                                       Grid.Row="9"
+                                       Grid.Column="1" />
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Έσοδα"
+                             Padding="15 0">
+                        <Grid Margin="5 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <GroupBox Header="Τύποι Εξόδων"
-                                      Grid.Row="0"
-                                      Grid.ColumnSpan="2"
-                                      HorizontalAlignment="Left"
-                                      Padding="5"
-                                      VerticalAlignment="Top"
-                                      Margin="0 0">
-                                <ItemsControl ItemsSource="{Binding ExpenseTypes}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <CheckBox Content="{Binding ExpenseCategory.Name}"
-                                                      IsChecked="{Binding IsChecked}"
-                                                      Margin="5 5 5 0"
-                                                      FontSize="14" />
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Vertical" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
+                            <StackPanel Orientation="Horizontal"
+                                        d:Visibility="Visible"
+                                        Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                                <StackPanel>
+                                    <TextBlock Text="Aπό:" />
+                                    <DatePicker VerticalAlignment="Center"
+                                                PreviewKeyDown="DatePickerInc_KeyDown"
+                                                Text="{Binding StartDateExpenses,Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, StringFormat='dd/MM/yyyy',
+                                    TargetNullValue=''}" />
+                                </StackPanel>
+                                <StackPanel Margin=" 5 0 0 5">
+                                    <TextBlock Text="Έως:" />
+                                    <DatePicker VerticalAlignment="Center"
+                                                PreviewKeyDown="DatePickerInc_KeyDown"
+                                                Text="{Binding EndDateExpenses,Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, StringFormat='dd/MM/yyyy',
+                                    TargetNullValue=''}" />
+                                </StackPanel>
+                                <Button Content="Προβολή"
+                                        Margin="5"
+                                        IsDefault="True"
+                                        VerticalAlignment="Bottom"
+                                        Command="{Binding ShowIncomesDataCommand}" />
+                                <TextBox Width="120"
+                                         VerticalAlignment="Bottom"
+                                         Margin="5"
+                                         Height="21"
+                                         Text="{Binding IncomesTextFilter,UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <DataGrid ItemsSource="{Binding Incomes}"
+                                      Grid.Row="1"
+                                      d:Visibility="Visible"
+                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                                      CanUserAddRows="False"
+                                      SelectedItem="{Binding SelectedIncome}"
+                                      IsReadOnly="False"
+                                      CanUserDeleteRows="False"
+                                      AutoGenerateColumns="False">
+                                <DataGrid.Resources>
+                                    <ContextMenu x:Key="incomesContextMenu">
+                                        <MenuItem Header="Διαγραφή"
+                                                  Command="{Binding DataContext.DeleteIncomeCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                    </ContextMenu>
+                                </DataGrid.Resources>
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="{x:Type DataGridRow}">
+                                        <Setter Property="ContextMenu"
+                                                Value="{StaticResource incomesContextMenu}" />
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Ποσό"
+                                                        MaxWidth="60"
+                                                        Binding="{Binding Amount,StringFormat=c2,UpdateSourceTrigger=PropertyChanged}" />
+                                    <DataGridTextColumn Header="Ημερομ."
+                                                        Width="70"
+                                                        Binding="{Binding Date,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
+                                    <DataGridTemplateColumn Header="Κατηγορία"
+                                                            Width="80"
+                                                            CellStyle="{StaticResource DataGridCellStyle}">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox Width="Auto"
+                                                          VerticalAlignment="Top"
+                                                          DisplayMemberPath="Name"
+                                                          ItemsSource="{Binding SecondaryCategories}"
+                                                          SelectedItem="{Binding SecondaryCategory, UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Χρήστης"
+                                                        MaxWidth="120"
+                                                        IsReadOnly="True"
+                                                        Binding="{Binding User.Name}" />
+                                    <DataGridTemplateColumn Header="Αιτιολογία"
+                                                            Width="280">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBox VerticalAlignment="Top"
+                                                         TextWrapping="Wrap"
+                                                         MaxHeight="60"
+                                                         Text="{Binding Reason,UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Από"
+                                                            SortMemberPath="From"
+                                                            Width="100">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <DatePicker VerticalAlignment="Top"
+                                                            SelectedDate="{Binding From,UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Έως"
+                                                            SortMemberPath="To"
+                                                            Width="100">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <DatePicker VerticalAlignment="Top"
+                                                            SelectedDate="{Binding To,UpdateSourceTrigger=PropertyChanged}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <GroupBox Grid.Row="2"
+                                      Header="Προσθήκη Εσόδου">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <StackPanel>
+                                            <TextBlock Text="Ημερομηνία:" />
+                                            <DatePicker VerticalAlignment="Bottom"
+                                                        Width="120"
+                                                        SelectedDate="{Binding NewIncome.Date,  UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <StackPanel Margin=" 40 5 0 0"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Top">
+                                            <TextBlock Text="Ποσό:"
+                                                       Width="50" />
+                                            <TextBox Text="{Binding NewIncome.Amount,Converter={StaticResource FtoSConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal"
+                                                Grid.Row="1">
+                                        <StackPanel>
+                                            <TextBlock Text="Από:" />
+                                            <DatePicker VerticalAlignment="Bottom"
+                                                        Width="120"
+                                                        SelectedDate="{Binding NewIncome.From,  UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <StackPanel Margin="5 0 0 0">
+                                            <TextBlock Text="Έως:" />
+                                            <DatePicker VerticalAlignment="Bottom"
+                                                        Width="120"
+                                                        SelectedDate="{Binding NewIncome.To,  UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Margin=" 5 0 0 0"
+                                                Grid.RowSpan="2"
+                                                Grid.Column="1"
+                                                VerticalAlignment="Top"
+                                                HorizontalAlignment="Left">
+                                        <TextBlock Text="Αιτιολογία:" />
+                                        <TextBox Text="{Binding NewIncome.Reason, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="250"
+                                                 AllowDrop="True"
+                                                 VerticalScrollBarVisibility="Auto"
+                                                 TextWrapping="Wrap"
+                                                 Height="70" />
+                                    </StackPanel>
+                                    <Button Content="Καταχώρηση"
+                                            Grid.Row="1"
+                                            Grid.Column="2"
+                                            VerticalAlignment="Bottom"
+                                            HorizontalAlignment="Center"
+                                            Margin="5"
+                                            Width="90"
+                                            Command="{Binding RegisterIncomeCommand}" />
+                                    <StackPanel Orientation="Vertical"
+                                                Margin="5 0"
+                                                Grid.Column="2">
+                                        <TextBlock Text="Κατηγορία" />
+                                        <ComboBox VerticalAlignment="Top"
+                                                  Width="90"
+                                                  DisplayMemberPath="Name"
+                                                  ItemsSource="{Binding SecondaryIncomeCategories}"
+                                                  SelectedItem="{Binding NewIncome.SecondaryCategory, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                </Grid>
                             </GroupBox>
-                            <Label Content="Πάγια:"
-                                   Grid.Row="2"
-                                   Visibility="{Binding Pagia,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Column="0" />
-                            <Label Content="{Binding Pagia, Converter={StaticResource FtoSConverter}}"
-                                   Grid.Row="2"
-                                   Visibility="{Binding Pagia,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Column="1" />
-                            <Label Content="Μισθοδοσίες:"
-                                   Grid.Row="3"
-                                   Visibility="{Binding Misthoi,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Column="0" />
-                            <Label Content="{Binding Misthoi, Converter={StaticResource FtoSConverter}}"
-                                   Grid.Row="3"
-                                   Visibility="{Binding Misthoi,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Column="1" />
-                            <Label Content="Έκτακτα:"
-                                   Grid.Row="4"
-                                   Visibility="{Binding Ektakta,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Column="0" />
-                            <Label Content="{Binding Ektakta, Converter={StaticResource FtoSConverter}}"
-                                   Grid.Row="4"
-                                   Visibility="{Binding Ektakta,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Column="1" />
-                            <Label Content="Σπιτιού:"
-                                   Visibility="{Binding Spitiou,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="5"
-                                   Grid.Column="0" />
-                            <Label Content="{Binding Spitiou, Converter={StaticResource FtoSConverter}}"
-                                   Visibility="{Binding Spitiou,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="5"
-                                   Grid.Column="1" />
-                            <Label Content="Γωγώ:"
-                                   Visibility="{Binding Gwgw,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="6"
-                                   Grid.Column="0" />
-                            <Label Content="{Binding Gwgw, Converter={StaticResource FtoSConverter}}"
-                                   Visibility="{Binding Gwgw,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="6"
-                                   Grid.Column="1" />
-                            <Label Content="Τιμολόγια:"
-                                   Visibility="{Binding Timologia,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="7"
-                                   Grid.Column="0" />
-                            <Label Content="{Binding Timologia, Converter={StaticResource FtoSConverter}}"
-                                   Visibility="{Binding Timologia,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="7"
-                                   Grid.Column="1" />
-                            <Label Content="Πιστωτικά:"
-                                   Visibility="{Binding Pistotika,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="8"
-                                   Grid.Column="0" />
-                            <Label Content="{Binding Pistotika, Converter={StaticResource FtoSConverter}}"
-                                   Visibility="{Binding Pistotika,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="8"
-                                   Grid.Column="1" />
-                            <Label Content="Φαινομενικά:"
-                                   Visibility="{Binding Fainomenika,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="9"
-                                   Grid.Column="0" />
-                            <Label Content="{Binding Fainomenika, Converter={StaticResource FtoSConverter}}"
-                                   Visibility="{Binding Fainomenika,Converter={StaticResource IntToVisibilityConverter}}"
-                                   Grid.Row="9"
-                                   Grid.Column="1" />
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        Grid.Row="3">
+                                <Button Content="Αποθήκευση"
+                                        VerticalAlignment="Center"
+                                        Margin="5 0"
+                                        Command="{Binding SaveChangesCommand}" />
+                            </StackPanel>
                         </Grid>
-                    </Grid>
-                </GroupBox>
+                    </TabItem>
+                </TabControl>
             </Grid>
         </TabItem>
         <TabItem Header="Προεπισκόπηση"
@@ -553,7 +798,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </GroupBox>
-                <GroupBox Header="Πραγματικό"
+                <GroupBox Header="Αναλυτική Αντιστοιχία ανα Μήνα"
                           Grid.Column="2"
                           Grid.Row="1">
                     <DataGrid ItemsSource="{Binding RealPreview}"
@@ -600,27 +845,89 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </GroupBox>
-                <GroupBox Header="Τύποι Εξόδων"
-                          Grid.Column="3"
-                          Grid.Row="1"
-                          VerticalAlignment="Top"
-                          Margin="15 0">
-                    <ItemsControl ItemsSource="{Binding ExpenseTypes}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox Content="{Binding ExpenseCategory.Name}"
-                                          IsChecked="{Binding IsChecked}"
-                                          Margin="5 5 5 0"
-                                          FontSize="14" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Vertical" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </GroupBox>
+                <StackPanel  Grid.Column="3"
+                             Grid.Row="1"
+                             VerticalAlignment="Top"
+                             Margin="15 0">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                  Visibility="{Binding HasBars,Converter={StaticResource booleanToVisibilityConverter}}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="20" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border BorderBrush="Gray"
+                                    BorderThickness="1 0 0 1"
+                                    Padding="0 5 0 0">
+                                <ItemsControl ItemsSource="{Binding Bars}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Rectangle Fill="Blue"
+                                                       Width="15"
+                                                       ToolTip="{Binding Value,Converter={StaticResource FtoSConverter}}"
+                                                       Margin="7 0 3 0"
+                                                       VerticalAlignment="Bottom"
+                                                       Height="{Binding Height}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
+                            <Border BorderBrush="Gray"
+                                    Grid.Row="1"
+                                    BorderThickness="1 0 0 0"
+                                    Padding="0 5 0 0">
+                                <ItemsControl ItemsSource="{Binding Bars}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Rectangle Fill="Red"
+                                                       Width="15"
+                                                       Margin="7 0 3 0"
+                                                       VerticalAlignment="Top"
+                                                       ToolTip="{Binding Value,Converter={StaticResource FtoSConverter}}"
+                                                       Height="{Binding HeightNeg}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
+                            <ItemsControl Margin="1 0 0 0"
+                                          ItemsSource="{Binding Bars}"
+                                          Grid.Row="2">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Width="25">
+                                            <TextBlock Text="{Binding Label}"
+                                                       Margin="5">
+                                                <TextBlock.LayoutTransform>
+                                                    <RotateTransform Angle="270" />
+                                                </TextBlock.LayoutTransform></TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </ScrollViewer>
+                </StackPanel>
             </Grid>
         </TabItem>
         <TabItem Header="Πληρωμές"

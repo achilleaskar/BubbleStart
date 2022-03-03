@@ -1,5 +1,9 @@
 ﻿using BubbleStart.Helpers;
+using BubbleStart.ViewModels;
 using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace BubbleStart.Model
 {
@@ -15,6 +19,9 @@ namespace BubbleStart.Model
         #endregion Constructors
 
         #region Fields
+
+        [NotMapped]
+        public EconomicData_ViewModel parent { get; set; }
 
         private decimal _Amount;
         private DateTime _Date;
@@ -45,6 +52,12 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        [NotMapped]
+        public ObservableCollection<ExpenseCategoryClass> SecondaryCategories => parent != null && MainCategory != null ? (Income ?
+            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == 20 || p.Id == -1)) :
+            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == MainCategory.Id || p.Id == -1)))
+            : new ObservableCollection<ExpenseCategoryClass>();
 
         public DateTime Date
         {
@@ -124,7 +137,12 @@ namespace BubbleStart.Model
                 }
 
                 _MainCategory = value;
+                if (value?.Id==-1)
+                {
+                    _MainCategory = null;
+                }
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(SecondaryCategories));
             }
         }
 
@@ -161,6 +179,10 @@ namespace BubbleStart.Model
                 }
 
                 _SecondaryCategory = value;
+                if (value?.Id == -1)
+                {
+                    _SecondaryCategory = null;
+                }
                 RaisePropertyChanged();
             }
         }

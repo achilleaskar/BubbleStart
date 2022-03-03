@@ -143,7 +143,7 @@
                         <DataGridTextColumn Header="Όνομα"
                                             IsReadOnly="True"
                                             Binding="{Binding Name}" />
-                        <DataGridTextColumn Header="Ώρες"
+                        <DataGridTextColumn Header="Κατηγορία"
                                             IsReadOnly="True"
                                             Binding="{Binding}" />
                     </DataGrid.Columns>

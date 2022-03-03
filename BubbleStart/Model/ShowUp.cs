@@ -18,7 +18,27 @@ namespace BubbleStart.Model
 
         private bool _Present;
 
+        private bool _Test;
 
+        public bool Test
+        {
+            get
+            {
+                return _Test;
+            }
+
+            set
+            {
+                if (_Test == value)
+                {
+                    return;
+                }
+
+                _Test = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(RealColor));
+            }
+        }
 
 
         public string SecBodyPartsDesc => GetSecBodyPartsDesc();
@@ -156,7 +176,7 @@ namespace BubbleStart.Model
                 return "";
         }
 
-        public SolidColorBrush RealColor => Present ? new SolidColorBrush(Colors.LightPink) : Real ? new SolidColorBrush(Colors.Transparent) : new SolidColorBrush(Colors.OrangeRed);
+        public SolidColorBrush RealColor => Present ? new SolidColorBrush(Colors.LightPink) : Test ? new SolidColorBrush(Colors.LightYellow) : Real ? new SolidColorBrush(Colors.Transparent) : new SolidColorBrush(Colors.OrangeRed);
 
         private bool _Real = true;
 
@@ -248,7 +268,7 @@ namespace BubbleStart.Model
 
         private ProgramMode _ProgramMode;
 
-        public ProgramMode ProgramMode // secondary program mode. For Pilates - Functional
+        public ProgramMode ProgramMode // secondary program mode. For Pilates - Functional - Yoga
         {
             get
             {

@@ -1,8 +1,8 @@
-﻿using System.Windows.Controls;
-using System.Windows.Input;
-using BubbleStart.Model;
+﻿using BubbleStart.Model;
 using BubbleStart.ViewModels;
-using GalaSoft.MvvmLight.Messaging;
+using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace BubbleStart.Views
 {
@@ -29,12 +29,51 @@ namespace BubbleStart.Views
         {
             TimePopup.IsOpen = false;
             ((Apointments_ViewModel)DataContext).CustomTime = "";
-
         }
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             TimePopup.IsOpen = true;
+        }
+
+        private void Border_PreviewMouseLeftButtonUpF(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border b && b.DataContext is Hour h)
+                if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                    h.SelectedF = !h.SelectedF;
+                else if (DataContext is Apointments_ViewModel vm)
+                    foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
+                        hour.DeselectAll();
+        }
+
+        private void Border_PreviewMouseLeftButtonUpR(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border b && b.DataContext is Hour h)
+                if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                    h.SelectedR = !h.SelectedR;
+                else if (DataContext is Apointments_ViewModel vm)
+                    foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
+                        hour.DeselectAll();
+        }
+
+        private void Border_PreviewMouseLeftButtonUpM(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border b && b.DataContext is Hour h)
+                if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                    h.SelectedM = !h.SelectedM;
+                else if (DataContext is Apointments_ViewModel vm)
+                    foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
+                        hour.DeselectAll();
+        }
+
+        private void Border_PreviewMouseLeftButtonUpO(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border b && b.DataContext is Hour h)
+                if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                    h.SelectedO = !h.SelectedO;
+                else if (DataContext is Apointments_ViewModel vm)
+                    foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
+                        hour.DeselectAll();
         }
     }
 }

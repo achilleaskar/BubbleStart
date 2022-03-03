@@ -79,6 +79,31 @@ namespace BubbleStart.Model
 
         private int _ProgramDuration;
 
+
+
+
+        private bool _ThirdDose;
+
+
+        public bool ThirdDose
+        {
+            get
+            {
+                return _ThirdDose;
+            }
+
+            set
+            {
+                if (_ThirdDose == value)
+                {
+                    return;
+                }
+
+                _ThirdDose = value;
+                RaisePropertyChanged();
+            }
+        }
+
         //  private bool _Pregnancy;
         private decimal _ProgramPrice;
 
@@ -3201,6 +3226,8 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand<ShowUp> ToggleIsPresentCommand { get; set; }
+        [NotMapped]
+        public RelayCommand<ShowUp> ToggleIsTestCommand { get; set; }
 
         [NotMapped]
         public RelayCommand<ShowUp> ToggleRealCommand { get; set; }
@@ -3402,6 +3429,7 @@ namespace BubbleStart.Model
             ToggleRealCommand = new RelayCommand<ShowUp>(async (obj) => { await TogleReal(obj); }, CanToggleReal);
             Toggle30_60Command = new RelayCommand<ShowUp>(Toggle30_60, CanTogle30_60);
             ToggleIsPresentCommand = new RelayCommand<ShowUp>(TogglePresent, CanToglePresent);
+            ToggleIsTestCommand = new RelayCommand<ShowUp>(ToggleTest, CanToglePresent);
             OpenPopup1Command = new RelayCommand(() => { Popup1Open = true; });
             ToggleShowUpCommand = new RelayCommand<object[]>((par) => TogleShowUp(par), CanToggleShowUp);
             TogglePilFuncCommand = new RelayCommand<object[]>((par) => TogleShowUpPilFun(par), CanToggleShowUpPilFunc);
@@ -3419,6 +3447,15 @@ namespace BubbleStart.Model
             SecBodyParts = new List<BodyPartSelection>();
 
             CustomerLeftCommand = new RelayCommand(CustomerLeft);
+        }
+
+        private void ToggleTest(ShowUp su)
+        {
+            if (su == null)
+            {
+                return;
+            }
+            su.Test = !su.Test;
         }
 
         private void CustomerLeft()
@@ -3449,6 +3486,8 @@ namespace BubbleStart.Model
                     su.ProgramMode = ProgramMode.pilates;
                 else if (st == "0")
                     su.ProgramMode = ProgramMode.functional;
+                else if (st == "5")
+                    su.ProgramMode = ProgramMode.yoga;
                 su.RaisePropertyChanged(nameof(su.Type));
             }
             else
@@ -4346,6 +4385,8 @@ namespace BubbleStart.Model
                 (SelectedProgramOnlineToDelete != null && PaymentAmount <= SelectedProgramOnlineToDelete.RemainingAmount) ||
                 (SelectedProgramOutDoorToDelete != null && PaymentAmount <= SelectedProgramOutDoorToDelete.RemainingAmount) ||
                 (SelectedProgramYogaToDelete != null && PaymentAmount <= SelectedProgramYogaToDelete.RemainingAmount) ||
+                (SelectedProgramMedicalToDelete != null && PaymentAmount <= SelectedProgramMedicalToDelete.RemainingAmount) ||
+                (SelectedProgramPersonalToDelete != null && PaymentAmount <= SelectedProgramPersonalToDelete.RemainingAmount) ||
                 (SelectedProgramAerialYogaToDelete != null && PaymentAmount <= SelectedProgramAerialYogaToDelete.RemainingAmount));
         }
 
@@ -4726,6 +4767,10 @@ namespace BubbleStart.Model
                     if (s.ProgramModeNew == ProgramMode.pilates && p.ProgramTypeO.ProgramMode == ProgramMode.pilatesFunctional)
                     {
                         s.ProgramMode = ProgramMode.pilates;
+                    }
+                    if (s.ProgramModeNew == ProgramMode.yoga && p.ProgramTypeO.ProgramMode == ProgramMode.pilatesFunctional)
+                    {
+                        s.ProgramMode = ProgramMode.yoga;
                     }
                     s.ProgramModeNew = p.ProgramTypeO.ProgramMode;
                 }

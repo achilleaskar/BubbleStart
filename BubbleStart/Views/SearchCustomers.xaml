@@ -131,6 +131,12 @@
                                 Command="{Binding ShowedUpCommand}"
                                 CommandParameter="64"
                                 Margin="5" />
+                        <Button Content="Yoga"
+                                Width="100"
+                                Click="Button_Click"
+                                Command="{Binding ShowedUpCommand}"
+                                CommandParameter="65"
+                                Margin="5" />
                     </StackPanel>
                     <StackPanel>
                         <StackPanel.Resources>
