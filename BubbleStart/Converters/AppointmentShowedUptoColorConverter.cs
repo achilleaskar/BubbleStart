@@ -17,6 +17,10 @@ namespace BubbleStart.Converters
         {
             if (value is Apointment a)
             {
+                if (a.Id== 44005)
+                {
+
+                }
                 if (a.Customer != null)
                 {
                     if (a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date))

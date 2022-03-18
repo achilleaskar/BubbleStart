@@ -272,10 +272,18 @@
                 <Label Content="Τηλέφωνο:"
                        Grid.Row="1"
                        Grid.Column="0" />
-                <TextBlock Text="{Binding Tel}"
-                           Grid.Row="1"
-                           Grid.Column="1"
-                           Margin="0,4" />
+                <Grid Grid.Row="1"
+                      Grid.Column="1">
+                    <TextBlock Text="{Binding Tel}"
+                               HorizontalAlignment="Left"
+                               Margin="0,4" />
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Label Content="Id:" />
+                        <TextBlock Text="{Binding Id}"
+                                   Margin="0,4" />
+                    </StackPanel>
+                </Grid>
                 <Separator Grid.Row="2"
                            Margin="-4 0"
                            Grid.ColumnSpan="3" />

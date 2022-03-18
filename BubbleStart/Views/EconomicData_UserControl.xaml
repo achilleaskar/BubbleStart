@@ -63,6 +63,12 @@
                                   IsReadOnly="True"
                                   CanUserDeleteRows="False"
                                   AutoGenerateColumns="False">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="{x:Type DataGridRow}">
+                                    <EventSetter Event="MouseDoubleClick"
+                                                 Handler="ListView_MouseDoubleClick" />
+                                </Style>
+                            </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Όνομα"
                                                     Width="120"

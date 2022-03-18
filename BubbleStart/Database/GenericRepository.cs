@@ -16,7 +16,7 @@ namespace BubbleStart.Database
     {
         public MainDatabase Context;
         public DateTime Limit;
-        protected readonly DateTime CloseLimit;
+        public readonly DateTime CloseLimit;
 
         public GenericRepository()
         {

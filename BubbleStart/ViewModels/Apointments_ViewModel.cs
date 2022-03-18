@@ -331,17 +331,22 @@ namespace BubbleStart.ViewModels
             StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
             DateTime tmpdate = StartDate.AddDays(6);
 
-            List<Apointment> apointments = refresh ? await BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToListAsync() :
-               BasicDataManager.Context.Context.Apointments.Local.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate && a.DateTime >= BasicDataManager.Context.Limit).ToList();
+            List<Apointment> apointments = refresh ? await BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate).ToListAsync() :
+               BasicDataManager.Context.Context.Apointments.Local.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate).ToList();
 
-            List<CustomeTime> customTimes = refresh ? await BasicDataManager.Context.Context.CustomeTimes.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate && a.Datetime >= BasicDataManager.Context.Limit).ToListAsync() :
-              BasicDataManager.Context.Context.CustomeTimes.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate && a.Datetime >= BasicDataManager.Context.Limit).ToList();
+            if (refresh)
+                await BasicDataManager.Context.Context.ShowUps.Where(a => a.Arrived >= StartDate && a.Arrived < tmpdate && a.Arrived < a.Customer.ResetDate).ToListAsync();
+            else
+                BasicDataManager.Context.Context.ShowUps.Local.Where(a => a.Arrived >= StartDate && a.Arrived < tmpdate && a.Arrived < a.Customer.ResetDate).ToList();
 
-            List<GymnastHour> gymnasts = StaticResources.User.Level > 1 ? new List<GymnastHour>() : refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate && a.Datetime >= BasicDataManager.Context.Limit).ToListAsync() :
-             BasicDataManager.Context.Context.GymnastHours.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate && a.Datetime >= BasicDataManager.Context.Limit).ToList();
+            List<CustomeTime> customTimes = refresh ? await BasicDataManager.Context.Context.CustomeTimes.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToListAsync() :
+              BasicDataManager.Context.Context.CustomeTimes.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToList();
 
-            List<ClosedHour> closedHours = refresh ? await BasicDataManager.Context.Context.ClosedHours.Where(a => a.Date >= StartDate && a.Date < tmpdate && a.Date >= BasicDataManager.Context.Limit).ToListAsync() :
-              BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate && a.Date >= BasicDataManager.Context.Limit).ToList();
+            List<GymnastHour> gymnasts = StaticResources.User.Level > 1 ? new List<GymnastHour>() : refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToListAsync() :
+             BasicDataManager.Context.Context.GymnastHours.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToList();
+
+            List<ClosedHour> closedHours = refresh ? await BasicDataManager.Context.Context.ClosedHours.Where(a => a.Date >= StartDate && a.Date < tmpdate).ToListAsync() :
+              BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate).ToList();
 
             DateTime tmpDate = StartDate;
             Days.Clear();
@@ -758,10 +763,7 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-
-
         private bool _SelectedR;
-
 
         public bool SelectedR
         {
@@ -782,11 +784,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private bool _SelectedM;
-
 
         public bool SelectedM
         {
@@ -807,11 +805,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private bool _SelectedO;
-
 
         public bool SelectedO
         {
@@ -832,9 +826,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
         private bool _SelectedF;
-
 
         public bool SelectedF
         {

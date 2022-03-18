@@ -13,6 +13,11 @@ namespace BubbleStart.Model
 
         public string GetApColor(bool gym)
         {
+            if (Id== 44005)
+            {
+
+            }
+
             if (Customer != null)
             {
                 if (DateTime < DateTime.Now && !Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date))

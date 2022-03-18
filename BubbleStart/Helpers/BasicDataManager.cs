@@ -270,7 +270,7 @@ namespace BubbleStart.Helpers
 
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
 
-            //await Create(true);
+            //await Create(false);
 
             foreach (var c in Customers.OrderBy(c => c.Id))
             {

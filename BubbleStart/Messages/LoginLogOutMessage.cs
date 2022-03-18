@@ -8,5 +8,6 @@
         }
 
         public bool Login { get; }
+        public bool Force { get; }
     }
 }
