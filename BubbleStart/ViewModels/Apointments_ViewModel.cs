@@ -515,6 +515,7 @@ namespace BubbleStart.ViewModels
 
         public void OpenCustomerManagement(Customer c)
         {
+            c.EditedInCustomerManagement=true;
             c.BasicDataManager = BasicDataManager;
             c.UpdateCollections();
             Window window = new CustomerManagement

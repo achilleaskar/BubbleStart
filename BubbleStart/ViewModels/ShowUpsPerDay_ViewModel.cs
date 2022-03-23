@@ -37,7 +37,7 @@ namespace BubbleStart.ViewModels
                 {
                     BasicDataManager.RollBack();
                 }
-
+                c.EditedInCustomerManagement = true;
                 c.BasicDataManager = BasicDataManager;
                 Window window = new CustomerManagement
                 {
