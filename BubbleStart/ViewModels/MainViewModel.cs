@@ -1,12 +1,11 @@
-using System;
-using System.Threading.Tasks;
-using System.Windows;
 using BubbleStart.Database;
 using BubbleStart.Helpers;
 using BubbleStart.Messages;
-using BubbleStart.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using System;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace BubbleStart.ViewModels
 {
@@ -15,7 +14,7 @@ namespace BubbleStart.ViewModels
         public MainViewModel()
         {
             Messenger.Default.Register<ChangeVisibilityMessage>(this, msg => { Visibility = msg.Visible ? Visibility.Visible : Visibility.Collapsed; });
-            Messenger.Default.Register<LoginLogOutMessage>(this, msg =>  ChangeViewModel(msg.Login));
+            Messenger.Default.Register<LoginLogOutMessage>(this, msg => ChangeViewModel(msg.Login));
         }
 
         private void ChangeViewModel(bool login)
@@ -26,7 +25,10 @@ namespace BubbleStart.ViewModels
             }
             else
             {
-                SelectedViewmodel = new LoginViewModel(BasicDataManager);
+                SelectedViewmodel = new LoginViewModel(BasicDataManager)
+                {
+                    IsLoaded = true
+                };
             }
             Messenger.Default.Send(new BasicDataManagerRefreshedMessage());
 
@@ -34,7 +36,8 @@ namespace BubbleStart.ViewModels
         }
 
         #region Fields
-        MyViewModelBase _SelectedViewmodel;
+
+        private MyViewModelBase _SelectedViewmodel;
 
         private Visibility _Visibility;
 
@@ -92,7 +95,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        BasicDataManager BasicDataManager;
+        private BasicDataManager BasicDataManager;
 
         #endregion Properties
 
@@ -100,12 +103,17 @@ namespace BubbleStart.ViewModels
         {
             try
             {
+                if (SelectedViewmodel != null)
+                {
+                    SelectedViewmodel.IsLoaded = false;
+                }
+
                 StartingRepository = startingRepository;
                 BasicDataManager = new BasicDataManager(StartingRepository);
-//#if DEBUG
-//                StaticResources.User = new User { Name = "admin", Id = 3, Level = 0 };
-//                RaisePropertyChanged(nameof(MenuVisibility));
-//#endif
+                //#if DEBUG
+                //                StaticResources.User = new User { Name = "admin", Id = 3, Level = 0 };
+                //                RaisePropertyChanged(nameof(MenuVisibility));
+                //#endif
                 if (StaticResources.User == null)
                     SelectedViewmodel = new LoginViewModel(BasicDataManager);//TODO
                 else
@@ -117,7 +125,6 @@ namespace BubbleStart.ViewModels
             }
             catch (Exception ex)
             {
-
                 MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
             }
         }
