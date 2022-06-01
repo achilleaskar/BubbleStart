@@ -79,11 +79,12 @@ namespace BubbleStart.ViewModels
         }
 
         public BasicDataManager BasicDataManager { get; }
+ 
 
         private bool CanLogin()
         {
             //Execution should only be possible if both Username and Password have been supplied
-            if (!string.IsNullOrWhiteSpace(PossibleUser.UserName) && PasswordSecureString != null && PasswordSecureString.Length > 0)
+            if (IsLoaded && !string.IsNullOrWhiteSpace(PossibleUser.UserName) && PasswordSecureString != null && PasswordSecureString.Length > 0)
                 return true;
             return false;
         }

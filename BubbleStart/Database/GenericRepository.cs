@@ -33,7 +33,7 @@ namespace BubbleStart.Database
             Limit = new DateTime();
 
             CloseLimit = (DateTime.Today - Limit).TotalDays > 20 ? DateTime.Today.AddDays(-20) : Limit;
-            //Context.Database.Log = Console.Write;
+            Context.Database.Log = Console.Write;
         }
 
         internal bool HasChanges<TEntity>(TEntity entity) where TEntity : BaseModel
@@ -126,11 +126,11 @@ namespace BubbleStart.Database
             return await Context.Set<TEntity>().Where(filter).ToListAsync();
         }
 
-        public async Task<Customer> GetFullCustomerById(int id)
+        public Customer GetFullCustomerById(int id)
         {
             try
             {
-                return await Context.Set<Customer>()
+                return Context.Set<Customer>()
                     .Where(c => c.Id == id)
                     .Include(f => f.Programs.Select(t => t.Payments))
                     .Include(g => g.Payments)
@@ -139,7 +139,7 @@ namespace BubbleStart.Database
                     .Include(e => e.ShowUps)
                     .Include(h => h.Changes)
                     .Include(a => a.Apointments)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefault();
             }
             catch (Exception)
             {
@@ -283,6 +283,31 @@ namespace BubbleStart.Database
             //    }
             //}
             await Context.SaveChangesAsync();
+        }
+
+
+        public void Save()
+        {
+            List<DbEntityEntry> AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
+
+            AddedEntities.ForEach(E =>
+            {
+                if (E.CurrentValues.PropertyNames.Contains("CreatedDate"))
+                {
+                    E.Property("CreatedDate").CurrentValue = DateTime.Now;
+                }
+            });
+
+            List<DbEntityEntry> EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
+
+            EditedEntities.ForEach(E =>
+            {
+                if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
+                {
+                    E.Property("ModifiedDate").CurrentValue = DateTime.Now;
+                }
+            });
+            Context.SaveChanges();
         }
 
         public bool RollBack()

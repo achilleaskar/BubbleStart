@@ -199,5 +199,13 @@ namespace BubbleStart.Views
             }
         }
 
+        private void TextBlock_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is Customer c) 
+            {
+                Clipboard.SetText(c.ToString());
+            }
+
+        }
     }
 }

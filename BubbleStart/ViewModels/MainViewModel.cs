@@ -102,10 +102,10 @@ namespace BubbleStart.ViewModels
             {
                 StartingRepository = startingRepository;
                 BasicDataManager = new BasicDataManager(StartingRepository);
-#if DEBUG
-                StaticResources.User = new User { Name = "admin", Id = 3, Level = 0 };
-                RaisePropertyChanged(nameof(MenuVisibility));
-#endif
+//#if DEBUG
+//                StaticResources.User = new User { Name = "admin", Id = 3, Level = 0 };
+//                RaisePropertyChanged(nameof(MenuVisibility));
+//#endif
                 if (StaticResources.User == null)
                     SelectedViewmodel = new LoginViewModel(BasicDataManager);//TODO
                 else
@@ -113,6 +113,7 @@ namespace BubbleStart.ViewModels
                     SelectedViewmodel = new MainUserControl_ViewModel(BasicDataManager);//TODO
                 }
                 await BasicDataManager.LoadAsync();
+                SelectedViewmodel.IsLoaded = true;
             }
             catch (Exception ex)
             {

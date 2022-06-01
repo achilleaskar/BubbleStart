@@ -345,7 +345,9 @@
                                       Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                             <MenuItem Header="Ενεργός"
                                       CommandParameter="2"
-                                      Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                                      Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />  
+                            <MenuItem Header="Αντιγραφή ονόματος"
+                                      Click="MenuItem_Click" />
                         </ContextMenu>
                         <Style TargetType="{x:Type ToolTip}">
                             <Setter Property="FontSize"

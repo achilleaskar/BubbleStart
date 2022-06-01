@@ -1,5 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using BubbleStart.Model;
 using BubbleStart.ViewModels;
 
 namespace BubbleStart.Views
@@ -89,6 +91,15 @@ namespace BubbleStart.Views
             {
                 sc.PopupFinishOpen = true;
             }
+        }
+
+        private void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (sender is MenuItem r &&  r.DataContext is Customer c)
+            {
+                Clipboard.SetText(c.ToString());
+            }
+
         }
     }
 }

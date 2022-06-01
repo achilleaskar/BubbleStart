@@ -342,7 +342,7 @@ namespace BubbleStart.ViewModels
             List<CustomeTime> customTimes = refresh ? await BasicDataManager.Context.Context.CustomeTimes.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToListAsync() :
               BasicDataManager.Context.Context.CustomeTimes.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToList();
 
-            List<GymnastHour> gymnasts = StaticResources.User.Level > 1 ? new List<GymnastHour>() : refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToListAsync() :
+            List<GymnastHour> gymnasts = refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToListAsync() :
              BasicDataManager.Context.Context.GymnastHours.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToList();
 
             List<ClosedHour> closedHours = refresh ? await BasicDataManager.Context.Context.ClosedHours.Where(a => a.Date >= StartDate && a.Date < tmpdate).ToListAsync() :
@@ -515,7 +515,7 @@ namespace BubbleStart.ViewModels
 
         public void OpenCustomerManagement(Customer c)
         {
-            c.EditedInCustomerManagement=true;
+            c.EditedInCustomerManagement = true;
             c.BasicDataManager = BasicDataManager;
             c.UpdateCollections();
             Window window = new CustomerManagement
@@ -1606,63 +1606,141 @@ namespace BubbleStart.ViewModels
 
         private async Task ToggleEnabled(RoomEnum room)
         {
+            bool disable = false;
             if (room == RoomEnum.Functional)
             {
                 if (ClosedHour0 != null)
                 {
+                    disable = false;
                     BasicDataManager.Context.Delete(ClosedHour0);
                     ClosedHour0 = null;
                 }
                 else
                 {
+                    disable = true;
                     ClosedHour0 = new ClosedHour { Date = Time, Room = room };
-                    BasicDataManager.Add(ClosedHour0);
+                    BasicDataManager.Add(ClosedHour1);
                 }
+                RaisePropertyChanged(nameof(ClosedColor1));
             }
             else if (room == RoomEnum.Pilates)
             {
                 if (ClosedHour1 != null)
                 {
+                    disable = false;
                     BasicDataManager.Context.Delete(ClosedHour1);
                     ClosedHour1 = null;
                 }
                 else
                 {
+                    disable = true;
                     ClosedHour1 = new ClosedHour { Date = Time, Room = room };
                     BasicDataManager.Add(ClosedHour1);
                 }
+                RaisePropertyChanged(nameof(ClosedColor1));
             }
             else if (room == RoomEnum.Massage)
             {
                 if (ClosedHourMassage != null)
                 {
+                    disable = false;
                     BasicDataManager.Context.Delete(ClosedHourMassage);
                     ClosedHourMassage = null;
                 }
                 else
                 {
+                    disable = true;
                     ClosedHourMassage = new ClosedHour { Date = Time, Room = room };
                     BasicDataManager.Add(ClosedHourMassage);
                 }
+
+                RaisePropertyChanged(nameof(ClosedColorMassage));
             }
             else if (room == RoomEnum.Outdoor)
             {
                 if (ClosedHourOutdoor != null)
                 {
+                    disable = false;
                     BasicDataManager.Context.Delete(ClosedHourOutdoor);
                     ClosedHourOutdoor = null;
                 }
                 else
                 {
+                    disable = true;
                     ClosedHourOutdoor = new ClosedHour { Date = Time, Room = room };
                     BasicDataManager.Add(ClosedHourOutdoor);
                 }
+
+                RaisePropertyChanged(nameof(ClosedColorOutdoor));
             }
+
+            if (parent != null)
+            {
+                foreach (var h in parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => h != this && (h.SelectedF || h.SelectedR || h.SelectedM || h.SelectedO)))
+                {
+                    if (h.SelectedF)
+                    {
+                        if (h.ClosedHour0 != null && !disable)
+                        {
+                            BasicDataManager.Context.Delete(h.ClosedHour0);
+                            h.ClosedHour0 = null;
+                        }
+                        else if (h.ClosedHour0 == null && disable)
+                        {
+                            h.ClosedHour0 = new ClosedHour { Date = h.Time, Room = RoomEnum.Functional };
+                            BasicDataManager.Add(h.ClosedHour0);
+                        }
+                        h.RaisePropertyChanged(nameof(ClosedColor0));
+                    }
+                    if (h.SelectedR)
+                    {
+                        if (h.ClosedHour1 != null && !disable)
+                        {
+                            BasicDataManager.Context.Delete(h.ClosedHour1);
+                            h.ClosedHour1 = null;
+                        }
+                        else if (h.ClosedHour1 == null && disable)
+                        {
+                            h.ClosedHour1 = new ClosedHour { Date = h.Time, Room = RoomEnum.Pilates };
+                            BasicDataManager.Add(h.ClosedHour1);
+                        }
+                        h.RaisePropertyChanged(nameof(ClosedColor1));
+
+                    }
+                    if (h.SelectedM)
+                    {
+                        if (h.ClosedHourMassage != null && !disable)
+                        {
+                            BasicDataManager.Context.Delete(h.ClosedHourMassage);
+                            h.ClosedHourMassage = null;
+                        }
+                        else if (h.ClosedHourMassage == null && disable)
+                        {
+                            h.ClosedHourMassage = new ClosedHour { Date = h.Time, Room = RoomEnum.Massage };
+                            BasicDataManager.Add(h.ClosedHourMassage);
+                        }
+                        h.RaisePropertyChanged(nameof(ClosedColorMassage));
+
+                    }
+                    if (h.SelectedO)
+                    {
+                        if (h.ClosedHourOutdoor != null && !disable)
+                        {
+                            BasicDataManager.Context.Delete(h.ClosedHourOutdoor);
+                            h.ClosedHourOutdoor = null;
+                        }
+                        else if (h.ClosedHourOutdoor == null && disable)
+                        {
+                            h.ClosedHourOutdoor = new ClosedHour { Date = h.Time, Room = RoomEnum.Outdoor };
+                            BasicDataManager.Add(h.ClosedHourOutdoor);
+                        }
+                        h.RaisePropertyChanged(nameof(ClosedColorOutdoor));
+
+                    }
+                }
+            }
+
             await BasicDataManager.SaveAsync();
-            RaisePropertyChanged(nameof(ClosedColor1));
-            RaisePropertyChanged(nameof(ClosedColor0));
-            RaisePropertyChanged(nameof(ClosedColorMassage));
-            RaisePropertyChanged(nameof(ClosedColorOutdoor));
         }
 
         private async Task ToggleEnabledForEver(RoomEnum room)

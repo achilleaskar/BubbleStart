@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace BubbleStart.ViewModels
 {
@@ -483,6 +484,7 @@ namespace BubbleStart.ViewModels
 
         public async Task CustomerShowedUp(int programMode)
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             PopupOpen = false;
             if (SelectedCustomer != null)
             {
@@ -491,10 +493,11 @@ namespace BubbleStart.ViewModels
                     SelectedCustomer.ShowedUp(true, (ProgramMode)(programMode / 10), Is30min, (programMode % 10));
                 else
                     SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min);
-                await BasicDataManager.SaveAsync();
                 SelectedCustomer.SetColors();
+                await BasicDataManager.SaveAsync();
                 Is30min = false;
             }
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private void BodyPartChanged(string selectedIndex)

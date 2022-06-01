@@ -24,7 +24,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <GroupBox Header="Γυμανστής"
+                <GroupBox Header="Γυμναστής"
                           Grid.ColumnSpan="2">
                     <WrapPanel Orientation="Horizontal"
                                HorizontalAlignment="Center">

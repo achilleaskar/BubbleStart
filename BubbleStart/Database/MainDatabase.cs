@@ -31,7 +31,7 @@ namespace BubbleStart.Database
             Configuration.LazyLoadingEnabled = false;
 
         }
-        private const string normal = "Server=server19.cretaforce.gr;Database=readmore_achill2;pooling=true;Uid=readmore_achill2;Pwd=986239787346;Convert Zero Datetime=True; default command timeout=3600;SslMode=none;TreatTinyAsBoolean=true;charset=utf8;";
+        private const string normal = "Server=server19.cretaforce.gr;Database=readmore_achill2;pooling=true;user id=readmore_achill2;Pwd=986239787346;Convert Zero Datetime=True; default command timeout=3600;SslMode=none;TreatTinyAsBoolean=true;charset=utf8;";
         private const string norma2 = "Server=localhost;Database=updatedbase;pooling=true;Uid=root;Pwd=Tr6981001676!;Convert Zero Datetime=True;  default command timeout=3600;SslMode=none;TreatTinyAsBoolean=true;";
         private const string test = "Server=readmoreachill2.clq6srsguoz6.eu-west-3.rds.amazonaws.com;Database=readmore_achill2;pooling=true;Uid=readmore_achill2;Pwd=986239787346;Convert Zero Datetime=True;  default command timeout=3600;SslMode=none;TreatTinyAsBoolean=true;";
 

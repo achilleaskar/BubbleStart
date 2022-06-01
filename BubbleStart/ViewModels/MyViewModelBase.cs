@@ -4,7 +4,30 @@ namespace BubbleStart.ViewModels
 {
     public abstract class MyViewModelBase : ViewModelBase
     {
-        public bool IsLoaded { get; set; }
+
+
+
+        private bool _IsLoaded;
+
+
+        public bool IsLoaded
+        {
+            get
+            {
+                return _IsLoaded;
+            }
+
+            set
+            {
+                if (_IsLoaded == value)
+                {
+                    return;
+                }
+
+                _IsLoaded = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public abstract void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null);
 
