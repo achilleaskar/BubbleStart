@@ -16,6 +16,7 @@ namespace BubbleStart.Database
     {
         public MainDatabase Context;
         public DateTime Limit;
+        public DateTime ThreeMonths;
         public readonly DateTime CloseLimit;
 
         public GenericRepository()
@@ -31,6 +32,7 @@ namespace BubbleStart.Database
                 Limit = new DateTime(DateTime.Today.Year - 2, 8, 20);
             }
             Limit = new DateTime();
+            ThreeMonths = DateTime.Today.AddMonths(-3);
 
             CloseLimit = (DateTime.Today - Limit).TotalDays > 20 ? DateTime.Today.AddDays(-20) : Limit;
             Context.Database.Log = Console.Write;
@@ -438,6 +440,9 @@ namespace BubbleStart.Database
                 await Context.Set<ShowUp>()
                     .Where(s => s.Arrived >= s.Customer.ResetDate || s.Arrived >= thisWeek)
                     .ToListAsync();
+                await Context.Set<ShowUp>()
+                   .Where(s => s.Arrived >= ThreeMonths)
+                   .ToListAsync();
                 await Context.Set<Change>()
                     .Where(s => s.Date >= s.Customer.ResetDate)
                     .ToListAsync();

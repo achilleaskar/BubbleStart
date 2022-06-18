@@ -2,6 +2,7 @@
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
+using DocumentFormat.OpenXml.Wordprocessing;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using System;
@@ -913,6 +914,42 @@ namespace BubbleStart.ViewModels
                     }
                     break;
             }
+            if (parent != null)
+            {
+                var t = parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => (h.SelectedF || h.SelectedR || h.SelectedM || h.SelectedO));
+                foreach (var h in t)
+                {
+                    if (h.SelectedF && !(h == this && obj == 0))
+                    {
+                        if (h.GymnastFunctional != null)
+                        {
+                            BasicDataManager.Delete(h.GymnastFunctional);
+                        }
+                    }
+                    if (h.SelectedR && !(h == this && obj == 1))
+                    {
+                        if (h.GymnastReformer != null)
+                        {
+                            BasicDataManager.Delete(h.GymnastReformer);
+                        }
+                    }
+                    if (h.SelectedM && !(h == this && obj == 2))
+                    {
+                        if (h.GymnastMassage != null)
+                        {
+                            BasicDataManager.Delete(h.GymnastMassage);
+                        }
+                    }
+                    if (h.SelectedO && !(h == this && obj == 3))
+                    {
+                        if (h.GymnastOutdoor != null)
+                        {
+                            BasicDataManager.Delete(h.GymnastOutdoor);
+                        }
+                    }
+                }
+            }
+            await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -1619,9 +1656,9 @@ namespace BubbleStart.ViewModels
                 {
                     disable = true;
                     ClosedHour0 = new ClosedHour { Date = Time, Room = room };
-                    BasicDataManager.Add(ClosedHour1);
+                    BasicDataManager.Add(ClosedHour0);
                 }
-                RaisePropertyChanged(nameof(ClosedColor1));
+                RaisePropertyChanged(nameof(ClosedColor0));
             }
             else if (room == RoomEnum.Pilates)
             {
@@ -1676,9 +1713,10 @@ namespace BubbleStart.ViewModels
 
             if (parent != null)
             {
-                foreach (var h in parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => h != this && (h.SelectedF || h.SelectedR || h.SelectedM || h.SelectedO)))
+                var t = parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => (h.SelectedF || h.SelectedR || h.SelectedM || h.SelectedO));
+                foreach (var h in t)
                 {
-                    if (h.SelectedF)
+                    if (h.SelectedF && !(h == this && room == RoomEnum.Functional))
                     {
                         if (h.ClosedHour0 != null && !disable)
                         {
@@ -1692,7 +1730,7 @@ namespace BubbleStart.ViewModels
                         }
                         h.RaisePropertyChanged(nameof(ClosedColor0));
                     }
-                    if (h.SelectedR)
+                    if (h.SelectedR && !(h == this && room == RoomEnum.Pilates))
                     {
                         if (h.ClosedHour1 != null && !disable)
                         {
@@ -1705,9 +1743,8 @@ namespace BubbleStart.ViewModels
                             BasicDataManager.Add(h.ClosedHour1);
                         }
                         h.RaisePropertyChanged(nameof(ClosedColor1));
-
                     }
-                    if (h.SelectedM)
+                    if (h.SelectedM && !(h == this && room == RoomEnum.Massage))
                     {
                         if (h.ClosedHourMassage != null && !disable)
                         {
@@ -1720,9 +1757,8 @@ namespace BubbleStart.ViewModels
                             BasicDataManager.Add(h.ClosedHourMassage);
                         }
                         h.RaisePropertyChanged(nameof(ClosedColorMassage));
-
                     }
-                    if (h.SelectedO)
+                    if (h.SelectedO && !(h == this && room == RoomEnum.Outdoor))
                     {
                         if (h.ClosedHourOutdoor != null && !disable)
                         {
@@ -1735,7 +1771,6 @@ namespace BubbleStart.ViewModels
                             BasicDataManager.Add(h.ClosedHourOutdoor);
                         }
                         h.RaisePropertyChanged(nameof(ClosedColorOutdoor));
-
                     }
                 }
             }
