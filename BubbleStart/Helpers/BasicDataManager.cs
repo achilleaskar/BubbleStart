@@ -35,7 +35,7 @@ namespace BubbleStart.Helpers
 
         private ObservableCollection<District> _Districts;
 
-        private ObservableCollection<Item> _Items;
+        private List<Item> _Items;
 
         private ObservableCollection<ProgramType> _ProgramTypes;
 
@@ -102,7 +102,7 @@ namespace BubbleStart.Helpers
             }
         }
 
-        public ObservableCollection<Item> Items
+        public List<Item> Items
         {
             get
             {
@@ -265,22 +265,78 @@ namespace BubbleStart.Helpers
             Gymnasts = new ObservableCollection<User>(Users.Where(u => u.Id == 4 || u.Level == 4));
             StaticResources.context = this;
 
-            Items = new ObservableCollection<Item>(await Context.GetAllAsync<Item>());
+            Items = new List<Item>(await Context.GetAllAsync<Item>());
+            ItemsList = new ObservableCollection<Item>(Items.Where(i => !i.Shop));
+            ShopItems = new ObservableCollection<Item>(Items.Where(i => i.Shop));
             _ = await Context.GetAllAsync<ItemPurchase>();
 
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
+
+            //var not = DateTime.Today;
+            //var t = await Context.GetAllAsync<Customer>(c => c.Apointments.Any(a => a.DateTime > not) && c.Enabled == false);
+
+            //foreach (var c in t)
+            //{
+            //    c.Enabled = true;
+            //}
+            //await Context.SaveAsync();
 
             //await Create(false);
 
             foreach (var c in Customers.OrderBy(c => c.Id))
             {
                 c.BasicDataManager = this;
-                c.PropertyChanged += C_PropertyChanged;
                 c.InitialLoad();
             }
 
             Messenger.Default.Send(new BasicDataManagerRefreshedMessage());
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+
+
+
+        private ObservableCollection<Item> _ShopItems;
+
+
+        public ObservableCollection<Item> ShopItems
+        {
+            get
+            {
+                return _ShopItems;
+            }
+
+            set
+            {
+                if (_ShopItems == value)
+                {
+                    return;
+                }
+
+                _ShopItems = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<Item> _ItemsList;
+
+        public ObservableCollection<Item> ItemsList
+        {
+            get
+            {
+                return _ItemsList;
+            }
+
+            set
+            {
+                if (_ItemsList == value)
+                {
+                    return;
+                }
+
+                _ItemsList = value;
+                RaisePropertyChanged();
+            }
         }
 
         private async Task Create(bool massage)
@@ -297,7 +353,7 @@ namespace BubbleStart.Helpers
             if (massage)
             {
                 var massages = (await Context.GetAllShowUpsAsync(ProgramMode.massage)).GroupBy(m => new DateTime(m.Arrived.Year, m.Arrived.Month, 1)).OrderBy(r => r.Key);
-                var programs = (await Context.GetAllAsync<Program>(r=>r.ProgramTypeO.ProgramMode==ProgramMode.massage)).GroupBy(m => new DateTime(m.StartDay.Year, m.StartDay.Month, 1)).OrderBy(r => r.Key);
+                var programs = (await Context.GetAllAsync<Program>(r => r.ProgramTypeO.ProgramMode == ProgramMode.massage)).GroupBy(m => new DateTime(m.StartDay.Year, m.StartDay.Month, 1)).OrderBy(r => r.Key);
 
                 myWorksheet.Cells["A1"].Value = "#";
                 myWorksheet.Cells["B1"].Value = "Μηνας";
@@ -429,9 +485,7 @@ namespace BubbleStart.Helpers
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        private void C_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-        }
+
 
         #endregion Methods
     }

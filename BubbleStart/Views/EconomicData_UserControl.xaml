@@ -16,8 +16,8 @@
         <Converters:FloadToStringValueConverter x:Key="FtoSConverter" />
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
         <Converters:DateTimeToString x:Key="DateTimeToString" />
-        <Converters:EnumConverter x:Key="EnumConverter" />
         <Converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+        <Converters:EnumConverter x:Key="EnumConverter" />
         <Style x:Key="DataGridCellStyle"
                TargetType="{x:Type DataGridCell}">
             <Setter Property="IsTabStop"
@@ -138,6 +138,21 @@
                                          Margin="5"
                                          Height="21"
                                          Text="{Binding ExpensesTextFilter,UpdateSourceTrigger=PropertyChanged}" />
+                                <Button Content="Αντικατάσταση"
+                                        Margin="5"
+                                        IsDefault="True"
+                                        VerticalAlignment="Bottom"
+                                        Command="{Binding FindAndReplaceCommand}" />
+                                <TextBox Width="120"
+                                         VerticalAlignment="Bottom"
+                                         Margin="5"
+                                         Height="21"
+                                         Text="{Binding Find,UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox Width="120"
+                                         VerticalAlignment="Bottom"
+                                         Margin="5"
+                                         Height="21"
+                                         Text="{Binding Replace,UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
                             <DataGrid ItemsSource="{Binding Expenses}"
                                       Grid.Row="1"
@@ -146,6 +161,7 @@
                                       CanUserAddRows="False"
                                       SelectedItem="{Binding SelectedExpense}"
                                       IsReadOnly="False"
+                                      Width="885"
                                       CanUserDeleteRows="False"
                                       AutoGenerateColumns="False">
                                 <DataGrid.Resources>
@@ -521,6 +537,7 @@
                             </StackPanel>
                             <DataGrid ItemsSource="{Binding Incomes}"
                                       Grid.Row="1"
+                                      Width="885"
                                       d:Visibility="Visible"
                                       Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                       CanUserAddRows="False"

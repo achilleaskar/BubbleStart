@@ -6,6 +6,7 @@ using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace BubbleStart.ViewModels
 {
@@ -122,6 +123,8 @@ namespace BubbleStart.ViewModels
                 }
                 await BasicDataManager.LoadAsync();
                 SelectedViewmodel.IsLoaded = true;
+                CommandManager.InvalidateRequerySuggested();
+
             }
             catch (Exception ex)
             {

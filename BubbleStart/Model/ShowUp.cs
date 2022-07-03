@@ -36,7 +36,7 @@ namespace BubbleStart.Model
 
                 _Test = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(RealColor));
+                RaisePropertyChanged(nameof(RealColorOnl));
             }
         }
 
@@ -176,7 +176,8 @@ namespace BubbleStart.Model
                 return "";
         }
 
-        public SolidColorBrush RealColor => Present ? new SolidColorBrush(Colors.LightPink) : Test ? new SolidColorBrush(Colors.LightYellow) : Real ? new SolidColorBrush(Colors.Transparent) : new SolidColorBrush(Colors.OrangeRed);
+        public SolidColorBrush RealColor => Present ? new SolidColorBrush(Colors.LightPink) : Real ? new SolidColorBrush(Colors.Transparent) : new SolidColorBrush(Colors.OrangeRed);
+        public SolidColorBrush RealColorOnl => Test ? new SolidColorBrush(Colors.LightBlue) : new SolidColorBrush(Colors.Transparent);
 
         private bool _Real = true;
 

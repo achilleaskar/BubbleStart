@@ -737,10 +737,10 @@
                                                 <MenuItem Header="30'/60'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.Toggle30_60Command,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δώρο Ναί/Όχι'"
+                                                <MenuItem Header="Δώρο Ναί/Όχι"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
@@ -784,7 +784,6 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
-                                                                SortDirection="Descending"
                                                                 Width="86"
                                                                 Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
@@ -817,7 +816,7 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding BodyPart}"
-                                                                   Background="Transparent" />
+                                                                   Background="{Binding RealColorOnl}" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                                 <DataGridTemplateColumn.CellStyle>
@@ -1076,7 +1075,7 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
@@ -1120,7 +1119,6 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
-                                                                SortDirection="Descending"
                                                                 Width="86"
                                                                 Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
@@ -1153,7 +1151,7 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding BodyPart}"
-                                                                   Background="Transparent" />
+                                                                   Background="{Binding RealColorOnl}" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                                 <DataGridTemplateColumn.CellStyle>
@@ -1409,10 +1407,10 @@
                                                 <MenuItem Header="30'/60'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.Toggle30_60Command,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δώρο Ναί/Όχι'"
+                                                <MenuItem Header="Δώρο Ναί/Όχι"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                 <MenuItem Header="Pilates/Functional'">
@@ -1467,7 +1465,6 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
-                                                                SortDirection="Descending"
                                                                 Width="86"
                                                                 Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
@@ -1532,7 +1529,7 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding BodyPart}"
-                                                                   Background="Transparent" />
+                                                                   Background="{Binding RealColorOnl}" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                                 <DataGridTemplateColumn.CellStyle>
@@ -1796,7 +1793,7 @@
                                             <MenuItem Header="Δώρο Ναί/Όχι'"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                            <MenuItem Header="Online Ναί/Όχι'"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                         </ContextMenu>
@@ -1840,7 +1837,6 @@
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
                                         <DataGridTextColumn Header="Ημερομηνία"
-                                                            SortDirection="Descending"
                                                             Width="86"
                                                             Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                         <DataGridTemplateColumn Header=""
@@ -2118,7 +2114,7 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
@@ -2162,7 +2158,6 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
-                                                                SortDirection="Descending"
                                                                 Width="86"
                                                                 Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
@@ -2195,7 +2190,7 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding BodyPart}"
-                                                                   Background="Transparent" />
+                                                                   Background="{Binding RealColorOnl}" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                                 <DataGridTemplateColumn.CellStyle>
@@ -2454,7 +2449,7 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
@@ -2498,7 +2493,6 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
-                                                                SortDirection="Descending"
                                                                 Width="86"
                                                                 Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
@@ -2531,7 +2525,7 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding BodyPart}"
-                                                                   Background="Transparent" />
+                                                                   Background="{Binding RealColorOnl}" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                                 <DataGridTemplateColumn.CellStyle>
@@ -2794,7 +2788,7 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
@@ -2838,7 +2832,6 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
-                                                                SortDirection="Descending"
                                                                 Width="86"
                                                                 Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
@@ -2871,7 +2864,7 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding BodyPart}"
-                                                                   Background="Transparent" />
+                                                                   Background="{Binding RealColorOnl}" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                                 <DataGridTemplateColumn.CellStyle>
@@ -3130,7 +3123,7 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
@@ -3174,7 +3167,6 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
-                                                                SortDirection="Descending"
                                                                 Width="86"
                                                                 Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
@@ -3207,7 +3199,7 @@
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding BodyPart}"
-                                                                   Background="Transparent" />
+                                                                   Background="{Binding RealColorOnl}" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                                 <DataGridTemplateColumn.CellStyle>
@@ -3470,7 +3462,7 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
@@ -3514,7 +3506,6 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
-                                                                SortDirection="Descending"
                                                                 Width="86"
                                                                 Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
@@ -3789,7 +3780,7 @@
                                                 <MenuItem Header="Δώρο Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Δοκιμαστικό Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι'"
                                                           CommandParameter="{Binding}"
                                                           Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                             </ContextMenu>
@@ -3833,7 +3824,6 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
-                                                                SortDirection="Descending"
                                                                 Width="86"
                                                                 Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
@@ -4070,7 +4060,7 @@
                                       Margin="0 5"
                                       SelectedItem="{Binding SelectedItem}"
                                       VerticalAlignment="Center"
-                                      ItemsSource="{Binding BasicDataManager.Items}"
+                                      ItemsSource="{Binding BasicDataManager.ItemsList}"
                                       DisplayMemberPath="Name" />
                             <ComboBox Width="60"
                                       SelectedItem="{Binding SelectedSize}"
@@ -4148,7 +4138,7 @@
                         <StackPanel Orientation="Horizontal"
                                     Width='397'>
                             <DataGrid ItemsSource="{Binding OldShowUps}"
-                                      Width="180"
+                                      Width="195"
                                       CanUserAddRows="False"
                                       VerticalAlignment="Stretch"
                                       CanUserDeleteRows="False"
@@ -4157,8 +4147,8 @@
                                       AutoGenerateColumns="False">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Ημερ."
-                                                        Width="55"
-                                                        Binding="{Binding Arrived,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                        Width="88"
+                                                        Binding="{Binding Arrived,ConverterParameter='dd/MM/yy hh:mm', Converter={StaticResource DateTimeToString}}" />
                                     <DataGridTextColumn Header="Τύπος"
                                                         Width="115"
                                                         Binding="{Binding Description}" />
@@ -4166,7 +4156,7 @@
                             </DataGrid>
                             <DataGrid ItemsSource="{Binding NextAppointments}"
                                       CanUserAddRows="False"
-                                      Width="187"
+                                      Width="195"
                                       VerticalAlignment="Stretch"
                                       CanUserDeleteRows="False"
                                       Height="175"
@@ -4175,8 +4165,8 @@
                                       AutoGenerateColumns="False">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Ημερ."
-                                                        Width="55"
-                                                        Binding="{Binding DateTime,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                         Width="88"
+                                                        Binding="{Binding DateTime,ConverterParameter='dd/MM/yy hh:mm', Converter={StaticResource DateTimeToString}}" />
                                     <DataGridTextColumn Header="Τύπος"
                                                         Binding="{Binding Description}" />
                                 </DataGrid.Columns>

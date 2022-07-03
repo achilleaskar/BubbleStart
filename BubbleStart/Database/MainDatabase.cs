@@ -63,6 +63,10 @@ namespace BubbleStart.Database
                 .HasMany(p => p.DailyWorkingShifts)
              .WithOptional(r => r.WorkingRule)
              .HasForeignKey(t => t.WorkingRule_Id);
+             modelBuilder.Entity<GymnastHour>()
+                .HasOptional(p => p.Gymnast)
+             .WithMany(r => r.GymnastHours)
+             .HasForeignKey(t => t.Gymnast_Id);
 
             //modelBuilder.Entity<ShowUp>()
             //        .Property(p => p.Arrive)

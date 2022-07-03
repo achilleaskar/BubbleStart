@@ -105,6 +105,12 @@
                 <TabItem Header="Παρουσίες">
                     <views:ShowUpsPerDay_UserControl DataContext="{Binding ShowUpsPerDay_ViewModel }" />
                 </TabItem>
+                <TabItem Header="Ανενεργοί">
+                    <views:InActiveCustomers_UserControl DataContext="{Binding InActiveCustomers_ViewModel }" />
+                </TabItem> 
+                <TabItem Header="Shop">
+                    <views:Shop_UserControl DataContext="{Binding Shop_ViewModel }" />
+                </TabItem>
             </TabControl>
         </Grid>
     </Grid>

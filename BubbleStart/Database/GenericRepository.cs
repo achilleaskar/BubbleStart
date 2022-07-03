@@ -149,6 +149,41 @@ namespace BubbleStart.Database
             }
         }
 
+        public async Task<Customer> GetFullCustomerByIdAsync(int id)
+        {
+            try
+            {
+                var thisWeek = StaticResources.GetNextWeekday(DateTime.Today, DayOfWeek.Monday).AddDays(-7);
+
+                await Context.Set<ShowUp>()
+                    .Where(s => s.Customer.Id == id && s.Arrived >= s.Customer.ResetDate || s.Arrived >= thisWeek)
+                    .ToListAsync();
+
+                await Context.Set<Change>()
+                    .Where(s => s.Customer.Id == id && s.Date >= s.Customer.ResetDate)
+                    .ToListAsync();
+                await Context.Set<Apointment>()
+                    .Where(p4 => p4.Customer.Id == id && p4.DateTime >= CloseLimit)
+                    .ToListAsync();
+                await Context.Set<Program>()
+                    .Where(p => p.Customer.Id == id && p.StartDay >= p.Customer.ResetDate)
+                    .ToListAsync();
+                await Context.Set<Payment>()
+                    .Where(s => s.Customer.Id == id && s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate))
+                    .ToListAsync();
+
+                return await Context.Set<Customer>()
+                    .Where(c => c.Id == id)
+                    .Include(d => d.WeightHistory)
+                    .Include(c => c.Illness)
+                    .FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         internal async Task<List<WorkingRule>> GetAllRulesAsync()
         {
             return await Context.WorkingRules
@@ -377,8 +412,8 @@ namespace BubbleStart.Database
             try
             {
                 endDateCash = endDateCash.AddDays(1);
-                return await Context.Set<Payment>()
-                    .Where(p => p.Date >= startDateCash && p.Date <= endDateCash && (!limit || p.Date >= Limit))
+                return await Context.Payments
+                    .Where(p => p.Customer.Enabled && p.Date >= startDateCash && p.Date <= endDateCash && (!limit || p.Date >= Limit))
                         .ToListAsync();
             }
             catch (Exception)
@@ -387,13 +422,17 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null)
+        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null,int mainId=-1,int secId=-1)
         {
             if (expensetypes == null || expensetypes.Count == 0)
-                return await Context.Expenses.Where(e => !limit || e.Date >= Limit).Where(filterp)
+                return await Context.Expenses.Where(e => (!limit || e.Date >= Limit) &&
+                (mainId <= 0 || mainId == e.MainCategoryId) && 
+                (secId <= 0 || secId == e.SecondaryCategoryId)).Where(filterp)
                    .ToListAsync();
             else
-                return await Context.Expenses.Where(e => e.MainCategoryId != null && (!limit || e.Date >= Limit) && expensetypes.Contains((int)e.MainCategoryId)).Where(filterp)
+                return await Context.Expenses.Where(e => e.MainCategoryId != null && (!limit || e.Date >= Limit) &&
+                (mainId <= 0 || mainId == e.MainCategoryId) &&
+                (secId <= 0 || secId == e.SecondaryCategoryId) && expensetypes.Contains((int)e.MainCategoryId)).Where(filterp)
                    .Include(e => e.User)
                    .ToListAsync();
         }
@@ -438,22 +477,22 @@ namespace BubbleStart.Database
             {
                 var thisWeek = StaticResources.GetNextWeekday(DateTime.Today, DayOfWeek.Monday).AddDays(-7);
                 await Context.Set<ShowUp>()
-                    .Where(s => s.Arrived >= s.Customer.ResetDate || s.Arrived >= thisWeek)
+                    .Where(s => s.Customer.Enabled && (s.Arrived >= s.Customer.ResetDate || s.Arrived >= thisWeek))
                     .ToListAsync();
-                await Context.Set<ShowUp>()
-                   .Where(s => s.Arrived >= ThreeMonths)
-                   .ToListAsync();
+                //await Context.Set<ShowUp>()
+                //   .Where(s => s.Arrived >= ThreeMonths) 
+                //   .ToListAsync();
                 await Context.Set<Change>()
-                    .Where(s => s.Date >= s.Customer.ResetDate)
+                    .Where(s => s.Customer.Enabled && s.Date >= s.Customer.ResetDate)
                     .ToListAsync();
                 await Context.Set<Apointment>()
-                    .Where(p4 => p4.DateTime >= CloseLimit)
+                    .Where(p4 => p4.Customer.Enabled && p4.DateTime >= CloseLimit)
                     .ToListAsync();
-                var pr = await Context.Set<Program>()
-                    .Where(p => p.StartDay >= p.Customer.ResetDate)
+                await Context.Set<Program>()
+                    .Where(p => p.Customer.Enabled && p.StartDay >= p.Customer.ResetDate)
                     .ToListAsync();
                 await Context.Set<Payment>()
-                    .Where(s => s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate))
+                    .Where(s => s.Customer.Enabled &&( s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate)))
                     .ToListAsync();
 
                 //await Context.Set<ShowUp>().Where(s => s.Arrived >= Limit).ToListAsync();

@@ -2,10 +2,10 @@
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
-using DocumentFormat.OpenXml.Wordprocessing;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +13,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -42,6 +43,7 @@ namespace BubbleStart.ViewModels
             SelectAllCommand = new RelayCommand(SelectAll);
             ShowEconomicDetailsCommand = new RelayCommand<ExpenseCheck>(ShowEconomicDetails);
             ShowExpensesDataCommand = new RelayCommand(async () => { await ShowExpensesData(); });
+            FindAndReplaceCommand = new RelayCommand(async () => { await FindAndReplace(); });
             ShowIncomesDataCommand = new RelayCommand(async () => { await ShowIncomesData(); });
             ShowPreviewDataCommand = new RelayCommand(async () => { await ShowPreviewData(); });
             ShowPaymentsDataCommand = new RelayCommand(async () => { await ShowPaymentsData(); });
@@ -58,6 +60,67 @@ namespace BubbleStart.ViewModels
 
 
 
+        private string _Find;
+
+
+        public string Find
+        {
+            get
+            {
+                return _Find;
+            }
+
+            set
+            {
+                if (_Find == value)
+                {
+                    return;
+                }
+
+                _Find = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private string _Replace;
+
+
+        public string Replace
+        {
+            get
+            {
+                return _Replace;
+            }
+
+            set
+            {
+                if (_Replace == value)
+                {
+                    return;
+                }
+
+                _Replace = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private async Task FindAndReplace()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            foreach (var e in Expenses)
+            {
+                e.Reason.Replace(Find, Replace);
+                e.Reason = Regex.Replace(e.Reason, Find, Replace, RegexOptions.IgnoreCase);
+            }
+
+
+            await BasicDataManager.SaveAsync();
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
 
         public bool HasBars => Bars.Count > 0;
 
@@ -909,7 +972,7 @@ namespace BubbleStart.ViewModels
                 }
                 _SelectedCustomer = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(Enabled));
+                value?.RaisePropertyChanged(nameof(Customer.Enabled));
             }
         }
 
@@ -974,6 +1037,8 @@ namespace BubbleStart.ViewModels
         public RelayCommand ShowCashDataCommand { get; set; }
 
         public RelayCommand ShowExpensesDataCommand { get; set; }
+        public RelayCommand FindAndReplaceCommand { get; set; }
+
         public RelayCommand ShowIncomesDataCommand { get; set; }
 
         public RelayCommand ShowOwningCustomersCommand { get; set; }
@@ -1511,12 +1576,15 @@ namespace BubbleStart.ViewModels
         {
             Mouse.OverrideCursor = Cursors.Wait;
             DateTime enddate = EndDateExpenses.AddDays(1);
-            Expenses = new ObservableCollection<Expense>((await BasicDataManager.Context.GetAllExpensesAsync(e => !e.Income && e.Date >= StartDateExpenses && e.Date < enddate, false, ExpenseTypes.Any(e => !e.IsChecked) ? ExpenseTypes.Where(e => e.IsChecked).Select(e => e.ExpenseCategory.Id).ToList() : null)).OrderBy(a => a.Date));
+            Expenses = new ObservableCollection<Expense>((await BasicDataManager.Context.GetAllExpensesAsync(e => !e.Income && e.Date >= StartDateExpenses && e.Date < enddate,
+                false,
+                expensetypes: ExpenseTypes.Any(e => !e.IsChecked) ? ExpenseTypes.Where(e => e.IsChecked).Select(e => e.ExpenseCategory.Id).ToList() : null,
+                MainCategory?.Id ?? -1,
+                NewExpense?.SecondaryCategory?.Id ?? -1)).OrderBy(a => a.Date));
             foreach (var item in Expenses)
             {
                 item.parent = this;
             }
-            NewExpense = new Expense();
 
             UpdateAmmounts();
             Mouse.OverrideCursor = Cursors.Arrow;

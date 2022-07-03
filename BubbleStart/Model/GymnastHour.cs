@@ -67,5 +67,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        public int? Gymnast_Id { get; set; }
     }
 }

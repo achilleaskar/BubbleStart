@@ -36,6 +36,8 @@ namespace BubbleStart.ViewModels
             Apointments_ViewModel = new Apointments_ViewModel(BasicDataManager);
             ShowUpsPerDay_ViewModel = new ShowUpsPerDay_ViewModel(BasicDataManager);
             EmployeeManagement_ViewModel = new EmployeeManagement_ViewModel(BasicDataManager);
+            Shop_ViewModel = new Shop_ViewModel(BasicDataManager);
+            InActiveCustomers_ViewModel = new InActiveCustomers_ViewModel(BasicDataManager,SearchCustomer_ViewModel);
 
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
         }
@@ -205,6 +207,52 @@ namespace BubbleStart.ViewModels
                 }
 
                 _EmployeeManagement_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private Shop_ViewModel _Shop_ViewModel;
+
+
+        public Shop_ViewModel Shop_ViewModel
+        {
+            get
+            {
+                return _Shop_ViewModel;
+            }
+
+            set
+            {
+                if (_Shop_ViewModel == value)
+                {
+                    return;
+                }
+
+                _Shop_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private InActiveCustomers_ViewModel _InActiveCustomers_ViewModel;
+
+        public InActiveCustomers_ViewModel InActiveCustomers_ViewModel
+        {
+            get
+            {
+                return _InActiveCustomers_ViewModel;
+            }
+
+            set
+            {
+                if (_InActiveCustomers_ViewModel == value)
+                {
+                    return;
+                }
+
+                _InActiveCustomers_ViewModel = value;
                 RaisePropertyChanged();
             }
         }

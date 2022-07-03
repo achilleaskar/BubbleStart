@@ -633,6 +633,14 @@
     <Compile Include="Migrations\202201271031315_thrdDose.designer.cs">
       <DependentUpon>202201271031315_thrdDose.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206261752256_ItemsShop.cs" />
+    <Compile Include="Migrations\202206261752256_ItemsShop.designer.cs">
+      <DependentUpon>202206261752256_ItemsShop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206261821575_ItemsShop2.cs" />
+    <Compile Include="Migrations\202206261821575_ItemsShop2.designer.cs">
+      <DependentUpon>202206261821575_ItemsShop2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -668,6 +676,7 @@
     <Compile Include="ViewModels\EconomicData_ViewModel.cs" />
     <Compile Include="ViewModels\EmployeeManagement_ViewModel.cs" />
     <Compile Include="ViewModels\ExpenseCategoriesManagement_Viewmodel.cs" />
+    <Compile Include="ViewModels\InActiveCustomers_ViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainUserControl_ViewModel.cs" />
@@ -676,6 +685,7 @@
     <Compile Include="ViewModels\MyViewModelBaseAsync.cs" />
     <Compile Include="ViewModels\SearchCustomer_ViewModel.cs" />
     <Compile Include="ViewModels\ShiftsManagement_Viewmodel.cs" />
+    <Compile Include="ViewModels\Shop_ViewModel.cs" />
     <Compile Include="ViewModels\ShowUpsPerDay_ViewModel.cs" />
     <Compile Include="ViewModels\UsersManagement_viewModel.cs" />
     <Compile Include="ViewModels\CustomersWindow_Viewmodel.cs" />
@@ -698,6 +708,9 @@
     <Compile Include="Views\FindCustomerWidnow.xaml.cs">
       <DependentUpon>FindCustomerWidnow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\InActiveCustomers_UserControl.xaml.cs">
+      <DependentUpon>InActiveCustomers_UserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Login_UserControl.xaml.cs">
       <DependentUpon>Login_UserControl.xaml</DependentUpon>
     </Compile>
@@ -716,6 +729,9 @@
     </Compile>
     <Compile Include="Views\ShiftsManagement_Window.xaml.cs">
       <DependentUpon>ShiftsManagement_Window.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Shop_UserControl.xaml.cs">
+      <DependentUpon>Shop_UserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShowUpsPerDay_UserControl.xaml.cs">
       <DependentUpon>ShowUpsPerDay_UserControl.xaml</DependentUpon>
@@ -1023,6 +1039,12 @@
     <EmbeddedResource Include="Migrations\202201271031315_thrdDose.resx">
       <DependentUpon>202201271031315_thrdDose.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206261752256_ItemsShop.resx">
+      <DependentUpon>202206261752256_ItemsShop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206261821575_ItemsShop2.resx">
+      <DependentUpon>202206261821575_ItemsShop2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -1068,6 +1090,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\InActiveCustomers_UserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Login_UserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1089,6 +1115,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ShiftsManagement_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Shop_UserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

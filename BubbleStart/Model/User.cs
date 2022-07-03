@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Wrappers;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -54,6 +55,9 @@ namespace BubbleStart.Model
         }
 
         #endregion Methods
+
+
+        public List<GymnastHour> GymnastHours { get; set; }
         public ObservableCollection<WorkingRule> WorkingRules
         {
             get

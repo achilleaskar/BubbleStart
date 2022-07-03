@@ -20,81 +20,8 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-
-
-
-
-        private bool _EnableStartAfterFilter;
-
-
-        public bool EnableStartAfterFilter
-        {
-            get
-            {
-                return _EnableStartAfterFilter;
-            }
-
-            set
-            {
-                if (_EnableStartAfterFilter == value)
-                {
-                    return;
-                }
-
-                _EnableStartAfterFilter = value;
-                CustomersCollectionView.Refresh();
-                RaisePropertyChanged();
-            }
-        }
-
-
-        private DateTime _StartAfterFilter = DateTime.Today;
-
-
-        public DateTime StartAfterFilter
-        {
-            get
-            {
-                return _StartAfterFilter;
-            }
-
-            set
-            {
-                if (_StartAfterFilter == value)
-                {
-                    return;
-                }
-
-                _StartAfterFilter = value;
-                CustomersCollectionView.Refresh();
-                RaisePropertyChanged();
-            }
-        }
-
         public SearchCustomer_ViewModel()
         {
-        }
-
-        private int _SelectedProgramModeIndex;
-
-        public int SelectedProgramModeIndex
-        {
-            get
-            {
-                return _SelectedProgramModeIndex;
-            }
-
-            set
-            {
-                if (_SelectedProgramModeIndex == value)
-                {
-                    return;
-                }
-
-                _SelectedProgramModeIndex = value;
-                CustomersCollectionView.Refresh();
-                RaisePropertyChanged();
-            }
         }
 
         public SearchCustomer_ViewModel(BasicDataManager basicDataManager)
@@ -118,87 +45,68 @@ namespace BubbleStart.ViewModels
 
         #endregion Constructors
 
-        private bool CanToggleDisable(object arg)
-        {
-            return SelectedCustomer != null && (int)SelectedCustomer.ForceDisable != Convert.ToInt32(arg);
-        }
-
-        private async Task TogleDisable(object to)
-        {
-            if (SelectedCustomer != null)
-            {
-                SelectedCustomer.ForceDisable = (ForceDisable)Convert.ToInt32(to);
-                SelectedCustomer.IsActiveColor = SelectedCustomer.GetCustomerColor();
-            }
-            await BasicDataManager.SaveAsync();
-        }
-
         #region Fields
 
+        private bool _CanAdd;
         private ObservableCollection<Customer> _Customers;
-
         private ICollectionView _CustomersCollectionView;
-
         private ObservableCollection<Customer> _CustomersPracticing;
+        private bool _EnableStartAfterFilter;
+
+        private bool _Is30min;
+
+        private bool _PopupFinishOpen;
+
+        private bool _PopupOpen;
 
         private string _SearchTerm;
 
+        private ObservableCollection<BodyPartSelection> _SecBodyParts;
+
+        private int _SelectedAciveIndex;
+
         private Customer _SelectedApointment;
+
+        private BodyPart _SelectedBodyPart;
 
         private Customer _SelectedCustomer;
 
         private Customer _SelectedPracticingCustomer;
 
+        private int _SelectedProgramModeIndex;
+
         private Customer _SelectedSideCustomer;
+
+        private DateTime _StartAfterFilter = DateTime.Today;
 
         private ObservableCollection<Customer> _TodaysApointments;
 
         #endregion Fields
 
-        public bool Is30min
-        {
-            get
-            {
-                return _Is30min;
-            }
-
-            set
-            {
-                if (_Is30min == value)
-                {
-                    return;
-                }
-
-                _Is30min = value;
-                RaisePropertyChanged();
-            }
-        }
-
         #region Properties
 
-        private bool _PopupOpen;
-        private bool _Is30min;
+        public BasicDataManager BasicDataManager { get; }
 
-        public bool PopupOpen
+        public RelayCommand<string> BodyPartSelected { get; set; }
+
+        public bool CanAdd
         {
             get
             {
-                return _PopupOpen;
+                return _CanAdd;
             }
 
             set
             {
-                if (_PopupOpen == value)
+                if (_CanAdd == value)
                 {
                     return;
                 }
 
-                _PopupOpen = value;
+                _CanAdd = value;
                 RaisePropertyChanged();
             }
         }
-
-        public RelayCommand<string> BodyPartSelected { get; set; }
 
         public RelayCommand CancelApointmentCommand { get; set; }
 
@@ -261,20 +169,130 @@ namespace BubbleStart.ViewModels
         public ICollectionView CustomersPracticingCollectionView { get; set; }
 
         public RelayCommand DeleteCustomerCommand { get; set; }
-        public RelayCommand<object> ToggleForcedDisableCommand { get; set; }
 
         public bool Enabled => SelectedCustomer != null;
+
+        public bool EnableStartAfterFilter
+        {
+            get
+            {
+                return _EnableStartAfterFilter;
+            }
+
+            set
+            {
+                if (_EnableStartAfterFilter == value)
+                {
+                    return;
+                }
+
+                _EnableStartAfterFilter = value;
+                CustomersCollectionView.Refresh();
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool Is30min
+        {
+            get
+            {
+                return _Is30min;
+            }
+
+            set
+            {
+                if (_Is30min == value)
+                {
+                    return;
+                }
+
+                _Is30min = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public RelayCommand OpenActiveCustomerManagementCommand { get; set; }
 
         public RelayCommand OpenActiveCustomerSideManagementCommand { get; set; }
 
         public RelayCommand OpenCustomerManagementCommand { get; set; }
+
         public RelayCommand OpenPopupCommand { get; set; }
+
+        public bool PopupFinishOpen
+        {
+            get
+            {
+                return _PopupFinishOpen;
+            }
+
+            set
+            {
+                if (_PopupFinishOpen == value)
+                {
+                    return;
+                }
+
+                _PopupFinishOpen = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool PopupOpen
+        {
+            get
+            {
+                return _PopupOpen;
+            }
+
+            set
+            {
+                if (_PopupOpen == value)
+                {
+                    return;
+                }
+
+                _PopupOpen = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public RelayCommand SaveCustomerCommand { get; set; }
 
-        private int _SelectedAciveIndex;
+        public string SearchTerm
+        {
+            get => _SearchTerm;
+
+            set
+            {
+                if (_SearchTerm == value)
+                {
+                    return;
+                }
+                _SearchTerm = value;
+                CustomersCollectionView?.Refresh();
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<BodyPartSelection> SecBodyParts
+        {
+            get
+            {
+                return _SecBodyParts;
+            }
+
+            set
+            {
+                if (_SecBodyParts == value)
+                {
+                    return;
+                }
+
+                _SecBodyParts = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public int SelectedAciveIndex
         {
@@ -296,22 +314,6 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public string SearchTerm
-        {
-            get => _SearchTerm;
-
-            set
-            {
-                if (_SearchTerm == value)
-                {
-                    return;
-                }
-                _SearchTerm = value;
-                CustomersCollectionView?.Refresh();
-                RaisePropertyChanged();
-            }
-        }
-
         public Customer SelectedApointment
         {
             get => _SelectedApointment;
@@ -324,6 +326,26 @@ namespace BubbleStart.ViewModels
                 }
 
                 _SelectedApointment = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public BodyPart SelectedBodyPart
+        {
+            get
+            {
+                return _SelectedBodyPart;
+            }
+
+            set
+            {
+                if (_SelectedBodyPart == value)
+                {
+                    return;
+                }
+                CanAdd = value != BodyPart.Unknown;
+
+                _SelectedBodyPart = value;
                 RaisePropertyChanged();
             }
         }
@@ -364,6 +386,26 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public int SelectedProgramModeIndex
+        {
+            get
+            {
+                return _SelectedProgramModeIndex;
+            }
+
+            set
+            {
+                if (_SelectedProgramModeIndex == value)
+                {
+                    return;
+                }
+
+                _SelectedProgramModeIndex = value;
+                CustomersCollectionView.Refresh();
+                RaisePropertyChanged();
+            }
+        }
+
         public Customer SelectedSideCustomer
         {
             get => _SelectedSideCustomer;
@@ -381,7 +423,28 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand<int> ShowedUpCommand { get; set; }
+
         public RelayCommand ShowedUpMassCommand { get; set; }
+
+        public DateTime StartAfterFilter
+        {
+            get
+            {
+                return _StartAfterFilter;
+            }
+
+            set
+            {
+                if (_StartAfterFilter == value)
+                {
+                    return;
+                }
+
+                _StartAfterFilter = value;
+                CustomersCollectionView.Refresh();
+                RaisePropertyChanged();
+            }
+        }
 
         public ObservableCollection<Customer> TodaysApointments
         {
@@ -399,75 +462,11 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public BasicDataManager BasicDataManager { get; }
+        public RelayCommand<object> ToggleForcedDisableCommand { get; set; }
 
         #endregion Properties
 
         #region Methods
-
-        private List<BodyPartSelection> _SecBodyParts;
-
-        public List<BodyPartSelection> SecBodyParts
-        {
-            get
-            {
-                return _SecBodyParts;
-            }
-
-            set
-            {
-                if (_SecBodyParts == value)
-                {
-                    return;
-                }
-
-                _SecBodyParts = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private BodyPart _SelectedBodyPart;
-
-        public BodyPart SelectedBodyPart
-        {
-            get
-            {
-                return _SelectedBodyPart;
-            }
-
-            set
-            {
-                if (_SelectedBodyPart == value)
-                {
-                    return;
-                }
-                CanAdd = value != BodyPart.Unknown;
-
-                _SelectedBodyPart = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private bool _PopupFinishOpen;
-
-        public bool PopupFinishOpen
-        {
-            get
-            {
-                return _PopupFinishOpen;
-            }
-
-            set
-            {
-                if (_PopupFinishOpen == value)
-                {
-                    return;
-                }
-
-                _PopupFinishOpen = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public async Task CustomerLeft()
         {
@@ -500,6 +499,91 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
+        public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
+        {
+            TodaysApointments = new ObservableCollection<Customer>();
+            CustomersPracticing.Clear();
+
+            Apointment app;
+
+            foreach (var c in BasicDataManager.Customers)
+            {
+                try
+                {
+                    //c.PropertyChanged += EntityViewModelPropertyChanged;
+                    c.Loaded = true;
+                    c.GetRemainingDays();
+                    if (c.LastShowUp != null && c.LastShowUp.Arrived.Date == DateTime.Today && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
+                    {
+                        c.IsPracticing = true;
+                        CustomersPracticing.Add(c);
+                    }
+                    c.CalculateRemainingAmount();
+                    app = c.Apointments.FirstOrDefault(a => a.DateTime.Date == DateTime.Today);
+                    if (app != null)
+                    {
+                        c.AppointmentTime = app.DateTime;
+                        TodaysApointments.Add(c);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
+                }
+            }
+            Customers = new ObservableCollection<Customer>(BasicDataManager.Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
+            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
+            CustomersCollectionView.Filter = CustomerFilter;
+
+            CustomersCollectionView.Refresh();
+            TodaysApointments = new ObservableCollection<Customer>(TodaysApointments.OrderBy(ta => ta.AppointmentTime));
+            SecBodyParts = new ObservableCollection<BodyPartSelection>();
+            foreach (var part in (SecBodyPart[])Enum.GetValues(typeof(SecBodyPart)))
+            {
+                SecBodyParts.Add(new BodyPartSelection { SecBodyPart = part });
+            }
+
+            //int counter = 0;
+
+            //MessageBox.Show(Customers.Where(c => c.ActiveCustomer == true).Count()+"");
+
+            //foreach (var c in Customers)
+            //{
+            //    if (!c.ActiveCustomer)
+            //    {
+            //        counter++;
+            //        c.Enabled = false;
+            //    }
+            //    if (counter%20==0)
+            //    {
+            //        BasicDataManager.Context.Save();
+            //    }
+            //}
+            //BasicDataManager.Context.Save();
+        }
+
+        public override void Reload()
+        {
+            throw new NotImplementedException();
+        }
+
+        //                case 172:
+        //                    toReturn += 'T';
+        //                    toReturn += 'H';
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //    return toReturn;
+        //}
+        public void ResetList()
+        {
+            foreach (var item in SecBodyParts)
+            {
+                item.Selected = false;
+            }
+        }
+
         private void BodyPartChanged(string selectedIndex)
         {
             _SelectedCustomer.Illness.SelectedIllnessPropertyName = selectedIndex;
@@ -520,10 +604,14 @@ namespace BubbleStart.ViewModels
             return SelectedCustomer != null && !string.IsNullOrEmpty(SelectedCustomer.Name) && !string.IsNullOrEmpty(SelectedCustomer.SureName) && !string.IsNullOrEmpty(SelectedCustomer.Tel);
         }
 
+        private bool CanToggleDisable(object arg)
+        {
+            return SelectedCustomer != null && (int)SelectedCustomer.ForceDisable != Convert.ToInt32(arg);
+        }
+
         private void CreateNewCustomer()
         {
-            SelectedCustomer = new Customer();
-            SelectedCustomer.InitialLoad();
+            SelectedCustomer = new Customer(true);
         }
 
         private bool CustomerFilter(object item)
@@ -552,25 +640,6 @@ namespace BubbleStart.ViewModels
             return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
         }
 
-        //private void Customers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        //{
-        //    if (e.Action == NotifyCollectionChangedAction.Remove)
-        //    {
-        //        foreach (Customer customer in e.OldItems)
-        //        {
-        //            //Removed items
-        //            customer.PropertyChanged -= EntityViewModelPropertyChanged;
-        //        }
-        //    }
-        //    else if (e.Action == NotifyCollectionChangedAction.Add)
-        //    {
-        //        foreach (Customer customer in e.NewItems)
-        //        {
-        //            customer.PropertyChanged += EntityViewModelPropertyChanged;
-        //        }
-        //    }
-        //}
-
         private async Task DeleteCustomer()
         {
             //#if DEBUG
@@ -593,17 +662,6 @@ namespace BubbleStart.ViewModels
             await BasicDataManager.SaveAsync();
         }
 
-        //private void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        //{
-        //    // RaisePropertyChanged(nameof(SelectedCustomer));
-
-        //    //if (e.PropertyName == "IsActiveColor")
-        //    //{
-        //    //    Customers = new ObservableCollection<Customer>(Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
-
-        //    //}
-        //}
-
         private void OpenCustomerManagement(Customer c)
         {
             if (c != null)
@@ -619,6 +677,8 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        //    //}
+        //}
         private async Task SaveCustomer()
         {
             if (SelectedCustomer != null)
@@ -639,6 +699,43 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        private async Task TogleDisable(object to)
+        {
+            if (SelectedCustomer != null)
+            {
+                SelectedCustomer.ForceDisable = (ForceDisable)Convert.ToInt32(to);
+                SelectedCustomer.IsActiveColor = SelectedCustomer.GetCustomerColor();
+            }
+            await BasicDataManager.SaveAsync();
+        }
+
+        #endregion Methods
+
+        //private void Customers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (e.Action == NotifyCollectionChangedAction.Remove)
+        //    {
+        //        foreach (Customer customer in e.OldItems)
+        //        {
+        //            //Removed items
+        //            customer.PropertyChanged -= EntityViewModelPropertyChanged;
+        //        }
+        //    }
+        //    else if (e.Action == NotifyCollectionChangedAction.Add)
+        //    {
+        //        foreach (Customer customer in e.NewItems)
+        //        {
+        //            customer.PropertyChanged += EntityViewModelPropertyChanged;
+        //        }
+        //    }
+        //}
+        //private void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        //{
+        //    // RaisePropertyChanged(nameof(SelectedCustomer));
+
+        //    //if (e.PropertyName == "IsActiveColor")
+        //    //{
+        //    //    Customers = new ObservableCollection<Customer>(Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
         //private string ToEng(string searchTerm)
         //{
         //    string toReturn = "";
@@ -681,102 +778,5 @@ namespace BubbleStart.ViewModels
         //                case 170:
         //                    toReturn += 'I';
         //                    break;
-
-        //                case 172:
-        //                    toReturn += 'T';
-        //                    toReturn += 'H';
-        //                    break;
-        //            }
-        //        }
-        //    }
-        //    return toReturn;
-        //}
-
-
-
-        public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
-        {
-            TodaysApointments = new ObservableCollection<Customer>();
-            CustomersPracticing.Clear();
-
-            Apointment app;
-
-            foreach (var c in BasicDataManager.Customers)
-            {
-                try
-                {
-                    //c.PropertyChanged += EntityViewModelPropertyChanged;
-                    c.Loaded = true;
-                    c.GetRemainingDays();
-                    if (c.LastShowUp != null && c.LastShowUp.Arrived.Date == DateTime.Today && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234)
-                    {
-                        c.IsPracticing = true;
-                        CustomersPracticing.Add(c);
-                    }
-                    c.CalculateRemainingAmount();
-                    app = c.Apointments.FirstOrDefault(a => a.DateTime.Date == DateTime.Today);
-                    if (app != null)
-                    {
-                        c.AppointmentTime = app.DateTime;
-                        TodaysApointments.Add(c);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
-                }
-            }
-            Customers = new ObservableCollection<Customer>(BasicDataManager.Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
-            CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
-            CustomersCollectionView.Filter = CustomerFilter;
-
-            CustomersCollectionView.Refresh();
-            TodaysApointments = new ObservableCollection<Customer>(TodaysApointments.OrderBy(ta => ta.AppointmentTime));
-            SecBodyParts = new List<BodyPartSelection>();
-            foreach (var part in (SecBodyPart[])Enum.GetValues(typeof(SecBodyPart)))
-            {
-                SecBodyParts.Add(new BodyPartSelection { SecBodyPart = part });
-            }
-        }
-
-        public void ResetList()
-        {
-            foreach (var item in SecBodyParts)
-            {
-                item.Selected = false;
-            }
-        }
-
-
-
-
-        private bool _CanAdd;
-
-
-        public bool CanAdd
-        {
-            get
-            {
-                return _CanAdd;
-            }
-
-            set
-            {
-                if (_CanAdd == value)
-                {
-                    return;
-                }
-
-                _CanAdd = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public override void Reload()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion Methods
     }
 }

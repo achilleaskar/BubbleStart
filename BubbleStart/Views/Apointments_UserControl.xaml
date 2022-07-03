@@ -434,7 +434,6 @@
                                                                                       Command="{Binding ChangeTimeCommand}"
                                                                                       CommandParameter="0" />
                                                                             <MenuItem Header="Γυμναστής"
-                                                                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                                                                       ItemsSource="{Binding BasicDataManager.Gymnasts}">
                                                                                 <MenuItem.ItemTemplate>
                                                                                     <DataTemplate>
@@ -451,7 +450,6 @@
                                                                                 </MenuItem.ItemContainerStyle>
                                                                             </MenuItem>
                                                                             <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                                                                       Command="{Binding NoGymnastCommand}"
                                                                                       CommandParameter="0" />
                                                                         </ContextMenu>
@@ -577,7 +575,6 @@
                                                                                       Command="{Binding ChangeTimeCommand}"
                                                                                       CommandParameter="1" />
                                                                             <MenuItem Header="Γυμναστής"
-                                                                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                                                                       ItemsSource="{Binding BasicDataManager.Gymnasts}">
                                                                                 <MenuItem.ItemTemplate>
                                                                                     <DataTemplate>
@@ -594,7 +591,6 @@
                                                                                 </MenuItem.ItemContainerStyle>
                                                                             </MenuItem>
                                                                             <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                                                                       Command="{Binding NoGymnastCommand}"
                                                                                       CommandParameter="1" />
                                                                         </ContextMenu>
@@ -723,7 +719,6 @@
                                                                                       Command="{Binding ChangeTimeCommand}"
                                                                                       CommandParameter="2" />
                                                                             <MenuItem Header="Γυμναστής"
-                                                                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                                                                       ItemsSource="{Binding BasicDataManager.Gymnasts}">
                                                                                 <MenuItem.ItemTemplate>
                                                                                     <DataTemplate>
@@ -740,7 +735,6 @@
                                                                                 </MenuItem.ItemContainerStyle>
                                                                             </MenuItem>
                                                                             <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                                                                       Command="{Binding NoGymnastCommand}"
                                                                                       CommandParameter="2" />
                                                                         </ContextMenu>
@@ -867,7 +861,6 @@
                                                                                       Command="{Binding ChangeTimeCommand}"
                                                                                       CommandParameter="3" />
                                                                             <MenuItem Header="Γυμναστής"
-                                                                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                                                                       ItemsSource="{Binding BasicDataManager.Gymnasts}">
                                                                                 <MenuItem.ItemTemplate>
                                                                                     <DataTemplate>
@@ -884,7 +877,6 @@
                                                                                 </MenuItem.ItemContainerStyle>
                                                                             </MenuItem>
                                                                             <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                                                                       Command="{Binding NoGymnastCommand}"
                                                                                       CommandParameter="3" />
                                                                         </ContextMenu>

@@ -2,7 +2,6 @@
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
-using DocumentFormat.OpenXml.Wordprocessing;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using System;
@@ -337,14 +336,21 @@ namespace BubbleStart.ViewModels
 
             if (refresh)
                 await BasicDataManager.Context.Context.ShowUps.Where(a => a.Arrived >= StartDate && a.Arrived < tmpdate && a.Arrived < a.Customer.ResetDate).ToListAsync();
-            else
-                BasicDataManager.Context.Context.ShowUps.Local.Where(a => a.Arrived >= StartDate && a.Arrived < tmpdate && a.Arrived < a.Customer.ResetDate).ToList();
+            //else
+            //    BasicDataManager.Context.Context.ShowUps.Local.Where(a => a.Arrived >= StartDate && a.Arrived < tmpdate && a.Arrived < a.Customer.ResetDate).ToList();
 
             List<CustomeTime> customTimes = refresh ? await BasicDataManager.Context.Context.CustomeTimes.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToListAsync() :
               BasicDataManager.Context.Context.CustomeTimes.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToList();
 
             List<GymnastHour> gymnasts = refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToListAsync() :
              BasicDataManager.Context.Context.GymnastHours.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToList();
+
+            foreach (var gy in gymnasts)
+            {
+                if (gy.Gymnast == null)
+                {
+                }
+            }
 
             List<ClosedHour> closedHours = refresh ? await BasicDataManager.Context.Context.ClosedHours.Where(a => a.Date >= StartDate && a.Date < tmpdate).ToListAsync() :
               BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate).ToList();
@@ -890,6 +896,7 @@ namespace BubbleStart.ViewModels
                     if (GymnastFunctional != null)
                     {
                         BasicDataManager.Delete(GymnastFunctional);
+                        GymnastFunctional = null;
                     }
                     break;
 
@@ -897,6 +904,7 @@ namespace BubbleStart.ViewModels
                     if (GymnastReformer != null)
                     {
                         BasicDataManager.Delete(GymnastReformer);
+                        GymnastReformer = null;
                     }
                     break;
 
@@ -904,6 +912,7 @@ namespace BubbleStart.ViewModels
                     if (GymnastMassage != null)
                     {
                         BasicDataManager.Delete(GymnastMassage);
+                        GymnastMassage = null;
                     }
                     break;
 
@@ -911,6 +920,7 @@ namespace BubbleStart.ViewModels
                     if (GymnastOutdoor != null)
                     {
                         BasicDataManager.Delete(GymnastOutdoor);
+                        GymnastOutdoor = null;
                     }
                     break;
             }
@@ -923,28 +933,36 @@ namespace BubbleStart.ViewModels
                     {
                         if (h.GymnastFunctional != null)
                         {
-                            BasicDataManager.Delete(h.GymnastFunctional);
+                            if (h.GymnastFunctional.Id > 0)
+                                BasicDataManager.Delete(h.GymnastFunctional);
+                            h.GymnastFunctional = null;
                         }
                     }
                     if (h.SelectedR && !(h == this && obj == 1))
                     {
                         if (h.GymnastReformer != null)
                         {
-                            BasicDataManager.Delete(h.GymnastReformer);
+                            if (h.GymnastReformer.Id > 0)
+                                BasicDataManager.Delete(h.GymnastReformer);
+                            h.GymnastReformer = null;
                         }
                     }
                     if (h.SelectedM && !(h == this && obj == 2))
                     {
                         if (h.GymnastMassage != null)
                         {
-                            BasicDataManager.Delete(h.GymnastMassage);
+                            if (h.GymnastMassage.Id > 0)
+                                BasicDataManager.Delete(h.GymnastMassage);
+                            h.GymnastMassage = null;
                         }
                     }
                     if (h.SelectedO && !(h == this && obj == 3))
                     {
                         if (h.GymnastOutdoor != null)
                         {
-                            BasicDataManager.Delete(h.GymnastOutdoor);
+                            if (h.GymnastOutdoor.Id > 0)
+                                BasicDataManager.Delete(h.GymnastOutdoor);
+                            h.GymnastOutdoor = null;
                         }
                     }
                 }
@@ -1449,41 +1467,62 @@ namespace BubbleStart.ViewModels
                 {
                     if (GymnastFunctional == null)
                     {
-                        GymnastFunctional = new GymnastHour { Datetime = Time, Gymnast = u, Room = (RoomEnum)v };
+                        GymnastFunctional = new GymnastHour { Datetime = Time, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastFunctional);
                     }
                     else
+                    {
                         GymnastFunctional.Gymnast = u;
+                        GymnastFunctional.Gymnast_Id = u.Id;
+                    }
+                    if (GymnastFunctional.Gymnast_Id == null)
+                    {
+                    }
                 }
                 else if (v == 1)
                 {
                     if (GymnastReformer == null)
                     {
-                        GymnastReformer = new GymnastHour { Datetime = Time, Gymnast = u, Room = (RoomEnum)v };
+                        GymnastReformer = new GymnastHour { Datetime = Time, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastReformer);
                     }
-                    else
+                    {
                         GymnastReformer.Gymnast = u;
+                        GymnastReformer.Gymnast_Id = u.Id;
+                    }
+                    if (GymnastReformer.Gymnast_Id == null)
+                    {
+                    }
                 }
                 else if (v == 2)
                 {
                     if (GymnastMassage == null)
                     {
-                        GymnastMassage = new GymnastHour { Datetime = Time, Gymnast = u, Room = (RoomEnum)v };
+                        GymnastMassage = new GymnastHour { Datetime = Time, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastMassage);
                     }
-                    else
+                    {
                         GymnastMassage.Gymnast = u;
+                        GymnastMassage.Gymnast_Id = u.Id;
+                    }
+                    if (GymnastMassage.Gymnast_Id == null)
+                    {
+                    }
                 }
                 else if (v == 3)
                 {
                     if (GymnastOutdoor == null)
                     {
-                        GymnastOutdoor = new GymnastHour { Datetime = Time, Gymnast = u, Room = (RoomEnum)v };
+                        GymnastOutdoor = new GymnastHour { Datetime = Time, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastOutdoor);
                     }
-                    else
+                    {
                         GymnastOutdoor.Gymnast = u;
+                        GymnastOutdoor.Gymnast_Id = u.Id;
+                    }
+                    if (GymnastOutdoor.Gymnast_Id == null)
+                    {
+                    }
                 }
                 if (parent != null)
                 {
@@ -1493,41 +1532,61 @@ namespace BubbleStart.ViewModels
                         {
                             if (h.GymnastFunctional == null)
                             {
-                                h.GymnastFunctional = new GymnastHour { Datetime = h.Time, Gymnast = u, Room = RoomEnum.Functional };
+                                h.GymnastFunctional = new GymnastHour { Datetime = h.Time, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.Functional };
                                 BasicDataManager.Add(h.GymnastFunctional);
                             }
-                            else
+                            {
                                 h.GymnastFunctional.Gymnast = u;
+                                h.GymnastFunctional.Gymnast_Id = u.Id;
+                            }
+                            if (h.GymnastFunctional.Gymnast_Id == null)
+                            {
+                            }
                         }
                         if (h.SelectedR)
                         {
                             if (h.GymnastReformer == null)
                             {
-                                h.GymnastReformer = new GymnastHour { Datetime = h.Time, Gymnast = u, Room = RoomEnum.Pilates };
+                                h.GymnastReformer = new GymnastHour { Datetime = h.Time, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.Pilates };
                                 BasicDataManager.Add(h.GymnastReformer);
                             }
-                            else
+                            {
                                 h.GymnastReformer.Gymnast = u;
+                                h.GymnastReformer.Gymnast_Id = u.Id;
+                            }
+                            if (h.GymnastReformer.Gymnast_Id == null)
+                            {
+                            }
                         }
                         if (h.SelectedM)
                         {
                             if (h.GymnastMassage == null)
                             {
-                                h.GymnastMassage = new GymnastHour { Datetime = h.Time, Gymnast = u, Room = RoomEnum.Massage };
+                                h.GymnastMassage = new GymnastHour { Datetime = h.Time, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.Massage };
                                 BasicDataManager.Add(h.GymnastMassage);
                             }
-                            else
+                            {
                                 h.GymnastMassage.Gymnast = u;
+                                h.GymnastMassage.Gymnast_Id = u.Id;
+                            }
+                            if (h.GymnastMassage.Gymnast_Id == null)
+                            {
+                            }
                         }
                         if (h.SelectedO)
                         {
                             if (h.GymnastOutdoor == null)
                             {
-                                h.GymnastOutdoor = new GymnastHour { Datetime = h.Time, Gymnast = u, Room = RoomEnum.Outdoor };
+                                h.GymnastOutdoor = new GymnastHour { Datetime = h.Time, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.Outdoor };
                                 BasicDataManager.Add(h.GymnastOutdoor);
                             }
-                            else
+                            {
                                 h.GymnastOutdoor.Gymnast = u;
+                                h.GymnastOutdoor.Gymnast_Id = u.Id;
+                            }
+                            if (h.GymnastOutdoor.Gymnast_Id == null)
+                            {
+                            }
                         }
                     }
                 }
