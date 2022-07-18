@@ -57,7 +57,7 @@ namespace BubbleStart
 
         void timer_Tick(object sender, EventArgs e)
         {
-            if (StaticResources.User?.Id != 35 && stopWatch.Elapsed.TotalSeconds >= 180)
+            if (StaticResources.User?.Id != 35 && StaticResources.User?.Id != 3 && stopWatch.Elapsed.TotalSeconds >= 180)
             {
                 Messenger.Default.Send(new LoginLogOutMessage(false));
             }

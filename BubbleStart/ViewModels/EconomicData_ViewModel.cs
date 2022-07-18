@@ -5,7 +5,6 @@ using BubbleStart.Views;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
-using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -49,19 +48,32 @@ namespace BubbleStart.ViewModels
             ShowPaymentsDataCommand = new RelayCommand(async () => { await ShowPaymentsData(); });
             OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
 
+            ShowSalesDataCommand = new RelayCommand(async () => { await ShowSalesData(); });
+
             DeleteExpenseCommand = new RelayCommand(async () => { await DeleteExpense(); });
             DeleteIncomeCommand = new RelayCommand(async () => { await DeleteIncome(); });
             Messenger.Default.Register<UpdateExpenseCategoriesMessage>(this, msg => Load());
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
-
+            Sales = new ObservableCollection<Program>();
+            StartDateSales = DateTime.Today;
             Load();
         }
 
-
-
+        private async Task ShowSalesData()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            Sales.Clear();
+            var enddate = EndDateSales.AddDays(1);
+            int dealid = SelectedDealIndex > 0 ? Deals[SelectedDealIndex - 1].Id : 0;
+            Sales = new ObservableCollection<Program>(await BasicDataManager.Context.Context.Programs.Where(p => (SelectedDealIndex == 0 || p.DealId == dealid) &&
+                (SelectedProgramTypeIndex == 0 || p.ProgramTypeO.ProgramMode == (ProgramMode)(SelectedProgramTypeIndex - 1)) &&
+                p.DayOfIssue >= StartDateSales && p.DayOfIssue < enddate)
+                .ToListAsync());
+            TotalSales = Sales.Sum(s => s.Amount);
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
 
         private string _Find;
-
 
         public string Find
         {
@@ -82,11 +94,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private string _Replace;
-
 
         public string Replace
         {
@@ -117,25 +125,20 @@ namespace BubbleStart.ViewModels
                 e.Reason = Regex.Replace(e.Reason, Find, Replace, RegexOptions.IgnoreCase);
             }
 
-
             await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         public bool HasBars => Bars.Count > 0;
 
-
         internal void CreatePlot()
         {
-
             Bars = new ObservableCollection<Bar>();
 
             if (RealPreview == null || RealPreview.Count == 0)
             {
                 return;
             }
-
-
 
             foreach (var b in RealPreview)
             {
@@ -164,10 +167,9 @@ namespace BubbleStart.ViewModels
                 b.Height = (int)(b.Value * BarsHeight / max) + 10;
             }
             RaisePropertyChanged(nameof(HasBars));
-
         }
-        private int _BarsHeight;
 
+        private int _BarsHeight;
 
         public int BarsHeight
         {
@@ -200,6 +202,26 @@ namespace BubbleStart.ViewModels
 
         private ObservableCollection<EconomicDetail> _EconomicDetails;
 
+        private ObservableCollection<Deal> _Deals;
+
+        public ObservableCollection<Deal> Deals
+        {
+            get
+            {
+                return _Deals;
+            }
+
+            set
+            {
+                if (_Deals == value)
+                {
+                    return;
+                }
+
+                _Deals = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public ObservableCollection<EconomicDetail> EconomicDetails
         {
@@ -617,7 +639,6 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        private int _SelMainIndex;
 
         private ExpenseCategoryClass _MainCategory;
 
@@ -1034,9 +1055,52 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        private ObservableCollection<Program> _Sales;
+
+        public ObservableCollection<Program> Sales
+        {
+            get
+            {
+                return _Sales;
+            }
+
+            set
+            {
+                if (_Sales == value)
+                {
+                    return;
+                }
+
+                _Sales = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _TotalSales;
+
+        public decimal TotalSales
+        {
+            get
+            {
+                return _TotalSales;
+            }
+
+            set
+            {
+                if (_TotalSales == value)
+                {
+                    return;
+                }
+
+                _TotalSales = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public RelayCommand ShowCashDataCommand { get; set; }
 
         public RelayCommand ShowExpensesDataCommand { get; set; }
+        public RelayCommand ShowSalesDataCommand { get; set; }
         public RelayCommand FindAndReplaceCommand { get; set; }
 
         public RelayCommand ShowIncomesDataCommand { get; set; }
@@ -1236,17 +1300,104 @@ namespace BubbleStart.ViewModels
             Cleanse = Sum - ExpensesSum + 50;
         }
 
-
-
-
         public bool AnyDetails => EconomicDetails.Any();
 
+        private DateTime _StartDateSales;
+
+        public DateTime StartDateSales
+        {
+            get
+            {
+                return _StartDateSales;
+            }
+
+            set
+            {
+                if (_StartDateSales == value)
+                {
+                    return;
+                }
+                if (value > EndDateSales)
+                {
+                    EndDateSales = value;
+                }
+                _StartDateSales = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private DateTime _EndDateSales;
+
+        private int _SelectedProgramTypeIndex;
+
+        private int _SelectedDealIndex;
+
+        public int SelectedDealIndex
+        {
+            get
+            {
+                return _SelectedDealIndex;
+            }
+
+            set
+            {
+                if (_SelectedDealIndex == value)
+                {
+                    return;
+                }
+
+                _SelectedDealIndex = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public int SelectedProgramTypeIndex
+        {
+            get
+            {
+                return _SelectedProgramTypeIndex;
+            }
+
+            set
+            {
+                if (_SelectedProgramTypeIndex == value)
+                {
+                    return;
+                }
+
+                _SelectedProgramTypeIndex = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public DateTime EndDateSales
+        {
+            get
+            {
+                return _EndDateSales;
+            }
+
+            set
+            {
+                if (_EndDateSales == value)
+                {
+                    return;
+                }
+                if (value < StartDateSales)
+                {
+                    StartDateSales = value;
+                }
+                _EndDateSales = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             EconomicDetails = new ObservableCollection<EconomicDetail>();
             Expenses.Clear();
             Incomes.Clear();
+            Deals = new ObservableCollection<Deal>(BasicDataManager.Deals.Where(d=>d.Id>0));
             if (BasicDataManager.ExpenseCategoryClasses != null)
             {
                 MainCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses.Where(e => (e.Id > 1 || e.Id == -1) && e.Id != 20 && (e.ParentId == 1 || e.Parent == null)));
@@ -1414,9 +1565,7 @@ namespace BubbleStart.ViewModels
             throw new InvalidOperationException(nameof(expense));
         }
 
-
         private ObservableCollection<Bar> _Bars;
-
 
         public ObservableCollection<Bar> Bars
         {
@@ -1436,8 +1585,6 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
-
-
 
         private decimal GetProgramAmountInMonth(PreviewData mon, Program program)
         {
@@ -1836,7 +1983,6 @@ namespace BubbleStart.ViewModels
     {
         private int _Height;
 
-
         public int Height
         {
             get
@@ -1858,10 +2004,7 @@ namespace BubbleStart.ViewModels
 
         public int HeightNeg => Height * -1;
 
-
-
         private string _Label;
-
 
         public string Label
         {
@@ -1882,11 +2025,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private decimal _Value;
-
 
         public decimal Value
         {
@@ -1907,6 +2046,7 @@ namespace BubbleStart.ViewModels
             }
         }
     }
+
     public class PreviewData : BaseModel
     {
         #region Fields

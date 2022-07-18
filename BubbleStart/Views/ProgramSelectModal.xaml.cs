@@ -1,0 +1,37 @@
+﻿using BubbleStart.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace BubbleStart.Views
+{
+    /// <summary>
+    /// Interaction logic for ProgramSelectModal.xaml
+    /// </summary>
+    public partial class ProgramSelectModal : Window
+    {
+        public ProgramSelectModal()
+        {
+            InitializeComponent();
+        }
+
+        private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is Customer c && sender is DataGridRow d && d.DataContext is Program p)
+            {
+                //c.ProgramToSelect = p;
+                this.Close();
+            }
+        }
+    }
+}

@@ -331,11 +331,17 @@ namespace BubbleStart.ViewModels
             StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
             DateTime tmpdate = StartDate.AddDays(6);
 
-            List<Apointment> apointments = refresh ? await BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate).ToListAsync() :
+            if (refresh)
+
+                await BasicDataManager.Context.Context.ShowUps.Where(a => a.Arrived >= StartDate && a.Arrived < tmpdate)
+                       .Include(c => c.Customer)
+                       .ToListAsync();
+
+            List<Apointment> apointments = refresh ? await BasicDataManager.Context.Context.Apointments.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate)
+                .Include(a => a.Customer)
+                .ToListAsync() :
                BasicDataManager.Context.Context.Apointments.Local.Where(a => a.DateTime >= StartDate && a.DateTime < tmpdate).ToList();
 
-            if (refresh)
-                await BasicDataManager.Context.Context.ShowUps.Where(a => a.Arrived >= StartDate && a.Arrived < tmpdate && a.Arrived < a.Customer.ResetDate).ToListAsync();
             //else
             //    BasicDataManager.Context.Context.ShowUps.Local.Where(a => a.Arrived >= StartDate && a.Arrived < tmpdate && a.Arrived < a.Customer.ResetDate).ToList();
 

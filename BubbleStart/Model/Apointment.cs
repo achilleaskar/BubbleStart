@@ -13,13 +13,9 @@ namespace BubbleStart.Model
 
         public string GetApColor(bool gym)
         {
-            if (Id== 44005)
-            {
-
-            }
-
             if (Customer != null)
             {
+               
                 if (DateTime < DateTime.Now && !Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date))
                     return Colors.Red.ToString();
             }
@@ -50,7 +46,7 @@ namespace BubbleStart.Model
 
         }
 
-        public string CustomerWithGym => (Gymnast != null ? Gymnast.Name.Substring(0, 3)+" | ":"") + Customer.ToString();
+        public string CustomerWithGym => (Gymnast != null ? Gymnast.Name.Substring(0, 3) + " | " : "") + Customer.ToString();
 
         public int? GymnastId { get; set; }
 

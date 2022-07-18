@@ -35,7 +35,10 @@ namespace BubbleStart.Database
             ThreeMonths = DateTime.Today.AddMonths(-3);
 
             CloseLimit = (DateTime.Today - Limit).TotalDays > 20 ? DateTime.Today.AddDays(-20) : Limit;
+
+#if DEBUG
             Context.Database.Log = Console.Write;
+#endif
         }
 
         internal bool HasChanges<TEntity>(TEntity entity) where TEntity : BaseModel
@@ -128,24 +131,27 @@ namespace BubbleStart.Database
             return await Context.Set<TEntity>().Where(filter).ToListAsync();
         }
 
-        public Customer GetFullCustomerById(int id)
+        public void GetFullCustomerById(int id)
         {
             try
             {
-                return Context.Set<Customer>()
+                Context.Programs.Where(a => a.Customer.Id == id)
+                    .Include(f => f.Payments)
+                    .Include(f => f.ShowUpsList)
+                    .ToList();
+
+                Context.Customers
                     .Where(c => c.Id == id)
-                    .Include(f => f.Programs.Select(t => t.Payments))
+                    .Include(e => e.ShowUps)
                     .Include(g => g.Payments)
                     .Include(d => d.WeightHistory)
                     .Include(c => c.Illness)
-                    .Include(e => e.ShowUps)
                     .Include(h => h.Changes)
                     .Include(a => a.Apointments)
                     .FirstOrDefault();
             }
             catch (Exception)
             {
-                return null;
             }
         }
 
@@ -422,11 +428,11 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null,int mainId=-1,int secId=-1)
+        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null, int mainId = -1, int secId = -1)
         {
             if (expensetypes == null || expensetypes.Count == 0)
                 return await Context.Expenses.Where(e => (!limit || e.Date >= Limit) &&
-                (mainId <= 0 || mainId == e.MainCategoryId) && 
+                (mainId <= 0 || mainId == e.MainCategoryId) &&
                 (secId <= 0 || secId == e.SecondaryCategoryId)).Where(filterp)
                    .ToListAsync();
             else
@@ -490,16 +496,12 @@ namespace BubbleStart.Database
                     .ToListAsync();
                 await Context.Set<Program>()
                     .Where(p => p.Customer.Enabled && p.StartDay >= p.Customer.ResetDate)
+                    .Include(s => s.ShowUpsList)
                     .ToListAsync();
                 await Context.Set<Payment>()
-                    .Where(s => s.Customer.Enabled &&( s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate)))
+                    .Where(s => s.Customer.Enabled && (s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate)))
                     .ToListAsync();
 
-                //await Context.Set<ShowUp>().Where(s => s.Arrived >= Limit).ToListAsync();
-                //await Context.Set<Change>().Where(s => s.Date >= s.Customer.ResetDate).ToListAsync();
-                //await Context.Set<Apointment>().Where(p4 => p4.DateTime >= CloseLimit).ToListAsync();
-                //var pr = await Context.Set<Program>().Where(p => p.StartDay >= Limit).ToListAsync();
-                //await Context.Set<Payment>().Where(s => s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate)).ToListAsync();
 
                 var x = (await Context.Set<Customer>().Where(c => c.Enabled)
                         .Select(c => new

@@ -1,4 +1,5 @@
-﻿using BubbleStart.Model;
+﻿using BubbleStart.Helpers;
+using BubbleStart.Model;
 using BubbleStart.ViewModels;
 using System.Linq;
 using System.Windows.Controls;
@@ -17,10 +18,20 @@ namespace BubbleStart.Views
             InitializeComponent();
         }
 
-        private void OnDoubleClick(object sender, MouseButtonEventArgs e)
+        private async void OnDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (sender is ContentControl cc && cc.DataContext is Apointment ap && ap.Customer != null)
             {
+                if (!ap.Customer.Enabled)
+                {
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    await ((Apointments_ViewModel)DataContext).BasicDataManager.Context.GetFullCustomerByIdAsync(ap.Customer.Id);
+                    ap.Customer.Loaded=true;
+                    ap.Customer.InitialLoad();
+                    ap.Customer.UpdateCollections();
+                    ap.Customer.SetColors();
+                    Mouse.OverrideCursor = Cursors.Arrow;
+                }
                 ap.Customer.FromProgram = true;
                 ((Apointments_ViewModel)DataContext).OpenCustomerManagement(ap.Customer);
             }
@@ -129,7 +140,7 @@ namespace BubbleStart.Views
                         }
                     }
                 }
-            else if((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
                     h.SelectedM = !h.SelectedM;
                 else if (DataContext is Apointments_ViewModel vm)
                     foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
@@ -162,7 +173,7 @@ namespace BubbleStart.Views
                         }
                     }
                 }
-            else if((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
                     h.SelectedO = !h.SelectedO;
                 else if (DataContext is Apointments_ViewModel vm)
                     foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)

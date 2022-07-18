@@ -9,6 +9,10 @@ namespace BubbleStart.Model
 {
     public class Program : BaseModel
     {
+        public Program()
+        {
+            ShowUpsList = new List<ShowUp>();
+        }
         #region Fields
 
         private decimal _Amount;
@@ -547,7 +551,7 @@ namespace BubbleStart.Model
         internal DateTime AddMonth(int months)
         {
             var x = StartDay.AddMonths(months);
-            if (StartDay>=new DateTime(2022,1,17))
+            if (StartDay >= new DateTime(2022, 1, 17))
             {
                 return x.AddDays(-1);
             }
@@ -600,8 +604,8 @@ namespace BubbleStart.Model
 
         internal void SetRemainingDays()
         {
-            var r = (int)(AddMonth(Months) - DateTime.Today).TotalDays+1;
-            RemainingDays= r > 0 ? r : 0;
+            var r = (int)(AddMonth(Months) - DateTime.Today).TotalDays + 1;
+            RemainingDays = r > 0 ? r : 0;
         }
     }
 }

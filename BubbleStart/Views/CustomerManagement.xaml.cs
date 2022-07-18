@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using BubbleStart.Helpers;
 using BubbleStart.Model;
 using BubbleStart.ViewModels;
@@ -43,6 +44,7 @@ namespace BubbleStart.Views
         {
 
         }
+
 
         private void DataGridRow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -191,7 +193,7 @@ namespace BubbleStart.Views
 
                 try
                 {
-                    d.ScrollIntoView(d.SelectedItem);
+                    //d.ScrollIntoView(d.SelectedItem);
                 }
                 catch (Exception ex)
                 {
@@ -201,7 +203,7 @@ namespace BubbleStart.Views
 
         private void TextBlock_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (DataContext is Customer c) 
+            if (DataContext is Customer c)
             {
                 Clipboard.SetText(c.ToString());
             }

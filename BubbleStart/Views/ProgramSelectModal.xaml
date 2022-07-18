@@ -1,0 +1,62 @@
+﻿<Window x:Class="BubbleStart.Views.ProgramSelectModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Converters="clr-namespace:BubbleStart.Converters"
+        mc:Ignorable="d"
+        xmlns:models="clr-namespace:BubbleStart.Model"
+        d:DataContext="{d:DesignInstance models:Customer}"
+        SizeToContent="WidthAndHeight"
+        Title="Επιλέξτε ένα απο τα ένεργά προγράμματα με διπλό κλίκ!">
+    <Window.Resources>
+        <Converters:DateTimeToString x:Key="DateTimeToString" />
+    </Window.Resources>
+    <Grid>
+        <GroupBox Header="Διαθέσιμα Πακέτα"
+                  VerticalAlignment="Stretch">
+            <DataGrid ItemsSource="{Binding AvailablePrograms}"
+                      CanUserAddRows="False"
+                      Width="600"
+                      MinHeight="150"
+                      VerticalAlignment="Top"
+                      CanUserDeleteRows="False"
+                      AutoGenerateColumns="False">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <EventSetter Event="MouseDoubleClick"
+                                     Handler="Row_DoubleClick" />
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Έναρξη"
+                                        Width="60"
+                                        SortDirection="Descending"
+                                        Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                    <DataGridTextColumn Header="Τύπος"
+                                        Width="120"
+                                        Binding="{Binding ProgramTypeO,UpdateSourceTrigger=PropertyChanged}" /> 
+                    <DataGridTextColumn Header="Συν."
+                                        Width="30"
+                                        Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                    <DataGridTextColumn Header="Μήνες"
+                                        Width="35"
+                                        Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
+                    <DataGridTextColumn Header="Τιμή Συν."
+                                        Width="55"
+                                        IsReadOnly="true"
+                                        Binding="{Binding ShowUpPrice,StringFormat=c}" />
+                    <DataGridTextColumn Header="Σύνολο"
+                                        Width="55"
+                                        Binding="{Binding Amount,StringFormat=c}" />
+                    <DataGridTextColumn Header="Αγορά"
+                                        Width="60"
+                                        Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                    <DataGridTextColumn Header="Deal"
+                                        Width="100"
+                                        Binding="{Binding Deal}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+    </Grid>
+</Window>

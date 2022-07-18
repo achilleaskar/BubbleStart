@@ -9,5 +9,10 @@ namespace BubbleStart.Model
     public class Deal : BaseModel
     {
         public string Name { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

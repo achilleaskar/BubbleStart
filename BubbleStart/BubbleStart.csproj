@@ -724,6 +724,9 @@
     <Compile Include="Views\OvalButton.xaml.cs">
       <DependentUpon>OvalButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProgramSelectModal.xaml.cs">
+      <DependentUpon>ProgramSelectModal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SearchCustomers.xaml.cs">
       <DependentUpon>SearchCustomers.xaml</DependentUpon>
     </Compile>
@@ -1107,6 +1110,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\OvalButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProgramSelectModal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -50,13 +50,17 @@
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="ContextMenu"
                             Value="{StaticResource searchContextMenu}" />
+                    <Setter Property="Background"
+                            Value="{Binding IsActiveColor}" />
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="#"
+                                   
                                     Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource  RowToIndexConverter}}" />
                 <DataGridTextColumn Header="Όνομα"
                                     Width="110"
+                                    SortMemberPath="IsActiveColorq"
                                     Binding="{Binding Name}" />
                 <DataGridTextColumn Header="Επίθετο"
                                     Width="110"

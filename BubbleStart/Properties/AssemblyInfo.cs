@@ -30,7 +30,8 @@ using System.Windows;
 
 
 //Severity Code    Description Project File Line    Suppression State
-//Error The command "nuget pack MyApp.nuspec -Version 0.5.2.0 -Properties Configuration=Release -OutputDirectory bin\Release\ -BasePath bin\Release\" exited with code 1.	BubbleStart	C:\Users\achil\Source\Repos\BubbleStart\BubbleStart\BubbleStart.csproj	686	
+//Error The command "nuget pack MyApp.nuspec -Version 0.5.2.0 -Properties Configuration=Release -OutputDirectory bin\Release\ -BasePath bin\Release\" exited with code 1.	
+//BubbleStart	C:\Users\achil\Source\Repos\BubbleStart\BubbleStart\BubbleStart.csproj	686	
 
 
 //[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
@@ -47,7 +48,7 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.7.2")]
-[assembly: AssemblyFileVersion("1.7.2")]
+[assembly: AssemblyVersion("1.8.1")]
+[assembly: AssemblyFileVersion("1.8.1")]
 [assembly: NeutralResourcesLanguage("el-GR")]
  
