@@ -37,7 +37,7 @@ namespace BubbleStart.Database
             CloseLimit = (DateTime.Today - Limit).TotalDays > 20 ? DateTime.Today.AddDays(-20) : Limit;
 
 #if DEBUG
-            Context.Database.Log = Console.Write;
+            //Context.Database.Log = Console.Write;
 #endif
         }
 
@@ -419,8 +419,10 @@ namespace BubbleStart.Database
             {
                 endDateCash = endDateCash.AddDays(1);
                 return await Context.Payments
-                    .Where(p => p.Customer.Enabled && p.Date >= startDateCash && p.Date <= endDateCash && (!limit || p.Date >= Limit))
-                        .ToListAsync();
+                    .Where(p => p.Date >= startDateCash && p.Date <= endDateCash && (!limit || p.Date >= Limit))
+                    .Include(c=>c.Customer)
+                    .Include(c=>c.Program)
+                    .ToListAsync();
             }
             catch (Exception)
             {
@@ -439,6 +441,19 @@ namespace BubbleStart.Database
                 return await Context.Expenses.Where(e => e.MainCategoryId != null && (!limit || e.Date >= Limit) &&
                 (mainId <= 0 || mainId == e.MainCategoryId) &&
                 (secId <= 0 || secId == e.SecondaryCategoryId) && expensetypes.Contains((int)e.MainCategoryId)).Where(filterp)
+                   .Include(e => e.User)
+                   .ToListAsync();
+        }
+
+        internal async Task<List<Expense>> GetAllIncomesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null, int secId = -1)
+        {
+            if (expensetypes == null || expensetypes.Count == 0)
+                return await Context.Expenses.Where(e => (!limit || e.Date >= Limit) &&
+                (secId <= 0 || secId == e.SecondaryCategoryId)).Where(filterp)
+                   .ToListAsync();
+            else
+                return await Context.Expenses.Where(e => e.MainCategoryId != null && (!limit || e.Date >= Limit) &&
+                (secId <= 0 || secId == e.SecondaryCategoryId) && expensetypes.Contains((int)e.SecondaryCategoryId)).Where(filterp)
                    .Include(e => e.User)
                    .ToListAsync();
         }

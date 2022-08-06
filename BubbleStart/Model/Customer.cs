@@ -142,7 +142,6 @@ namespace BubbleStart.Model
         private ShowUp _SelectedAerialYogaShowUp;
         private BodyPart _SelectedBodyPart;
         private Change _SelectedChange;
-        private ClothColors? _SelectedColor;
         private Payment _SelectedFunctionalPayment;
         private Payment _SelectedFunctionalPilatesPayment;
         private Program _SelectedFunctionalPilatesProgram;
@@ -2061,25 +2060,55 @@ namespace BubbleStart.Model
             }
         }
 
+
+
+
+
+
+        private bool _ClothFree;
+
         [NotMapped]
-        public ClothColors? SelectedColor
+        public bool ClothFree
         {
             get
             {
-                return _SelectedColor;
+                return _ClothFree;
             }
 
             set
             {
-                if (_SelectedColor == value)
+                if (_ClothFree == value)
                 {
                     return;
                 }
 
-                _SelectedColor = value;
+                _ClothFree = value;
                 RaisePropertyChanged();
             }
         }
+        private decimal _ClothPrice;
+
+        [NotMapped]
+        public decimal ClothPrice
+        {
+            get
+            {
+                return _ClothPrice;
+            }
+
+            set
+            {
+                if (_ClothPrice == value)
+                {
+                    return;
+                }
+
+                _ClothPrice = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
 
         [NotMapped]
         public Payment SelectedFunctionalPayment
@@ -2932,6 +2961,32 @@ namespace BubbleStart.Model
             }
         }
 
+
+
+
+
+        private string _ClothColorString;
+
+        [NotMapped]
+        public string ClothColorString
+        {
+            get
+            {
+                return _ClothColorString;
+            }
+
+            set
+            {
+                if (_ClothColorString == value)
+                {
+                    return;
+                }
+
+                _ClothColorString = value;
+                RaisePropertyChanged();
+            }
+        }
+
         [NotMapped]
         public SizeEnum? SelectedSize
         {
@@ -3515,10 +3570,6 @@ namespace BubbleStart.Model
 
         public SolidColorBrush GetCustomerColor()
         {
-            //if (Id == 432)
-            //{
-
-            //}
             if (!Loaded)
             {
                 return new SolidColorBrush(Colors.Fuchsia);
@@ -3529,34 +3580,15 @@ namespace BubbleStart.Model
                 var lastShowUp = new DateTime();
                 if (lastShUp != null)
                     lastShowUp = lastShUp.Arrived;
-                if (RemainingAmount > 0 || ShowUps.Any(s => !s.Present && s.Prog == null && s.Arrived>= ResetDate))
+                if (RemainingAmount > 0 || ShowUps.Any(s => !s.Present && s.Prog == null && s.Arrived >= ResetDate))
                 {
                     ActiveCustomer = true;
-                    if (ForceDisable == ForceDisable.forceEnable)
-                    {
-                        ActiveCustomer = true;
-                    }
-                    if (ForceDisable == ForceDisable.forceDisable)
-                    {
-                        ActiveCustomer = false;
-                    }
 
                     return new SolidColorBrush(Colors.Red);
                 }
                 else if (lastShowUp > DateTime.Today.AddDays(-45))
                 {
                     ActiveCustomer = true;
-                    if (ForceDisable == ForceDisable.forceEnable)
-                    {
-                        ActiveCustomer = true;
-                        return new SolidColorBrush(Colors.Green);
-                    }
-                    if (ForceDisable == ForceDisable.forceDisable)
-                    {
-                        ActiveCustomer = false;
-                        return new SolidColorBrush(Colors.Orange);
-                    }
-
                     return new SolidColorBrush(Colors.Green);
                 }
                 else
@@ -3698,6 +3730,8 @@ namespace BubbleStart.Model
             DateTime startDate = Full ? new DateTime() : ResetDate;
 
             if (!Loaded) return;
+
+
             if (Programs != null && ShowUps != null && ShowUps.Count > 0 && Programs.Count > 0)
             {
                 foreach (var prog in Programs)
@@ -3784,7 +3818,9 @@ namespace BubbleStart.Model
                             progIndex++;
                         }
 
-                        if (selProg == null || selProg.StartDay > showUp.Arrived || (selProg.Showups > 0 && selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
+                        if (selProg == null || selProg.StartDay > showUp.Arrived
+                            || (selProg.Showups == 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months) && progIndex == programsReversed.Count)
+                            || (selProg.Showups > 0 && selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
                             continue;
                         showUp.Color = selProg.Color;
                         showUp.Count = counter++;
@@ -3922,6 +3958,7 @@ namespace BubbleStart.Model
             RaisePropertyChanged(nameof(Active));
 
             UpdateCollections();
+            IsActiveColor = GetCustomerColor();
         }
 
         public void SetRemaining()
@@ -4379,9 +4416,64 @@ namespace BubbleStart.Model
             }
         }
 
+
+
+
+
+        private DateTime _DoctorDate;
+
+
+        public DateTime DoctorDate
+        {
+            get
+            {
+                return _DoctorDate;
+            }
+
+            set
+            {
+                if (_DoctorDate == value)
+                {
+                    return;
+                }
+
+                _DoctorDate = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private bool _Google;
+
+
+        public bool Google
+        {
+            get
+            {
+                return _Google;
+            }
+
+            set
+            {
+                if (_Google == value)
+                {
+                    return;
+                }
+
+                _Google = value;
+                RaisePropertyChanged();
+            }
+        }
         private void AddItem()
         {
-            Items.Add(new ItemPurchase { Item = SelectedItem, Size = SelectedSize, Date = DateTime.Today, Color = SelectedColor });
+            Items.Add(new ItemPurchase { Item = SelectedItem, Size = SelectedSize, Date = DateTime.Today, ColorString = ClothColorString, Free = ClothFree, Price = ClothPrice });
+            SelectedItem = null;
+            SelectedSize = null;
+            ClothFree = false;
+            ClothColorString = "";
+            ClothPrice = 0;
         }
 
         private void AddOldShowUp(int programMode)
@@ -4871,8 +4963,7 @@ namespace BubbleStart.Model
             SelectedProgramType = null;
             DateOfIssue = StartDate = DateTime.Today;
             RaisePropertyChanged(nameof(RemainingAmount));
-            if (ForceDisable == ForceDisable.forceDisable)
-                ForceDisable = ForceDisable.normal;
+
             // await BasicDataManager.SaveAsync();
             //PaymentsCollectionView.Refresh();
             //PaymentsMassCollectionView.Refresh();

@@ -1384,7 +1384,7 @@ namespace BubbleStart.ViewModels
                     List<Apointment> nextAppoitments = await BasicDataManager.Context.GetAllAppointmentsThisDayAsync(customer.Id, Time, room);
 
                     DateTime tmpdate = Time;
-                    while (Time.Month != 8)
+                    while (Time < DateTime.Today.AddYears(1))
                     {
                         Time = Time.AddDays(7);
                         if (!nextAppoitments.Any(c => c.DateTime == Time))

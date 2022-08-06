@@ -22,6 +22,17 @@ namespace BubbleStart.ViewModels
             SearchCustomer_ViewModel = searchCustomer_ViewModel;
             ShowCustomersCommand = new RelayCommand(async () => await ShowCustomers());
             ReActivateCustomerCommand = new RelayCommand<Customer>(async (obj) => { await ReActivateCustomer(obj); });
+            DeleteCustomerCommand = new RelayCommand<Customer>(async (obj) => { await DeleteCustomer(obj); });
+        }
+
+        private async Task DeleteCustomer(Customer obj)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            obj.ForceDisable = ForceDisable.forceDisable;
+            Customers.Remove(obj);
+
+            await BasicDataManager.SaveAsync();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private async Task ReActivateCustomer(Customer obj)
@@ -119,7 +130,7 @@ namespace BubbleStart.ViewModels
         private async Task ShowCustomers()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            Customers = new ObservableCollection<Customer>(await BasicDataManager.Context.GetAllAsync<Customer>(c => !c.Enabled));
+            Customers = new ObservableCollection<Customer>(await BasicDataManager.Context.GetAllAsync<Customer>(c => !c.Enabled && c.ForceDisable == ForceDisable.normal));
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -135,6 +146,7 @@ namespace BubbleStart.ViewModels
 
         public RelayCommand ShowCustomersCommand { get; set; }
         public RelayCommand<Customer> ReActivateCustomerCommand { get; set; }
+        public RelayCommand<Customer> DeleteCustomerCommand { get; set; }
         public BasicDataManager BasicDataManager { get; }
         public SearchCustomer_ViewModel SearchCustomer_ViewModel { get; }
     }

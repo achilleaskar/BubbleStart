@@ -55,8 +55,8 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public ObservableCollection<ExpenseCategoryClass> SecondaryCategories => parent != null && MainCategory != null ? (Income ?
-            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == 20 || p.Id == -1)) :
-            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == MainCategory.Id || p.Id == -1)))
+            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == 20 || p.Id == -1).OrderBy(r=>r.Name)) :
+            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == MainCategory.Id || p.Id == -1).OrderBy(r => r.Name)))
             : new ObservableCollection<ExpenseCategoryClass>();
 
         public DateTime Date

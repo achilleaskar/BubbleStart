@@ -9,6 +9,7 @@ using System.Windows.Markup;
 using System.Windows.Threading;
 using BubbleStart.Helpers;
 using BubbleStart.Messages;
+using BubbleStart.Model;
 using BubbleStart.ViewModels;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.Messaging;
@@ -59,6 +60,14 @@ namespace BubbleStart
         {
             if (StaticResources.User?.Id != 35 && StaticResources.User?.Id != 3 && stopWatch.Elapsed.TotalSeconds >= 180)
             {
+                if (StaticResources.OpenWindow!=null)
+                {
+                    if (StaticResources.OpenWindow.DataContext is Customer c && c.BasicDataManager.HasChanges())
+                    {
+                        c.BasicDataManager.RollBack();
+                    }
+                    StaticResources.OpenWindow.Close();
+                }
                 Messenger.Default.Send(new LoginLogOutMessage(false));
             }
         }

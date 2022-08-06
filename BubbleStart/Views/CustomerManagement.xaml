@@ -359,21 +359,31 @@
                         <CheckBox Content="Ανεμβολίαστος"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding Psek}" />
-                        <CheckBox Content="Χαρτί Γιατρού"
-                                  VerticalAlignment="Center"
-                                  IsChecked="{Binding Doctor}" />
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Χαρτί Γιατ."
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding Doctor}" />
+                            <DatePicker Margin="5 0 0 0"
+                                        FontSize="11"
+                                        Width="80"
+                                        SelectedDate="{Binding DoctorDate}" />
+                        </StackPanel>
                         <CheckBox Content="3η δόση"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding ThirdDose}" />
                         <CheckBox Content="Μαλιαρόπουλος"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding Maliar}" />
+                        <CheckBox Content="Google *"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding Google}" />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Ημ. Εκαθ.:"
-                                       Margin="0 3 5 5" />
+                                       Margin="0 5 5 5" />
                             <DatePicker SelectedDate="{Binding ResetDate,UpdateSourceTrigger=PropertyChanged}"
                                         Name="ResetDayPicker"
-                                        Width="100" />
+                                        VerticalAlignment="Center"
+                                        Width="90" />
                             <Button Click="Button_Click"
                                     VerticalAlignment="Center"
                                     Margin="5 0">
@@ -4057,26 +4067,38 @@
                     <StackPanel Height="210">
                         <StackPanel Orientation="Horizontal">
                             <ComboBox Width="80"
-                                      Margin="0 5"
+                                      Margin="5 5 0 5"
                                       SelectedItem="{Binding SelectedItem}"
                                       VerticalAlignment="Center"
                                       ItemsSource="{Binding BasicDataManager.ItemsList}"
                                       DisplayMemberPath="Name" />
-                            <ComboBox Width="60"
+                            <ComboBox Width="55"
                                       SelectedItem="{Binding SelectedSize}"
                                       Margin="5 0 "
                                       ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:SizeEnum}}}"
                                       VerticalAlignment="Center" />
-                            <ComboBox Width="85"
-                                      SelectedItem="{Binding SelectedColor}"
-                                      Margin="0 5 5 5"
-                                      ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type enum:ClothColors}}}"
-                                      VerticalAlignment="Center" />
-                            <Button Content="Προσθήκη"
+                            <TextBox Width="30"
+                                     Text="{Binding ClothPrice,Converter={StaticResource FtoSConverter}}"
+                                     Margin="0 0 5 0"
+                                     Height="22"
+                                     VerticalContentAlignment="Center" />
+                            <CheckBox Content="Free"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ClothFree}"
+                                      Margin="5" />
+                            <Button Content="Add"
                                     Padding="5 0"
                                     Height="22"
                                     Command="{Binding AddItemCommand}"
                                     VerticalAlignment="Center" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Χρώμα:"
+                                   VerticalAlignment="Center" />
+                            <TextBox Width="255"
+                                     Text="{Binding ClothColorString}"
+                                     Margin="0 5 5 5"
+                                     VerticalAlignment="Top" />
                         </StackPanel>
                         <DataGrid ItemsSource="{Binding Items}"
                                   CanUserAddRows="False"
@@ -4111,15 +4133,13 @@
                                                     Binding="{Binding Size}" />
                                 <DataGridTextColumn Header="Ημερ."
                                                     Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                <DataGridTemplateColumn>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Rectangle Fill="{Binding Converter={StaticResource ClothToColorConverter}}"
-                                                       VerticalAlignment="Stretch"
-                                                       HorizontalAlignment="Stretch" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                <DataGridCheckBoxColumn Binding="{Binding Free}" Header="Free"/>
+                                <DataGridTextColumn Header="Τιμή"
+                                                    Width="50"
+                                                    Binding="{Binding Price,StringFormat=C2}" />
+                                <DataGridTextColumn Header="Χρώμα"
+                                                    Width="50"
+                                                    Binding="{Binding ColorString,StringFormat=C2}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </StackPanel>
@@ -4165,7 +4185,7 @@
                                       AutoGenerateColumns="False">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Ημερ."
-                                                         Width="88"
+                                                        Width="88"
                                                         Binding="{Binding DateTime,ConverterParameter='dd/MM/yy hh:mm', Converter={StaticResource DateTimeToString}}" />
                                     <DataGridTextColumn Header="Τύπος"
                                                         Binding="{Binding Description}" />

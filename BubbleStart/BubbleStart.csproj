@@ -641,6 +641,14 @@
     <Compile Include="Migrations\202206261821575_ItemsShop2.designer.cs">
       <DependentUpon>202206261821575_ItemsShop2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202207311323106_doctordategoogle.cs" />
+    <Compile Include="Migrations\202207311323106_doctordategoogle.designer.cs">
+      <DependentUpon>202207311323106_doctordategoogle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208020750338_present1.cs" />
+    <Compile Include="Migrations\202208020750338_present1.designer.cs">
+      <DependentUpon>202208020750338_present1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -1047,6 +1055,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202206261821575_ItemsShop2.resx">
       <DependentUpon>202206261821575_ItemsShop2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207311323106_doctordategoogle.resx">
+      <DependentUpon>202207311323106_doctordategoogle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208020750338_present1.resx">
+      <DependentUpon>202208020750338_present1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

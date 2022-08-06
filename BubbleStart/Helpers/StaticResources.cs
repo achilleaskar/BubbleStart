@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Model;
+using BubbleStart.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,6 +56,7 @@ namespace BubbleStart.Helpers
 
         //public static string[] Districts { get; set; } = { "Ευζώνων", "Λαογραφικό Μουσείο", "Μπότσαρη", "Πανόραμα", "Σχολή Τυφλων", "Φάληρο", "Άλλο" };
         public static List<int> Months { get; set; } = new List<int> { 0, 1, 2, 3, 6, 12 };
+        public static CustomerManagement OpenWindow { get; internal set; }
 
         //public static ObservableCollection<District> Districts { get; set; } = new ObservableCollection<District>();
 

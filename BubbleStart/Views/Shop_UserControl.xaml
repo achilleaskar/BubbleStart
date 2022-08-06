@@ -179,7 +179,7 @@
                         Grid.Row="2"
                         Width="150"
                         Grid.Column="1"
-                        Margin="0,1" />
+                        Margin="0,5" />
             <!--row 2-->
             <Label Content="Ρούχο:"
                    Grid.Row="3"
@@ -217,13 +217,21 @@
                      Margin="0 5"
                      Width="150"
                      Grid.Column="1" />
+            <Label Content="Free:"
+                   Grid.Row="7"
+                   Grid.Column="0" />
+            <CheckBox IsChecked="{Binding NewPurchase.Free}"
+                     Grid.Row="7"
+                     Margin="0 5"
+                     Grid.Column="1" />
             <Button Content="Προσθήκη"
-                    Grid.Row="7"
+                    Grid.Row="8"
+                    Grid.Column="1"
                     Grid.ColumnSpan="2"
-                    HorizontalAlignment="Center"
+                    HorizontalAlignment="Left"
                     Padding="10 2"
+                    Margin="0,5"
                     VerticalAlignment="Center"
-                    Margin="5"
                     Command="{Binding MakePurchaseCommand}" />
         </Grid>
     </Grid>

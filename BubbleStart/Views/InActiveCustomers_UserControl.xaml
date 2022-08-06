@@ -44,14 +44,15 @@
                     <MenuItem Header="Επαναφορά Πελάτη"
                               CommandParameter="{Binding}"
                               Command="{Binding DataContext.ReActivateCustomerCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                    <MenuItem Header="Οριστική Διαγραφή Πελάτη"
+                              CommandParameter="{Binding}"
+                              Command="{Binding DataContext.DeleteCustomerCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                 </ContextMenu>
             </DataGrid.Resources>
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="ContextMenu"
                             Value="{StaticResource searchContextMenu}" />
-                    <Setter Property="Background"
-                            Value="{Binding IsActiveColor}" />
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>

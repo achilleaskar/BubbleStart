@@ -332,20 +332,14 @@
                           AutoGenerateColumns="False">
                     <DataGrid.Resources>
                         <ContextMenu x:Key="searchContextMenu"
-                                     d:Visibility="Visible"
-                                     Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
-                            <MenuItem Header="Διαγραφή Πελάτη"
+                                    >
+                            <MenuItem Header="Οριστική Διαγραφή Πελάτη"
+                                      Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                       Command="{Binding DataContext.DeleteCustomerCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                             <Separator />
-                            <MenuItem Header="Normal"
-                                      CommandParameter="0"
-                                      Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                             <MenuItem Header="Ανενεργός"
                                       CommandParameter="1"
                                       Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                            <MenuItem Header="Ενεργός"
-                                      CommandParameter="2"
-                                      Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />  
                             <MenuItem Header="Αντιγραφή ονόματος"
                                       Click="MenuItem_Click" />
                         </ContextMenu>

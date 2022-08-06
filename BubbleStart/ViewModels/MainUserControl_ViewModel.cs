@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BubbleStart.ViewModels
 {
@@ -37,7 +38,7 @@ namespace BubbleStart.ViewModels
             ShowUpsPerDay_ViewModel = new ShowUpsPerDay_ViewModel(BasicDataManager);
             EmployeeManagement_ViewModel = new EmployeeManagement_ViewModel(BasicDataManager);
             Shop_ViewModel = new Shop_ViewModel(BasicDataManager);
-            InActiveCustomers_ViewModel = new InActiveCustomers_ViewModel(BasicDataManager,SearchCustomer_ViewModel);
+            InActiveCustomers_ViewModel = new InActiveCustomers_ViewModel(BasicDataManager, SearchCustomer_ViewModel);
 
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
         }
@@ -81,21 +82,31 @@ namespace BubbleStart.ViewModels
             foreach (Customer customer in BasicDataManager.Customers)
             {
                 lineNum++;
+                bool yes ;
                 myWorksheet.Cells["A" + lineNum].Value = lineNum - 1;
                 myWorksheet.Cells["B" + lineNum].Value = customer.Name;
                 myWorksheet.Cells["C" + lineNum].Value = customer.SureName;
                 myWorksheet.Cells["D" + lineNum].Value = !string.IsNullOrEmpty(customer.Tel) && customer.Tel.Length >= 10 && !customer.Tel.StartsWith("000") ? customer.Tel : "";
                 myWorksheet.Cells["E" + lineNum].Value = customer.Email;
                 myWorksheet.Cells["F" + lineNum].Value = customer.ActiveCustomer ? "ΝΑΙ" : "ΟΧΙ";
+                myWorksheet.Cells["F" + lineNum].Style.Font.Color.SetColor(customer.ActiveCustomer ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
                 myWorksheet.Cells["G" + lineNum].Value = customer.Vacinated ? "Έκανε" : "Δεν έκανε";
+                myWorksheet.Cells["G" + lineNum].Style.Font.Color.SetColor(customer.Vacinated ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
                 myWorksheet.Cells["H" + lineNum].Value = customer.ThirdDose ? "Έκανε" : "Δεν έκανε";
+                myWorksheet.Cells["H" + lineNum].Style.Font.Color.SetColor(customer.ThirdDose ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
                 myWorksheet.Cells["I" + lineNum].Value = customer.Doctor ? "Έχει" : "Δεν έχει";
                 myWorksheet.Cells["J" + lineNum].Value = customer.Items.Where(t => t.ItemId == 2) is IEnumerable<ItemPurchase> l1 && l1.Count() > 0 ?
                     string.Join(", ", l1.Select(i => i.Size.ToString()).Distinct()) : "OXI";
                 myWorksheet.Cells["K" + lineNum].Value = customer.Items.Where(t => t.ItemId == 1) is IEnumerable<ItemPurchase> l2 && l2.Count() > 0 ?
                     string.Join(", ", l2.Select(i => i.Size.ToString()).Distinct()) : "OXI";
-                myWorksheet.Cells["L" + lineNum].Value = customer.Items.Where(t => t.ItemId == 3) is IEnumerable<ItemPurchase> l3 && l3.Count() > 0 ?
-                    string.Join(", ", l3.Select(i => i.Size.ToString()).Distinct()) : "OXI";
+               yes = customer.Items.Where(t => t.ItemId == 3) is IEnumerable<ItemPurchase> l3 && l3.Count() > 0;
+                myWorksheet.Cells["L" + lineNum].Value = yes ?
+                    "NAI" : "OXI";
+                myWorksheet.Cells["L" + lineNum].Style.Font.Color.SetColor(yes ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
             }
             myWorksheet.Column(1).Width = 4;
             myWorksheet.Column(2).Width = 16;

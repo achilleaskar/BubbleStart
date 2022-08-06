@@ -8,6 +8,32 @@ namespace BubbleStart.Model
         private DateTime _Date;
         private decimal _Price;
 
+
+
+
+
+        private bool _Free;
+
+
+        public bool Free
+        {
+            get
+            {
+                return _Free;
+            }
+
+            set
+            {
+                if (_Free == value)
+                {
+                    return;
+                }
+
+                _Free = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public decimal Price
         {
             get

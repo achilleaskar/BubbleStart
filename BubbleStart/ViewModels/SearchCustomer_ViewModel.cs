@@ -33,8 +33,8 @@ namespace BubbleStart.ViewModels
             CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
-            DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(); });
-            ToggleForcedDisableCommand = new RelayCommand<object>(async (par) => await TogleDisable(par), (par) => CanToggleDisable(par));
+            DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(true); });
+            ToggleForcedDisableCommand = new RelayCommand<object>(async (par) => await DeleteCustomer());
             CancelApointmentCommand = new RelayCommand(async () => { await CancelApointment(); });
             OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
             OpenPopupCommand = new RelayCommand(() => { PopupOpen = true; });
@@ -496,6 +496,7 @@ namespace BubbleStart.ViewModels
                 await BasicDataManager.SaveAsync();
                 Is30min = false;
             }
+            SelectedCustomer.SetColors();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -640,24 +641,12 @@ namespace BubbleStart.ViewModels
             return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
         }
 
-        private async Task DeleteCustomer()
+        private async Task DeleteCustomer(bool hide = false)
         {
-            //#if DEBUG
-            //            string PhoneNumbers = "";
-            //            foreach (var c in Customers)
-            //            {
-            //                //if (c.IsActiveColor != null && (c.IsActiveColor.Color == Colors.Red || c.IsActiveColor.Color == Colors.Green) && !string.IsNullOrEmpty(c.Tel) && c.Tel.StartsWith("69") && c.Tel.Count() == 10)
-            //                if ( !string.IsNullOrEmpty(c.Tel) && c.Tel.StartsWith("69") && c.Tel.Count() == 10)
-            //                {
-            //                    PhoneNumbers += c.Tel + ",";
-            //                }
-            //            }
-            //            PhoneNumbers = PhoneNumbers.Trim(',');
-            //            Clipboard.SetText(PhoneNumbers ?? "");
-            //            return;
-            //#endif
-            BasicDataManager.Add(new Change($"Απενεργοποιήθηκε Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", StaticResources.User));
+            BasicDataManager.Add(new Change($"Απενεργοποιήθηκε οριστικά Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", StaticResources.User));
             SelectedCustomer.Enabled = false;
+            if (hide)
+                SelectedCustomer.ForceDisable = ForceDisable.forceDisable;
             Customers.Remove(SelectedCustomer);
             await BasicDataManager.SaveAsync();
         }

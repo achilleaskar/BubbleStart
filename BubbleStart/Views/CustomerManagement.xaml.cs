@@ -22,6 +22,7 @@ namespace BubbleStart.Views
         public CustomerManagement()
         {
             InitializeComponent();
+            StaticResources.OpenWindow = this;
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

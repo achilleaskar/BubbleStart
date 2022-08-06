@@ -20,11 +20,36 @@ namespace BubbleStart.Views
             if (sender is DataGridRow d && d.DataContext is Payment p)
             {
                 ((EconomicData_ViewModel)DataContext).SelectedCustomer = p.Customer;
+                if (!p.Customer.Enabled)
+                {
+                    ((EconomicData_ViewModel)DataContext).FullyLoadCustomerCommand.Execute(p.Customer);
+                    return;
+                }
                 ((EconomicData_ViewModel)DataContext).OpenCustomerManagementCommand.Execute(null);
             }
-            else if(sender is DataGridRow dr && dr.DataContext is Program pr)
+            else if (sender is DataGridRow dd && dd.DataContext is CustomerBuy b)
+            {
+                ((EconomicData_ViewModel)DataContext).SelectedCustomer = b.Customer;
+                if (!b.Customer.Enabled)
+                {
+                    ((EconomicData_ViewModel)DataContext).FullyLoadCustomerCommand.Execute(b.Customer);
+                    return;
+                }
+                ((EconomicData_ViewModel)DataContext).OpenCustomerManagementCommand.Execute(null);
+            }
+            else if (sender is DataGridRow dr && dr.DataContext is Program pr)
             {
                 ((EconomicData_ViewModel)DataContext).SelectedCustomer = pr.Customer;
+                if (!pr.Customer.Enabled)
+                {
+                    ((EconomicData_ViewModel)DataContext).FullyLoadCustomerCommand.Execute(pr.Customer);
+                    return;
+                }
+                ((EconomicData_ViewModel)DataContext).OpenCustomerManagementCommand.Execute(null);
+            }
+            else if (sender is DataGridRow dc && dc.DataContext is Customer c)
+            {
+                ((EconomicData_ViewModel)DataContext).SelectedCustomer = c;
                 ((EconomicData_ViewModel)DataContext).OpenCustomerManagementCommand.Execute(null);
             }
         }
