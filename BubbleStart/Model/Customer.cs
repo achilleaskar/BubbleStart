@@ -4724,6 +4724,7 @@ namespace BubbleStart.Model
             if (obj is ItemPurchase ip && Items.Contains(ip))
             {
                 Items.Remove(ip);
+                BasicDataManager.Delete(ip);
             }
         }
 

@@ -1,10 +1,8 @@
-﻿using BubbleStart.Helpers;
-using BubbleStart.Model;
+﻿using BubbleStart.Model;
 using BubbleStart.ViewModels;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace BubbleStart.Views
 {
@@ -26,7 +24,7 @@ namespace BubbleStart.Views
                 {
                     Mouse.OverrideCursor = Cursors.Wait;
                     await ((Apointments_ViewModel)DataContext).BasicDataManager.Context.GetFullCustomerByIdAsync(ap.Customer.Id);
-                    ap.Customer.Loaded=true;
+                    ap.Customer.Loaded = true;
                     ap.Customer.InitialLoad();
                     ap.Customer.UpdateCollections();
                     ap.Customer.SetColors();
@@ -178,6 +176,38 @@ namespace BubbleStart.Views
                 else if (DataContext is Apointments_ViewModel vm)
                     foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
                         hour.DeselectAll();
+        }
+
+        private void FunctionaControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            if (sender is ItemsControl ic && ic.DataContext is Day d)
+            {
+                d.HeightFunctional = ic.ActualHeight;
+            }
+        }
+
+        private void ReformerControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            if (sender is ItemsControl ic && ic.DataContext is Day d)
+            {
+                d.HeightPilates = ic.ActualHeight;
+            }
+        }
+
+        private void OutdoorControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            if (sender is ItemsControl ic && ic.DataContext is Day d)
+            {
+                d.HeightOutdoor = ic.ActualHeight-1;
+            }
+        }
+
+        private void MassageControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            if (sender is ItemsControl ic && ic.DataContext is Day d)
+            {
+                d.HeightMassage = ic.ActualHeight;
+            }
         }
     }
 }

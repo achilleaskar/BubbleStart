@@ -232,7 +232,7 @@
                                                             Visibility="{Binding DataContext.FunctionalVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                             Grid.Column="1"
                                                             Background="LightYellow"
-                                                            Height="119"
+                                                            Height="{Binding HeightFunctional}"
                                                             BorderThickness="1 0 0 1">
                                                         <TextBlock Text="Functional"
                                                                    FontSize="13"
@@ -244,7 +244,7 @@
                                                     </Border>
                                                     <Border BorderBrush="Gray"
                                                             Grid.Row="1"
-                                                            Height="120"
+                                                            Height="{Binding HeightPilates}"
                                                             Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                             Grid.Column="1"
                                                             Background="BlanchedAlmond"
@@ -259,7 +259,7 @@
                                                     </Border>
                                                     <Border BorderBrush="Gray"
                                                             Grid.Row="2"
-                                                            Height="80"
+                                                            Height="{Binding HeightMassage}"
                                                             Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                             Grid.Column="1"
                                                             Background="LightYellow"
@@ -274,7 +274,7 @@
                                                     </Border>
                                                     <Border BorderBrush="Gray"
                                                             Grid.Row="3"
-                                                            Height="100"
+                                                            Height="{Binding HeightOutdoor}"
                                                             Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                             Grid.Column="1"
                                                             Background="BlanchedAlmond"
@@ -322,6 +322,7 @@
                                             </Border>
                                             <ItemsControl ItemsSource="{Binding Hours}"
                                                           Grid.Row="1"
+                                                          SizeChanged="FunctionaControl_SizeChanged"
                                                           Visibility="{Binding DataContext.FunctionalVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
@@ -333,7 +334,7 @@
                                                     <DataTemplate>
                                                         <Border BorderBrush="Gray"
                                                                 Width="104"
-                                                                Height="120"
+                                                                MinHeight="80"
                                                                 BorderThickness="1 1 0 0">
                                                             <Grid>
                                                                 <Grid.RowDefinitions>
@@ -465,6 +466,8 @@
                                             </ItemsControl>
                                             <ItemsControl ItemsSource="{Binding Hours}"
                                                           Grid.Row="2"
+                                                          SizeChanged="ReformerControl_SizeChanged"
+                                                          
                                                           Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
@@ -476,7 +479,7 @@
                                                     <DataTemplate>
                                                         <Border BorderBrush="Gray"
                                                                 Width="104"
-                                                                Height="120"
+                                                                MinHeight="80"
                                                                 BorderThickness="1 1 0 0">
                                                             <Grid>
                                                                 <Grid.RowDefinitions>
@@ -607,6 +610,8 @@
                                             <!--massage-->
                                             <ItemsControl ItemsSource="{Binding Hours}"
                                                           Grid.Row="3"
+                                                          SizeChanged="MassageControl_SizeChanged"
+                                                          
                                                           Visibility="{Binding DataContext.MassageVisible, Converter={StaticResource booleanToVisibilityConverter},
                                                 RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                           HorizontalAlignment="Left">
@@ -619,7 +624,7 @@
                                                     <DataTemplate>
                                                         <Border BorderBrush="Gray"
                                                                 Width="104"
-                                                                Height="80"
+                                                                MinHeight="80"
                                                                 BorderThickness="1 1 0 0">
                                                             
                                                             <Grid>
@@ -751,6 +756,8 @@
                                             <!--outdoor-->
                                             <ItemsControl ItemsSource="{Binding Hours}"
                                                           Grid.Row="4"
+                                                          SizeChanged="OutdoorControl_SizeChanged"
+                                                          
                                                           Visibility="{Binding DataContext.OutdoorVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
@@ -762,7 +769,7 @@
                                                     <DataTemplate>
                                                         <Border BorderBrush="Gray"
                                                                 Width="104"
-                                                                Height="100"
+                                                                MinHeight="80"
                                                                 BorderThickness="1 1 0 0">
                                                             <Grid>
                                                                 <Grid.RowDefinitions>
