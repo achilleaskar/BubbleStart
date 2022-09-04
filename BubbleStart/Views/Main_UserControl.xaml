@@ -42,6 +42,10 @@
                               Header="Βάρδιες"
                               d:Visibility="Visible"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
+                    <MenuItem Command="{Binding OpenItemsEditCommand}"
+                              Header="Προϊόντα"
+                              d:Visibility="Visible"
+                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
                     <MenuItem Command="{Binding OpenExpenseCategoriesCommand}"
                               Header="Κατηγορίες Εξόδων"
                               d:Visibility="Visible"

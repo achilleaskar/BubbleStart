@@ -22,6 +22,7 @@ namespace BubbleStart.Database
         public DbSet<Program> Programs { get; set; }
         public DbSet<ShowUp> ShowUps { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<ItemPurchase> ItemPurchases { get; set; }
         public DbSet<ClosedHour> ClosedHours { get; set; }
 
         public MainDatabase() : base(normal)

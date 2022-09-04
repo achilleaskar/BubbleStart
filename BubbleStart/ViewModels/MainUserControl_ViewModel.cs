@@ -27,6 +27,7 @@ namespace BubbleStart.ViewModels
             LogOutCommand = new RelayCommand(TryLogOut);
             OpenUsersEditCommand = new RelayCommand(async () => await OpenUsersWindow(), CanEditWindows);
             OpenSfiftsEditCommand = new RelayCommand(async () => await OpenShiftsWindow(), CanEditWindows);
+            OpenItemsEditCommand = new RelayCommand(async () => await OpenItemsWindow(), CanEditWindows);
             OpenExpenseCategoriesCommand = new RelayCommand(async () => await OpenExpenseCategories(), CanEditWindows);
             PrintCustomersCommand = new RelayCommand(PrintCustomers);
 
@@ -41,6 +42,13 @@ namespace BubbleStart.ViewModels
             InActiveCustomers_ViewModel = new InActiveCustomers_ViewModel(BasicDataManager, SearchCustomer_ViewModel);
 
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+        }
+
+        private async Task OpenItemsWindow()
+        {
+            var vm = new ItemsManagement_ViewModel(BasicDataManager);
+            await vm.LoadAsync();
+            MessengerInstance.Send(new OpenChildWindowCommand(new ItemsManagement_Window { DataContext = vm }));
         }
 
         private async Task OpenExpenseCategories()
@@ -180,6 +188,7 @@ namespace BubbleStart.ViewModels
 
         public RelayCommand OpenUsersEditCommand { get; set; }
         public RelayCommand OpenSfiftsEditCommand { get; set; }
+        public RelayCommand OpenItemsEditCommand { get; set; }
         public RelayCommand PrintCustomersCommand { get; set; }
         public RelayCommand OpenExpenseCategoriesCommand { get; set; }
 

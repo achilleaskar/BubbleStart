@@ -1,6 +1,8 @@
 ﻿using BubbleStart.Helpers;
+using BubbleStart.Messages;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

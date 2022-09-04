@@ -304,6 +304,7 @@ namespace BubbleStart.Model
 
         public void CalculateRemainingAmount()
         {
+            
             decimal tmpAmount = Amount;
             if (Payments != null && Payments.Count > 0)
             {

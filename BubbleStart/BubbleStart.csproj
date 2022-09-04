@@ -129,9 +129,11 @@
     </Reference>
     <Reference Include="MySql.Data, Version=8.0.29.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.8.0.29\lib\net48\MySql.Data.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MySql.Data.EntityFramework, Version=8.0.29.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.EntityFramework.8.0.29\lib\net452\MySql.Data.EntityFramework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NuGet.Squirrel, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\squirrel.windows.2.0.1\lib\Net45\NuGet.Squirrel.dll</HintPath>
@@ -194,6 +196,7 @@
     </Reference>
     <Reference Include="Ubiety.Dns.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.8.0.29\lib\net48\Ubiety.Dns.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -215,6 +218,7 @@
     </Reference>
     <Reference Include="ZstdNet, Version=1.4.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.8.0.29\lib\net48\ZstdNet.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -685,6 +689,7 @@
     <Compile Include="ViewModels\EmployeeManagement_ViewModel.cs" />
     <Compile Include="ViewModels\ExpenseCategoriesManagement_Viewmodel.cs" />
     <Compile Include="ViewModels\InActiveCustomers_ViewModel.cs" />
+    <Compile Include="ViewModels\ItemsManagement_ViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainUserControl_ViewModel.cs" />
@@ -718,6 +723,9 @@
     </Compile>
     <Compile Include="Views\InActiveCustomers_UserControl.xaml.cs">
       <DependentUpon>InActiveCustomers_UserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ItemsManagement_Window.xaml.cs">
+      <DependentUpon>ItemsManagement_Window.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Login_UserControl.xaml.cs">
       <DependentUpon>Login_UserControl.xaml</DependentUpon>
@@ -754,6 +762,7 @@
       <DependentUpon>UsersManagement_Window.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wrappers\ExpenseCategoryClassWrapper.cs" />
+    <Compile Include="Wrappers\ItemWrapper.cs" />
     <Compile Include="Wrappers\ModelWrapper.cs" />
     <Compile Include="Wrappers\NotifyDataErrorInfoBase.cs" />
     <Compile Include="Wrappers\ShiftWrapper.cs" />
@@ -1108,6 +1117,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\InActiveCustomers_UserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemsManagement_Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

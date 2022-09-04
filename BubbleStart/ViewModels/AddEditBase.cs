@@ -278,7 +278,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        private async void RemoveEntity()
+        public virtual async void RemoveEntity()
         {
             try
             {
@@ -286,6 +286,12 @@ namespace BubbleStart.ViewModels
                     ec.Id == 1 ||
                     ((ec.Parent == null || ec.ParentId == 1) && await Context.Context.Context.ExpenseCategoryClasses.AnyAsync(e => e.ParentId == ec.Id)) ||
                     (await Context.Context.Context.Expenses.AnyAsync(e => e.MainCategoryId == ec.Id || e.SecondaryCategoryId == ec.Id))))
+                {
+                    MessageBox.Show("Δεν μπορεί να διαγραφεί");
+                    return;
+                }
+                else if (SelectedEntity is Item it && it.Id > 0 &&
+                    (await Context.Context.Context.ItemPurchases.AnyAsync(e => e.ItemId == it.Id)))
                 {
                     MessageBox.Show("Δεν μπορεί να διαγραφεί");
                     return;

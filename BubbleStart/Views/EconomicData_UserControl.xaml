@@ -15,6 +15,7 @@
     <UserControl.Resources>
         <Converters:FloadToStringValueConverter x:Key="FtoSConverter" />
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
+        <Converters:BoolToShowedUp_Converter x:Key="BoolToShowedUp_Converter" />
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <Converters:EnumConverter x:Key="EnumConverter" />
@@ -1349,8 +1350,24 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Amount,StringFormat=C2}"
-                                               HorizontalAlignment="Right"
-                                               Margin="0 0 5 0" />
+                                               HorizontalAlignment="Stretch" TextAlignment="Right"
+                                               Margin="0 0 5 0">
+                                        <TextBlock.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PaidCol}"
+                                                                 Value="true">
+                                                        <Setter Property="TextBlock.Background"
+                                                                Value="LightGreen" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding PaidCol}"
+                                                                 Value="false">
+                                                        <Setter Property="TextBlock.Background"
+                                                                Value="#FFE67979" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style></TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
 using System.Windows;
 using System.Windows.Data;
 
@@ -36,10 +37,25 @@ namespace BubbleStart.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string strValue = (value as string).Replace(',', '.').Replace("€", "").Replace(" ", "");
-            if (!string.IsNullOrEmpty(strValue) && !strValue.EndsWith(".0") && strValue[strValue.Length - 1] != '.' && decimal.TryParse(strValue, NumberStyles.Any, new CultureInfo("en-US"), out var tmpdecimal))
+            string strValue = (value as string)
+                .Replace("€", "").Replace(" ", "");
+            if (strValue.EndsWith(".") || strValue.EndsWith(","))
+                return DependencyProperty.UnsetValue;
+            int lastsindexofdot = strValue.LastIndexOf('.');
+            if (lastsindexofdot > 0 && strValue.Length - lastsindexofdot <= 3)
             {
-                return tmpdecimal;
+                StringBuilder sb = new StringBuilder(strValue);
+                sb[lastsindexofdot] = '~';
+                sb = sb.Replace(".", "").Replace(',', '.').Replace('~', '.');
+                strValue = sb.ToString();
+            }
+            else
+            {
+                strValue = strValue.Replace(".", "").Replace(',', '.').Replace("€", "").Replace(" ", "");
+            }
+            if (!string.IsNullOrEmpty(strValue) && !strValue.EndsWith(".0") && decimal.TryParse(strValue, NumberStyles.Any, new CultureInfo("en-US"), out var tmpdecimal))
+            {
+                return decimal.Round(tmpdecimal, 2);
             }
             return DependencyProperty.UnsetValue;
         }

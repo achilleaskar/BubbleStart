@@ -448,6 +448,12 @@ namespace BubbleStart.Helpers
             {
                 ExpenseCategoryClasses.Add(e);
             }
+            else if (model is Item er)
+            {
+                Items.Add(er);
+                ItemsList = new ObservableCollection<Item>(Items.Where(i => !i.Shop));
+                ShopItems = new ObservableCollection<Item>(Items.Where(i => i.Shop));
+            }
             Context.Add(model);
         }
 
@@ -468,6 +474,12 @@ namespace BubbleStart.Helpers
             else if (model is ExpenseCategoryClass e)
             {
                 ExpenseCategoryClasses.Remove(e);
+            }
+            else if (model is Item o)
+            {
+                Items.Remove(o);
+                ItemsList = new ObservableCollection<Item>(Items.Where(i => !i.Shop));
+                ShopItems = new ObservableCollection<Item>(Items.Where(i => i.Shop));
             }
             Context.Delete(model);
         }

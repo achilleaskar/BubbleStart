@@ -3727,6 +3727,7 @@ namespace BubbleStart.Model
 
         public void SetColors()
         {
+           
             DateTime startDate = Full ? new DateTime() : ResetDate;
 
             if (!Loaded) return;
@@ -3923,8 +3924,8 @@ namespace BubbleStart.Model
                     }
                 }
 
-                SetRemaining();
             }
+                SetRemaining();
 
             int cntr = 0;
             foreach (var s in ShowUps)
@@ -3963,6 +3964,7 @@ namespace BubbleStart.Model
 
         public void SetRemaining()
         {
+            
             foreach (var p in Programs)
             {
                 p.CalculateRemainingAmount();
