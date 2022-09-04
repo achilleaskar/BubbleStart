@@ -701,6 +701,106 @@ namespace BubbleStart.ViewModels
 
     public class Day : BaseModel
     {
+
+
+
+
+        private double _HeightFunctional;
+
+
+        public double HeightFunctional
+        {
+            get
+            {
+                return _HeightFunctional;
+            }
+
+            set
+            {
+                if (_HeightFunctional == value)
+                {
+                    return;
+                }
+
+                _HeightFunctional = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private double _HeightPilates;
+
+
+        public double HeightPilates
+        {
+            get
+            {
+                return _HeightPilates;
+            }
+
+            set
+            {
+                if (_HeightPilates == value)
+                {
+                    return;
+                }
+
+                _HeightPilates = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private double _HeightMassage;
+
+
+        public double HeightMassage
+        {
+            get
+            {
+                return _HeightMassage;
+            }
+
+            set
+            {
+                if (_HeightMassage == value)
+                {
+                    return;
+                }
+
+                _HeightMassage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private double _HeightOutdoor;
+
+
+        public double HeightOutdoor
+        {
+            get
+            {
+                return _HeightOutdoor;
+            }
+
+            set
+            {
+                if (_HeightOutdoor == value)
+                {
+                    return;
+                }
+
+                _HeightOutdoor = value;
+                RaisePropertyChanged();
+            }
+        }
         #region Constructors
 
         public Day(BasicDataManager basicDataManager, DateTime date)

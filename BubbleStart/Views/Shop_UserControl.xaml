@@ -80,6 +80,12 @@
                   HorizontalAlignment="Left"
                   CanUserDeleteRows="False"
                   AutoGenerateColumns="False">
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <EventSetter Event="MouseDoubleClick"
+                                 Handler="ListView_MouseDoubleClick" />
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Ημερομηνία"
                                     Binding="{Binding Date,Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />

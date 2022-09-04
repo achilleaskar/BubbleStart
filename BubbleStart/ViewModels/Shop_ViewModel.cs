@@ -1,15 +1,18 @@
 ﻿using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Model;
+using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -22,12 +25,40 @@ namespace BubbleStart.ViewModels
             BasicDataManager = basicDataManager;
             ShowSellsCommand = new RelayCommand(async () => await ShowSells());
             MakePurchaseCommand = new RelayCommand(async () => await MakePurchase(), CanMakePurchase);
+            FullyLoadCustomerCommand = new RelayCommand<Customer>(async (c) => { await FullyLoadCustomer(c); });
+            OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
             From = DateTime.Today;
             Customers = BasicDataManager.Customers;
             NewPurchase = new ItemPurchase { Date = DateTime.Now };
             Purchases = new ObservableCollection<ItemPurchase>();
         }
+        internal async Task FullyLoadCustomer(Customer customer)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            var c = await BasicDataManager.Context.GetFullCustomerByIdAsync(customer.Id);
+            c.BasicDataManager = BasicDataManager;
+            c.InitialLoad();
+            c.Loaded = true;
+            c.GetRemainingDays();
+            c.CalculateRemainingAmount();
+            Mouse.OverrideCursor = Cursors.Arrow;
+            OpenCustomerManagement(c);
+        }
 
+        private void OpenCustomerManagement(Customer c)
+        {
+            if (c != null)
+            {
+                c.EditedInCustomerManagement = true;
+                c.BasicDataManager = BasicDataManager;
+                c.UpdateCollections();
+                Window window = new CustomerManagement
+                {
+                    DataContext = c
+                };
+                Messenger.Default.Send(new OpenChildWindowCommand(window));
+            }
+        }
         private async Task MakePurchase()
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -65,15 +96,40 @@ namespace BubbleStart.ViewModels
             }
         }
 
+
+
+
+        private Customer _SelectedCustomer;
+
+
+        public Customer SelectedCustomer
+        {
+            get
+            {
+                return _SelectedCustomer;
+            }
+
+            set
+            {
+                if (_SelectedCustomer == value)
+                {
+                    return;
+                }
+
+                _SelectedCustomer = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private async Task ShowSells()
         {
             Mouse.OverrideCursor = Cursors.Wait;
             var nextDay = To.AddDays(1);
             int id = SelectedItemIdFilter > 0 ? BasicDataManager.ShopItems[SelectedItemIdFilter - 1].Id : 0;
-            Purchases = new ObservableCollection<ItemPurchase>(await BasicDataManager.Context.GetAllAsync<ItemPurchase>(p => p.Item.Shop == true &&
+            Purchases = new ObservableCollection<ItemPurchase>(await BasicDataManager.Context.Context.ItemPurchases.Where(p => p.Item.Shop == true &&
             p.Date >= From &&
             p.Date < nextDay &&
-            (SelectedItemIdFilter == 0 || id == p.ItemId)));
+            (SelectedItemIdFilter == 0 || id == p.ItemId)).Include(r => r.Customer).ToListAsync());
 
             Total = Purchases.Sum(p => p.Price);
             Mouse.OverrideCursor = Cursors.Arrow;
@@ -176,6 +232,8 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand ShowSellsCommand { get; set; }
+        public RelayCommand<Customer> FullyLoadCustomerCommand { get; set; }
+        public RelayCommand OpenCustomerManagementCommand { get; }
         public RelayCommand MakePurchaseCommand { get; set; }
 
         private DateTime _From;

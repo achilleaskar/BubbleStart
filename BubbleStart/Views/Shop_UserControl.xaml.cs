@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BubbleStart.Model;
+using BubbleStart.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,24 @@ namespace BubbleStart.Views
         public Shop_UserControl()
         {
             InitializeComponent();
+        }
+
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGridRow d && d.DataContext is ItemPurchase p)
+            {
+                if (p.Customer==null)
+                {
+                    return;
+                }
+                ((Shop_ViewModel)DataContext).SelectedCustomer = p.Customer;
+                if (!p.Customer.Enabled)
+                {
+                    ((Shop_ViewModel)DataContext).FullyLoadCustomerCommand.Execute(p.Customer);
+                    return;
+                }
+                ((Shop_ViewModel)DataContext).OpenCustomerManagementCommand.Execute(null);
+            }
         }
     }
 }
