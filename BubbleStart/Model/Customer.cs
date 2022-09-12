@@ -1591,7 +1591,6 @@ namespace BubbleStart.Model
                 {
                     return;
                 }
-
                 _Programs = value;
                 if (value != null)
                 {
@@ -3727,7 +3726,7 @@ namespace BubbleStart.Model
 
         public void SetColors()
         {
-           
+
             DateTime startDate = Full ? new DateTime() : ResetDate;
 
             if (!Loaded) return;
@@ -3925,7 +3924,7 @@ namespace BubbleStart.Model
                 }
 
             }
-                SetRemaining();
+            SetRemaining();
 
             int cntr = 0;
             foreach (var s in ShowUps)
@@ -3964,7 +3963,7 @@ namespace BubbleStart.Model
 
         public void SetRemaining()
         {
-            
+
             foreach (var p in Programs)
             {
                 p.CalculateRemainingAmount();
@@ -4468,6 +4467,10 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        [NotMapped]
+        public bool FullyLoaded { get; internal set; }
+
         private void AddItem()
         {
             Items.Add(new ItemPurchase { Item = SelectedItem, Size = SelectedSize, Date = DateTime.Today, ColorString = ClothColorString, Free = ClothFree, Price = ClothPrice });
@@ -5076,8 +5079,7 @@ namespace BubbleStart.Model
                     SelectedOutdoorProgram.CalculateRemainingAmount();
                 if (SelectedYogaProgram != null)
                     SelectedYogaProgram.CalculateRemainingAmount();
-                if (SelectedAerialYogaProgram != null)
-                    SelectedAerialYogaProgram.CalculateRemainingAmount();
+                SelectedAerialYogaProgram?.CalculateRemainingAmount();
             }
         }
 
@@ -5953,7 +5955,15 @@ namespace BubbleStart.Model
                     Filter = ProgramsMedicalFilter
                 };
             }
+
+            if (FullyLoaded)
+                foreach (var p in Programs)
+                {
+                    p.PropertyChanged -= ProgramPropertyChanged;
+                    p.PropertyChanged += ProgramPropertyChanged;
+                }
         }
+
 
         private void UpdateShowUpsCollections()
         {

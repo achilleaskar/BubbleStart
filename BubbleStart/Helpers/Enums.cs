@@ -102,8 +102,8 @@ namespace BubbleStart.Helpers
         LowerBody = 2,
         [Description("Upper Body")]
         UpperBody = 3,
-        [Description("Core")]
-        Core = 3
+        [Description("Core Strength")]
+        Core = 4
         //[Description("Πόδια")]
         //Legs = 4,
         //[Description("Πλάτη")]

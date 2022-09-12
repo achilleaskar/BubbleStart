@@ -275,10 +275,7 @@ namespace BubbleStart.Helpers
             //var not = DateTime.Today;
             //var t = await Context.GetAllAsync<Customer>(c => c.Apointments.Any(a => a.DateTime > not) && c.Enabled == false);
 
-            //foreach (var c in t)
-            //{
-            //    c.Enabled = true;
-            //}
+
             //await Context.SaveAsync();
 
             //await Create(false);

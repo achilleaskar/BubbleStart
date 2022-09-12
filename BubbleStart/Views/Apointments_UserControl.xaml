@@ -333,7 +333,7 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Border BorderBrush="Gray"
-                                                                Width="104"
+                                                                Width="97"
                                                                 MinHeight="80"
                                                                 BorderThickness="1 1 0 0">
                                                             <Grid>
@@ -478,7 +478,7 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Border BorderBrush="Gray"
-                                                                Width="104"
+                                                                Width="97"
                                                                 MinHeight="80"
                                                                 BorderThickness="1 1 0 0">
                                                             <Grid>
@@ -623,7 +623,7 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Border BorderBrush="Gray"
-                                                                Width="104"
+                                                                Width="97"
                                                                 MinHeight="80"
                                                                 BorderThickness="1 1 0 0">
                                                             
@@ -768,7 +768,7 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Border BorderBrush="Gray"
-                                                                Width="104"
+                                                                Width="97"
                                                                 MinHeight="80"
                                                                 BorderThickness="1 1 0 0">
                                                             <Grid>

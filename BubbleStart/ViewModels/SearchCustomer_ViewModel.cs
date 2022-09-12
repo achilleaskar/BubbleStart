@@ -531,6 +531,7 @@ namespace BubbleStart.ViewModels
                 {
                     MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
                 }
+                c.FullyLoaded = true;
             }
             Customers = new ObservableCollection<Customer>(BasicDataManager.Customers.OrderByDescending(c => c.ActiveCustomer).ThenBy(g => g.SureName));
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);

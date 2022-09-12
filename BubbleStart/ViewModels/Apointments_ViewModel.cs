@@ -412,7 +412,7 @@ namespace BubbleStart.ViewModels
             foreach (var ap in apointments)
             {
                 numOfDay = ((int)ap.DateTime.DayOfWeek + 6) % 7;
-                if (numOfDay < 6 && ap.DateTime.Hour >= 8 && ap.DateTime.Hour <= 21)
+                if (numOfDay < 6 && ap.DateTime.Hour >= 8 && ap.DateTime.Hour <= 22)
                 {
                     if (ap.Room == RoomEnum.Functional)
                         Days[numOfDay].Hours[ap.DateTime.Hour - 8].AppointmentsFunctional.Add(ap);
@@ -821,7 +821,8 @@ namespace BubbleStart.ViewModels
                 new Hour(new DateTime(Date.Year,Date.Month,Date.Day,18,0,0),basicDataManager),
                 new Hour(new DateTime(Date.Year,Date.Month,Date.Day,19,0,0),basicDataManager),
                 new Hour(new DateTime(Date.Year,Date.Month,Date.Day,20,0,0),basicDataManager),
-                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,21,0,0),basicDataManager)
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,21,0,0),basicDataManager),
+                new Hour(new DateTime(Date.Year,Date.Month,Date.Day,22,0,0),basicDataManager)
             };
         }
 
