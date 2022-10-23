@@ -466,12 +466,20 @@ namespace BubbleStart.Database
         public virtual void Delete<TEntity>(TEntity entity)
              where TEntity : BaseModel
         {
-            var dbSet = Context.Set<TEntity>();
-            if (Context.Entry(entity).State == EntityState.Detached)
+            try
             {
-                dbSet.Attach(entity);
+                var dbSet = Context.Set<TEntity>();
+                if (Context.Entry(entity).State == EntityState.Detached)
+                {
+                    dbSet.Attach(entity);
+                }
+                dbSet.Remove(entity);
             }
-            dbSet.Remove(entity);
+            catch (Exception e)
+            {
+                throw new Exception("Σφάλμα κατα την διαγραφή του στοιχείου. "+e.Message);
+            }
+           
         }
 
         internal async Task<List<ClosedHour>> GetAllClosedHoursAsync(RoomEnum room, DateTime time)

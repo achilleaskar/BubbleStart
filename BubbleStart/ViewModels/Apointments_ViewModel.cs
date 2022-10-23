@@ -380,7 +380,7 @@ namespace BubbleStart.ViewModels
             foreach (var ch in closedHours)
             {
                 numOfDay = ((int)ch.Date.DayOfWeek + 6) % 7;
-                if (numOfDay < 6 && ch.Date.Hour >= 8 && ch.Date.Hour <= 21)
+                if (numOfDay < 6 && ch.Date.Hour >= 8 && ch.Date.Hour <= 22)
                 {
                     if (ch.Room == RoomEnum.Functional)
                     {
@@ -541,47 +541,54 @@ namespace BubbleStart.ViewModels
         public void RefreshProgram()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
-            DateTime tmpdate = StartDate.AddDays(6);
-
-            List<ClosedHour> closedHours = BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate && a.Date >= BasicDataManager.Context.Limit).ToList();
-
-            DateTime tmpDate = StartDate;
-
-            int numOfDay;
-
-            foreach (var ch in closedHours)
+            try
             {
-                numOfDay = ((int)ch.Date.DayOfWeek + 6) % 7;
-                if (numOfDay < 6 && ch.Date.Hour >= 8 && ch.Date.Hour <= 21)
+                StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
+                DateTime tmpdate = StartDate.AddDays(6);
+
+                var closedHours = BasicDataManager.Context.Context.ClosedHours.Local?.Where(a => a.Date >= StartDate && a.Date < tmpdate && a.Date >= BasicDataManager.Context.Limit).ToList() ?? new List<ClosedHour>();
+
+                DateTime tmpDate = StartDate;
+
+                int numOfDay;
+
+                foreach (var ch in closedHours)
                 {
-                    if (ch.Room == RoomEnum.Functional)
+                    numOfDay = ((int)ch.Date.DayOfWeek + 6) % 7;
+                    if (numOfDay < 6 && ch.Date.Hour >= 8 && ch.Date.Hour <= 22)
                     {
-                        Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHour0 = ch;
-                    }
-                    else if (ch.Room == RoomEnum.Pilates)
-                    {
-                        Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHour1 = ch;
-                    }
-                    else if (ch.Room == RoomEnum.Massage)
-                    {
-                        Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHourMassage = ch;
-                    }
-                    else if (ch.Room == RoomEnum.Outdoor)
-                    {
-                        Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHourOutdoor = ch;
+                        if (ch.Room == RoomEnum.Functional)
+                        {
+                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHour0 = ch;
+                        }
+                        else if (ch.Room == RoomEnum.Pilates)
+                        {
+                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHour1 = ch;
+                        }
+                        else if (ch.Room == RoomEnum.Massage)
+                        {
+                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHourMassage = ch;
+                        }
+                        else if (ch.Room == RoomEnum.Outdoor)
+                        {
+                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHourOutdoor = ch;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Σφάλμα στην κλειστή ώρα");
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("Σφάλμα στην κλειστή ώρα");
+                        MessageBox.Show("Ραντεβού εκτός εβδομάδας");
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Ραντεβού εκτός εβδομάδας");
-                }
-            }
 
+            }
+            catch (Exception ex)
+            {
+                 MessengerInstance.Send(new ShowExceptionMessage_Message("Σφάλμα κατα την φόρτωση του προγράμματος"+ex.Message));
+            }
             RaisePropertyChanged(nameof(HasDays));
             RaisePropertyChanged(nameof(Days));
             Mouse.OverrideCursor = Cursors.Arrow;
@@ -1739,17 +1746,30 @@ namespace BubbleStart.ViewModels
 
         private async Task EnableForEver(RoomEnum room)
         {
+            if (Time==null)
+            {
+                MessageBox.Show("Σφάλμα πατήστε φόρτωση και δοκιμάστε ξανά");
+                return;
+            }
             Mouse.OverrideCursor = Cursors.Wait;
 
-            List<ClosedHour> ClosedHours = await BasicDataManager.Context.GetAllClosedHoursAsync(room, Time);
-
-            foreach (var item in ClosedHours)
+            try
             {
-                BasicDataManager.Delete(item);
+                List<ClosedHour> ClosedHours = await BasicDataManager.Context.GetAllClosedHoursAsync(room, Time);
+
+                foreach (var item in ClosedHours)
+                {
+                    BasicDataManager.Delete(item);
+                }
+                await BasicDataManager.SaveAsync();
+                ClosedHour0 = ClosedHour1 = ClosedHourMassage = ClosedHourOutdoor = null;
+                Messenger.Default.Send(new UpdateClosedHoursMessage());
             }
-            await BasicDataManager.SaveAsync();
-            ClosedHour0 = ClosedHour1 = ClosedHourMassage = ClosedHourOutdoor = null;
-            Messenger.Default.Send(new UpdateClosedHoursMessage());
+            catch (Exception ex)
+            {
+
+                BasicDataManager.CurrentMessenger.Send(new ShowExceptionMessage_Message("Σφάλμα κατα το πρώτο στάδιο της ενεργοποίησης"+ex.Message));
+            }
             Mouse.OverrideCursor = Cursors.Arrow;
 
             RaisePropertyChanged(nameof(ClosedColor1));

@@ -38,7 +38,6 @@ namespace BubbleStart.Views
                     e.Cancel = true;
                 c.EditedInCustomerManagement = false;
             }
-
         }
 
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)

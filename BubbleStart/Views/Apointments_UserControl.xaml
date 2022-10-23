@@ -17,7 +17,6 @@
     <UserControl.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:HourClosedToColorConverter x:Key="HourClosedToColorConverter" />
-        <Converters:AppointmentShowedUptoColorConverter x:Key="appointmentShowedUptoColorConverter" />
         <Converters:DoubleParameterConverter x:Key="DoubleParameterConverter" />
     </UserControl.Resources>
     <GroupBox Header="Πρόγραμμα Εβδομάδας"

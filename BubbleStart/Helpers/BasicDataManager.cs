@@ -68,6 +68,8 @@ namespace BubbleStart.Helpers
             }
         }
 
+        public IMessenger CurrentMessenger => MessengerInstance;
+
         public GenericRepository Context { get; set; }
 
         public ObservableCollection<Customer> Customers

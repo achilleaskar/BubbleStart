@@ -3071,8 +3071,7 @@ namespace BubbleStart.Model
         [NotMapped]
         public RelayCommand<Payment> SetToProgramCommand { get; set; }
 
-        [NotMapped]
-        public bool ShowedUpToday => ShowUps.Any(s => s.Arrived.Date == DateTime.Today);
+
 
         [NotMapped]
         public RelayCommand ShowHistoryCommand { get; set; }
@@ -5703,7 +5702,6 @@ namespace BubbleStart.Model
         {
             IsActiveColor = GetCustomerColor();
             SetColors();
-            RaisePropertyChanged(nameof(ShowedUpToday));
             RaisePropertyChanged(nameof(ShowUpsFunctionalCollectionView));
             RaisePropertyChanged(nameof(ShowUpsPilatesCollectionView));
             RaisePropertyChanged(nameof(ShowUpsFunctionalPilatesCollectionView));
@@ -5879,81 +5877,81 @@ namespace BubbleStart.Model
             {
                 ProgramsFunctionalCollectionView = new ListCollectionView(Programs)
                 {
-                    //ProgramsFunctionalCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsFunctionalFilter
                 };
+                ProgramsFunctionalCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsPilatesCollectionView == null)
             {
                 ProgramsPilatesCollectionView = new ListCollectionView(Programs)
                 {
-                    //ProgramsPilatesCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsPilatesFilter
                 };
+                ProgramsPilatesCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsFunctionalPilatesCollectionView == null)
             {
                 ProgramsFunctionalPilatesCollectionView = new ListCollectionView(Programs)
                 {
-                    //ProgramsFunctionalPilatesCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsPilatesFunctionalFilter
                 };
+                ProgramsFunctionalPilatesCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsMassageColelctionView == null)
             {
                 ProgramsMassageColelctionView = new ListCollectionView(Programs)
                 {
-                    // ProgramsMassageColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsMassFilter
                 };
+                ProgramsMassageColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsOnlineColelctionView == null)
             {
                 ProgramsOnlineColelctionView = new ListCollectionView(Programs)
                 {
-                    //ProgramsOnlineColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsOnlineFilter
                 };
+                ProgramsOnlineColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsOutdoorCollectionView == null)
             {
                 ProgramsOutdoorCollectionView = new ListCollectionView(Programs)
                 {
-                    //ProgramsOutdoorCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsOutdoorFilter
                 };
+                ProgramsOutdoorCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsYogaCollectionView == null)
             {
                 ProgramsYogaCollectionView = new ListCollectionView(Programs)
                 {
-                    // ProgramsYogaCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsYogaFilter
                 };
+                ProgramsYogaCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsAerialYogaCollectionView == null)
             {
                 ProgramsAerialYogaCollectionView = new ListCollectionView(Programs)
                 {
-                    // ProgramsAerialYogaCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsAerialYogaFilter
                 };
+                ProgramsAerialYogaCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsPersonalCollectionView == null)
             {
                 ProgramsPersonalCollectionView = new ListCollectionView(Programs)
                 {
-                    // ProgramsPersonalCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsPersonallFilter
                 };
+                ProgramsPersonalCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsMedicalCollectionView == null)
             {
                 ProgramsMedicalCollectionView = new ListCollectionView(Programs)
                 {
-                    //  ProgramsMedicalCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
                     Filter = ProgramsMedicalFilter
                 };
+                ProgramsMedicalCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
 
             if (FullyLoaded)

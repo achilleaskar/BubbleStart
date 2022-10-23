@@ -11,6 +11,7 @@
         Language="el-Gr"
         Width="1366"
         WindowState="Maximized"
+        IsVisibleChanged="Window_IsVisibleChanged"
         Closed="Window_Closed"
         xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
         xmlns:views="clr-namespace:BubbleStart.Views"

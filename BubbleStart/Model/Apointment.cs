@@ -1,5 +1,6 @@
 ﻿using BubbleStart.Helpers;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Windows.Media;
 
@@ -11,13 +12,33 @@ namespace BubbleStart.Model
         public string ApColor => GetApColor(false);
         public string GymColor => GetApColor(true);
 
+
+        [NotMapped]
+        public bool ShowedUpToday
+        {
+            get
+            {
+                if (Room == RoomEnum.Massage)
+                    return Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Today && s.ProgramModeNew == ProgramMode.massage);
+                return Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Today && !s.Massage);
+            }
+        }
+
         public string GetApColor(bool gym)
         {
             if (Customer != null)
             {
-               
-                if (DateTime < DateTime.Now && !Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date))
-                    return Colors.Red.ToString();
+                if (DateTime < DateTime.Now)
+                {
+                    if (Room == RoomEnum.Massage)
+                    {
+
+                        if (!Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date && s.ProgramModeNew == ProgramMode.massage))
+                            return Colors.Red.ToString();
+                    }
+                    else if (!Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date && s.ProgramModeNew != ProgramMode.massage))
+                        return Colors.Red.ToString();
+                }
             }
             if (!gym)
             {

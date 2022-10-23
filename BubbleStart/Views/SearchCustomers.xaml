@@ -410,7 +410,6 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown"
-                                            IsEnabled="{Binding IsNotPracticing}"
                                             Content="Γυμν." />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -419,7 +418,6 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown_1"
-                                            IsEnabled="{Binding IsNotPracticing}"
                                             Content="Μασ." />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -507,13 +505,16 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Όνομα"
                                                     Width="95"
-                                                    Binding="{Binding Name}" />
+                                                    Binding="{Binding Customer.Name}" />
                                 <DataGridTextColumn Header="Επίθετο"
                                                     Width="105"
-                                                    Binding="{Binding SureName}" />
+                                                    Binding="{Binding Customer.SureName}" />
                                 <DataGridTextColumn Header="Ώρα"
                                                     Width="40"
-                                                    Binding="{Binding AppointmentTime,Converter={StaticResource DateTimeToString},ConverterParameter='HH:mm'}" />
+                                                    Binding="{Binding DateTime,Converter={StaticResource DateTimeToString},ConverterParameter='HH:mm'}" />
+                                <DataGridTextColumn Header="Type"
+                                                    Width="50"
+                                                    Binding="{Binding Description}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>

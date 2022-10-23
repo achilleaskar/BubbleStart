@@ -39,7 +39,7 @@ namespace BubbleStart.ViewModels
             OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
             OpenPopupCommand = new RelayCommand(() => { PopupOpen = true; });
             OpenActiveCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedPracticingCustomer); });
-            OpenActiveCustomerSideManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedApointment); });
+            OpenActiveCustomerSideManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedApointment?.Customer); });
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
         }
 
@@ -65,7 +65,7 @@ namespace BubbleStart.ViewModels
 
         private int _SelectedAciveIndex;
 
-        private Customer _SelectedApointment;
+        private Apointment _SelectedApointment;
 
         private BodyPart _SelectedBodyPart;
 
@@ -79,7 +79,7 @@ namespace BubbleStart.ViewModels
 
         private DateTime _StartAfterFilter = DateTime.Today;
 
-        private ObservableCollection<Customer> _TodaysApointments;
+        private ObservableCollection<Apointment> _TodaysApointments;
 
         #endregion Fields
 
@@ -314,7 +314,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public Customer SelectedApointment
+        public Apointment SelectedApointment
         {
             get => _SelectedApointment;
 
@@ -446,7 +446,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public ObservableCollection<Customer> TodaysApointments
+        public ObservableCollection<Apointment> TodaysApointments
         {
             get => _TodaysApointments;
 
@@ -497,15 +497,18 @@ namespace BubbleStart.ViewModels
                 Is30min = false;
             }
             SelectedCustomer.SetColors();
+            foreach (var a in TodaysApointments)
+                a.RaisePropertyChanged(nameof(a.ShowedUpToday));
+            SelectedApointment = null;
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-            TodaysApointments = new ObservableCollection<Customer>();
+            TodaysApointments = new ObservableCollection<Apointment>();
             CustomersPracticing.Clear();
 
-            Apointment app;
+            IEnumerable<Apointment> apps;
 
             foreach (var c in BasicDataManager.Customers)
             {
@@ -520,11 +523,11 @@ namespace BubbleStart.ViewModels
                         CustomersPracticing.Add(c);
                     }
                     c.CalculateRemainingAmount();
-                    app = c.Apointments.FirstOrDefault(a => a.DateTime.Date == DateTime.Today);
-                    if (app != null)
+                    apps = c.Apointments.Where(a => a.DateTime.Date == DateTime.Today);
+                    foreach (var app in apps)
                     {
                         c.AppointmentTime = app.DateTime;
-                        TodaysApointments.Add(c);
+                        TodaysApointments.Add(app);
                     }
                 }
                 catch (Exception ex)
@@ -538,7 +541,7 @@ namespace BubbleStart.ViewModels
             CustomersCollectionView.Filter = CustomerFilter;
 
             CustomersCollectionView.Refresh();
-            TodaysApointments = new ObservableCollection<Customer>(TodaysApointments.OrderBy(ta => ta.AppointmentTime));
+            TodaysApointments = new ObservableCollection<Apointment>(TodaysApointments.OrderBy(ta => ta.DateTime));
             SecBodyParts = new ObservableCollection<BodyPartSelection>();
             foreach (var part in (SecBodyPart[])Enum.GetValues(typeof(SecBodyPart)))
             {
@@ -595,7 +598,7 @@ namespace BubbleStart.ViewModels
         {
             if (SelectedApointment != null)
             {
-                BasicDataManager.Delete(SelectedApointment.Apointments.FirstOrDefault(a => a.DateTime.Date == DateTime.Today.Date));
+                BasicDataManager.Delete(SelectedApointment);
                 await BasicDataManager.SaveAsync();
                 TodaysApointments.Remove(SelectedApointment);
             }
@@ -644,12 +647,15 @@ namespace BubbleStart.ViewModels
 
         private async Task DeleteCustomer(bool hide = false)
         {
-            BasicDataManager.Add(new Change($"Απενεργοποιήθηκε οριστικά Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", StaticResources.User));
-            SelectedCustomer.Enabled = false;
-            if (hide)
-                SelectedCustomer.ForceDisable = ForceDisable.forceDisable;
-            Customers.Remove(SelectedCustomer);
-            await BasicDataManager.SaveAsync();
+            if (!hide || MessageBox.Show("Θελετε σίγουρα να διαγράψετε τον πελάτη?", "Προσοχή", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                BasicDataManager.Add(new Change($"Απενεργοποιήθηκε οριστικά Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", StaticResources.User));
+                SelectedCustomer.Enabled = false;
+                if (hide)
+                    SelectedCustomer.ForceDisable = ForceDisable.forceDisable;
+                Customers.Remove(SelectedCustomer);
+                await BasicDataManager.SaveAsync();
+            }
         }
 
         private void OpenCustomerManagement(Customer c)
@@ -682,7 +688,9 @@ namespace BubbleStart.ViewModels
                 if (SelectedCustomer.Id == 0)
                 {
                     BasicDataManager.Add(SelectedCustomer);
+                    BasicDataManager.Customers.Add(SelectedCustomer);
                     Customers.Add(SelectedCustomer);
+                    Messenger.Default.Send(new CustomersChangedMessage());
                 }
                 await BasicDataManager.SaveAsync();
                 SelectedCustomer.RaisePropertyChanged(nameof(Customer.BMI));

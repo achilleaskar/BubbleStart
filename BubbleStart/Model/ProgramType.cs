@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Helpers;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BubbleStart.Model
@@ -6,12 +7,9 @@ namespace BubbleStart.Model
     [Table("InProgramTypes")]
     public class ProgramType : BaseModel
     {
-
-
-
         private string _ProgramName;
 
-
+        //[StringLength(100, MinimumLength = 2)]
         public string ProgramName
         {
             get
@@ -36,10 +34,9 @@ namespace BubbleStart.Model
             return ProgramName;
         }
 
-
         private ProgramMode _ProgramMode;
 
-
+        [Required]
         public ProgramMode ProgramMode
         {
             get

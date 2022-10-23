@@ -1,6 +1,8 @@
 ﻿using BubbleStart.Helpers;
+using BubbleStart.Messages;
 using BubbleStart.Model;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -28,10 +31,13 @@ namespace BubbleStart.ViewModels
         private async Task DeleteCustomer(Customer obj)
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            obj.ForceDisable = ForceDisable.forceDisable;
-            Customers.Remove(obj);
+            if (MessageBox.Show("Θελετε σίγουρα να διαγράψετε τον πελάτη?", "Προσοχή", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                obj.ForceDisable = ForceDisable.forceDisable;
+                Customers.Remove(obj);
 
-            await BasicDataManager.SaveAsync();
+                await BasicDataManager.SaveAsync();
+            }
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -42,6 +48,7 @@ namespace BubbleStart.ViewModels
             c.Enabled = true;
             await BasicDataManager.SaveAsync();
             c.BasicDataManager = BasicDataManager;
+            BasicDataManager.Customers.Add(c);
             c.InitialLoad();
             c.Loaded = true;
             c.GetRemainingDays();
@@ -50,6 +57,7 @@ namespace BubbleStart.ViewModels
             SearchCustomer_ViewModel.CustomersCollectionView.Refresh();
             Customers.Remove(obj);
             CustomersCollectionView.Refresh();
+            Messenger.Default.Send(new CustomersChangedMessage());
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 

@@ -23,6 +23,7 @@ namespace BubbleStart.ViewModels
             Hour = hour;
             AddCustomerCommand = new RelayCommand<string>(async obj => { await AddCustomer(obj); }, CanAdd);
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+            Messenger.Default.Register<CustomersChangedMessage>(this, msg => Load());
 
         }
 

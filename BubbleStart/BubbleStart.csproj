@@ -261,6 +261,7 @@
     <Compile Include="MessageListener.cs" />
     <Compile Include="Messages\BasicDataManagerRefreshedMessage.cs" />
     <Compile Include="Messages\ChangeVisibilityMessage.cs" />
+    <Compile Include="Messages\CustomersChangedMessage.cs" />
     <Compile Include="Messages\LoginLogOutMessage.cs" />
     <Compile Include="Messages\OpenChildWindowCommand.cs" />
     <Compile Include="Messages\OpenPopupUpMessage.cs" />
@@ -653,6 +654,10 @@
     <Compile Include="Migrations\202208020750338_present1.designer.cs">
       <DependentUpon>202208020750338_present1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202209251210234_fixes.cs" />
+    <Compile Include="Migrations\202209251210234_fixes.designer.cs">
+      <DependentUpon>202209251210234_fixes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -696,6 +701,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MyViewModelBase.cs" />
     <Compile Include="ViewModels\MyViewModelBaseAsync.cs" />
+    <Compile Include="ViewModels\ProgramTypesManagement_ViewModel.cs" />
     <Compile Include="ViewModels\SearchCustomer_ViewModel.cs" />
     <Compile Include="ViewModels\ShiftsManagement_Viewmodel.cs" />
     <Compile Include="ViewModels\Shop_ViewModel.cs" />
@@ -743,6 +749,9 @@
     <Compile Include="Views\ProgramSelectModal.xaml.cs">
       <DependentUpon>ProgramSelectModal.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProgramTypesManagement_Window.xaml.cs">
+      <DependentUpon>ProgramTypesManagement_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SearchCustomers.xaml.cs">
       <DependentUpon>SearchCustomers.xaml</DependentUpon>
     </Compile>
@@ -765,6 +774,7 @@
     <Compile Include="Wrappers\ItemWrapper.cs" />
     <Compile Include="Wrappers\ModelWrapper.cs" />
     <Compile Include="Wrappers\NotifyDataErrorInfoBase.cs" />
+    <Compile Include="Wrappers\ProgramTypeWrapper.cs" />
     <Compile Include="Wrappers\ShiftWrapper.cs" />
     <Compile Include="Wrappers\UserWrapper.cs" />
   </ItemGroup>
@@ -1071,6 +1081,9 @@
     <EmbeddedResource Include="Migrations\202208020750338_present1.resx">
       <DependentUpon>202208020750338_present1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202209251210234_fixes.resx">
+      <DependentUpon>202209251210234_fixes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -1141,6 +1154,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ProgramSelectModal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProgramTypesManagement_Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Windows;
 using BubbleStart.Database;
 using BubbleStart.ViewModels;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using Squirrel;
 
 namespace BubbleStart.Views
@@ -52,6 +54,28 @@ namespace BubbleStart.Views
             Application.Current.Shutdown();
 
             Environment.Exit(0);
+        }
+
+        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is bool b && b && DataContext is MainViewModel m && m.SelectedViewmodel is MainUserControl_ViewModel mu)
+            {
+                foreach (var a in mu.SearchCustomer_ViewModel.TodaysApointments)
+                    a.RaisePropertyChanged(nameof(a.ShowedUpToday));
+                mu.SearchCustomer_ViewModel.SelectedApointment = null;
+                foreach (var d in mu.Apointments_ViewModel.Days ?? new ObservableCollection<Day>())
+                    foreach (var h in d.Hours)
+                    {
+                        foreach (var a in h.AppointemntsOutdoor)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsFunctional)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsMassage)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsReformer)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                    }
+            }
         }
     }
 }

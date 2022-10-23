@@ -17,18 +17,12 @@ namespace BubbleStart.Converters
         {
             if (value is Apointment a)
             {
-                if (a.Id== 44005)
-                {
-
-                }
                 if (a.Customer != null)
                 {
-                    if (a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date))
+                    if (a.Room == RoomEnum.Massage && a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date && s.ProgramModeNew == ProgramMode.massage))
                         return new SolidColorBrush(Colors.Red);
-                }
-                else
-                {
-
+                    else if (a.Room != RoomEnum.Massage&&a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date && s.ProgramModeNew != ProgramMode.massage))
+                        return new SolidColorBrush(Colors.Red);
                 }
                 if (parameter == null || parameter is RadioButton b && b.IsChecked == true)
                 {

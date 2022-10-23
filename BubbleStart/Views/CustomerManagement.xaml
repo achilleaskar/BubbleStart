@@ -882,7 +882,6 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                SortDirection="Descending"
                                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
@@ -895,7 +894,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                                Binding="{Binding Showups}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
                                                                 Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -995,7 +994,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
-                                                                SortDirection="Descending"
                                                                 Width="55"
                                                                 Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
@@ -1216,7 +1214,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
-                                                                SortDirection="Descending"
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
@@ -1230,7 +1227,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                                Binding="{Binding Showups}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
                                                                 Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -1330,7 +1327,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
-                                                                SortDirection="Descending"
                                                                 Width="55"
                                                                 Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
@@ -1594,7 +1590,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
-                                                                SortDirection="Descending"
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
@@ -1608,7 +1603,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                                Binding="{Binding Showups}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
                                                                 Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -1708,7 +1703,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
-                                                                SortDirection="Descending"
                                                                 Width="55"
                                                                 Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
@@ -1918,7 +1912,6 @@
                                     </DataGrid.RowStyle>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Έναρξη"
-                                                            SortDirection="Descending"
                                                             Width="60"
                                                             Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                         <DataGridTemplateColumn Header="Τύπος"
@@ -1932,7 +1925,7 @@
                                         </DataGridTemplateColumn>
                                         <DataGridTextColumn Header="Συν."
                                                             Width="30"
-                                                            Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                            Binding="{Binding Showups}" />
                                         <DataGridTextColumn Header="Μήνες"
                                                             Width="35"
                                                             Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -2255,7 +2248,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
-                                                                SortDirection="Descending"
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
@@ -2269,7 +2261,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                                Binding="{Binding Showups}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
                                                                 Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -2369,7 +2361,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
-                                                                SortDirection="Descending"
                                                                 Width="55"
                                                                 Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
@@ -2590,7 +2581,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
-                                                                SortDirection="Descending"
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
@@ -2604,7 +2594,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                                Binding="{Binding Showups}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
                                                                 Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -2704,7 +2694,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
-                                                                SortDirection="Descending"
                                                                 Width="55"
                                                                 Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
@@ -2929,7 +2918,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
-                                                                SortDirection="Descending"
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
@@ -2943,7 +2931,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                                Binding="{Binding Showups}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
                                                                 Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -3043,7 +3031,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
-                                                                SortDirection="Descending"
                                                                 Width="55"
                                                                 Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
@@ -3264,7 +3251,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
-                                                                SortDirection="Descending"
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
@@ -3278,7 +3264,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                                Binding="{Binding Showups}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
                                                                 Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -3378,7 +3364,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
-                                                                SortDirection="Descending"
                                                                 Width="55"
                                                                 Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
@@ -3586,7 +3571,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
-                                                                SortDirection="Descending"
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
@@ -3600,7 +3584,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                                Binding="{Binding Showups}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
                                                                 Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -3700,7 +3684,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
-                                                                SortDirection="Descending"
                                                                 Width="55"
                                                                 Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
@@ -3904,7 +3887,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
-                                                                SortDirection="Descending"
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
@@ -3918,7 +3900,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
-                                                                Binding="{Binding Showups,UpdateSourceTrigger=PropertyChanged}" />
+                                                                Binding="{Binding Showups}" />
                                             <DataGridTextColumn Header="Μήνες"
                                                                 Width="35"
                                                                 Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
@@ -4018,7 +4000,6 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
-                                                                SortDirection="Descending"
                                                                 Width="55"
                                                                 Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"

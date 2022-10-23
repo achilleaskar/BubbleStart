@@ -50,6 +50,10 @@
                               Header="Κατηγορίες Εξόδων"
                               d:Visibility="Visible"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
+                    <MenuItem Command="{Binding OpenProgramTypesEditCommand}"
+                              Header="Κατηγορίες Προγραμμάτων"
+                              d:Visibility="Visible"
+                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
                     <MenuItem Command="{Binding PrintCustomersCommand}"
                               Header="Εκτύπωση όλων"
                               d:Visibility="Visible"
@@ -111,7 +115,7 @@
                 </TabItem>
                 <TabItem Header="Ανενεργοί">
                     <views:InActiveCustomers_UserControl DataContext="{Binding InActiveCustomers_ViewModel }" />
-                </TabItem> 
+                </TabItem>
                 <TabItem Header="Shop">
                     <views:Shop_UserControl DataContext="{Binding Shop_ViewModel }" />
                 </TabItem>
