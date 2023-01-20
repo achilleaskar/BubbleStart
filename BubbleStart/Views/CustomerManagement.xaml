@@ -261,6 +261,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal"
                             Grid.ColumnSpan="3">
@@ -353,9 +354,15 @@
                                   Margin="0 0 5 0"
                                   VerticalAlignment="Top"
                                   IsChecked="{Binding Vacinated}" />
-                        <CheckBox Content="Νόσηση"
-                                  VerticalAlignment="Center"
-                                  IsChecked="{Binding CertifOfIllness}" />
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="Νόσηση"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding CertifOfIllness}" />
+                            <DatePicker Margin="5 0 0 0"
+                                        FontSize="11"
+                                        Width="80"
+                                        SelectedDate="{Binding IllDate}" />
+                        </StackPanel>
                         <CheckBox Content="Ανεμβολίαστος"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding Psek}" />
@@ -390,30 +397,61 @@
                                 <iconPacks:PackIconFontAwesome Kind="ArrowDownSolid" />
                             </Button>
                         </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Mass Εκαθ.:"
+                                       Margin="0 5 5 5" />
+                            <DatePicker SelectedDate="{Binding MassageResetDay,UpdateSourceTrigger=PropertyChanged}"
+                                        Name="MassageResetDayPicker"
+                                        VerticalAlignment="Center"
+                                        Width="90" />
+                            <Button Click="Button_ClickMass"
+                                    VerticalAlignment="Center"
+                                    Margin="5 0">
+                                <iconPacks:PackIconFontAwesome Kind="ArrowDownSolid" />
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
                 <!--Background="{Binding ,ConverterParameter={Binding RemainingAmount}, Converter={StaticResource MeetingsToColorConverter}}"-->
-                <Label Content="Τύπος Ενεργού Πακέτου:"
+                <Label Content="Προεπιλεγ. τύπος Πακέτου:"
                        Grid.Row="5"
                        Grid.Column="0" />
+                <ComboBox Grid.Row="5"
+                          Grid.Column="1"
+                          Margin="0,4" Width="110"
+                          SelectedIndex="{Binding DefaultProgramMode}">
+                    <ComboBox.Resources>
+                        <CollectionViewSource x:Key="TypesList"
+                                              Source="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProgramMode}}}" />
+                    </ComboBox.Resources>
+                    <ComboBox.ItemsSource>
+                        <CompositeCollection>
+                            <ComboBoxItem Content="Χωρίς" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource TypesList}}" />
+                        </CompositeCollection>
+                    </ComboBox.ItemsSource>
+                </ComboBox>
+                <Label Content="Τύπος Ενεργού Πακέτου:"
+                       Grid.Row="6"
+                       Grid.Column="0" />
                 <TextBlock Text="{Binding TypeOfProgram }"
-                           Grid.Row="5"
+                           Grid.Row="6"
                            Grid.Column="1"
                            Margin="0,4" />
                 <Label Content="Υπόλοιπο:"
-                       Grid.Row="6"
+                       Grid.Row="7"
                        Margin="0"
                        Padding="5 5 5 0"
                        d:Visibility="Visible"
                        Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                        Grid.Column="0" />
                 <TextBlock Text="{Binding RemainingAmount, StringFormat=c1}"
-                           Grid.Row="6"
+                           Grid.Row="7"
                            d:Visibility="Visible"
                            Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                            Grid.Column="1"
                            Margin="0,4,0,0" />
-                <StackPanel Grid.Row="7"
+                <StackPanel Grid.Row="8"
                             Orientation="Horizontal"
                             HorizontalAlignment="Left"
                             Grid.ColumnSpan="2"
@@ -445,7 +483,7 @@
                                               Height="24"
                                               ItemsSource="{Binding BasicDataManager.ProgramTypes}"
                                               SelectedItem="{Binding SelectedProgramType, UpdateSourceTrigger=PropertyChanged}"
-                                              Margin="0"></ComboBox>
+                                              Margin="0" />
                                 </StackPanel>
                                 <StackPanel Margin="5 0 0 0"
                                             VerticalAlignment="Top">
@@ -605,7 +643,7 @@
                 <!--
                         </Grid>
                     </GroupBox>-->
-                <GroupBox Grid.Row="8"
+                <GroupBox Grid.Row="9"
                           Grid.ColumnSpan="2"
                           HorizontalAlignment="Left"
                           d:Visibility="Visible"
@@ -697,7 +735,7 @@
                                               SelectionChanged="Showups_SelectionChanged"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="278"
+                                              Width="318"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -838,6 +876,9 @@
                                                     </Style>
                                                 </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Γυμν."
+                                                                Width="55"
+                                                                Binding="{Binding Gymnast}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </GroupBox>
@@ -1030,7 +1071,7 @@
                                               SelectionChanged="Showups_SelectionChanged"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="278"
+                                              Width="318"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -1171,6 +1212,9 @@
                                                     </Style>
                                                 </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Γυμν."
+                                                                Width="55"
+                                                                Binding="{Binding Gymnast}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </GroupBox>
@@ -1361,7 +1405,7 @@
                                               CanUserAddRows="False"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="278"
+                                              Width="318"
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -1547,6 +1591,9 @@
                                                     </Style>
                                                 </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Γυμν."
+                                                                Width="55"
+                                                                Binding="{Binding Gymnast}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </GroupBox>
@@ -2064,7 +2111,7 @@
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
-                                              Width="278"
+                                              Width="318"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2205,6 +2252,9 @@
                                                     </Style>
                                                 </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Γυμν."
+                                                                Width="55"
+                                                                Binding="{Binding Gymnast}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </GroupBox>
@@ -2397,7 +2447,7 @@
                                               SelectionChanged="Showups_SelectionChanged"
                                               VerticalAlignment="Stretch"
                                               CanUserDeleteRows="False"
-                                              Width="278"
+                                              Width="318"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2538,6 +2588,9 @@
                                                     </Style>
                                                 </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Γυμν."
+                                                                Width="55"
+                                                                Binding="{Binding Gymnast}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </GroupBox>
@@ -2734,7 +2787,7 @@
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
                                               CanUserDeleteRows="False"
-                                              Width="278"
+                                              Width="318"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2875,6 +2928,9 @@
                                                     </Style>
                                                 </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Γυμν."
+                                                                Width="55"
+                                                                Binding="{Binding Gymnast}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </GroupBox>
@@ -3067,7 +3123,7 @@
                                               CanUserDeleteRows="False"
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
-                                              Width="278"
+                                              Width="318"
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -3208,6 +3264,9 @@
                                                     </Style>
                                                 </DataGridTemplateColumn.CellStyle>
                                             </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Γυμν."
+                                                                Width="55"
+                                                                Binding="{Binding Gymnast}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                 </GroupBox>
@@ -4114,7 +4173,8 @@
                                                     Binding="{Binding Size}" />
                                 <DataGridTextColumn Header="Ημερ."
                                                     Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                <DataGridCheckBoxColumn Binding="{Binding Free}" Header="Free"/>
+                                <DataGridCheckBoxColumn Binding="{Binding Free}"
+                                                        Header="Free" />
                                 <DataGridTextColumn Header="Τιμή"
                                                     Width="50"
                                                     Binding="{Binding Price,StringFormat=C2}" />

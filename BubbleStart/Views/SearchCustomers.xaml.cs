@@ -80,6 +80,7 @@ namespace BubbleStart.Views
             {
                 sc.PopupOpen = false;
                 sc.PopupFinishOpen = false;
+                sc.SelectedGymanst = null;
 
                 PilFunToggle.IsChecked = false;
             }
@@ -95,7 +96,7 @@ namespace BubbleStart.Views
 
         private void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (sender is MenuItem r &&  r.DataContext is Customer c)
+            if (sender is MenuItem r && r.DataContext is Customer c)
             {
                 Clipboard.SetText(c.ToString());
             }

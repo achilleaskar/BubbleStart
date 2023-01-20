@@ -18,6 +18,7 @@
         <Converters:BoolToShowedUp_Converter x:Key="BoolToShowedUp_Converter" />
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
         <Converters:DateTimeToString x:Key="DateTimeToString" />
+        <Converters:IsSelectedProgramTypeConverter x:Key="IsSelectedProgramTypeConverter" />
         <Converters:EnumConverter x:Key="EnumConverter" />
     </UserControl.Resources>
     <Grid>
@@ -89,16 +90,16 @@
                     BorderThickness="1"
                     Padding="5 17 5 5 "
                     Background="LightBlue">
-                <Grid>
+                <Grid Margin="10">
                     <TextBlock Foreground="Red"
                                FontSize="11"
                                Text="Press ESC or X to close"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
-                               Margin="-2 -16 0 0" />
+                               Margin="5 -19 0 0" />
                     <Button Foreground="Red"
                             Click="Button_Click"
-                            Margin=" 0 -15 -2 0"
+                            Margin=" 0 -20 -2 5"
                             VerticalContentAlignment="Center"
                             VerticalAlignment="Top"
                             HorizontalAlignment="Right">
@@ -161,6 +162,8 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
+                            <CheckBox IsEnabled="False" VerticalAlignment="Center"
+                                      IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=0}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Pilates"
@@ -171,6 +174,9 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingPilatesDays}" />
+                            <CheckBox  IsEnabled="False"
+                                       VerticalAlignment="Center"
+                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=4}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <ToggleButton Content="Pilates-Functional"
@@ -180,6 +186,9 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingFunctionalPilatesDays}" />
+                            <CheckBox IsEnabled="False"
+                                      VerticalAlignment="Center"
+                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=6}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Massage"
@@ -190,6 +199,9 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingMassageDays}" />
+                            <CheckBox IsEnabled="False"
+                                      VerticalAlignment="Center"
+                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=1}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Online"
@@ -200,6 +212,9 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingOnlineDays}" />
+                            <CheckBox IsEnabled="False"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=2}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="OutDoor"
@@ -210,6 +225,9 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingOutDoorDays}" />
+                            <CheckBox  IsEnabled="False"
+                                       VerticalAlignment="Center"
+                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=3}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Yoga"
@@ -220,6 +238,9 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingYogaDays}" />
+                            <CheckBox  IsEnabled="False"
+                                       VerticalAlignment="Center"
+                                      IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=5}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Aerial Yoga"
@@ -230,6 +251,9 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingAerialYogaDays}" />
+                            <CheckBox  IsEnabled="False"
+                                       VerticalAlignment="Center"
+                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=7}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Personal"
@@ -240,6 +264,9 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingPersonalDays}" />
+                            <CheckBox  IsEnabled="False"
+                                       VerticalAlignment="Center"
+                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=8  }" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Medical"
@@ -250,6 +277,17 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingMedicalDays}" />
+                            <CheckBox IsEnabled="False"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=9}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Content="Γυμναστής:" />
+                            <ComboBox ItemsSource="{Binding Gymnasts}"
+                                      Width="80"
+                                      SelectedItem="{Binding SelectedGymanst}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal"
                                     Margin="0 0 15 0"

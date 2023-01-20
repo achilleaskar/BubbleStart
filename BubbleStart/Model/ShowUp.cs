@@ -21,6 +21,29 @@ namespace BubbleStart.Model
         private bool _Test;
 
 
+
+
+        private User _Gymnast;
+
+
+        public User Gymnast
+        {
+            get
+            {
+                return _Gymnast;
+            }
+
+            set
+            {
+                if (_Gymnast == value)
+                {
+                    return;
+                }
+
+                _Gymnast = value;
+                RaisePropertyChanged();
+            }
+        }
         
         public bool Test
         {
