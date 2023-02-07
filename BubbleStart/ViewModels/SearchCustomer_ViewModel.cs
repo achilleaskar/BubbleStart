@@ -238,6 +238,57 @@ namespace BubbleStart.ViewModels
             }
         }
 
+
+
+
+        private ObservableCollection<User> _Gymnasts;
+
+
+        public ObservableCollection<User> Gymnasts
+        {
+            get
+            {
+                return _Gymnasts;
+            }
+
+            set
+            {
+                if (_Gymnasts == value)
+                {
+                    return;
+                }
+
+                _Gymnasts = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+
+        private User _SelectedGymanst;
+
+
+        public User SelectedGymanst
+        {
+            get
+            {
+                return _SelectedGymanst;
+            }
+
+            set
+            {
+                if (_SelectedGymanst == value)
+                {
+                    return;
+                }
+
+                _SelectedGymanst = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool PopupOpen
         {
             get
@@ -489,9 +540,9 @@ namespace BubbleStart.ViewModels
             {
                 CustomersPracticing.Add(SelectedCustomer);
                 if (programMode > 50)
-                    SelectedCustomer.ShowedUp(true, (ProgramMode)(programMode / 10), Is30min, (programMode % 10));
+                    SelectedCustomer.ShowedUp(true, (ProgramMode)(programMode / 10), Is30min, programMode % 10, gymnast: SelectedGymanst);
                 else
-                    SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min);
+                    SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min, gymnast: SelectedGymanst);
                 SelectedCustomer.SetColors();
                 await BasicDataManager.SaveAsync();
                 Is30min = false;
@@ -500,6 +551,7 @@ namespace BubbleStart.ViewModels
             foreach (var a in TodaysApointments)
                 a.RaisePropertyChanged(nameof(a.ShowedUpToday));
             SelectedApointment = null;
+            SelectedGymanst=null;
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -547,6 +599,8 @@ namespace BubbleStart.ViewModels
             {
                 SecBodyParts.Add(new BodyPartSelection { SecBodyPart = part });
             }
+
+            Gymnasts = BasicDataManager.Gymnasts;
 
             //int counter = 0;
 
@@ -671,6 +725,7 @@ namespace BubbleStart.ViewModels
                 };
                 Messenger.Default.Send(new OpenChildWindowCommand(window));
             }
+            SelectedCustomer = null;
         }
 
         //    //}

@@ -209,5 +209,10 @@ namespace BubbleStart.Views
             }
 
         }
+
+        private void Button_ClickMass(object sender, RoutedEventArgs e)
+        {
+            MassageResetDayPicker.SelectedDate = System.DateTime.Today;
+        }
     }
 }

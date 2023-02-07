@@ -246,6 +246,7 @@
     <Compile Include="Converters\IntToDayConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\IsCustomerNullToBoolConverter.cs" />
+    <Compile Include="Converters\IsSelectedProgramTypeConverter.cs" />
     <Compile Include="Converters\MeetingsToColorConverter.cs" />
     <Compile Include="Converters\RemainingAmountToColorConverter.cs" />
     <Compile Include="Converters\RowToIndexConverter.cs" />
@@ -658,6 +659,22 @@
     <Compile Include="Migrations\202209251210234_fixes.designer.cs">
       <DependentUpon>202209251210234_fixes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202212021714232_fixes1.cs" />
+    <Compile Include="Migrations\202212021714232_fixes1.designer.cs">
+      <DependentUpon>202212021714232_fixes1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212191026419_fixes2.cs" />
+    <Compile Include="Migrations\202212191026419_fixes2.designer.cs">
+      <DependentUpon>202212191026419_fixes2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202301021043267_IsSelectedProgramTypeConverter.cs" />
+    <Compile Include="Migrations\202301021043267_IsSelectedProgramTypeConverter.designer.cs">
+      <DependentUpon>202301021043267_IsSelectedProgramTypeConverter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202301021106134_IsSelectedProgramTypeConverterfix.cs" />
+    <Compile Include="Migrations\202301021106134_IsSelectedProgramTypeConverterfix.designer.cs">
+      <DependentUpon>202301021106134_IsSelectedProgramTypeConverterfix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -966,6 +983,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107121339308_itemsCor.resx">
       <DependentUpon>202107121339308_itemsCor.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202107141317447_colors.resx">
       <DependentUpon>202107141317447_colors.cs</DependentUpon>
@@ -1083,6 +1101,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202209251210234_fixes.resx">
       <DependentUpon>202209251210234_fixes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212021714232_fixes1.resx">
+      <DependentUpon>202212021714232_fixes1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212191026419_fixes2.resx">
+      <DependentUpon>202212191026419_fixes2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301021043267_IsSelectedProgramTypeConverter.resx">
+      <DependentUpon>202301021043267_IsSelectedProgramTypeConverter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202301021106134_IsSelectedProgramTypeConverterfix.resx">
+      <DependentUpon>202301021106134_IsSelectedProgramTypeConverterfix.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

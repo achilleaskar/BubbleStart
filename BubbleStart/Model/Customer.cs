@@ -43,6 +43,29 @@ namespace BubbleStart.Model
             }
         }
 
+
+
+        private int _DefaultProgramMode;
+
+
+        public int DefaultProgramMode
+        {
+            get
+            {
+                return _DefaultProgramMode;
+            }
+
+            set
+            {
+                if (_DefaultProgramMode == value)
+                {
+                    return;
+                }
+
+                _DefaultProgramMode = value;
+                RaisePropertyChanged();
+            }
+        }
         #region Fields
 
         private bool _ActiveCustomer;
@@ -806,6 +829,31 @@ namespace BubbleStart.Model
                 {
                     Illness.PropertyChanged += Illness_PropertyChanged;
                 }
+            }
+        }
+
+
+
+
+        private DateTime _IllDate = DateTime.Today;
+
+
+        public DateTime IllDate
+        {
+            get
+            {
+                return _IllDate;
+            }
+
+            set
+            {
+                if (_IllDate == value)
+                {
+                    return;
+                }
+
+                _IllDate = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -1929,6 +1977,31 @@ namespace BubbleStart.Model
                 }
 
                 _ResetDate = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private DateTime _MassageResetDay;
+
+
+        public DateTime MassageResetDay
+        {
+            get
+            {
+                return _MassageResetDay;
+            }
+
+            set
+            {
+                if (_MassageResetDay == value)
+                {
+                    return;
+                }
+
+                _MassageResetDay = value;
                 RaisePropertyChanged();
             }
         }
@@ -3575,10 +3648,13 @@ namespace BubbleStart.Model
             if (ShowUps.Count > 0)
             {
                 var lastShUp = ShowUps.OrderByDescending(s => s.Arrived).FirstOrDefault();
+                var lastShUpMass = ShowUps.OrderByDescending(s => s.Arrived).FirstOrDefault();
                 var lastShowUp = new DateTime();
                 if (lastShUp != null)
                     lastShowUp = lastShUp.Arrived;
-                if (RemainingAmount > 0 || ShowUps.Any(s => !s.Present && s.Prog == null && s.Arrived >= ResetDate))
+                if (RemainingAmount > 0 ||
+                    ShowUps.Any(s => !s.Present && s.Prog == null &&
+                    ((s.ProgramMode != ProgramMode.massage && s.Arrived >= ResetDate) || (s.ProgramMode == ProgramMode.massage && s.Arrived >= MassageResetDay))))
                 {
                     ActiveCustomer = true;
 
@@ -3727,6 +3803,7 @@ namespace BubbleStart.Model
         {
 
             DateTime startDate = Full ? new DateTime() : ResetDate;
+            DateTime startDateM = Full ? new DateTime() : MassageResetDay;
 
             if (!Loaded) return;
 
@@ -3746,9 +3823,13 @@ namespace BubbleStart.Model
                 Program selProg = null;
                 foreach (ProgramMode mode in (ProgramMode[])Enum.GetValues(typeof(ProgramMode)))
                 {
-                    programsReversed = Programs.Where(o => o.StartDay >= startDate && o?.ProgramTypeO?.ProgramMode == mode).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
+                    programsReversed = mode == ProgramMode.massage ?
+                        Programs.Where(o => o.StartDay >= startDateM && o?.ProgramTypeO?.ProgramMode == mode).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList() :
+                        Programs.Where(o => o.StartDay >= startDate && o?.ProgramTypeO?.ProgramMode == mode).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
                     Limit = programsReversed.Count > 0 ? programsReversed[0].StartDay : new DateTime();
-                    showUpsReserved = ShowUps.Where(s => s.Arrived >= startDate && s.Arrived >= Limit && s.ProgramModeNew == mode).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList();
+                    showUpsReserved = mode == ProgramMode.massage ?
+                        ShowUps.Where(s => s.Arrived >= startDateM && s.Arrived >= Limit && s.ProgramModeNew == mode).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList() :
+                        ShowUps.Where(s => s.Arrived >= startDate && s.Arrived >= Limit && s.ProgramModeNew == mode).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList();
                     selProg = null;
                     progIndex = 0;
                     foreach (var showUp in showUpsReserved)
@@ -4286,7 +4367,7 @@ namespace BubbleStart.Model
             return ProgramPrice >= 0 && SelectedProgramType != null && ((NumOfShowUps > 0 && ProgramDuration == 0) || (NumOfShowUps == 0 && ProgramDuration > 0));
         }
 
-        internal void ShowedUp(bool arrived, ProgramMode mode, bool is30min = false, int? secondaryProgMode = 0)
+        internal void ShowedUp(bool arrived, ProgramMode mode, bool is30min = false, int? secondaryProgMode = 0, User gymnast = null)
         {
             if (mode != ProgramMode.massage && ShowUps.Any(s => s.ProgramModeNew != ProgramMode.massage && s.Arrived.Date == DateTime.Today))
             {
@@ -4302,7 +4383,7 @@ namespace BubbleStart.Model
             {
                 case ProgramMode.functional:
                     remain = RemainingTrainingDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingTrainingDays != 0) return;
@@ -4313,7 +4394,7 @@ namespace BubbleStart.Model
 
                 case ProgramMode.massage:
                     remain = RemainingMassageDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingMassageDays != 0) return;
@@ -4324,7 +4405,7 @@ namespace BubbleStart.Model
 
                 case ProgramMode.online:
                     remain = RemainingOnlineDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingOnlineDays != 0) return;
@@ -4335,7 +4416,7 @@ namespace BubbleStart.Model
 
                 case ProgramMode.outdoor:
                     remain = RemainingOutDoorDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingOutDoorDays != 0) return;
@@ -4346,7 +4427,7 @@ namespace BubbleStart.Model
 
                 case ProgramMode.pilates:
                     remain = RemainingPilatesDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingPilatesDays != 0) return;
@@ -4357,7 +4438,7 @@ namespace BubbleStart.Model
 
                 case ProgramMode.yoga:
                     remain = RemainingYogaDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingYogaDays != 0) return;
@@ -4368,7 +4449,7 @@ namespace BubbleStart.Model
 
                 case ProgramMode.pilatesFunctional:
                     remain = RemainingFunctionalPilatesDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, ProgramMode = (ProgramMode)secondaryProgMode };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, ProgramMode = (ProgramMode)secondaryProgMode, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingFunctionalPilatesDays != 0) return;
@@ -4379,7 +4460,7 @@ namespace BubbleStart.Model
 
                 case ProgramMode.aerialYoga:
                     remain = RemainingAerialYogaDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingAerialYogaDays != 0) return;
@@ -4390,7 +4471,7 @@ namespace BubbleStart.Model
 
                 case ProgramMode.personal:
                     remain = RemainingPersonalDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingPersonalDays != 0) return;
@@ -4401,7 +4482,7 @@ namespace BubbleStart.Model
 
                 case ProgramMode.medical:
                     remain = RemainingMedicalDays;
-                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min };
+                    su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
                     if (RemainingMedicalDays != 0) return;
@@ -4420,7 +4501,7 @@ namespace BubbleStart.Model
 
 
 
-        private DateTime _DoctorDate;
+        private DateTime _DoctorDate = DateTime.Today;
 
 
         public DateTime DoctorDate
@@ -5088,7 +5169,7 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.aerialYoga;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.aerialYoga;
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga) ||
@@ -5132,7 +5213,7 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.functional;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.functional;
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.functional) ||
@@ -5151,12 +5232,12 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.massage;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.massage;
                 }
 
-                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.massage) ||
-                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.massage) ||
-                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.massage);
+                return (obj is Program p && (Full || p.StartDay >= MassageResetDay) && p.ProgramTypeO?.ProgramMode == ProgramMode.massage) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= MassageResetDay) && s.ProgramModeNew == ProgramMode.massage) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= MassageResetDay || (a.Program == null && a.Date > MassageResetDay)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.massage);
             }
             catch (Exception)
             {
@@ -5170,7 +5251,7 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.medical;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.medical;
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.medical) ||
@@ -5189,7 +5270,7 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.online;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.online;
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.online) ||
@@ -5208,7 +5289,7 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.outdoor;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.outdoor;
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.outdoor) ||
@@ -5227,7 +5308,7 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.personal;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.personal;
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.personal) ||
@@ -5246,7 +5327,7 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.pilates;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.pilates;
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.pilates) ||
@@ -5265,7 +5346,7 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.pilatesFunctional;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.pilatesFunctional;
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.pilatesFunctional) ||
@@ -5284,7 +5365,7 @@ namespace BubbleStart.Model
             {
                 if (StaticResources.User.Level > 2)
                 {
-                    return obj is ShowUp s1 && ((ShowUps.Count > 0 && s1 == ShowUps[0]) || (ShowUps.Count > 1 && s1 == ShowUps[1]) || s1.Arrived.Date == DateTime.Today) && s1.ProgramModeNew == ProgramMode.yoga;
+                    return obj is ShowUp s1 && s1.Arrived.Date >= StaticResources.OneWeekBefore && s1.ProgramModeNew == ProgramMode.yoga;
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.yoga) ||

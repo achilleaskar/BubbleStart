@@ -95,6 +95,8 @@ namespace BubbleStart.ViewModels
             myWorksheet.Cells["J1"].Value = "Μπλούζα";
             myWorksheet.Cells["K1"].Value = "Φούτερ";
             myWorksheet.Cells["L1"].Value = "Τσάντα";
+            myWorksheet.Cells["M1"].Value = "Google";
+            myWorksheet.Cells["N1"].Value = "Μαλιαρ";
             foreach (Customer customer in BasicDataManager.Customers)
             {
                 lineNum++;
@@ -122,6 +124,14 @@ namespace BubbleStart.ViewModels
                 myWorksheet.Cells["L" + lineNum].Value = yes ?
                     "NAI" : "OXI";
                 myWorksheet.Cells["L" + lineNum].Style.Font.Color.SetColor(yes ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+              
+                myWorksheet.Cells["M" + lineNum].Value = customer.Google ?
+                    "NAI" : "OXI";
+                myWorksheet.Cells["M" + lineNum].Style.Font.Color.SetColor(customer.Google ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+               
+                myWorksheet.Cells["N" + lineNum].Value = customer.Maliar ?
+                    "NAI" : "OXI";
+                myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
 
             }
             myWorksheet.Column(1).Width = 4;
@@ -134,6 +144,9 @@ namespace BubbleStart.ViewModels
             myWorksheet.Column(8).Width = 13;
             myWorksheet.Column(9).Width = 13;
             myWorksheet.Column(10).Width = 13;
+            myWorksheet.Column(11).Width = 8;
+            myWorksheet.Column(12).Width = 8;
+
 
             //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());
             p.SaveAs(fileInfo);

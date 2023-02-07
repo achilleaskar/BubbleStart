@@ -159,10 +159,12 @@ namespace BubbleStart.Database
         {
             try
             {
-                var thisWeek = StaticResources.GetNextWeekday(DateTime.Today, DayOfWeek.Monday).AddDays(-7);
+                var thisWeek = DateTime.Today.AddDays(-7);
 
                 await Context.Set<ShowUp>()
-                    .Where(s => s.Customer.Id == id && s.Arrived >= s.Customer.ResetDate || s.Arrived >= thisWeek)
+                    .Where(s => s.Customer.Id == id && ((s.ProgramMode != ProgramMode.massage && s.Arrived >= s.Customer.ResetDate) ||
+                    (s.ProgramMode == ProgramMode.massage && s.Arrived >= s.Customer.MassageResetDay) ||
+                    s.Arrived >= thisWeek))
                     .ToListAsync();
 
                 await Context.Set<Change>()
@@ -172,11 +174,21 @@ namespace BubbleStart.Database
                     .Where(p4 => p4.Customer.Id == id && p4.DateTime >= CloseLimit)
                     .ToListAsync();
                 await Context.Set<Program>()
-                    .Where(p => p.Customer.Id == id && p.StartDay >= p.Customer.ResetDate)
+                    .Where(p => p.Customer.Id == id && 
+                    ((p.ProgramTypeO.ProgramMode != ProgramMode.massage && p.StartDay >= p.Customer.ResetDate) || (p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)))
                     .ToListAsync();
+
+                await Context.Set<Program>()
+                   .Where(p => p.Customer.Id == id && p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)
+                   .ToListAsync();
+
                 await Context.Set<Payment>()
-                    .Where(s => s.Customer.Id == id && s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate))
+                    .Where(s => s.Customer.Id == id
+                    && ((s.Program.ProgramTypeO.ProgramMode != ProgramMode.massage && s.Program.StartDay >= s.Customer.ResetDate) ||
+                    (s.Program.ProgramTypeO.ProgramMode == ProgramMode.massage && s.Program.StartDay >= s.Customer.MassageResetDay) ||
+                    (s.Program == null && (s.Date >= s.Customer.ResetDate || s.Date >= s.Customer.MassageResetDay))))
                     .ToListAsync();
+ 
 
                 return await Context.Set<Customer>()
                     .Where(c => c.Id == id)
@@ -420,8 +432,8 @@ namespace BubbleStart.Database
                 endDateCash = endDateCash.AddDays(1);
                 return await Context.Payments
                     .Where(p => p.Date >= startDateCash && p.Date <= endDateCash && (!limit || p.Date >= Limit))
-                    .Include(c=>c.Customer)
-                    .Include(c=>c.Program)
+                    .Include(c => c.Customer)
+                    .Include(c => c.Program)
                     .ToListAsync();
             }
             catch (Exception)
@@ -477,9 +489,9 @@ namespace BubbleStart.Database
             }
             catch (Exception e)
             {
-                throw new Exception("Σφάλμα κατα την διαγραφή του στοιχείου. "+e.Message);
+                throw new Exception("Σφάλμα κατα την διαγραφή του στοιχείου. " + e.Message);
             }
-           
+
         }
 
         internal async Task<List<ClosedHour>> GetAllClosedHoursAsync(RoomEnum room, DateTime time)
@@ -506,11 +518,10 @@ namespace BubbleStart.Database
             {
                 var thisWeek = StaticResources.GetNextWeekday(DateTime.Today, DayOfWeek.Monday).AddDays(-7);
                 await Context.Set<ShowUp>()
-                    .Where(s => s.Customer.Enabled && (s.Arrived >= s.Customer.ResetDate || s.Arrived >= thisWeek))
+                    .Where(s => s.Customer.Enabled && ((s.ProgramModeNew != ProgramMode.massage && s.Arrived >= s.Customer.ResetDate) ||
+                    (s.ProgramModeNew == ProgramMode.massage && s.Arrived >= s.Customer.MassageResetDay)) || s.Arrived >= thisWeek)
                     .ToListAsync();
-                //await Context.Set<ShowUp>()
-                //   .Where(s => s.Arrived >= ThreeMonths) 
-                //   .ToListAsync();
+
                 await Context.Set<Change>()
                     .Where(s => s.Customer.Enabled && s.Date >= s.Customer.ResetDate)
                     .ToListAsync();
@@ -518,11 +529,13 @@ namespace BubbleStart.Database
                     .Where(p4 => p4.Customer.Enabled && p4.DateTime >= CloseLimit)
                     .ToListAsync();
                 await Context.Set<Program>()
-                    .Where(p => p.Customer.Enabled && p.StartDay >= p.Customer.ResetDate)
+                    .Where(p => p.Customer.Enabled && ((p.ProgramTypeO.ProgramMode != ProgramMode.massage && p.StartDay >= p.Customer.ResetDate) || (p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)))
                     .Include(s => s.ShowUpsList)
                     .ToListAsync();
                 await Context.Set<Payment>()
-                    .Where(s => s.Customer.Enabled && (s.Program.StartDay >= s.Customer.ResetDate || (s.Program == null && s.Date >= s.Customer.ResetDate)))
+                    .Where(s => s.Customer.Enabled && ((s.Program.ProgramTypeO.ProgramMode != ProgramMode.massage && s.Program.StartDay >= s.Customer.ResetDate) ||
+                    (s.Program.ProgramTypeO.ProgramMode == ProgramMode.massage && s.Program.StartDay >= s.Customer.MassageResetDay) ||
+                    (s.Program == null && (s.Date >= s.Customer.ResetDate || s.Date >= s.Customer.MassageResetDay))))
                     .ToListAsync();
 
 
