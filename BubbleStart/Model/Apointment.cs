@@ -13,6 +13,54 @@ namespace BubbleStart.Model
         public string GymColor => GetApColor(true);
 
 
+
+
+
+        private bool _Waiting;
+
+
+        public bool Waiting
+        {
+            get
+            {
+                return _Waiting;
+            }
+
+            set
+            {
+                if (_Waiting == value)
+                {
+                    return;
+                }
+
+                _Waiting = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private bool _Canceled;
+
+
+        public bool Canceled
+        {
+            get
+            {
+                return _Canceled;
+            }
+
+            set
+            {
+                if (_Canceled == value)
+                {
+                    return;
+                }
+
+                _Canceled = value;
+                RaisePropertyChanged();
+            }
+        }
+
         [NotMapped]
         public bool ShowedUpToday
         {
@@ -28,6 +76,10 @@ namespace BubbleStart.Model
         {
             if (Customer != null)
             {
+                if (Waiting)
+                {
+                    return Colors.Silver.ToString();
+                }
                 if (DateTime < DateTime.Now)
                 {
                     if (Room == RoomEnum.Massage)

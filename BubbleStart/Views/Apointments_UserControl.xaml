@@ -377,6 +377,17 @@
                                                                          Background="{Binding ClosedColor0}"
                                                                          SelectedItem="{Binding SelectedApointmentFunctional}"
                                                                          ItemsSource="{Binding AppointmentsFunctional}">
+                                                                    <ListBox.ContextMenu>
+                                                                        <ContextMenu>
+                                                                            <MenuItem Header="Αναμονή / Κανονικό"
+                                                                                      Command="{Binding ToggleWaitingCommand}"
+                                                                                      CommandParameter="0" />
+                                                                            <Separator />
+                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                                                      Command="{Binding ToggleCanceledCommand}"
+                                                                                      CommandParameter="0" />
+                                                                        </ContextMenu>
+                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -385,6 +396,17 @@
                                                                                                Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                                                                                Background="{Binding ApColor}"
                                                                                                Padding="1">
+                                                                                        <TextBlock.Style>
+                                                                                            <Style TargetType="TextBlock">
+                                                                                                <Style.Triggers>
+                                                                                                    <DataTrigger Binding="{Binding Canceled}"
+                                                                                                                 Value="true">
+                                                                                                        <Setter Property="TextDecorations"
+                                                                                                                Value="Strikethrough" />
+                                                                                                    </DataTrigger>
+                                                                                                </Style.Triggers>
+                                                                                            </Style>
+                                                                                        </TextBlock.Style>
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
@@ -466,7 +488,6 @@
                                             <ItemsControl ItemsSource="{Binding Hours}"
                                                           Grid.Row="2"
                                                           SizeChanged="ReformerControl_SizeChanged"
-                                                          
                                                           Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
@@ -521,6 +542,17 @@
                                                                          Background="{Binding ClosedColor1}"
                                                                          SelectedItem="{Binding SelectedApointmentReformer}"
                                                                          ItemsSource="{Binding AppointmentsReformer}">
+                                                                    <ListBox.ContextMenu>
+                                                                        <ContextMenu>
+                                                                            <MenuItem Header="Αναμονή / Κανονικό"
+                                                                                      Command="{Binding ToggleWaitingCommand}"
+                                                                                      CommandParameter="1" />
+                                                                            <Separator />
+                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                                                      Command="{Binding ToggleCanceledCommand}"
+                                                                                      CommandParameter="1" />
+                                                                        </ContextMenu>
+                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -529,6 +561,17 @@
                                                                                                Background="{Binding ApColor}"
                                                                                                Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                                                                                Padding="1">
+                                                                                        <TextBlock.Style>
+                                                                                            <Style TargetType="TextBlock">
+                                                                                                <Style.Triggers>
+                                                                                                    <DataTrigger Binding="{Binding Canceled}"
+                                                                                                                 Value="true">
+                                                                                                        <Setter Property="TextDecorations"
+                                                                                                                Value="Strikethrough" />
+                                                                                                    </DataTrigger>
+                                                                                                </Style.Triggers>
+                                                                                            </Style>
+                                                                                        </TextBlock.Style>
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
@@ -610,7 +653,6 @@
                                             <ItemsControl ItemsSource="{Binding Hours}"
                                                           Grid.Row="3"
                                                           SizeChanged="MassageControl_SizeChanged"
-                                                          
                                                           Visibility="{Binding DataContext.MassageVisible, Converter={StaticResource booleanToVisibilityConverter},
                                                 RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                           HorizontalAlignment="Left">
@@ -625,7 +667,6 @@
                                                                 Width="97"
                                                                 MinHeight="80"
                                                                 BorderThickness="1 1 0 0">
-                                                            
                                                             <Grid>
                                                                 <Grid.RowDefinitions>
                                                                     <RowDefinition Height="Auto" />
@@ -667,6 +708,17 @@
                                                                          Background="{Binding ClosedColorMassage}"
                                                                          SelectedItem="{Binding SelectedAppointmentMassage}"
                                                                          ItemsSource="{Binding AppointmentsMassage}">
+                                                                    <ListBox.ContextMenu>
+                                                                        <ContextMenu>
+                                                                            <MenuItem Header="Αναμονή / Κανονικό"
+                                                                                      Command="{Binding ToggleWaitingCommand}"
+                                                                                      CommandParameter="2" />
+                                                                            <Separator />
+                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                                                      Command="{Binding ToggleCanceledCommand}"
+                                                                                      CommandParameter="2" />
+                                                                        </ContextMenu>
+                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -675,6 +727,17 @@
                                                                                                Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                                                                                Background="{Binding ApColor}"
                                                                                                Padding="1">
+                                                                                        <TextBlock.Style>
+                                                                                            <Style TargetType="TextBlock">
+                                                                                                <Style.Triggers>
+                                                                                                    <DataTrigger Binding="{Binding Canceled}"
+                                                                                                                 Value="true">
+                                                                                                        <Setter Property="TextDecorations"
+                                                                                                                Value="Strikethrough" />
+                                                                                                    </DataTrigger>
+                                                                                                </Style.Triggers>
+                                                                                            </Style>
+                                                                                        </TextBlock.Style>
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
@@ -756,7 +819,6 @@
                                             <ItemsControl ItemsSource="{Binding Hours}"
                                                           Grid.Row="4"
                                                           SizeChanged="OutdoorControl_SizeChanged"
-                                                          
                                                           Visibility="{Binding DataContext.OutdoorVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
@@ -811,6 +873,17 @@
                                                                          Background="{Binding ClosedColorOutdoor}"
                                                                          SelectedItem="{Binding SelectedAppointmentOutdoor}"
                                                                          ItemsSource="{Binding AppointemntsOutdoor}">
+                                                                    <ListBox.ContextMenu>
+                                                                        <ContextMenu>
+                                                                            <MenuItem Header="Αναμονή / Κανονικό"
+                                                                                      Command="{Binding ToggleWaitingCommand}"
+                                                                                      CommandParameter="3" />
+                                                                            <Separator />
+                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                                                      Command="{Binding ToggleCanceledCommand}"
+                                                                                      CommandParameter="3" />
+                                                                        </ContextMenu>
+                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -819,6 +892,17 @@
                                                                                                Background="{Binding ApColor}"
                                                                                                Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                                                                                                Padding="1">
+                                                                                        <TextBlock.Style>
+                                                                                            <Style TargetType="TextBlock">
+                                                                                                <Style.Triggers>
+                                                                                                    <DataTrigger Binding="{Binding Canceled}"
+                                                                                                                 Value="true">
+                                                                                                        <Setter Property="TextDecorations"
+                                                                                                                Value="Strikethrough" />
+                                                                                                    </DataTrigger>
+                                                                                                </Style.Triggers>
+                                                                                            </Style>
+                                                                                        </TextBlock.Style>
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>

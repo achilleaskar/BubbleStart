@@ -1,6 +1,5 @@
 ﻿using BubbleStart.Helpers;
 using BubbleStart.Messages;
-using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using System;
@@ -43,10 +42,28 @@ namespace BubbleStart.Model
             }
         }
 
+        private string _DefaultProgramModes;
 
+        public string DefaultProgramModes
+        {
+            get
+            {
+                return _DefaultProgramModes;
+            }
+
+            set
+            {
+                if (_DefaultProgramModes == value)
+                {
+                    return;
+                }
+
+                _DefaultProgramModes = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private int _DefaultProgramMode;
-
 
         public int DefaultProgramMode
         {
@@ -66,6 +83,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         #region Fields
 
         private bool _ActiveCustomer;
@@ -832,11 +850,7 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
         private DateTime _IllDate = DateTime.Today;
-
 
         public DateTime IllDate
         {
@@ -1981,11 +1995,7 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
         private DateTime _MassageResetDay;
-
 
         public DateTime MassageResetDay
         {
@@ -2132,11 +2142,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-
-
         private bool _ClothFree;
 
         [NotMapped]
@@ -2158,6 +2163,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
         private decimal _ClothPrice;
 
         [NotMapped]
@@ -2179,8 +2185,6 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
-
-
 
         [NotMapped]
         public Payment SelectedFunctionalPayment
@@ -3033,10 +3037,6 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-
         private string _ClothColorString;
 
         [NotMapped]
@@ -3143,8 +3143,6 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand<Payment> SetToProgramCommand { get; set; }
-
-
 
         [NotMapped]
         public RelayCommand ShowHistoryCommand { get; set; }
@@ -3681,6 +3679,28 @@ namespace BubbleStart.Model
             SetColors();
         }
 
+        private ObservableCollection<DefaultProgram> _DefaultPrograms;
+
+        [NotMapped]
+        public ObservableCollection<DefaultProgram> DefaultPrograms
+        {
+            get
+            {
+                return _DefaultPrograms;
+            }
+
+            set
+            {
+                if (_DefaultPrograms == value)
+                {
+                    return;
+                }
+
+                _DefaultPrograms = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public void InitialLoad()
         {
             if (FirstDate.Year < 2000)
@@ -3742,6 +3762,14 @@ namespace BubbleStart.Model
             CustomerLeftCommand = new RelayCommand(CustomerLeft);
         }
 
+        private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(DefaultProgram.Selected))
+            {
+                DefaultProgramModes = string.Join(",", DefaultPrograms.Where(t => t.Selected).Select(r=>r.Id));
+            }
+        }
+
         public void ResetList()
         {
             foreach (var item in SecBodyParts)
@@ -3801,12 +3829,10 @@ namespace BubbleStart.Model
 
         public void SetColors()
         {
-
             DateTime startDate = Full ? new DateTime() : ResetDate;
             DateTime startDateM = Full ? new DateTime() : MassageResetDay;
 
             if (!Loaded) return;
-
 
             if (Programs != null && ShowUps != null && ShowUps.Count > 0 && Programs.Count > 0)
             {
@@ -4002,7 +4028,6 @@ namespace BubbleStart.Model
                         Changed = false;
                     }
                 }
-
             }
             SetRemaining();
 
@@ -4043,7 +4068,6 @@ namespace BubbleStart.Model
 
         public void SetRemaining()
         {
-
             foreach (var p in Programs)
             {
                 p.CalculateRemainingAmount();
@@ -4497,12 +4521,7 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
-
         private DateTime _DoctorDate = DateTime.Today;
-
 
         public DateTime DoctorDate
         {
@@ -4523,11 +4542,7 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
         private bool _Google;
-
 
         public bool Google
         {
@@ -6043,7 +6058,6 @@ namespace BubbleStart.Model
                 }
         }
 
-
         private void UpdateShowUpsCollections()
         {
             if (!Loaded)
@@ -6199,7 +6213,69 @@ namespace BubbleStart.Model
             RaisePropertyChanged(nameof(BMI));
         }
 
+        internal void FillDefaultProframs()
+        {
+            DefaultPrograms = new ObservableCollection<DefaultProgram>(BasicDataManager.ProgramModes
+                .Select(t => new DefaultProgram { Name = t.Value, Id = t.Key }));
+            if (!string.IsNullOrWhiteSpace(DefaultProgramModes))
+                foreach (var num in DefaultProgramModes.Split(',').Select(i => int.Parse(i)))
+                {
+                    if (DefaultPrograms.Any(e => e.Id == num))
+                        DefaultPrograms.FirstOrDefault(r => r.Id == num).Selected = true;
+                }
+
+            foreach (var item in DefaultPrograms)
+            {
+                item.PropertyChanged += Item_PropertyChanged;
+            }
+        }
+
         #endregion Methods
+    }
+
+    public class DefaultProgram : BaseModel
+    {
+        private bool _Selected;
+
+        public bool Selected
+        {
+            get
+            {
+                return _Selected;
+            }
+
+            set
+            {
+                if (_Selected == value)
+                {
+                    return;
+                }
+
+                _Selected = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _Name;
+
+        public string Name
+        {
+            get
+            {
+                return _Name;
+            }
+
+            set
+            {
+                if (_Name == value)
+                {
+                    return;
+                }
+
+                _Name = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 
     public class PaymentSum : BaseModel

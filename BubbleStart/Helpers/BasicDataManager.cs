@@ -8,7 +8,6 @@ using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -46,6 +45,8 @@ namespace BubbleStart.Helpers
         #endregion Fields
 
         #region Properties
+
+        public Dictionary<int, string> ProgramModes { get; set; }
 
         private ObservableCollection<Shift> _Shifts;
 
@@ -227,11 +228,7 @@ namespace BubbleStart.Helpers
             }
         }
 
-
-
-
         private ObservableCollection<User> _Gymnasts;
-
 
         public ObservableCollection<User> Gymnasts
         {
@@ -272,11 +269,16 @@ namespace BubbleStart.Helpers
             ShopItems = new ObservableCollection<Item>(Items.Where(i => i.Shop));
             _ = await Context.GetAllAsync<ItemPurchase>();
 
+            ProgramModes = new Dictionary<int, string>();
+            foreach (ProgramMode item in Enum.GetValues(typeof(ProgramMode)))
+            {
+                ProgramModes[(int)item] = StaticResources.GetDescription(item);
+            }
+
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
 
             //var not = DateTime.Today;
             //var t = await Context.GetAllAsync<Customer>(c => c.Apointments.Any(a => a.DateTime > not) && c.Enabled == false);
-
 
             //await Context.SaveAsync();
 
@@ -292,11 +294,7 @@ namespace BubbleStart.Helpers
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-
-
-
         private ObservableCollection<Item> _ShopItems;
-
 
         public ObservableCollection<Item> ShopItems
         {
@@ -340,7 +338,6 @@ namespace BubbleStart.Helpers
 
         private async Task Create(bool massage)
         {
-
             int lineNum = 1;
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Paketa.xlsx";
 
@@ -375,7 +372,6 @@ namespace BubbleStart.Helpers
                     myWorksheet.Cells["E" + lineNum].Value = masses?.Where(t => t.Present).Count() ?? 0;
                     myWorksheet.Cells["F" + lineNum].Value = masses?.Count() ?? 0;
                     myWorksheet.Cells["G" + lineNum].Value = (progs?.Sum(s => s.Amount) ?? 0) + " €";
-
                 }
                 //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());
                 p.SaveAs(fileInfo);
@@ -495,8 +491,6 @@ namespace BubbleStart.Helpers
             await Context.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
-
-
 
         #endregion Methods
     }

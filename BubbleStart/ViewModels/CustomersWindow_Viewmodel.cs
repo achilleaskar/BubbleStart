@@ -382,6 +382,10 @@ namespace BubbleStart.ViewModels
                 await BasicDataManager.Context.DeleteFromThis(SelectedCustomer, Hour.Time);
                 await BasicDataManager.SaveAsync();
             }
+            else if (p == "12")
+            {
+                await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Room, SelectedGymnast: SelectedGymnast, false, waiting:true);
+            }
             else
             {
                 await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Room, SelectedGymnast: SelectedGymnast, p == "1");
@@ -408,7 +412,7 @@ namespace BubbleStart.ViewModels
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-            Customers = new ObservableCollection<Customer>(BasicDataManager.Customers);
+            Customers = new ObservableCollection<Customer>(BasicDataManager.Customers.ToHashSet());
             Gymnasts = new ObservableCollection<User>(BasicDataManager.Users.Where(u => u.Id == 4 || u.Level == 4));
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;

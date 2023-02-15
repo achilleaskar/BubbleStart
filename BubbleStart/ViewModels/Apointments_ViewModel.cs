@@ -351,15 +351,8 @@ namespace BubbleStart.ViewModels
             List<GymnastHour> gymnasts = refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToListAsync() :
              BasicDataManager.Context.Context.GymnastHours.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).ToList();
 
-            foreach (var gy in gymnasts)
-            {
-                if (gy.Gymnast == null)
-                {
-                }
-            }
-
             List<ClosedHour> closedHours = refresh ? await BasicDataManager.Context.Context.ClosedHours.Where(a => a.Date >= StartDate && a.Date < tmpdate).ToListAsync() :
-              BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate).ToList();
+             BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate).ToList();
 
             DateTime tmpDate = StartDate;
             Days.Clear();
@@ -409,7 +402,7 @@ namespace BubbleStart.ViewModels
                 }
             }
 
-            foreach (var ap in apointments)
+            foreach (var ap in apointments.OrderBy(a => a.Waiting))
             {
                 numOfDay = ((int)ap.DateTime.DayOfWeek + 6) % 7;
                 if (numOfDay < 6 && ap.DateTime.Hour >= 8 && ap.DateTime.Hour <= 22)
@@ -531,6 +524,7 @@ namespace BubbleStart.ViewModels
             c.EditedInCustomerManagement = true;
             c.BasicDataManager = BasicDataManager;
             c.UpdateCollections();
+            c.FillDefaultProframs();
             Window window = new CustomerManagement
             {
                 DataContext = c
@@ -587,7 +581,7 @@ namespace BubbleStart.ViewModels
             }
             catch (Exception ex)
             {
-                 MessengerInstance.Send(new ShowExceptionMessage_Message("Σφάλμα κατα την φόρτωση του προγράμματος"+ex.Message));
+                MessengerInstance.Send(new ShowExceptionMessage_Message("Σφάλμα κατα την φόρτωση του προγράμματος" + ex.Message));
             }
             RaisePropertyChanged(nameof(HasDays));
             RaisePropertyChanged(nameof(Days));
@@ -989,6 +983,8 @@ namespace BubbleStart.ViewModels
             DeleteApointmentCommand = new RelayCommand<object>(async (par) => { await DeleteApointment(par); }, CanDeleteApointment);
             ChangeGymnastCommand = new RelayCommand<object[]>(async (obj) => await ChangeGymnast(obj));
             NoGymnastCommand = new RelayCommand<int>(async (obj) => await NoGymnast(obj));
+            ToggleWaitingCommand = new RelayCommand<string>(async (obj) => await ToggleWaiting(obj));
+            ToggleCanceledCommand = new RelayCommand<string>(async (obj) => await ToggleCanceled(obj));
             ToggleEnabledCommand = new RelayCommand<int>(async (par) => await ToggleEnabled((RoomEnum)par));
             ToggleEnabledForEverCommand = new RelayCommand<int>(async (par) => await ToggleEnabledForEver((RoomEnum)par));
             EnableForEverCommand = new RelayCommand<int>(async (par) => await EnableForEver((RoomEnum)par));
@@ -999,6 +995,66 @@ namespace BubbleStart.ViewModels
             AppointmentsReformer = new ObservableCollection<Apointment>();
             AppointmentsMassage = new ObservableCollection<Apointment>();
             AppointemntsOutdoor = new ObservableCollection<Apointment>();
+        }
+
+        private async Task ToggleCanceled(string obj)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            switch (obj)
+            {
+                case "0":
+                    SelectedApointmentFunctional.Canceled = !SelectedApointmentFunctional.Canceled;
+                    SelectedApointmentFunctional.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    break;
+
+                case "1":
+                    SelectedApointmentReformer.Canceled = !SelectedApointmentReformer.Canceled;
+                    SelectedApointmentReformer.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    break;
+
+                case "2":
+                    SelectedAppointmentMassage.Canceled = !SelectedAppointmentMassage.Canceled;
+                    SelectedAppointmentMassage.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    break;
+
+                case "3":
+                    SelectedAppointmentOutdoor.Canceled = !SelectedAppointmentOutdoor.Canceled;
+                    SelectedAppointmentOutdoor.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    break;
+            }
+
+            await BasicDataManager.SaveAsync();
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private async Task ToggleWaiting(string obj)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            switch (obj)
+            {
+                case "0":
+                    SelectedApointmentFunctional.Waiting = !SelectedApointmentFunctional.Waiting;
+                    SelectedApointmentFunctional.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    break;
+
+                case "1":
+                    SelectedApointmentReformer.Waiting = !SelectedApointmentReformer.Waiting;
+                    SelectedApointmentReformer.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    break;
+
+                case "2":
+                    SelectedAppointmentMassage.Waiting = !SelectedAppointmentMassage.Waiting;
+                    SelectedAppointmentMassage.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    break;
+
+                case "3":
+                    SelectedAppointmentOutdoor.Waiting = !SelectedAppointmentOutdoor.Waiting;
+                    SelectedAppointmentOutdoor.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    break;
+            }
+
+            await BasicDataManager.SaveAsync();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private async Task NoGymnast(int obj)
@@ -1111,6 +1167,8 @@ namespace BubbleStart.ViewModels
         #region Properties
 
         public RelayCommand<int> AddApointmentCommand { get; set; }
+        public RelayCommand<string> ToggleCanceledCommand { get; set; }
+        public RelayCommand<string> ToggleWaitingCommand { get; set; }
         public RelayCommand<int> NoGymnastCommand { get; set; }
 
         public ObservableCollection<Apointment> AppointemntsOutdoor
@@ -1479,14 +1537,14 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
-        public async Task AddCustomer(Customer customer, SelectedPersonEnum selectedPerson, RoomEnum room, User SelectedGymnast, bool forever = false)
+        public async Task AddCustomer(Customer customer, SelectedPersonEnum selectedPerson, RoomEnum room, User SelectedGymnast, bool forever = false, bool waiting = false)
         {
             var tmpTime = Time;
             if (customer != null)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
 
-                Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = room, Gymnast = SelectedGymnast };
+                Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = room, Gymnast = SelectedGymnast, Waiting = waiting };
                 if (forever)
                 {
                     List<Apointment> nextAppoitments = await BasicDataManager.Context.GetAllAppointmentsThisDayAsync(customer.Id, Time, room);
@@ -1746,7 +1804,7 @@ namespace BubbleStart.ViewModels
 
         private async Task EnableForEver(RoomEnum room)
         {
-            if (Time==null)
+            if (Time == null)
             {
                 MessageBox.Show("Σφάλμα πατήστε φόρτωση και δοκιμάστε ξανά");
                 return;
@@ -1768,7 +1826,7 @@ namespace BubbleStart.ViewModels
             catch (Exception ex)
             {
 
-                BasicDataManager.CurrentMessenger.Send(new ShowExceptionMessage_Message("Σφάλμα κατα το πρώτο στάδιο της ενεργοποίησης"+ex.Message));
+                BasicDataManager.CurrentMessenger.Send(new ShowExceptionMessage_Message("Σφάλμα κατα το πρώτο στάδιο της ενεργοποίησης" + ex.Message));
             }
             Mouse.OverrideCursor = Cursors.Arrow;
 

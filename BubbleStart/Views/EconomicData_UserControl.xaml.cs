@@ -69,5 +69,10 @@ namespace BubbleStart.Views
                 ed.ShowIncomesDataCommand.Execute(null);
             }
         }
+
+        private void Button_Click()
+        {
+
+        }
     }
 }

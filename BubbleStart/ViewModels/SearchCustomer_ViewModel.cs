@@ -694,7 +694,7 @@ namespace BubbleStart.ViewModels
             {
                 return true;
             }
-            SearchTerm = SearchTerm.Trim().ToUpper();
+            SearchTerm = SearchTerm.ToUpper();
             string tmpTerm = StaticResources.ToGreek(SearchTerm);
             return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
         }
@@ -719,6 +719,8 @@ namespace BubbleStart.ViewModels
                 c.EditedInCustomerManagement = true;
                 c.BasicDataManager = BasicDataManager;
                 c.UpdateCollections();
+                c.FillDefaultProframs();
+
                 Window window = new CustomerManagement
                 {
                     DataContext = c

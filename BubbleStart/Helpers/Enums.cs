@@ -134,7 +134,10 @@ namespace BubbleStart.Helpers
         [Description("Τρικέφαλος")]
         Triceps = 9,
         [Description("Κορμός")]
-        Main = 10
+        Main = 10,
+        [Description("Αερόβιο")]
+        Aerial = 11
+
     }
 
     public enum SelectedPersonEnum

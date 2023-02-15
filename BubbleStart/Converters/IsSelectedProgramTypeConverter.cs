@@ -15,9 +15,9 @@ namespace BubbleStart.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Customer && parameter is string&& Int32.TryParse((string)parameter,out int r))
+            if (value is Customer)
             {
-                return ((Customer)value).DefaultProgramMode == r+1;
+                return ((Customer)value).DefaultProgramModes?.Split(',').Contains((parameter ?? "-").ToString());
             }
             return false;
         }

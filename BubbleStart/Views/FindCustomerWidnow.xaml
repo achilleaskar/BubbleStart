@@ -106,6 +106,10 @@
                 </StackPanel>
                 <StackPanel Grid.Row="4"
                             Orientation="Horizontal">
+                    <Button Content="Προσθήκη σε αναμονή"
+                            Margin="5"
+                            CommandParameter="12"
+                            Command="{Binding AddCustomerCommand}" />
                     <Button Content="Προσθήκη για πάντα"
                             Margin="5"
                             CommandParameter="1"

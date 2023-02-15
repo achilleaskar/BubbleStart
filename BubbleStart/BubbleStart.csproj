@@ -675,6 +675,10 @@
     <Compile Include="Migrations\202301021106134_IsSelectedProgramTypeConverterfix.designer.cs">
       <DependentUpon>202301021106134_IsSelectedProgramTypeConverterfix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202302081817143_fixes3.cs" />
+    <Compile Include="Migrations\202302081817143_fixes3.designer.cs">
+      <DependentUpon>202302081817143_fixes3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -1113,6 +1117,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202301021106134_IsSelectedProgramTypeConverterfix.resx">
       <DependentUpon>202301021106134_IsSelectedProgramTypeConverterfix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302081817143_fixes3.resx">
+      <DependentUpon>202302081817143_fixes3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

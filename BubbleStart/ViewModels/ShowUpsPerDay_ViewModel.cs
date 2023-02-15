@@ -39,6 +39,8 @@ namespace BubbleStart.ViewModels
                 }
                 c.EditedInCustomerManagement = true;
                 c.BasicDataManager = BasicDataManager;
+                c.FillDefaultProframs();
+
                 Window window = new CustomerManagement
                 {
                     DataContext = c

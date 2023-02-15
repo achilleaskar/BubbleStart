@@ -105,12 +105,18 @@ namespace BubbleStart.ViewModels
             Sales.Clear();
             var enddate = EndDateSales.AddDays(1);
             int dealid = SelectedDealIndex > 0 ? Deals[SelectedDealIndex - 1].Id : 0;
-            Sales = new ObservableCollection<Program>(await BasicDataManager.Context.Context.Programs.Where(p => (SelectedDealIndex == 0 || p.DealId == dealid) &&
+            Sales = new ObservableCollection<Program>(await BasicDataManager.Context.Context.Programs
+                .Where(p => (SelectedDealIndex == 0 || p.DealId == dealid) &&
                 (SelectedProgramTypeIndex == 0 || p.ProgramTypeO.ProgramMode == (ProgramMode)(SelectedProgramTypeIndex - 1)) &&
                 p.DayOfIssue >= StartDateSales && p.DayOfIssue < enddate)
                 .Include(p => p.Customer)
+                .Include(p => p.Payments)
                 .OrderBy(r => r.DayOfIssue)
                 .ToListAsync());
+            foreach (var p in Sales)
+            {
+                p.CalculateRemainingAmount();
+            }
             TotalSales = Sales.Sum(s => s.Amount);
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -1827,6 +1833,8 @@ namespace BubbleStart.ViewModels
                 c.EditedInCustomerManagement = true;
                 c.BasicDataManager = BasicDataManager;
                 c.UpdateCollections();
+                c.FillDefaultProframs();
+
                 Window window = new CustomerManagement
                 {
                     DataContext = c
