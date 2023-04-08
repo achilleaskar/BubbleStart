@@ -821,7 +821,7 @@ namespace BubbleStart.ViewModels
             if (NewExpense == null || NewExpense.MainCategory == null || !BasicDataManager.ExpenseCategoryClasses.Any(r => r.Parent?.Id == NewExpense.MainCategory.Id))
                 SecondaryCategories = new ObservableCollection<ExpenseCategoryClass>();
             else
-                SecondaryCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses.Where(r => r.ParentId == NewExpense.MainCategory.Id || r.Id == -1));
+                SecondaryCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses.Where(r => !r.Disabled && r.ParentId == NewExpense.MainCategory.Id || r.Id == -1));
         }
 
         public ObservableCollection<ExpenseCheck> ExpenseTypes

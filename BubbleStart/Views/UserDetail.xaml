@@ -1143,6 +1143,7 @@
                     Command="{Binding DataContext.CreateNewCustomerCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}" />
             <Button Content="Αποθήκευση"
                     Margin="5"
+                    PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown"
                     Command="{Binding DataContext.SaveCustomerCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl},AncestorLevel=2, Mode=FindAncestor}}" />
         </StackPanel>
     </Grid>

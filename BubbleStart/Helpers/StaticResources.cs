@@ -11,6 +11,9 @@ namespace BubbleStart.Helpers
     public static class StaticResources
     {
 
+
+        public static Guid Guid { get; set; } = Guid.NewGuid();
+
         public static List<DateTime> GetHours(int minHour, int minMin, int maxHour, int maxMin, int interval)
         {
             List<DateTime> List = new List<DateTime>();
@@ -34,7 +37,7 @@ namespace BubbleStart.Helpers
 
         public static string GetDescription(Enum en)
         {
-            if (en==null)
+            if (en == null)
             {
                 return "";
             }

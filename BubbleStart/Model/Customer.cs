@@ -620,7 +620,7 @@ namespace BubbleStart.Model
         [NotMapped]
         public bool EditedInCustomerManagement { get; internal set; }
 
-        [StringLength(30, MinimumLength = 0)]
+        [StringLength(50, MinimumLength = 0)]
         [DataType(DataType.EmailAddress, ErrorMessage = "Το Email δεν έχει τη σωστή μορφή")]
         [EmailAddress(ErrorMessage = "Το Email δεν έχει τη σωστή μορφή")]
         public string Email
@@ -5513,7 +5513,8 @@ namespace BubbleStart.Model
         {
             Mouse.OverrideCursor = Cursors.Wait;
             OldShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(HistoryFrom, DateTime.Now, Id, true)).OrderByDescending(a => a.Arrived));
-            var apps = await BasicDataManager.Context.Context.Apointments.Where(a => a.Customer.Id == Id && a.DateTime >= HistoryFrom).ToListAsync();
+            var apps = await BasicDataManager.Context.GetApointmentsJoined(customerId: Id,historyFrom: HistoryFrom);
+               //await BasicDataManager.Context.Context.Apointments.Where(a => a.Customer.Id == Id && a.DateTime >= HistoryFrom).ToListAsync();
             NextAppointments = new ObservableCollection<Apointment>(apps.Where(a => a.DateTime > DateTime.Now).OrderBy(a => a.DateTime));
             UpdateCollections();
             Mouse.OverrideCursor = Cursors.Arrow;

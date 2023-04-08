@@ -989,6 +989,20 @@
                     </Border>
                 </Grid>
             </ScrollViewer>
+            <Grid Margin="60"
+                  VerticalAlignment="Center" Visibility="{Binding HasChanges,Converter={StaticResource booleanToVisibilityConverter}}"
+                  HorizontalAlignment="Center"
+                  Grid.RowSpan="3"
+                  Width="900">
+                <Border Background="LightGray"
+                        Opacity="0.8" />
+                <TextBlock FontSize="40"
+                           Foreground="Red"
+                           Margin="20"
+                           FontWeight="Bold"
+                           TextWrapping="Wrap"
+                           Text="Έχουν γίνει αλλαγές απο άλλον χρήστη για την εβδομάδα που βλέπετε. Παρακαλώ πατήστε ξανά φόρτωση." />
+            </Grid>
         </Grid>
     </GroupBox>
 </UserControl>

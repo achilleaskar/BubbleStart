@@ -384,7 +384,14 @@ namespace BubbleStart.ViewModels
             }
             else if (p == "12")
             {
-                await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Room, SelectedGymnast: SelectedGymnast, false, waiting:true);
+                await Hour.AddCustomer(SelectedCustomer, SelectedPerson, Room, SelectedGymnast: SelectedGymnast, false, waiting: true);
+                BasicDataManager.Add(new ProgramChange
+                {
+                    Date = DateTime.Now,
+                    InstanceGuid = StaticResources.Guid,
+                    From = Hour.Time,
+                    To = Hour.Time
+                });
             }
             else
             {

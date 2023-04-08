@@ -679,6 +679,34 @@
     <Compile Include="Migrations\202302081817143_fixes3.designer.cs">
       <DependentUpon>202302081817143_fixes3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202303202236125_CanceledAppointmentsMigration.cs" />
+    <Compile Include="Migrations\202303202236125_CanceledAppointmentsMigration.designer.cs">
+      <DependentUpon>202303202236125_CanceledAppointmentsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303202316387_modified-appo.cs" />
+    <Compile Include="Migrations\202303202316387_modified-appo.designer.cs">
+      <DependentUpon>202303202316387_modified-appo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303202339224_changesProg.cs" />
+    <Compile Include="Migrations\202303202339224_changesProg.designer.cs">
+      <DependentUpon>202303202339224_changesProg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303202356174_guidChange.cs" />
+    <Compile Include="Migrations\202303202356174_guidChange.designer.cs">
+      <DependentUpon>202303202356174_guidChange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303212339018_disableUser.cs" />
+    <Compile Include="Migrations\202303212339018_disableUser.designer.cs">
+      <DependentUpon>202303212339018_disableUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303220006205_disableexpense.cs" />
+    <Compile Include="Migrations\202303220006205_disableexpense.designer.cs">
+      <DependentUpon>202303220006205_disableexpense.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303222225244_emailLength.cs" />
+    <Compile Include="Migrations\202303222225244_emailLength.designer.cs">
+      <DependentUpon>202303222225244_emailLength.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -700,6 +728,7 @@
     <Compile Include="Model\ItemPurchase.cs" />
     <Compile Include="Model\Payment.cs" />
     <Compile Include="Model\Program.cs" />
+    <Compile Include="Model\ProgramChange.cs" />
     <Compile Include="Model\ProgramType.cs" />
     <Compile Include="Model\PropertyValidateModel.cs" />
     <Compile Include="Model\Shift.cs" />
@@ -1120,6 +1149,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202302081817143_fixes3.resx">
       <DependentUpon>202302081817143_fixes3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303202236125_CanceledAppointmentsMigration.resx">
+      <DependentUpon>202303202236125_CanceledAppointmentsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303202316387_modified-appo.resx">
+      <DependentUpon>202303202316387_modified-appo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303202339224_changesProg.resx">
+      <DependentUpon>202303202339224_changesProg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303202356174_guidChange.resx">
+      <DependentUpon>202303202356174_guidChange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303212339018_disableUser.resx">
+      <DependentUpon>202303212339018_disableUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303220006205_disableexpense.resx">
+      <DependentUpon>202303220006205_disableexpense.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303222225244_emailLength.resx">
+      <DependentUpon>202303222225244_emailLength.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -833,7 +833,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
                                                                 Width="86"
-                                                                Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
                                                                     Width="22">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -923,7 +923,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -948,7 +948,7 @@
                                                                 Binding="{Binding Amount,StringFormat=c}" />
                                             <DataGridTextColumn Header="Αγορά"
                                                                 Width="60"
-                                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Πληρωμή"
                                                                     Width="60">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -1036,7 +1036,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="55"
-                                                                Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
                                                                 Width="45"
                                                                 Binding="{Binding Amount,StringFormat=c1}" />
@@ -1169,7 +1169,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
                                                                 Width="86"
-                                                                Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
                                                                     Width="22">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -1259,7 +1259,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -1284,7 +1284,7 @@
                                                                 Binding="{Binding Amount,StringFormat=c}" />
                                             <DataGridTextColumn Header="Αγορά"
                                                                 Width="60"
-                                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Πληρωμή"
                                                                     Width="60">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -1372,7 +1372,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="55"
-                                                                Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
                                                                 Width="45"
                                                                 Binding="{Binding Amount,StringFormat=c1}" />
@@ -1516,7 +1516,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
                                                                 Width="86"
-                                                                Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
                                                                     Width="28">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -1638,7 +1638,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -1663,7 +1663,7 @@
                                                                 Binding="{Binding Amount,StringFormat=c}" />
                                             <DataGridTextColumn Header="Αγορά"
                                                                 Width="60"
-                                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Πληρωμή"
                                                                     Width="60">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -1751,7 +1751,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="55"
-                                                                Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
                                                                 Width="45"
                                                                 Binding="{Binding Amount,StringFormat=c1}" />
@@ -1889,7 +1889,7 @@
                                         </DataGridTemplateColumn>
                                         <DataGridTextColumn Header="Ημερομηνία"
                                                             Width="86"
-                                                            Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                            Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                         <DataGridTemplateColumn Header=""
                                                                 Width="22">
                                             <DataGridTemplateColumn.CellTemplate>
@@ -1960,7 +1960,7 @@
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Έναρξη"
                                                             Width="60"
-                                                            Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                            Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                         <DataGridTemplateColumn Header="Τύπος"
                                                                 Width="120">
                                             <DataGridTemplateColumn.CellTemplate>
@@ -1985,7 +1985,7 @@
                                                             Binding="{Binding Amount,StringFormat=c}" />
                                         <DataGridTextColumn Header="Αγορά"
                                                             Width="60"
-                                                            Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                            Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                         <DataGridTemplateColumn Header="Πληρωμή"
                                                                 Width="60">
                                             <DataGridTemplateColumn.CellTemplate>
@@ -2073,7 +2073,7 @@
                                         <DataGridTextColumn Header="Ημερομ."
                                                             SortDirection="Descending"
                                                             Width="55"
-                                                            Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                            Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                         <DataGridTextColumn Header="Ποσό"
                                                             Width="45"
                                                             Binding="{Binding Amount,StringFormat=c1}" />
@@ -2209,7 +2209,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
                                                                 Width="86"
-                                                                Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
                                                                     Width="22">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -2299,7 +2299,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -2324,7 +2324,7 @@
                                                                 Binding="{Binding Amount,StringFormat=c}" />
                                             <DataGridTextColumn Header="Αγορά"
                                                                 Width="60"
-                                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Πληρωμή"
                                                                     Width="60">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -2412,7 +2412,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="55"
-                                                                Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
                                                                 Width="45"
                                                                 Binding="{Binding Amount,StringFormat=c1}" />
@@ -2545,7 +2545,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
                                                                 Width="86"
-                                                                Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
                                                                     Width="22">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -2635,7 +2635,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -2660,7 +2660,7 @@
                                                                 Binding="{Binding Amount,StringFormat=c}" />
                                             <DataGridTextColumn Header="Αγορά"
                                                                 Width="60"
-                                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Πληρωμή"
                                                                     Width="60">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -2748,7 +2748,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="55"
-                                                                Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
                                                                 Width="45"
                                                                 Binding="{Binding Amount,StringFormat=c1}" />
@@ -2885,7 +2885,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
                                                                 Width="86"
-                                                                Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
                                                                     Width="22">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -2975,7 +2975,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3000,7 +3000,7 @@
                                                                 Binding="{Binding Amount,StringFormat=c}" />
                                             <DataGridTextColumn Header="Αγορά"
                                                                 Width="60"
-                                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Πληρωμή"
                                                                     Width="60">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3088,7 +3088,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="55"
-                                                                Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
                                                                 Width="45"
                                                                 Binding="{Binding Amount,StringFormat=c1}" />
@@ -3221,7 +3221,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
                                                                 Width="86"
-                                                                Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
                                                                     Width="22">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3311,7 +3311,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3336,7 +3336,7 @@
                                                                 Binding="{Binding Amount,StringFormat=c}" />
                                             <DataGridTextColumn Header="Αγορά"
                                                                 Width="60"
-                                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Πληρωμή"
                                                                     Width="60">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3424,7 +3424,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="55"
-                                                                Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
                                                                 Width="45"
                                                                 Binding="{Binding Amount,StringFormat=c1}" />
@@ -3561,7 +3561,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
                                                                 Width="86"
-                                                                Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
                                                                     Width="22">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3631,7 +3631,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3656,7 +3656,7 @@
                                                                 Binding="{Binding Amount,StringFormat=c}" />
                                             <DataGridTextColumn Header="Αγορά"
                                                                 Width="60"
-                                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Πληρωμή"
                                                                     Width="60">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3744,7 +3744,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="55"
-                                                                Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
                                                                 Width="45"
                                                                 Binding="{Binding Amount,StringFormat=c1}" />
@@ -3877,7 +3877,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Ημερομηνία"
                                                                 Width="86"
-                                                                Binding="{Binding Arrived,ConverterParameter='dd/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header=""
                                                                     Width="22">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3947,7 +3947,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Έναρξη"
                                                                 Width="60"
-                                                                Binding="{Binding StartDay,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
                                                                     Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -3972,7 +3972,7 @@
                                                                 Binding="{Binding Amount,StringFormat=c}" />
                                             <DataGridTextColumn Header="Αγορά"
                                                                 Width="60"
-                                                                Binding="{Binding DayOfIssue,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Πληρωμή"
                                                                     Width="60">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -4060,7 +4060,7 @@
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="55"
-                                                                Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                                Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTextColumn Header="Ποσό"
                                                                 Width="45"
                                                                 Binding="{Binding Amount,StringFormat=c1}" />
@@ -4172,7 +4172,7 @@
                                 <DataGridTextColumn Header="No"
                                                     Binding="{Binding Size}" />
                                 <DataGridTextColumn Header="Ημερ."
-                                                    Binding="{Binding Date,ConverterParameter='dd/MM/yy', Converter={StaticResource DateTimeToString}}" />
+                                                    Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                 <DataGridCheckBoxColumn Binding="{Binding Free}"
                                                         Header="Free" />
                                 <DataGridTextColumn Header="Τιμή"
@@ -4209,7 +4209,7 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Ημερ."
                                                         Width="88"
-                                                        Binding="{Binding Arrived,ConverterParameter='dd/MM/yy hh:mm', Converter={StaticResource DateTimeToString}}" />
+                                                        Binding="{Binding Arrived,ConverterParameter='d/MM/yy hh:mm', Converter={StaticResource DateTimeToString}}" />
                                     <DataGridTextColumn Header="Τύπος"
                                                         Width="115"
                                                         Binding="{Binding Description}" />
@@ -4227,7 +4227,7 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Ημερ."
                                                         Width="88"
-                                                        Binding="{Binding DateTime,ConverterParameter='dd/MM/yy hh:mm', Converter={StaticResource DateTimeToString}}" />
+                                                        Binding="{Binding TimeString}" />
                                     <DataGridTextColumn Header="Τύπος"
                                                         Binding="{Binding Description}" />
                                 </DataGrid.Columns>
@@ -4255,7 +4255,7 @@
                                         <TextBlock VerticalAlignment="Top"
                                                    TextAlignment="Center"
                                                    TextWrapping="Wrap"
-                                                   Text="{Binding Date,ConverterParameter='dd/MM/yyyy hh:mm', Converter={StaticResource DateTimeToString}}" />
+                                                   Text="{Binding Date,ConverterParameter='d/MM/yyyy hh:mm', Converter={StaticResource DateTimeToString}}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

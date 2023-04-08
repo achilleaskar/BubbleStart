@@ -8,6 +8,7 @@ namespace BubbleStart.Wrappers
         {
             Title = "Η κατηγορία";
         }
+
         public ExpenseCategoryClassWrapper(ExpenseCategoryClass model) : base(model)
         {
             Title = "Η κατηγορία";
@@ -16,6 +17,12 @@ namespace BubbleStart.Wrappers
         public string Name
         {
             get { return GetValue<string>(); }
+            set { SetValue(value); }
+        }
+
+        public bool Disabled
+        {
+            get { return GetValue<bool>(); }
             set { SetValue(value); }
         }
 

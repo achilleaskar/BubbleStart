@@ -36,6 +36,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label Content="Όνομα:"
                        Grid.Row="0"
@@ -54,8 +55,14 @@
                           Margin="0,5,5,5"
                           Grid.Row="1"
                           Grid.Column="1" />
+                <Label Content="Ανενεργό:"
+                       Grid.Row="2"
+                       Grid.Column="0" />
+                <CheckBox IsChecked="{Binding SelectedEntity.Disabled}"
+                          Grid.Row="2"
+                          Grid.Column="1" />
                 <StackPanel Orientation="Vertical"
-                            Grid.Row="8"
+                            Grid.Row="9"
                             Grid.ColumnSpan="2">
                     <Button Content="Προσθήκη"
                             Margin="5,5,5,0"
@@ -68,7 +75,7 @@
                             Command="{Binding ClearEntityCommand}" />
                 </StackPanel>
                 <TextBlock Text="{Binding ResultMessage}"
-                           Grid.Row="9"
+                           Grid.Row="10"
                            Grid.ColumnSpan="2"
                            Width="230"
                            TextWrapping="Wrap"
@@ -102,7 +109,8 @@
                           SelectedItem="{Binding SelectedEntity}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Όνομα"
-                                            IsReadOnly="True" Width="100"
+                                            IsReadOnly="True"
+                                            Width="100"
                                             Binding="{Binding Name}" />
                         <DataGridTextColumn Header="Ώρες"
                                             IsReadOnly="True"

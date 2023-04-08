@@ -13,6 +13,31 @@ namespace BubbleStart.Model
         private ObservableCollection<WorkingRule> _WorkingRules;
         #region Constructors
 
+
+
+
+
+        private bool _Disabled;
+
+
+        public bool Disabled
+        {
+            get
+            {
+                return _Disabled;
+            }
+
+            set
+            {
+                if (_Disabled == value)
+                {
+                    return;
+                }
+
+                _Disabled = value;
+                RaisePropertyChanged();
+            }
+        }
         public User()
         {
             HashedPassword = new byte[0];

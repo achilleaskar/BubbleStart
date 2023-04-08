@@ -162,7 +162,8 @@
                             <Label HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    Content="{Binding SelectedCustomer.RemainingTrainingDays}" />
-                            <CheckBox IsEnabled="False" VerticalAlignment="Center"
+                            <CheckBox IsEnabled="False"
+                                      VerticalAlignment="Center"
                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=0}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
@@ -188,7 +189,7 @@
                                    Content="{Binding SelectedCustomer.RemainingFunctionalPilatesDays}" />
                             <CheckBox IsEnabled="False"
                                       VerticalAlignment="Center"
-                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=6}" />
+                                      IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=6}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Massage"
@@ -201,7 +202,7 @@
                                    Content="{Binding SelectedCustomer.RemainingMassageDays}" />
                             <CheckBox IsEnabled="False"
                                       VerticalAlignment="Center"
-                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=1}" />
+                                      IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=1}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Online"
@@ -240,7 +241,7 @@
                                    Content="{Binding SelectedCustomer.RemainingYogaDays}" />
                             <CheckBox  IsEnabled="False"
                                        VerticalAlignment="Center"
-                                      IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=5}" />
+                                       IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=5}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Aerial Yoga"
@@ -369,8 +370,7 @@
                           CanUserDeleteRows="False"
                           AutoGenerateColumns="False">
                     <DataGrid.Resources>
-                        <ContextMenu x:Key="searchContextMenu"
-                                    >
+                        <ContextMenu x:Key="searchContextMenu">
                             <MenuItem Header="Οριστική Διαγραφή Πελάτη"
                                       Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
                                       Command="{Binding DataContext.DeleteCustomerCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />

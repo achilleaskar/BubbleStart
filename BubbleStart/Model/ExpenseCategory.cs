@@ -27,6 +27,31 @@ namespace BubbleStart.Model
             }
         }
 
+
+
+
+        private bool _Disabled;
+
+
+        public bool Disabled
+        {
+            get
+            {
+                return _Disabled;
+            }
+
+            set
+            {
+                if (_Disabled == value)
+                {
+                    return;
+                }
+
+                _Disabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private ExpenseCategoryClass _Parent;
 
         public int? ParentId { get; set; }

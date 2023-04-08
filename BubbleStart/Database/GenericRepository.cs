@@ -101,6 +101,24 @@ namespace BubbleStart.Database
         {
             var todel = await Context.Apointments.Where(p => p.Customer.Id == c.Id && p.DateTime >= date).ToListAsync();
             todel = todel.Where(a => a.DateTime.DayOfWeek == date.DayOfWeek && a.DateTime.TimeOfDay == date.TimeOfDay).ToList();
+            if (todel.Any())
+            {
+                Context.ProgramChanges.Add(new ProgramChange
+                {
+                    Date = DateTime.Now,
+                    InstanceGuid = StaticResources.Guid,
+                    From = date,
+                    To = todel.Max(r => r.DateTime)
+                });
+            }
+            else
+                Context.ProgramChanges.Add(new ProgramChange
+                {
+                    Date = DateTime.Now,
+                    InstanceGuid = StaticResources.Guid,
+                    From = date,
+                    To = date.AddHours(1)
+                });
             Context.Apointments.RemoveRange(todel);
         }
 
@@ -174,7 +192,7 @@ namespace BubbleStart.Database
                     .Where(p4 => p4.Customer.Id == id && p4.DateTime >= CloseLimit)
                     .ToListAsync();
                 await Context.Set<Program>()
-                    .Where(p => p.Customer.Id == id && 
+                    .Where(p => p.Customer.Id == id &&
                     ((p.ProgramTypeO.ProgramMode != ProgramMode.massage && p.StartDay >= p.Customer.ResetDate) || (p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)))
                     .ToListAsync();
 
@@ -188,7 +206,6 @@ namespace BubbleStart.Database
                     (s.Program.ProgramTypeO.ProgramMode == ProgramMode.massage && s.Program.StartDay >= s.Customer.MassageResetDay) ||
                     (s.Program == null && (s.Date >= s.Customer.ResetDate || s.Date >= s.Customer.MassageResetDay))))
                     .ToListAsync();
- 
 
                 return await Context.Set<Customer>()
                     .Where(c => c.Id == id)
@@ -340,7 +357,6 @@ namespace BubbleStart.Database
             await Context.SaveChangesAsync();
         }
 
-
         public void Save()
         {
             List<DbEntityEntry> AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
@@ -491,7 +507,6 @@ namespace BubbleStart.Database
             {
                 throw new Exception("Σφάλμα κατα την διαγραφή του στοιχείου. " + e.Message);
             }
-
         }
 
         internal async Task<List<ClosedHour>> GetAllClosedHoursAsync(RoomEnum room, DateTime time)
@@ -538,7 +553,6 @@ namespace BubbleStart.Database
                     (s.Program == null && (s.Date >= s.Customer.ResetDate || s.Date >= s.Customer.MassageResetDay))))
                     .ToListAsync();
 
-
                 var x = (await Context.Set<Customer>().Where(c => c.Enabled)
                         .Select(c => new
                         {
@@ -568,6 +582,29 @@ namespace BubbleStart.Database
             }
 
             return await Context.Apointments.Where(a => a.Customer.Id == id && dates.Any(d => d == a.DateTime)).ToListAsync();
+        }
+
+        internal async Task<List<Apointment>> GetApointmentsJoined(int customerId, DateTime historyFrom)
+        {
+            var t = (await (from s in Context.Apointments
+                            join ch in Context.CustomeTimes on new { x1 = s.DateTime, x2 = s.Room } equals new { x1 = ch.Datetime, x2 = ch.Room } into jointable
+                            from z in jointable.DefaultIfEmpty()
+                            where s.Customer.Id == customerId && s.DateTime >= historyFrom
+                            select new
+                            {
+                                s.DateTime,
+                                Time = z == null ? "" : z.Time,
+                                s.Room,
+                                s.Person
+                            }).ToListAsync());
+
+            return t.Select(o => new Apointment
+            {
+                DateTime = o.DateTime,
+                Room = o.Room,
+                Person = o.Person,
+                TimeString = o.DateTime.ToString("dd/MM/yy") + " " + (string.IsNullOrEmpty(o.Time)?o.DateTime.ToString("HH:mm"):o.Time)
+            }).ToList();
         }
     }
 }

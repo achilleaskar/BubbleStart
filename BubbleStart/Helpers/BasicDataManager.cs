@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -259,7 +260,7 @@ namespace BubbleStart.Helpers
             Deals = new ObservableCollection<Deal>(await Context.GetAllAsync<Deal>());
             Districts = new ObservableCollection<District>((await Context.GetAllAsync<District>()).OrderBy(d => d.Name));
             Customers = new ObservableCollection<Customer>(await Context.LoadAllCustomersAsync());
-            ExpenseCategoryClasses = new ObservableCollection<ExpenseCategoryClass>(await Context.GetAllAsync<ExpenseCategoryClass>());
+            ExpenseCategoryClasses = new ObservableCollection<ExpenseCategoryClass>((await Context.GetAllAsync<ExpenseCategoryClass>()).OrderBy(e => e.Name));
             ExpenseCategoryClasses.Insert(0, new ExpenseCategoryClass { Id = -1, Name = " " });
             Gymnasts = new ObservableCollection<User>(Users.Where(u => u.Id == 4 || u.Level == 4));
             StaticResources.context = this;
@@ -289,6 +290,10 @@ namespace BubbleStart.Helpers
                 c.BasicDataManager = this;
                 c.InitialLoad();
             }
+
+            string date = $"{DateTime.Today.AddDays(-1):yyyy-MM-dd} 00:00:00";
+
+            var count = await Context.Context.Database.ExecuteSqlCommandAsync($"delete FROM `ProgramChanges` WHERE Date <'{date}'");
 
             Messenger.Default.Send(new BasicDataManagerRefreshedMessage());
             Mouse.OverrideCursor = Cursors.Arrow;

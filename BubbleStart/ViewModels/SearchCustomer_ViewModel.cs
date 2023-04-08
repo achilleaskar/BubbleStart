@@ -730,8 +730,7 @@ namespace BubbleStart.ViewModels
             SelectedCustomer = null;
         }
 
-        //    //}
-        //}
+
         private async Task SaveCustomer()
         {
             if (SelectedCustomer != null)

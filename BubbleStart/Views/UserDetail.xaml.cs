@@ -1,6 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using BubbleStart.Model;
+using System;
+using System.Windows.Controls;
 using System.Windows.Input;
-using BubbleStart.Model;
 
 namespace BubbleStart.Views
 {
@@ -9,6 +10,8 @@ namespace BubbleStart.Views
     /// </summary>
     public partial class UserDetail : UserControl
     {
+        private bool processing;
+
         public UserDetail()
         {
             InitializeComponent();
@@ -27,6 +30,15 @@ namespace BubbleStart.Views
                     }
                 }
             }
+        }
+
+        private DateTime clicked;
+        private void Button_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if ((DateTime.Now - clicked).TotalSeconds < 3)
+                e.Handled = true;
+            else
+                clicked = DateTime.Now;
         }
     }
 }

@@ -12,12 +12,7 @@ namespace BubbleStart.Model
         public string ApColor => GetApColor(false);
         public string GymColor => GetApColor(true);
 
-
-
-
-
         private bool _Waiting;
-
 
         public bool Waiting
         {
@@ -38,9 +33,7 @@ namespace BubbleStart.Model
             }
         }
 
-
         private bool _Canceled;
-
 
         public bool Canceled
         {
@@ -84,7 +77,6 @@ namespace BubbleStart.Model
                 {
                     if (Room == RoomEnum.Massage)
                     {
-
                         if (!Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date && s.ProgramModeNew == ProgramMode.massage))
                             return Colors.Red.ToString();
                     }
@@ -94,7 +86,6 @@ namespace BubbleStart.Model
             }
             if (!gym)
             {
-
                 if (Person == SelectedPersonEnum.Gogo)
                     return Colors.LimeGreen.ToString();
                 if (Person == SelectedPersonEnum.Functional)
@@ -116,7 +107,6 @@ namespace BubbleStart.Model
                     return Gymnast.ColorHash.ToString();
             }
             return Colors.Transparent.ToString();
-
         }
 
         public string CustomerWithGym => (Gymnast != null ? Gymnast.Name.Substring(0, 3) + " | " : "") + Customer.ToString();
@@ -240,6 +230,31 @@ namespace BubbleStart.Model
             }
         }
 
+
+
+
+        private string _TimeString;
+
+        [NotMapped]
+        public string TimeString
+        {
+            get
+            {
+                return _TimeString;
+            }
+
+            set
+            {
+                if (_TimeString == value)
+                {
+                    return;
+                }
+
+                _TimeString = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public DateTime DateTime
         {
             get => _DateTime;
@@ -275,5 +290,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        public DateTime Modified { get; internal set; }
     }
 }

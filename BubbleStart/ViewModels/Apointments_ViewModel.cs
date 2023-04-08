@@ -1,4 +1,5 @@
-﻿using BubbleStart.Helpers;
+﻿using BubbleStart.Database;
+using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
@@ -9,12 +10,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace BubbleStart.ViewModels
 {
@@ -36,6 +39,24 @@ namespace BubbleStart.ViewModels
             Messenger.Default.Register<UpdateProgramMessage>(this, async (msg) => await CreateProgram(false));
             Messenger.Default.Register<UpdateClosedHoursMessage>(this, msg => RefreshProgram());
             Messenger.Default.Register<OpenPopupUpMessage>(this, msg => ChangeTime(msg.Hour, msg.Room));
+
+            EventManager.RegisterClassHandler(typeof(Window), UIElement.PreviewMouseMoveEvent,
+               new MouseEventHandler(OnPreviewMouseMove));
+            EventManager.RegisterClassHandler(typeof(Window), UIElement.PreviewKeyDownEvent,
+                new KeyEventHandler(OnPreviewKeyDown));
+
+            timer.Interval = new TimeSpan(0, 0, 10);
+            timer.Tick += timer_Tick;
+        }
+
+        private void OnPreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            stopWatch.Restart();
+        }
+
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            stopWatch.Restart();
         }
 
         #endregion Constructors
@@ -295,6 +316,7 @@ namespace BubbleStart.ViewModels
                 }
 
                 _StartDate = value;
+                To = StartDate.AddDays(6);
                 RaisePropertyChanged();
             }
         }
@@ -325,9 +347,85 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
+        private DispatcherTimer timer = new DispatcherTimer();
+        private Stopwatch stopWatch = new Stopwatch();
+        private Stopwatch stopWatchLE = new Stopwatch();
+        public DateTime LastExecuted { get; set; }
+
+        private MainDatabase db = new MainDatabase();
+        private DateTime To;
+
+
+
+
+        private bool _HasChanges;
+
+
+        public bool HasChanges
+        {
+            get
+            {
+                return _HasChanges;
+            }
+
+            set
+            {
+                if (_HasChanges == value)
+                {
+                    return;
+                }
+
+                _HasChanges = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private async void timer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!HasChanges && stopWatch.Elapsed.TotalSeconds >= 3 && stopWatchLE.Elapsed.TotalSeconds >= 60)
+                {
+                    Mouse.OverrideCursor = Cursors.Wait;
+
+                    HasChanges = await db.ProgramChanges.AnyAsync(c => c.InstanceGuid != StaticResources.Guid && c.Date > LastExecuted && c.To >= StartDate && c.From <= To);
+
+                    Mouse.OverrideCursor = Cursors.Arrow;
+                    if (HasChanges)
+                    {
+
+                    }
+                    //if (hasChange)
+                    //{
+                    //    HasChanges = true;
+                    //    //stopWatchLE.Stop();
+                    //    //timer.Stop();
+                    //    //stopWatch.Stop();
+                    //    //if (MessageBox.Show("Έχουν γίνει αλλαγές απο άλλον χρήστη για την εβδομάδα που βλέπετε. Παρακαλώ πατήστε ξανά φόρτωση.", "Προσοχη") != MessageBoxResult.Yes)
+                    //    //{
+                    //    //    stopWatchLE.Start();
+                    //    //    timer.Start();
+                    //    //    stopWatch.Start();
+                    //    //}
+                    //}
+                }
+            }
+            catch (Exception)
+            {
+                db.Dispose();
+                db = new MainDatabase();
+            }
+        }
+
         public async Task CreateProgram(bool refresh = true)
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            stopWatchLE.Start();
+            timer.Start();
+            stopWatch.Start();
+            HasChanges = false;
+            LastExecuted = DateTime.Now;
+
             StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
             DateTime tmpdate = StartDate.AddDays(6);
 
@@ -508,6 +606,7 @@ namespace BubbleStart.ViewModels
 
             RaisePropertyChanged(nameof(HasDays));
             RaisePropertyChanged(nameof(Days));
+            LastExecuted = DateTime.Now;
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -517,6 +616,9 @@ namespace BubbleStart.ViewModels
             Gymnasts = new ObservableCollection<User>(BasicDataManager.Users.Where(u => u.Id == 4 || u.Level == 4));
             SelectedDayToGo = DateTime.Today;
             Days = new ObservableCollection<Day>();
+            stopWatch.Stop();
+            stopWatchLE.Stop();
+            timer.Stop();
         }
 
         public void OpenCustomerManagement(Customer c)
@@ -577,7 +679,6 @@ namespace BubbleStart.ViewModels
                         MessageBox.Show("Ραντεβού εκτός εβδομάδας");
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -692,6 +793,14 @@ namespace BubbleStart.ViewModels
                 selectedHour.RaisePropertyChanged(nameof(Hour.TimeString4));
             }
 
+            BasicDataManager.Add(new ProgramChange
+            {
+                Date = DateTime.Now,
+                InstanceGuid = StaticResources.Guid,
+                From = selectedHour.Time,
+                To = selectedHour.Time.AddHours(1)
+            });
+
             await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
             TimePopupOpen = false;
@@ -702,12 +811,7 @@ namespace BubbleStart.ViewModels
 
     public class Day : BaseModel
     {
-
-
-
-
         private double _HeightFunctional;
-
 
         public double HeightFunctional
         {
@@ -728,11 +832,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private double _HeightPilates;
-
 
         public double HeightPilates
         {
@@ -753,11 +853,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private double _HeightMassage;
-
 
         public double HeightMassage
         {
@@ -778,11 +874,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private double _HeightOutdoor;
-
 
         public double HeightOutdoor
         {
@@ -802,6 +894,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         #region Constructors
 
         public Day(BasicDataManager basicDataManager, DateTime date)
@@ -1035,21 +1128,49 @@ namespace BubbleStart.ViewModels
                 case "0":
                     SelectedApointmentFunctional.Waiting = !SelectedApointmentFunctional.Waiting;
                     SelectedApointmentFunctional.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = SelectedApointmentFunctional.DateTime,
+                        To = SelectedApointmentFunctional.DateTime.AddHours(1)
+                    });
                     break;
 
                 case "1":
                     SelectedApointmentReformer.Waiting = !SelectedApointmentReformer.Waiting;
                     SelectedApointmentReformer.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = SelectedApointmentReformer.DateTime,
+                        To = SelectedApointmentReformer.DateTime.AddHours(1)
+                    });
                     break;
 
                 case "2":
                     SelectedAppointmentMassage.Waiting = !SelectedAppointmentMassage.Waiting;
                     SelectedAppointmentMassage.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = SelectedAppointmentMassage.DateTime,
+                        To = SelectedAppointmentMassage.DateTime.AddHours(1)
+                    });
                     break;
 
                 case "3":
                     SelectedAppointmentOutdoor.Waiting = !SelectedAppointmentOutdoor.Waiting;
                     SelectedAppointmentOutdoor.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = SelectedAppointmentOutdoor.DateTime,
+                        To = SelectedAppointmentOutdoor.DateTime.AddHours(1)
+                    });
                     break;
             }
 
@@ -1137,6 +1258,14 @@ namespace BubbleStart.ViewModels
                     }
                 }
             }
+
+            BasicDataManager.Add(new ProgramChange
+            {
+                Date = DateTime.Now,
+                InstanceGuid = StaticResources.Guid,
+                From = Time,
+                To = Time.AddHours(1)
+            });
             await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -1547,6 +1676,13 @@ namespace BubbleStart.ViewModels
                 Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = room, Gymnast = SelectedGymnast, Waiting = waiting };
                 if (forever)
                 {
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = Time,
+                        To = Time.AddYears(1)
+                    });
                     List<Apointment> nextAppoitments = await BasicDataManager.Context.GetAllAppointmentsThisDayAsync(customer.Id, Time, room);
 
                     DateTime tmpdate = Time;
@@ -1559,6 +1695,14 @@ namespace BubbleStart.ViewModels
                         }
                     }
                 }
+                else
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = Time,
+                        To = Time.AddHours(1)
+                    });
                 if ((room == RoomEnum.Functional && !AppointmentsFunctional.Any(a => a.Customer.Id == ap.Customer.Id)) ||
                     (room == RoomEnum.Pilates && !AppointmentsReformer.Any(api => api.Customer.Id == ap.Customer.Id)) ||
                     (room == RoomEnum.Massage && !AppointmentsMassage.Any(api => api.Customer.Id == ap.Customer.Id)) ||
@@ -1763,6 +1907,14 @@ namespace BubbleStart.ViewModels
                     }
                 }
             }
+
+            BasicDataManager.Add(new ProgramChange
+            {
+                Date = DateTime.Now,
+                InstanceGuid = StaticResources.Guid,
+                From = Time,
+                To = Time.AddHours(1)
+            });
             await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -1778,21 +1930,49 @@ namespace BubbleStart.ViewModels
             switch (type)
             {
                 case "0":
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = SelectedApointmentFunctional.DateTime,
+                        To = SelectedApointmentFunctional.DateTime.AddHours(1)
+                    });
                     BasicDataManager.Delete(SelectedApointmentFunctional);
                     AppointmentsFunctional.Remove(SelectedApointmentFunctional);
                     break;
 
                 case "1":
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = SelectedApointmentReformer.DateTime,
+                        To = SelectedApointmentReformer.DateTime.AddHours(1)
+                    });
                     BasicDataManager.Delete(SelectedApointmentReformer);
                     AppointmentsReformer.Remove(SelectedApointmentReformer);
                     break;
 
                 case "2":
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = SelectedAppointmentMassage.DateTime,
+                        To = SelectedAppointmentMassage.DateTime.AddHours(1)
+                    });
                     BasicDataManager.Delete(SelectedAppointmentMassage);
                     AppointmentsMassage.Remove(SelectedAppointmentMassage);
                     break;
 
                 case "3":
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = SelectedAppointmentOutdoor.DateTime,
+                        To = SelectedAppointmentOutdoor.DateTime.AddHours(1)
+                    });
                     BasicDataManager.Delete(SelectedAppointmentOutdoor);
                     AppointemntsOutdoor.Remove(SelectedAppointmentOutdoor);
                     break;
@@ -1819,13 +1999,23 @@ namespace BubbleStart.ViewModels
                 {
                     BasicDataManager.Delete(item);
                 }
+                if (ClosedHours.Any())
+                {
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = ClosedHours.Min(d => d.Date),
+                        To = ClosedHours.Max(d => d.Date)
+                    });
+                }
+
                 await BasicDataManager.SaveAsync();
                 ClosedHour0 = ClosedHour1 = ClosedHourMassage = ClosedHourOutdoor = null;
                 Messenger.Default.Send(new UpdateClosedHoursMessage());
             }
             catch (Exception ex)
             {
-
                 BasicDataManager.CurrentMessenger.Send(new ShowExceptionMessage_Message("Σφάλμα κατα το πρώτο στάδιο της ενεργοποίησης" + ex.Message));
             }
             Mouse.OverrideCursor = Cursors.Arrow;
@@ -2018,7 +2208,13 @@ namespace BubbleStart.ViewModels
                     }
                 }
             }
-
+            BasicDataManager.Add(new ProgramChange
+            {
+                Date = DateTime.Now,
+                InstanceGuid = StaticResources.Guid,
+                From = Time,
+                To = Time.AddHours(1)
+            });
             await BasicDataManager.SaveAsync();
         }
 
@@ -2036,6 +2232,14 @@ namespace BubbleStart.ViewModels
                 }
                 tmpTime = tmpTime.AddDays(7);
             }
+
+            BasicDataManager.Add(new ProgramChange
+            {
+                Date = DateTime.Now,
+                InstanceGuid = StaticResources.Guid,
+                From = Time,
+                To = limit
+            });
 
             await BasicDataManager.SaveAsync();
             Messenger.Default.Send(new UpdateClosedHoursMessage());

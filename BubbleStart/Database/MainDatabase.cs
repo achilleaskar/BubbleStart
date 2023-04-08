@@ -18,6 +18,7 @@ namespace BubbleStart.Database
         public DbSet<District> Districts { get; set; }
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Apointment> Apointments { get; set; }
+        public DbSet<ProgramChange> ProgramChanges { get; set; }
         public DbSet<CustomeTime> CustomeTimes { get; set; }
         public DbSet<Program> Programs { get; set; }
         public DbSet<ShowUp> ShowUps { get; set; }

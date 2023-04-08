@@ -62,6 +62,11 @@ namespace BubbleStart.Wrappers
             get { return GetValue<string>(); }
             set { SetValue(value); }
         }
+        public bool Disabled
+        {
+            get { return GetValue<bool>(); }
+            set { SetValue(value); }
+        }
 
         #region Methods
 
