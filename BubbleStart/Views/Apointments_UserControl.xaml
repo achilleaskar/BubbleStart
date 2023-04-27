@@ -365,11 +365,10 @@
                                                                         <Label   VerticalAlignment="Center"
                                                                                  Content="{Binding TimeString1}" />
                                                                         <TextBlock FontWeight="Bold"
-                                                                                   Margin="5 0"
                                                                                    VerticalAlignment="Center"
-                                                                                   Grid.Column="1"
+                                                                                   Grid.Column="1" 
                                                                                    Text="{Binding GymnastFunctional.Gymnast.Name}"
-                                                                                   HorizontalAlignment="Center" />
+                                                                                   HorizontalAlignment="Left" />
                                                                     </Grid>
                                                                 </Border>
                                                                 <ListBox BorderThickness="0"
@@ -530,11 +529,10 @@
                                                                         <Label   VerticalAlignment="Center"
                                                                                  Content="{Binding TimeString2}" />
                                                                         <TextBlock FontWeight="Bold"
-                                                                                   Margin="5 0"
                                                                                    VerticalAlignment="Center"
                                                                                    Grid.Column="1"
                                                                                    Text="{Binding GymnastReformer.Gymnast.Name}"
-                                                                                   HorizontalAlignment="Center" />
+                                                                                   HorizontalAlignment="Left" />
                                                                     </Grid>
                                                                 </Border>
                                                                 <ListBox BorderThickness="0"
@@ -696,11 +694,10 @@
                                                                         <Label   VerticalAlignment="Center"
                                                                                  Content="{Binding TimeString3}" />
                                                                         <TextBlock FontWeight="Bold"
-                                                                                   Margin="5 0"
                                                                                    VerticalAlignment="Center"
                                                                                    Grid.Column="1"
                                                                                    Text="{Binding GymnastMassage.Gymnast.Name}"
-                                                                                   HorizontalAlignment="Center" />
+                                                                                   HorizontalAlignment="Left" />
                                                                     </Grid>
                                                                 </Border>
                                                                 <ListBox BorderThickness="0"
@@ -861,11 +858,10 @@
                                                                         <Label   VerticalAlignment="Center"
                                                                                  Content="{Binding TimeString4}" />
                                                                         <TextBlock FontWeight="Bold"
-                                                                                   Margin="5 0"
                                                                                    VerticalAlignment="Center"
                                                                                    Grid.Column="1"
                                                                                    Text="{Binding GymnastOutdoor.Gymnast.Name}"
-                                                                                   HorizontalAlignment="Center" />
+                                                                                   HorizontalAlignment="Left" />
                                                                     </Grid>
                                                                 </Border>
                                                                 <ListBox BorderThickness="0"
@@ -990,13 +986,15 @@
                 </Grid>
             </ScrollViewer>
             <Grid Margin="60"
-                  VerticalAlignment="Center" Visibility="{Binding HasChanges,Converter={StaticResource booleanToVisibilityConverter}}"
+                  VerticalAlignment="Center"
+                  Visibility="{Binding HasChanges,Converter={StaticResource booleanToVisibilityConverter}}"
                   HorizontalAlignment="Center"
                   Grid.RowSpan="3"
                   Width="900">
                 <Border Background="LightGray"
                         Opacity="0.8" />
                 <TextBlock FontSize="40"
+                           d:Visibility="Hidden"
                            Foreground="Red"
                            Margin="20"
                            FontWeight="Bold"

@@ -1090,6 +1090,8 @@ namespace BubbleStart.ViewModels
             AppointemntsOutdoor = new ObservableCollection<Apointment>();
         }
 
+
+
         private async Task ToggleCanceled(string obj)
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -1098,6 +1100,7 @@ namespace BubbleStart.ViewModels
                 case "0":
                     SelectedApointmentFunctional.Canceled = !SelectedApointmentFunctional.Canceled;
                     SelectedApointmentFunctional.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    TryCancelForUser(SelectedApointmentFunctional, SelectedApointmentFunctional.Canceled);
                     break;
 
                 case "1":
@@ -1118,6 +1121,30 @@ namespace BubbleStart.ViewModels
 
             await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void TryCancelForUser(Apointment appo, bool canceled)
+        {
+            var showups = appo.Customer?.ShowUps.Where(s => s.Arrived.Date == appo.DateTime.Date);
+            if (showups.Count() == 1)
+            {
+                showups.First().Real = !canceled;
+                MessageBox.Show($"Βρεθηκε μία παρουσία για την ίδια μέρα η οποία ορίστηκε επίσης " +
+                    $"σε {(!canceled ? "'Ηρθε" : "Δεν Ήρθε'")}");
+                return;
+            }
+            if (showups.Count() > 1)
+            {
+                MessageBox.Show("Βρεθηκαν περισσότερες απο μία παρουσίες." +
+                    " Θα πρέπει να ορίσετε χειροκίνητα το 'Ηρθε/Δεν Ήρθε'");
+                return;
+            }
+            MessageBox.Show("Δεν βρέθηκαν παρουσίες για να οριστεί το 'Ηρθε/Δεν Ήρθε'");
+        }
+
+        private void SetShowupCanceled(ShowUp showUp, bool canceled)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task ToggleWaiting(string obj)
