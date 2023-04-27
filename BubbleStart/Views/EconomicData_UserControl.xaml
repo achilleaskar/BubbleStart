@@ -187,6 +187,7 @@
                                                         Binding="{Binding Date,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
                                     <DataGridTemplateColumn Header="Κατηγ."
                                                             Width="80"
+                                                            SortMemberPath="MainCategory.Name"
                                                             CellStyle="{StaticResource DataGridCellStyle}">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -199,6 +200,7 @@
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                     <DataGridTemplateColumn Header="Υποκατηγ."
+                                                            SortMemberPath="SecondaryCategory.Name"
                                                             Width="90"
                                                             CellStyle="{StaticResource DataGridCellStyle}">
                                         <DataGridTemplateColumn.CellTemplate>

@@ -4,7 +4,6 @@ using System.Net;
 using System.Windows;
 using BubbleStart.Database;
 using BubbleStart.ViewModels;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using Squirrel;
 
 namespace BubbleStart.Views
@@ -76,6 +75,14 @@ namespace BubbleStart.Views
                             a.RaisePropertyChanged(nameof(a.ApColor));
                     }
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (MessageBox.Show("Θέλετε σίγουρα να κλείσετε?", "Έξοδος", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                e.Cancel = false;
+            else
+                e.Cancel = true;
         }
     }
 }
