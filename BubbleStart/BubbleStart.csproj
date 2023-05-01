@@ -241,6 +241,7 @@
     <Compile Include="Converters\DoubleParameterConverter.cs" />
     <Compile Include="Converters\EnumConverter.cs" />
     <Compile Include="Converters\FloadToStringValueConverter.cs" />
+    <Compile Include="Converters\GroupExpenseToHeaderConverter.cs" />
     <Compile Include="Converters\GymToColorConverter.cs" />
     <Compile Include="Converters\HourClosedToColorConverter.cs" />
     <Compile Include="Converters\IntToDayConverter.cs" />
@@ -707,6 +708,10 @@
     <Compile Include="Migrations\202303222225244_emailLength.designer.cs">
       <DependentUpon>202303222225244_emailLength.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202305012129237_Guns.cs" />
+    <Compile Include="Migrations\202305012129237_Guns.designer.cs">
+      <DependentUpon>202305012129237_Guns.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -1170,6 +1175,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202303222225244_emailLength.resx">
       <DependentUpon>202303222225244_emailLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202305012129237_Guns.resx">
+      <DependentUpon>202305012129237_Guns.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Converters="clr-namespace:BubbleStart.Converters"
              xmlns:helpers="clr-namespace:BubbleStart.Helpers"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:views="clr-namespace:BubbleStart.Views"
              x:Class="BubbleStart.Views.SearchCustomers"
              xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
@@ -355,6 +356,11 @@
                               VerticalAlignment="Center"
                               ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:ProgramMode}}}"
                               SelectedItem="{Binding ProgramMode}" />-->
+                    <Button Click="Button_Click_Print"
+                            VerticalAlignment="Center"
+                            Margin="5 0">
+                        <iconPacks:PackIconFontAwesome Kind="PrintSolid" />
+                    </Button>
                 </StackPanel>
                 <TextBox Grid.Row="1"
                          FontSize="15"
@@ -362,6 +368,7 @@
                          Text="{Binding SearchTerm, Delay=100, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid ItemsSource="{Binding CustomersCollectionView}"
                           Grid.Row="2"
+                          Name="datagrid"
                           SelectedItem="{Binding SelectedCustomer}"
                           CanUserAddRows="False"
                           SelectionMode="Single"

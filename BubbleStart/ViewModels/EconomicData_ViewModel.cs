@@ -1,6 +1,5 @@
 ﻿using BubbleStart.Helpers;
 using BubbleStart.Messages;
-using BubbleStart.Migrations;
 using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight;
@@ -24,11 +23,7 @@ namespace BubbleStart.ViewModels
     {
         #region Constructors
 
-
-
-
         private decimal _Total;
-
 
         public decimal Total
         {
@@ -57,6 +52,7 @@ namespace BubbleStart.ViewModels
 
             NewIncome = new Expense { Income = true, MainCategoryId = 20 };
             ShowCashDataCommand = new RelayCommand(async () => { await ShowCashData(); });//
+            ShowExpensesGroupedDataCommand = new RelayCommand(async () => { await ShowExpensesGroupedData(); });//
             ShowOwningCustomersCommand = new RelayCommand(ShowOwningCustomers);
             StartDateCash = StartDateExpenses = StartDatePreview = StartDatePayments = DateTime.Today;
             Expenses = new ObservableCollection<Expense>();
@@ -84,6 +80,47 @@ namespace BubbleStart.ViewModels
             Sales = new ObservableCollection<Program>();
             StartDateSales = DateTime.Today;
             Load();
+        }
+
+        private ObservableCollection<IGrouping<ExpenseCategoryClass, Expense>> _ExpensesGrouped;
+
+        public ObservableCollection<IGrouping<ExpenseCategoryClass, Expense>> ExpensesGrouped
+        {
+            get
+            {
+                return _ExpensesGrouped;
+            }
+
+            set
+            {
+                if (_ExpensesGrouped == value)
+                {
+                    return;
+                }
+
+                _ExpensesGrouped = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private async Task ShowExpensesGroupedData()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            DateTime enddate = EndDateExpenses.AddDays(1);
+            var t = (await BasicDataManager.Context.GetAllExpensesAsync(e => !e.Income && e.Date >= StartDateExpenses && e.Date < enddate,
+                false,
+                expensetypes: ExpenseTypes.Any(e => !e.IsChecked) ? ExpenseTypes.Where(e => e.IsChecked).Select(e => e.ExpenseCategory.Id).ToList() : null,
+                MainCategory?.Id ?? -1,
+                NewExpense?.SecondaryCategory?.Id ?? -1));
+            foreach (var item in t)
+            {
+                item.parent = this;
+            }
+
+            ExpensesGrouped = new ObservableCollection<IGrouping<ExpenseCategoryClass, Expense>>(t.
+                OrderBy(a => a.Date).GroupBy(e => e.MainCategory)
+                .OrderByDescending(e => e.Count()));
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         internal async Task FullyLoadCustomer(Customer customer)
@@ -486,6 +523,29 @@ namespace BubbleStart.ViewModels
             }
         }
 
+
+
+        private ObservableCollection<Customer> _CustomersWithGun;
+
+
+        public ObservableCollection<Customer> CustomersWithGun
+        {
+            get
+            {
+                return _CustomersWithGun;
+            }
+
+            set
+            {
+                if (_CustomersWithGun == value)
+                {
+                    return;
+                }
+
+                _CustomersWithGun = value;
+                RaisePropertyChanged();
+            }
+        }
         public ObservableCollection<Customer> CustomersWhoOwn
         {
             get
@@ -632,11 +692,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private decimal _IncomesTotal;
-
 
         public decimal IncomesTotal
         {
@@ -683,11 +739,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private ICollectionView _IncomesCV;
-
 
         public ICollectionView IncomesCV
         {
@@ -1271,6 +1323,7 @@ namespace BubbleStart.ViewModels
         }
 
         public RelayCommand ShowCashDataCommand { get; set; }
+        public RelayCommand ShowExpensesGroupedDataCommand { get; set; }
 
         public RelayCommand ShowExpensesDataCommand { get; set; }
         public RelayCommand ShowSalesDataCommand { get; set; }
@@ -1427,6 +1480,31 @@ namespace BubbleStart.ViewModels
         }
 
         public decimal TotalPayments => GetSum();
+
+
+
+
+        private decimal _TotalRemainingGun;
+
+
+        public decimal TotalRemainingGun
+        {
+            get
+            {
+                return _TotalRemainingGun;
+            }
+
+            set
+            {
+                if (_TotalRemainingGun == value)
+                {
+                    return;
+                }
+
+                _TotalRemainingGun = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public decimal TotalRemaining
         {
@@ -1944,8 +2022,21 @@ namespace BubbleStart.ViewModels
 
         private void ShowOwningCustomers()
         {
-            CustomersWhoOwn = new ObservableCollection<Customer>(BasicDataManager.Customers.Where(c => c.RemainingAmount > 0));
-            TotalRemaining = CustomersWhoOwn.Sum(t => t.RemainingAmount);
+
+           var own = new List<Customer>();
+           var gun = new List<Customer>();
+            foreach (var customer in BasicDataManager.Customers.Where(c => c.RemainingAmount > 0))
+            {
+                if (customer.RemainingAmount == customer.Programs.Where(p => p.Gun).Sum(a => a.Amount))
+                    gun.Add(customer);
+                else
+                    own.Add(customer);
+            }
+            
+            CustomersWhoOwn =new ObservableCollection<Customer>(own);
+            CustomersWithGun =new ObservableCollection<Customer>(gun);
+            TotalRemaining = own.Sum(t => t.RemainingAmount);
+            TotalRemainingGun = gun.Sum(t => t.RemainingAmount);
         }
 
         private async Task ShowPaymentsData()

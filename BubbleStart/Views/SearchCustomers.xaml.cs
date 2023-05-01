@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using BubbleStart.Helpers;
 using BubbleStart.Model;
 using BubbleStart.ViewModels;
 
@@ -100,6 +101,12 @@ namespace BubbleStart.Views
             {
                 Clipboard.SetText(c.ToString());
             }
+
+        }
+
+        private void Button_Click_Print(object sender, RoutedEventArgs e)
+        {
+            StaticResources.PrintDatagrid(datagrid,1);
 
         }
     }

@@ -1,17 +1,23 @@
 ﻿using BubbleStart.Model;
 using BubbleStart.Views;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Reflection;
-using static BubbleStart.Model.Program;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace BubbleStart.Helpers
 {
     public static class StaticResources
     {
-
-
         public static Guid Guid { get; set; } = Guid.NewGuid();
 
         public static List<DateTime> GetHours(int minHour, int minMin, int maxHour, int maxMin, int interval)
@@ -32,7 +38,6 @@ namespace BubbleStart.Helpers
         {
             int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
             return start.AddDays(daysToAdd);
-
         }
 
         public static string GetDescription(Enum en)
@@ -53,12 +58,14 @@ namespace BubbleStart.Helpers
             }
             return en.ToString();
         }
+
         public static User User { get; set; }
 
         internal static BasicDataManager context;
 
         //public static string[] Districts { get; set; } = { "Ευζώνων", "Λαογραφικό Μουσείο", "Μπότσαρη", "Πανόραμα", "Σχολή Τυφλων", "Φάληρο", "Άλλο" };
         public static List<int> Months { get; set; } = new List<int> { 0, 1, 2, 3, 6, 12 };
+
         public static CustomerManagement OpenWindow { get; internal set; }
         public static DateTime OneWeekBefore { get; internal set; } = DateTime.Today.AddDays(-7);
 
@@ -66,72 +73,125 @@ namespace BubbleStart.Helpers
 
         public static string DecimalToString(decimal value) => value.ToString("C2").Replace(".00", "").Replace(",00", "").Replace(" ", "");
 
-        //public static string ProgramEnumToString(ProgramTypes ProgramType)
-        //{
-        //    switch (ProgramType)
-        //    {
-        //        case ProgramTypes.ReformerPilates:
-        //            return "Reformer Pilates";
+        public static void PrintDatagrid(DataGrid dgrid,int par=0)
+        {
+            dgrid.SelectionMode = DataGridSelectionMode.Extended;
+            dgrid.SelectAllCells();
+            dgrid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+            ApplicationCommands.Copy.Execute(null, dgrid);
+            string result = Clipboard.GetText();
+            dgrid.UnselectAll();
 
-        //        case ProgramTypes.Pilates:
-        //            return "Pilates";
+            ExcelPackage p = new ExcelPackage();
+            p.Workbook.Worksheets.Add("Αποτέλεσμα");
+            ExcelWorksheet myWorksheet = p.Workbook.Worksheets.Last();
 
-        //        case ProgramTypes.Functional:
-        //            return "Functional";
+            int row = 1;
+            int column = 1;
+            int colCount = 0;
 
-        //        case ProgramTypes.PilatesFunctional:
-        //            return "Pilates & Functional";
+            var rows = result.Split(new string[] { "\r\n" }, StringSplitOptions.None).ToList();
+            if (rows.Count <= 1)
+            {
+                return;
+            }
 
-        //        case ProgramTypes.freeUse:
-        //            return "Ελεύθερη Χρήση";
+            bool first;
+            var colWidths = dgrid.Columns.Where(c => c.Visibility == Visibility.Visible).Select(t => t.Width).ToList();
+            foreach (var CurrRow in rows)
+            {
+                if (row > 1 && column == colCount + 1)
+                {
+                    column = 1;
+                }
+                if (column > 1)
+                {
+                    column--;
+                    row--;
+                    first = true;
+                    foreach (var content in CurrRow.Split(new string[] { "\t" }, StringSplitOptions.None))
+                    {
+                        if (first)
+                        {
+                            myWorksheet.Cells[row, column].Value = myWorksheet.Cells[row, column].Value + "\r\n" + content;
 
-        //        case ProgramTypes.MedicalExersise:
-        //            return "Medical Exercise";
+                            first = false;
+                        }
+                        else
+                        {
+                            myWorksheet.Cells[row, column].Value = GetCellValue(content);
+                        }
+                        column++;
+                    }
+                }
+                else
+                {
+                    if (row == 1)
+                        foreach (var header in CurrRow.Split(new string[] { "\t" }, StringSplitOptions.None))
+                        {
+                            myWorksheet.Cells[row, column].Value = header;
+                            if (header == "Σημείωση" || header == "Οδ. Ξενοδοχείου")
+                            {
+                                myWorksheet.Column(column).Style.WrapText = true;
+                            }
+                            myWorksheet.Column(column).Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                            myWorksheet.Column(column).Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                            myWorksheet.Cells[row, column].Style.Font.Bold = true;
+                            myWorksheet.Column(column).Width = colWidths[column - 1].DisplayValue / 6.5;
 
-        //        case ProgramTypes.dokimastiko:
-        //            return "Personal";
+                            column++;
+                            colCount++;
+                        }
+                    else
+                        foreach (var content in CurrRow.Split(new string[] { "\t" }, StringSplitOptions.None))
+                        {
+                            myWorksheet.Cells[row, column].Value = GetCellValue(content);
+                            column++;
+                        }
+                }
+                row++;
+            }
 
-        //        case ProgramTypes.yoga:
-        //            return "Yoga";
+            if (par==1)
+            {
+                myWorksheet.DeleteColumn(1);
+                myWorksheet.DeleteColumn(12, 2);
+                myWorksheet.DeleteColumn(4);
+            }
 
-        //        case ProgramTypes.aerial:
-        //            return "Aerial Yoga";
+            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Prints");
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\tmpprint" + ".xlsx";
 
-        //        case ProgramTypes.masasRel30:
-        //            return "Μασάζ Χαλαρωτικό 30'";
+            FileInfo fileInfo = new FileInfo(path);
+            p.SaveAs(fileInfo);
+            Clipboard.Clear();
+            ProcessStartInfo startInfo = new ProcessStartInfo(path)
+            {
+                UseShellExecute = true
+            };
+            Process.Start(startInfo);
+            dgrid.SelectionMode = DataGridSelectionMode.Single;
+        }
 
-        //        case ProgramTypes.masazRel50:
-        //            return "Μασάζ Χαλαρωτικό 50'";
+        private static string GetCellValue(string content)
+        {
+            CultureInfo elGR = new CultureInfo("el-GR");
+            if (content == "True")
+            {
+                return "Ναι";
+            }
+            if (content == "False")
+            {
+                return "Όχι";
+            }
+            if (DateTime.TryParseExact(content, "G", elGR,
+                                             DateTimeStyles.None, out DateTime dateValue))
+            {
+                return dateValue.ToString("dd/MM/yy");
+            }
 
-        //        case ProgramTypes.masazTher30:
-        //            return "Μασάζ Θεραπευτικό 30'";
-
-        //        case ProgramTypes.masazTher50:
-        //            return "Μασάζ Θεραπευτικό 50'";
-
-        //        case ProgramTypes.blackfriday:
-        //            return "Black Friday Deal";
-
-        //        case ProgramTypes.massage41:
-        //            return "4+1 massage";
-
-        //        case ProgramTypes.online:
-        //            return "Online";
-
-        //        case ProgramTypes.summerDeal:
-        //            return "Summer Deal";
-
-        //        case ProgramTypes.OutDoor:
-        //            return "OutDoor";
-
-        //        case ProgramTypes.September:
-        //            return "September Deal";
-
-        //        case ProgramTypes.Month:
-        //            return "Μηνιαίο πακέτο Γυμναστικής";
-        //    }
-        //    return "Σφάλμα";
-        //}
+            return content;
+        }
 
         public static string ToGreek(string searchTerm)
         {

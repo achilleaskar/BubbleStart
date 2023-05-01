@@ -552,6 +552,9 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public RelayCommand<Program> DeleteProgramCommand { get; set; }
+       
+        [NotMapped]
+        public RelayCommand<Program> GunProgramCommand { get; set; }
 
         [NotMapped]
         public RelayCommand<Program> SetShowupToProgramCommand { get; set; }
@@ -3738,6 +3741,7 @@ namespace BubbleStart.Model
             DeleteShowUpCommand = new RelayCommand<ShowUp>(async (obj) => { await DeleteShowUp(obj); }, CanDeleteShowUp);
             DeletePaymentCommand = new RelayCommand<Payment>(async (obj) => { await DeletePayment(obj); }, CanDeletePayment);
             DeleteProgramCommand = new RelayCommand<Program>(async (obj) => { await DeleteProgram(obj); }, CanDeleteProgram);
+            GunProgramCommand = new RelayCommand<Program>(async (obj) => { await GunProgram(obj); }, CanDeleteProgram);
 
             ToggleRealCommand = new RelayCommand<ShowUp>(async (obj) => { await TogleReal(obj); }, CanToggleReal);
             Toggle30_60Command = new RelayCommand<ShowUp>(Toggle30_60, CanTogle30_60);
@@ -3766,7 +3770,7 @@ namespace BubbleStart.Model
         {
             if (e.PropertyName == nameof(DefaultProgram.Selected))
             {
-                DefaultProgramModes = string.Join(",", DefaultPrograms.Where(t => t.Selected).Select(r=>r.Id));
+                DefaultProgramModes = string.Join(",", DefaultPrograms.Where(t => t.Selected).Select(r => r.Id));
             }
         }
 
@@ -4872,6 +4876,22 @@ namespace BubbleStart.Model
             RaisePropertyChanged(nameof(PaymentVisibility));
             // await BasicDataManager.SaveAsync();
         }
+        private async Task GunProgram(Program prog)
+        {
+            prog.PropertyChanged -= ProgramPropertyChanged;
+            if (prog == null)
+            {
+                return;
+            }
+            if (prog.Gun)
+                Changes.Add(new Change($"Τελικα δεν ειναι πιστόλι το ΠΡΌΓΡΑΜΜΑ {prog}", StaticResources.User));
+            else
+                Changes.Add(new Change($"Εγινε Πιστόλι το ΠΡΌΓΡΑΜΜΑ {prog}", StaticResources.User));
+
+            prog.Gun = !prog.Gun;
+            //UpdateCollections();
+            prog.RaisePropertyChanged(nameof(prog.Gun));
+        }
 
         private async Task DeleteShowUp(ShowUp showup)
         {
@@ -5513,8 +5533,8 @@ namespace BubbleStart.Model
         {
             Mouse.OverrideCursor = Cursors.Wait;
             OldShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(HistoryFrom, DateTime.Now, Id, true)).OrderByDescending(a => a.Arrived));
-            var apps = await BasicDataManager.Context.GetApointmentsJoined(customerId: Id,historyFrom: HistoryFrom);
-               //await BasicDataManager.Context.Context.Apointments.Where(a => a.Customer.Id == Id && a.DateTime >= HistoryFrom).ToListAsync();
+            var apps = await BasicDataManager.Context.GetApointmentsJoined(customerId: Id, historyFrom: HistoryFrom);
+            //await BasicDataManager.Context.Context.Apointments.Where(a => a.Customer.Id == Id && a.DateTime >= HistoryFrom).ToListAsync();
             NextAppointments = new ObservableCollection<Apointment>(apps.Where(a => a.DateTime > DateTime.Now).OrderBy(a => a.DateTime));
             UpdateCollections();
             Mouse.OverrideCursor = Cursors.Arrow;

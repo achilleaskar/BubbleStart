@@ -17,6 +17,7 @@
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
         <Converters:BoolToShowedUp_Converter x:Key="BoolToShowedUp_Converter" />
         <Converters:DateTimeToString x:Key="DateTimeToString" />
+        <Converters:GroupExpenseToHeaderConverter x:Key="GroupExpenseToHeaderConverter" />
         <Converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <Converters:EnumConverter x:Key="EnumConverter" />
         <Style x:Key="DataGridCellStyle"
@@ -792,6 +793,138 @@
                 </TabControl>
             </Grid>
         </TabItem>
+        <TabItem Header="Έξοδα"
+                 d:Visibility="Visible"
+                 Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal"
+                            Grid.ColumnSpan="2">
+                    <StackPanel>
+                        <TextBlock Text="Aπό:" />
+                        <DatePicker VerticalAlignment="Center"
+                                    SelectedDate="{Binding StartDateExpenses,  UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                    <StackPanel Margin=" 5 0 0 5">
+                        <TextBlock Text="Έως:" />
+                        <DatePicker VerticalAlignment="Center"
+                                    SelectedDate="{Binding EndDateExpenses, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                    <Button Content="Προβολή"
+                            Margin="5"
+                            Padding="7 3"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding ShowExpensesGroupedDataCommand}" />
+                    <Button Content="Αποθήκευση"
+                            VerticalAlignment="Bottom"
+                            Margin="5"
+                            Padding="7 3"
+                            Command="{Binding SaveChangesCommand}" />
+                </StackPanel>
+                <ScrollViewer Grid.Row="1"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding ExpensesGrouped}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <GroupBox Header="{Binding Converter={StaticResource GroupExpenseToHeaderConverter}}"
+                                          Margin="5 0 15 0"
+                                          Grid.Row="1"
+                                          Grid.Column="0">
+                                    <DataGrid ItemsSource="{Binding}"
+                                              Grid.Row="1"
+                                              CanUserAddRows="False"
+                                              IsReadOnly="True"
+                                              HorizontalAlignment="Left"
+                                              CanUserDeleteRows="False"
+                                              AutoGenerateColumns="False">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Ποσό"
+                                                                Width="60"
+                                                                Binding="{Binding Amount,StringFormat=c2,UpdateSourceTrigger=PropertyChanged}" />
+                                            <DataGridTextColumn Header="Ημερομ."
+                                                                Width="70"
+                                                                Binding="{Binding Date,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
+                                            <DataGridTemplateColumn Header="Κατηγ."
+                                                                    Width="80"
+                                                                    SortMemberPath="MainCategory.Name"
+                                                                    CellStyle="{StaticResource DataGridCellStyle}">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ComboBox Width="Auto"
+                                                                  VerticalAlignment="Top"
+                                                                  DisplayMemberPath="Name"
+                                                                  ItemsSource="{Binding DataContext.MainCategories,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                  SelectedItem="{Binding MainCategory, UpdateSourceTrigger=PropertyChanged}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Υποκατηγ."
+                                                                    SortMemberPath="SecondaryCategory.Name"
+                                                                    Width="120"
+                                                                    CellStyle="{StaticResource DataGridCellStyle}">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ComboBox Width="Auto"
+                                                                  VerticalAlignment="Top"
+                                                                  DisplayMemberPath="Name"
+                                                                  ItemsSource="{Binding SecondaryCategories}"
+                                                                  SelectedItem="{Binding SecondaryCategory, UpdateSourceTrigger=PropertyChanged}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Χρήστης"
+                                                                MaxWidth="120"
+                                                                IsReadOnly="True"
+                                                                Binding="{Binding User.Name}" />
+                                            <DataGridTemplateColumn Header="Αιτιολογία"
+                                                                    Width="240">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox VerticalAlignment="Top"
+                                                                 TextWrapping="Wrap"
+                                                                 MaxHeight="60"
+                                                                 Text="{Binding Reason,UpdateSourceTrigger=PropertyChanged}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Από"
+                                                                    SortMemberPath="From"
+                                                                    Width="100">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <DatePicker VerticalAlignment="Top"
+                                                                    SelectedDate="{Binding From,UpdateSourceTrigger=PropertyChanged}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Έως"
+                                                                    SortMemberPath="To"
+                                                                    Width="100">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <DatePicker VerticalAlignment="Top"
+                                                                    SelectedDate="{Binding To,UpdateSourceTrigger=PropertyChanged}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </GroupBox>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </TabItem>
         <TabItem Header="Προεπισκόπηση"
                  d:Visibility="Visible"
                  Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
@@ -1193,19 +1326,74 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
                 <Button Content="Προβολή"
                         Command="{Binding ShowOwningCustomersCommand}"
                         HorizontalAlignment="Left"
                         Margin="5"
                         Padding="5 0" />
                 <StackPanel  Orientation="Horizontal"
-                             Width="200"
-                             HorizontalAlignment="Right">
+                             Grid.ColumnSpan="2"
+                             Margin="150 0 0 0"
+                             HorizontalAlignment="Left">
                     <Label Content="Συνολικό Υπόλοιπο:" />
                     <Label Content="{Binding TotalRemaining,Converter={StaticResource FtoSConverter}}" />
+                    <Label Content="Συνολικό Πιστόλι:" />
+                    <Label Content="{Binding TotalRemainingGun,Converter={StaticResource FtoSConverter}}" />
                 </StackPanel>
                 <DataGrid ItemsSource="{Binding CustomersWhoOwn}"
                           Grid.Row="1"
+                          Margin="5"
+                          CanUserAddRows="False"
+                          SelectionMode="Single"
+                          SelectedItem="{Binding SelectedCustomer}"
+                          VirtualizingPanel.VirtualizationMode="Standard"
+                          IsReadOnly="True"
+                          HorizontalAlignment="Left"
+                          CanUserDeleteRows="False"
+                          AutoGenerateColumns="False">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="{x:Type DataGridRow}">
+                            <EventSetter Event="MouseDoubleClick"
+                                         Handler="ListView_MouseDoubleClick" />
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#"
+                                            Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource  RowToIndexConverter}}" />
+                        <DataGridTextColumn Header="Όνομα"
+                                            Width="110"
+                                            Binding="{Binding Name}" />
+                        <DataGridTextColumn Header="Επίθετο"
+                                            Width="110"
+                                            Binding="{Binding SureName}" />
+                        <DataGridTemplateColumn Header="Εν."
+                                                SortMemberPath="IsActiveColor.Color.G"
+                                                Width="25">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="{Binding IsActiveColor}"
+                                            Opacity="0.7" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Πρόγραμμα"
+                                            Width="105"
+                                            Binding="{Binding TypeOfProgram}" />
+                        <DataGridTextColumn Header="Τελ. Αγορ."
+                                            Width="70"
+                                            Binding="{Binding LastBuy,Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
+                        <DataGridTextColumn Header="Υπόλοιπο"
+                                            Binding="{Binding RemainingAmount,StringFormat=C2}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid ItemsSource="{Binding CustomersWithGun}"
+                          Grid.Row="1"
+                          Grid.Column="1"
                           Margin="5"
                           CanUserAddRows="False"
                           SelectionMode="Single"
@@ -1352,7 +1540,8 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Amount,StringFormat=C2}"
-                                               HorizontalAlignment="Stretch" TextAlignment="Right"
+                                               HorizontalAlignment="Stretch"
+                                               TextAlignment="Right"
                                                Margin="0 0 5 0">
                                         <TextBlock.Style>
                                             <Style>

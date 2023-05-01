@@ -904,6 +904,13 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -967,6 +974,11 @@
                                                                                          Value="false">
                                                                                 <Setter Property="TextBlock.Background"
                                                                                         Value="#FFE67979" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
+                                                                                         Value="true">
+                                                                                <Setter Property="TextBlock.Background"
+                                                                                        Value="HotPink" />
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
@@ -1240,6 +1252,13 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -1303,6 +1322,11 @@
                                                                                          Value="false">
                                                                                 <Setter Property="TextBlock.Background"
                                                                                         Value="#FFE67979" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
+                                                                                         Value="true">
+                                                                                <Setter Property="TextBlock.Background"
+                                                                                        Value="HotPink" />
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
@@ -1619,6 +1643,13 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -1682,6 +1713,11 @@
                                                                                          Value="false">
                                                                                 <Setter Property="TextBlock.Background"
                                                                                         Value="#FFE67979" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
+                                                                                         Value="true">
+                                                                                <Setter Property="TextBlock.Background"
+                                                                                        Value="HotPink" />
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
@@ -1941,6 +1977,13 @@
                                                     <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                 </MenuItem.Icon>
                                             </MenuItem>
+                                            <MenuItem Header="Πιστόλι"
+                                                      CommandParameter="{Binding}"
+                                                      Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                <MenuItem.Icon>
+                                                    <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
                                         </ContextMenu>
                                     </DataGrid.Resources>
                                     <DataGrid.RowStyle>
@@ -2004,6 +2047,11 @@
                                                                                      Value="false">
                                                                             <Setter Property="TextBlock.Background"
                                                                                     Value="#FFE67979" />
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Gun}"
+                                                                                     Value="true">
+                                                                            <Setter Property="TextBlock.Background"
+                                                                                    Value="HotPink" />
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
                                                                 </Style>
@@ -2280,6 +2328,13 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -2343,6 +2398,11 @@
                                                                                          Value="false">
                                                                                 <Setter Property="TextBlock.Background"
                                                                                         Value="#FFE67979" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
+                                                                                         Value="true">
+                                                                                <Setter Property="TextBlock.Background"
+                                                                                        Value="HotPink" />
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
@@ -2616,6 +2676,13 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -2679,6 +2746,11 @@
                                                                                          Value="false">
                                                                                 <Setter Property="TextBlock.Background"
                                                                                         Value="#FFE67979" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
+                                                                                         Value="true">
+                                                                                <Setter Property="TextBlock.Background"
+                                                                                        Value="HotPink" />
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
@@ -2956,6 +3028,13 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -3019,6 +3098,11 @@
                                                                                          Value="false">
                                                                                 <Setter Property="TextBlock.Background"
                                                                                         Value="#FFE67979" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
+                                                                                         Value="true">
+                                                                                <Setter Property="TextBlock.Background"
+                                                                                        Value="HotPink" />
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
@@ -3292,6 +3376,13 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -3355,6 +3446,11 @@
                                                                                          Value="false">
                                                                                 <Setter Property="TextBlock.Background"
                                                                                         Value="#FFE67979" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
+                                                                                         Value="true">
+                                                                                <Setter Property="TextBlock.Background"
+                                                                                        Value="HotPink" />
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
@@ -3612,6 +3708,13 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -3675,6 +3778,11 @@
                                                                                          Value="false">
                                                                                 <Setter Property="TextBlock.Background"
                                                                                         Value="#FFE67979" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
+                                                                                         Value="true">
+                                                                                <Setter Property="TextBlock.Background"
+                                                                                        Value="HotPink" />
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
@@ -3928,6 +4036,13 @@
                                                         <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
                                                     </MenuItem.Icon>
                                                 </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
+                                                          CommandParameter="{Binding}"
+                                                          Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
                                             </ContextMenu>
                                         </DataGrid.Resources>
                                         <DataGrid.RowStyle>
@@ -3991,6 +4106,11 @@
                                                                                          Value="false">
                                                                                 <Setter Property="TextBlock.Background"
                                                                                         Value="#FFE67979" />
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
+                                                                                         Value="true">
+                                                                                <Setter Property="TextBlock.Background"
+                                                                                        Value="HotPink" />
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>

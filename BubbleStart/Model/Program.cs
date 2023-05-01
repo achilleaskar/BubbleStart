@@ -26,6 +26,31 @@ namespace BubbleStart.Model
 
         #endregion Fields
 
+
+
+
+        private bool _Gun;
+
+
+        public bool Gun
+        {
+            get
+            {
+                return _Gun;
+            }
+
+            set
+            {
+                if (_Gun == value)
+                {
+                    return;
+                }
+
+                _Gun = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public IList<Change> Changes { get; set; }
 
         #region Enums
