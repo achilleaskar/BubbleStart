@@ -10,6 +10,7 @@
              xmlns:viewmodels="clr-namespace:BubbleStart.ViewModels"
              d:DataContext="{d:DesignInstance {x:Type viewmodels:SearchCustomer_ViewModel}}"
              mc:Ignorable="d"
+             IsVisibleChanged="UserControl_IsVisibleChanged"
              KeyUp="UserControl_KeyUp"
              Background="White"
              d:DesignHeight="650"

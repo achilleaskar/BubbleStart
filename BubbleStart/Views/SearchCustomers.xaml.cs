@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using BubbleStart.Helpers;
@@ -106,8 +107,22 @@ namespace BubbleStart.Views
 
         private void Button_Click_Print(object sender, RoutedEventArgs e)
         {
-            StaticResources.PrintDatagrid(datagrid,1);
+            StaticResources.PrintDatagrid(datagrid, 1);
 
+        }
+
+        private void UserControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+
+        {
+            if (Visibility==Visibility.Visible && DataContext is SearchCustomer_ViewModel vm)
+            {
+                var t = vm.CustomersPracticing.FirstOrDefault(c => c.IsPracticing == false);
+                if (t != null)
+                {
+                    vm.CustomersPracticing.Remove(t);
+                    t.RaisePropertyChanged(nameof(t.LastPart));
+                }
+            }
         }
     }
 }

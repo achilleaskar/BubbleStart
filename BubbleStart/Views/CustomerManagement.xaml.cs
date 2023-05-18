@@ -33,6 +33,7 @@ namespace BubbleStart.Views
                 if (result == MessageBoxResult.Yes)
                 {
                     c.BasicDataManager.RollBack();
+                    c.IsPracticing = c.LastShowUp != null && c.LastShowUp.Arrived.Date == DateTime.Today && c.LastShowUp.Left < c.LastShowUp.Arrived && c.LastShowUp.Left.Year != 1234;
                 }
                 else
                     e.Cancel = true;

@@ -30,7 +30,7 @@ namespace BubbleStart.ViewModels
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
             SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); }, CanSaveCustomer);
             ShowedUpCommand = new RelayCommand<int>(async (obj) => { await CustomerShowedUp(obj); });
-            CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); });
+            CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); },CanDoIt);
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
             DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(true); });
@@ -41,6 +41,11 @@ namespace BubbleStart.ViewModels
             OpenActiveCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedPracticingCustomer); });
             OpenActiveCustomerSideManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedApointment?.Customer); });
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+        }
+
+        private bool CanDoIt()
+        {
+           return SelectedPracticingCustomer != null;
         }
 
         #endregion Constructors
@@ -538,11 +543,17 @@ namespace BubbleStart.ViewModels
             PopupOpen = false;
             if (SelectedCustomer != null)
             {
-                CustomersPracticing.Add(SelectedCustomer);
                 if (programMode > 50)
-                    SelectedCustomer.ShowedUp(true, (ProgramMode)(programMode / 10), Is30min, programMode % 10, gymnast: SelectedGymanst);
+                {
+                    if (SelectedCustomer.ShowedUp(true, (ProgramMode)(programMode / 10), Is30min, programMode % 10, gymnast: SelectedGymanst))
+                        CustomersPracticing.Add(SelectedCustomer);
+                }
                 else
-                    SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min, gymnast: SelectedGymanst);
+                {
+                    if (SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min, gymnast: SelectedGymanst))
+                        CustomersPracticing.Add(SelectedCustomer);
+                }
+
                 SelectedCustomer.SetColors();
                 await BasicDataManager.SaveAsync();
                 Is30min = false;
@@ -551,7 +562,7 @@ namespace BubbleStart.ViewModels
             foreach (var a in TodaysApointments)
                 a.RaisePropertyChanged(nameof(a.ShowedUpToday));
             SelectedApointment = null;
-            SelectedGymanst=null;
+            SelectedGymanst = null;
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -575,7 +586,7 @@ namespace BubbleStart.ViewModels
                         CustomersPracticing.Add(c);
                     }
                     c.CalculateRemainingAmount();
-                    apps = c.Apointments.Where(a => a.DateTime.Date == DateTime.Today);
+                    apps = c.Apointments.Where(a => a.DateTime.Date == DateTime.Today && !a.Waiting);
                     foreach (var app in apps)
                     {
                         c.AppointmentTime = app.DateTime;

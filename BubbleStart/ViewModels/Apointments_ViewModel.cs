@@ -355,11 +355,7 @@ namespace BubbleStart.ViewModels
         private MainDatabase db = new MainDatabase();
         private DateTime To;
 
-
-
-
         private bool _HasChanges;
-
 
         public bool HasChanges
         {
@@ -393,7 +389,6 @@ namespace BubbleStart.ViewModels
                     Mouse.OverrideCursor = Cursors.Arrow;
                     if (HasChanges)
                     {
-
                     }
                     //if (hasChange)
                     //{
@@ -1090,8 +1085,6 @@ namespace BubbleStart.ViewModels
             AppointemntsOutdoor = new ObservableCollection<Apointment>();
         }
 
-
-
         private async Task ToggleCanceled(string obj)
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -1106,16 +1099,22 @@ namespace BubbleStart.ViewModels
                 case "1":
                     SelectedApointmentReformer.Canceled = !SelectedApointmentReformer.Canceled;
                     SelectedApointmentReformer.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    TryCancelForUser(SelectedApointmentReformer, SelectedApointmentReformer.Canceled);
+
                     break;
 
                 case "2":
                     SelectedAppointmentMassage.Canceled = !SelectedAppointmentMassage.Canceled;
                     SelectedAppointmentMassage.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    TryCancelForUser(SelectedAppointmentMassage, SelectedAppointmentMassage.Canceled);
+
                     break;
 
                 case "3":
                     SelectedAppointmentOutdoor.Canceled = !SelectedAppointmentOutdoor.Canceled;
                     SelectedAppointmentOutdoor.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    TryCancelForUser(SelectedAppointmentOutdoor, SelectedAppointmentOutdoor.Canceled);
+
                     break;
             }
 
@@ -1130,7 +1129,7 @@ namespace BubbleStart.ViewModels
             {
                 showups.First().Real = !canceled;
                 MessageBox.Show($"Βρεθηκε μία παρουσία για την ίδια μέρα η οποία ορίστηκε επίσης " +
-                    $"σε {(!canceled ? "'Ηρθε" : "Δεν Ήρθε'")}");
+                    $"σε {(!canceled ? "'ΗΡΘΕ'" : "ΔΕΝ ΗΡΘΕ'")}");
                 return;
             }
             if (showups.Count() > 1)
@@ -1954,58 +1953,72 @@ namespace BubbleStart.ViewModels
         private async Task DeleteApointment(object type)
         {
             Mouse.OverrideCursor = Cursors.Wait;
+
             switch (type)
             {
                 case "0":
-                    BasicDataManager.Add(new ProgramChange
+                    if (MessageBox.Show($"Θέλετε σίγουρα να ΔΙΑΓΡΑΨΕΤΕ το επιλεγμένο ραντεβού? {SelectedApointmentFunctional.Description}", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
-                        Date = DateTime.Now,
-                        InstanceGuid = StaticResources.Guid,
-                        From = SelectedApointmentFunctional.DateTime,
-                        To = SelectedApointmentFunctional.DateTime.AddHours(1)
-                    });
-                    BasicDataManager.Delete(SelectedApointmentFunctional);
-                    AppointmentsFunctional.Remove(SelectedApointmentFunctional);
+                        BasicDataManager.Add(new ProgramChange
+                        {
+                            Date = DateTime.Now,
+                            InstanceGuid = StaticResources.Guid,
+                            From = SelectedApointmentFunctional.DateTime,
+                            To = SelectedApointmentFunctional.DateTime.AddHours(1)
+                        });
+                        BasicDataManager.Delete(SelectedApointmentFunctional);
+                        AppointmentsFunctional.Remove(SelectedApointmentFunctional);
+                    }
                     break;
 
                 case "1":
-                    BasicDataManager.Add(new ProgramChange
+                    if (MessageBox.Show($"Θέλετε σίγουρα να ΔΙΑΓΡΑΨΕΤΕ το επιλεγμένο ραντεβού? {SelectedApointmentReformer.Description}", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
-                        Date = DateTime.Now,
-                        InstanceGuid = StaticResources.Guid,
-                        From = SelectedApointmentReformer.DateTime,
-                        To = SelectedApointmentReformer.DateTime.AddHours(1)
-                    });
-                    BasicDataManager.Delete(SelectedApointmentReformer);
-                    AppointmentsReformer.Remove(SelectedApointmentReformer);
+                        BasicDataManager.Add(new ProgramChange
+                        {
+                            Date = DateTime.Now,
+                            InstanceGuid = StaticResources.Guid,
+                            From = SelectedApointmentReformer.DateTime,
+                            To = SelectedApointmentReformer.DateTime.AddHours(1)
+                        });
+                        BasicDataManager.Delete(SelectedApointmentReformer);
+                        AppointmentsReformer.Remove(SelectedApointmentReformer);
+                    }
                     break;
 
                 case "2":
-                    BasicDataManager.Add(new ProgramChange
+                    if (MessageBox.Show($"Θέλετε σίγουρα να ΔΙΑΓΡΑΨΕΤΕ το επιλεγμένο ραντεβού? {SelectedAppointmentMassage.Description}", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
-                        Date = DateTime.Now,
-                        InstanceGuid = StaticResources.Guid,
-                        From = SelectedAppointmentMassage.DateTime,
-                        To = SelectedAppointmentMassage.DateTime.AddHours(1)
-                    });
-                    BasicDataManager.Delete(SelectedAppointmentMassage);
-                    AppointmentsMassage.Remove(SelectedAppointmentMassage);
+                        BasicDataManager.Add(new ProgramChange
+                        {
+                            Date = DateTime.Now,
+                            InstanceGuid = StaticResources.Guid,
+                            From = SelectedAppointmentMassage.DateTime,
+                            To = SelectedAppointmentMassage.DateTime.AddHours(1)
+                        });
+                        BasicDataManager.Delete(SelectedAppointmentMassage);
+                        AppointmentsMassage.Remove(SelectedAppointmentMassage);
+                    }
                     break;
 
                 case "3":
-                    BasicDataManager.Add(new ProgramChange
+                    if (MessageBox.Show($"Θέλετε σίγουρα να ΔΙΑΓΡΑΨΕΤΕ το επιλεγμένο ραντεβού? {SelectedAppointmentOutdoor.Description}", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                     {
-                        Date = DateTime.Now,
-                        InstanceGuid = StaticResources.Guid,
-                        From = SelectedAppointmentOutdoor.DateTime,
-                        To = SelectedAppointmentOutdoor.DateTime.AddHours(1)
-                    });
-                    BasicDataManager.Delete(SelectedAppointmentOutdoor);
-                    AppointemntsOutdoor.Remove(SelectedAppointmentOutdoor);
+                        BasicDataManager.Add(new ProgramChange
+                        {
+                            Date = DateTime.Now,
+                            InstanceGuid = StaticResources.Guid,
+                            From = SelectedAppointmentOutdoor.DateTime,
+                            To = SelectedAppointmentOutdoor.DateTime.AddHours(1)
+                        });
+                        BasicDataManager.Delete(SelectedAppointmentOutdoor);
+                        AppointemntsOutdoor.Remove(SelectedAppointmentOutdoor);
+                    }
                     break;
             }
 
             await BasicDataManager.SaveAsync();
+
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
