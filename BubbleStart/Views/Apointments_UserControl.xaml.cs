@@ -144,6 +144,70 @@ namespace BubbleStart.Views
                     foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
                         hour.DeselectAll();
         }
+        private void Border_PreviewMouseLeftButtonUpMH(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border b && b.DataContext is Hour h)
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    if (h.parent != null)
+                    {
+                        var t = h.parent.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours.OrderBy(h1 => h1.Time);
+                        if (t.Any(tr => tr.SelectedMH))
+                        {
+                            bool found = false;
+                            foreach (var o in t)
+                            {
+                                if (o.SelectedMH)
+                                    found = true;
+                                else if (o == h)
+                                {
+                                    o.SelectedMH = true;
+                                    break;
+                                }
+                                else if (found)
+                                    o.SelectedMH = true;
+                            }
+                        }
+                    }
+                }
+                else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                    h.SelectedMH = !h.SelectedMH;
+                else if (DataContext is Apointments_ViewModel vm)
+                    foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
+                        hour.DeselectAll();
+        }
+        private void Border_PreviewMouseLeftButtonUpP(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border b && b.DataContext is Hour h)
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    if (h.parent != null)
+                    {
+                        var t = h.parent.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours.OrderBy(h1 => h1.Time);
+                        if (t.Any(tr => tr.SelectedP))
+                        {
+                            bool found = false;
+                            foreach (var o in t)
+                            {
+                                if (o.SelectedP)
+                                    found = true;
+                                else if (o == h)
+                                {
+                                    o.SelectedP = true;
+                                    break;
+                                }
+                                else if (found)
+                                    o.SelectedP = true;
+                            }
+                        }
+                    }
+                }
+                else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                    h.SelectedP = !h.SelectedP;
+                else if (DataContext is Apointments_ViewModel vm)
+                    foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
+                        hour.DeselectAll();
+        }
 
         private void Border_PreviewMouseLeftButtonUpO(object sender, MouseButtonEventArgs e)
         {
@@ -198,7 +262,7 @@ namespace BubbleStart.Views
         {
             if (sender is ItemsControl ic && ic.DataContext is Day d)
             {
-                d.HeightOutdoor = ic.ActualHeight-1;
+                d.HeightOutdoor = ic.ActualHeight - 1;
             }
         }
 
@@ -207,6 +271,22 @@ namespace BubbleStart.Views
             if (sender is ItemsControl ic && ic.DataContext is Day d)
             {
                 d.HeightMassage = ic.ActualHeight;
+            }
+        }
+
+        private void MassageHalfControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            if (sender is ItemsControl ic && ic.DataContext is Day d)
+            {
+                d.HeightMassageHalf = ic.ActualHeight;
+            }
+        }
+
+        private void PersonalControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            if (sender is ItemsControl ic && ic.DataContext is Day d)
+            {
+                d.HeightPersonal = ic.ActualHeight;
             }
         }
     }

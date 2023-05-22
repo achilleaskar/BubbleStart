@@ -225,6 +225,8 @@ namespace BubbleStart.Helpers
         Functional = 0,
         Pilates = 1,
         Massage = 2,
-        Outdoor = 3
+        Outdoor = 3,
+        MassageHalf = 4,
+        Personal = 5
     }
 }

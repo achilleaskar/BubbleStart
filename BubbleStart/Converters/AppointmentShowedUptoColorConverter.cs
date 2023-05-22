@@ -19,14 +19,13 @@ namespace BubbleStart.Converters
             {
                 if (a.Customer != null)
                 {
-                    if (a.Room == RoomEnum.Massage && a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date && s.ProgramModeNew == ProgramMode.massage))
+                    if ((a.Room == RoomEnum.Massage || a.Room == RoomEnum.MassageHalf) && a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date && s.ProgramModeNew == ProgramMode.massage))
                         return new SolidColorBrush(Colors.Red);
-                    else if (a.Room != RoomEnum.Massage&&a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date && s.ProgramModeNew != ProgramMode.massage))
+                    else if (a.Room != RoomEnum.Massage && a.Room != RoomEnum.MassageHalf && a.DateTime < DateTime.Now && !a.Customer.ShowUps.Any(s => s.Arrived.Date == a.DateTime.Date && s.ProgramModeNew != ProgramMode.massage))
                         return new SolidColorBrush(Colors.Red);
                 }
                 if (parameter == null || parameter is RadioButton b && b.IsChecked == true)
                 {
-
                     if (a.Person == SelectedPersonEnum.Gogo)
                         return new SolidColorBrush(Colors.LimeGreen);
                     if (a.Person == SelectedPersonEnum.Functional)

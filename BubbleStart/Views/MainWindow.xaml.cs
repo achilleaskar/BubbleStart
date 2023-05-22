@@ -1,10 +1,10 @@
-﻿using System;
+﻿using BubbleStart.Database;
+using BubbleStart.ViewModels;
+using Squirrel;
+using System;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Windows;
-using BubbleStart.Database;
-using BubbleStart.ViewModels;
-using Squirrel;
 
 namespace BubbleStart.Views
 {
@@ -72,6 +72,10 @@ namespace BubbleStart.Views
                         foreach (var a in h.AppointmentsMassage)
                             a.RaisePropertyChanged(nameof(a.ApColor));
                         foreach (var a in h.AppointmentsReformer)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsPersonal)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsMassageHalf)
                             a.RaisePropertyChanged(nameof(a.ApColor));
                     }
             }

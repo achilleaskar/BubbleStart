@@ -59,7 +59,7 @@ namespace BubbleStart.Model
         {
             get
             {
-                if (Room == RoomEnum.Massage)
+                if (Room == RoomEnum.Massage|| Room == RoomEnum.MassageHalf)
                     return Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Today && s.ProgramModeNew == ProgramMode.massage);
                 return Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Today && !s.Massage);
             }
@@ -75,7 +75,7 @@ namespace BubbleStart.Model
                 }
                 if (DateTime < DateTime.Now)
                 {
-                    if (Room == RoomEnum.Massage)
+                    if (Room == RoomEnum.Massage|| Room == RoomEnum.MassageHalf)
                     {
                         if (!Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date && s.ProgramModeNew == ProgramMode.massage))
                             return Colors.Red.ToString();
@@ -190,6 +190,14 @@ namespace BubbleStart.Model
             if (Room == RoomEnum.Outdoor)
             {
                 return "Outdoor, " + PersonName;
+            }
+            if (Room == RoomEnum.MassageHalf)
+            {
+                return "Massage 30, " + PersonName;
+            }
+            if (Room == RoomEnum.Personal)
+            {
+                return "Personal, " + PersonName;
             }
             return "Σφάλμα";
         }
