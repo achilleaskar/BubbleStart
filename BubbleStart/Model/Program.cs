@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Windows.Media;
 
 namespace BubbleStart.Model
@@ -289,6 +290,20 @@ namespace BubbleStart.Model
             }
         }
 
+        public DateTime FirstPaidDate => GetFirstPaidDate();
+
+        private DateTime GetFirstPaidDate()
+        {
+            if (!Payments.Any())
+            {
+                return DayOfIssue;
+            }
+            else
+            {
+                return Payments.OrderBy(x => x.Date).First().Date;
+            }
+        }
+
         public DateTime DayOfIssue
         {
             get => _DayOfIssue;
@@ -329,7 +344,7 @@ namespace BubbleStart.Model
 
         public void CalculateRemainingAmount()
         {
-            
+
             decimal tmpAmount = Amount;
             if (Payments != null && Payments.Count > 0)
             {

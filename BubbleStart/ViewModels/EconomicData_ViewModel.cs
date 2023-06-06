@@ -142,14 +142,16 @@ namespace BubbleStart.ViewModels
             Sales.Clear();
             var enddate = EndDateSales.AddDays(1);
             int dealid = SelectedDealIndex > 0 ? Deals[SelectedDealIndex - 1].Id : 0;
-            Sales = new ObservableCollection<Program>(await BasicDataManager.Context.Context.Programs
-                .Where(p => (SelectedDealIndex == 0 || p.DealId == dealid) &&
-                (SelectedProgramTypeIndex == 0 || p.ProgramTypeO.ProgramMode == (ProgramMode)(SelectedProgramTypeIndex - 1)) &&
-                p.DayOfIssue >= StartDateSales && p.DayOfIssue < enddate)
-                .Include(p => p.Customer)
-                .Include(p => p.Payments)
-                .OrderBy(r => r.DayOfIssue)
-                .ToListAsync());
+            var t = await BasicDataManager.Context.Context.Programs
+                 .Where(p => (SelectedDealIndex == 0 || p.DealId == dealid) &&
+                 (SelectedProgramTypeIndex == 0 || p.ProgramTypeO.ProgramMode == (ProgramMode)(SelectedProgramTypeIndex - 1)) &&
+                 ((p.DayOfIssue >= StartDateSales && p.DayOfIssue < enddate) || p.Payments.Any(r => r.Date >= StartDateSales && r.Date < enddate)))
+                 .Include(p => p.Customer)
+                 .Include(p => p.Payments)
+                 .ToListAsync();
+
+            Sales = new ObservableCollection<Program>(t.Where(r => r.FirstPaidDate >= StartDateSales && r.FirstPaidDate < enddate)
+                .OrderBy(r => r.FirstPaidDate));
             foreach (var p in Sales)
             {
                 p.CalculateRemainingAmount();
@@ -2023,8 +2025,8 @@ namespace BubbleStart.ViewModels
         private void ShowOwningCustomers()
         {
 
-           var own = new List<Customer>();
-           var gun = new List<Customer>();
+            var own = new List<Customer>();
+            var gun = new List<Customer>();
             foreach (var customer in BasicDataManager.Customers.Where(c => c.RemainingAmount > 0))
             {
                 if (customer.RemainingAmount == customer.Programs.Where(p => p.Gun).Sum(a => a.Amount))
@@ -2032,9 +2034,9 @@ namespace BubbleStart.ViewModels
                 else
                     own.Add(customer);
             }
-            
-            CustomersWhoOwn =new ObservableCollection<Customer>(own);
-            CustomersWithGun =new ObservableCollection<Customer>(gun);
+
+            CustomersWhoOwn = new ObservableCollection<Customer>(own);
+            CustomersWithGun = new ObservableCollection<Customer>(gun);
             TotalRemaining = own.Sum(t => t.RemainingAmount);
             TotalRemainingGun = gun.Sum(t => t.RemainingAmount);
         }

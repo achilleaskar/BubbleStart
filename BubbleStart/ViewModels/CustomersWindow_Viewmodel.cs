@@ -1,14 +1,14 @@
-﻿using System;
+﻿using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
 
 namespace BubbleStart.ViewModels
 {
@@ -24,7 +24,6 @@ namespace BubbleStart.ViewModels
             AddCustomerCommand = new RelayCommand<string>(async obj => { await AddCustomer(obj); }, CanAdd);
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
             Messenger.Default.Register<CustomersChangedMessage>(this, msg => Load());
-
         }
 
         private bool Busy;
@@ -91,8 +90,6 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
         public bool IsGogoChecked
         {
             get => _IsGogoChecked;
@@ -135,12 +132,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
-
         private bool _IsPilatesMatChecked;
-
 
         public bool IsPilatesMatChecked
         {
@@ -165,10 +157,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
         private bool _IsPersonalChecked;
-
 
         public bool IsPersonalChecked
         {
@@ -213,12 +202,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
-
         private bool _IsOnlineChecked;
-
 
         public bool IsOnlineChecked
         {
@@ -243,7 +227,6 @@ namespace BubbleStart.ViewModels
         }
 
         private bool _IsMassageChecked;
-
 
         public bool IsMassageChecked
         {
@@ -313,6 +296,35 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public double Rating => GetRating();
+
+        private double GetRating()
+        {
+            switch (Room)
+            {
+                case RoomEnum.Functional:
+                    return Hour.AppointmentsFunctional.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsFunctional.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
+
+                case RoomEnum.Pilates:
+                    return Hour.AppointmentsReformer.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsReformer.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
+
+                case RoomEnum.Massage:
+                    return Hour.AppointmentsMassage.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsMassage.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
+
+                case RoomEnum.Outdoor:
+                    return Hour.AppointemntsOutdoor.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointemntsOutdoor.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
+
+                case RoomEnum.MassageHalf:
+                    return Hour.AppointmentsMassageHalf.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsMassageHalf.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
+
+                case RoomEnum.Personal:
+                    return Hour.AppointmentsPersonal.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsPersonal.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
+
+                default:
+                    return 0;
+            }
+        }
+
         public BasicDataManager BasicDataManager { get; }
         public RoomEnum Room { get; }
         public Hour Hour { get; }
@@ -322,7 +334,6 @@ namespace BubbleStart.ViewModels
         #region Methods
 
         private User _SelectedGymnast;
-
 
         public User SelectedGymnast
         {
@@ -343,9 +354,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
         private ObservableCollection<User> _Gymnasts;
-
 
         public ObservableCollection<User> Gymnasts
         {
@@ -418,8 +427,6 @@ namespace BubbleStart.ViewModels
             string tmpTerm = StaticResources.ToGreek(SearchTerm);
             return customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm);
         }
-
-
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {

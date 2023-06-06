@@ -16,10 +16,10 @@
              d:DesignWidth="1200">
     <UserControl.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
+        <Converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <Converters:DoubleParameterConverter x:Key="DoubleParameterConverter" />
     </UserControl.Resources>
-    <GroupBox Header="Πρόγραμμα Εβδομάδας"
-              HorizontalAlignment="Left">
+    <GroupBox Header="Πρόγραμμα Εβδομάδας">
         <Grid Margin=" -4 -4 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -71,8 +71,8 @@
                     <ColumnDefinition Width="200" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="400" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -154,7 +154,8 @@
                                 Width="100"
                                 SelectedDate="{Binding SelectedDayToGo}"
                                 VerticalAlignment="Center" />
-                    <Button Content="Φόρτωση"
+                    <Button Content="Φόρτωση" Padding="10,3"
+                            Margin="3"
                             Command="{Binding ShowProgramCommand}"
                             VerticalAlignment="Center"
                             Background="PaleVioletRed" />
@@ -401,7 +402,7 @@
                                                                                  Content="{Binding TimeString1}" />
                                                                         <TextBlock FontWeight="Bold"
                                                                                    VerticalAlignment="Center"
-                                                                                   Grid.Column="1" 
+                                                                                   Grid.Column="1"
                                                                                    Text="{Binding GymnastFunctional.Gymnast.Name}"
                                                                                    HorizontalAlignment="Left" />
                                                                     </Grid>

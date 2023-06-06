@@ -3,11 +3,58 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BubbleStart.Views"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:Converters="clr-namespace:BubbleStart.Converters"
         mc:Ignorable="d"
         Title="FindCustomerWidnow"
         Height="450"
         SizeToContent="Width">
+    <Window.Resources>
+        <Converters:RatingToStatConverter x:Key="RatingToStatConverter" />
+        <Converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+        <DataTemplate x:Key="noStar">
+            <StackPanel Orientation="Horizontal"></StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="oneStar">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Margin="3,0">
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarRegular"
+                                               Margin="1.5,0"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarRegular"
+                                               Foreground="Orange" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="twoStar">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Margin="3,0">
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Margin="1.5,0"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarRegular"
+                                               Foreground="Orange" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="threeStar">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Margin="3,0">
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Margin="1.5,0"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Foreground="Orange" />
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
     <Grid HorizontalAlignment="Left">
         <GroupBox Margin="5"
                   Padding="5"
@@ -59,12 +106,51 @@
                 </GroupBox>
                 <TextBlock Grid.Row="1"
                            Text="Λέξη Κλειδί:" />
-                <TextBox Grid.Row="2"
-                         Width="320"
-                         HorizontalAlignment="Left"
-                         FontSize="15"
-                         Margin="0 0 0 4"
-                         Text="{Binding SearchTerm, Delay=100, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel Grid.Row="2"
+                            Orientation="Horizontal">
+                    <TextBox Width="320"
+                             HorizontalAlignment="Left"
+                             FontSize="15"
+                             Margin="0 0 0 4"
+                             Text="{Binding SearchTerm, Delay=100, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="Μέσο όσο αίθουσας:"
+                               Visibility="{Binding Rating,Converter= {StaticResource IntToVisibilityConverter}}"
+                               Margin="5" VerticalAlignment="Center" />
+                    <ContentControl  Margin="5,0" VerticalAlignment="Center"
+                                     Content="{Binding Rating,Converter= {StaticResource RatingToStatConverter}}">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Setter Property="ContentTemplate"
+                                        Value="{StaticResource noStar}" />
+                                <Setter Property="Foreground"
+                                        Value="Blue" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Rating}"
+                                                 Value="1">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource oneStar}" />
+                                        <Setter Property="Foreground"
+                                                Value="Blue" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Rating}"
+                                                 Value="2">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource twoStar}" />
+                                        <Setter Property="Foreground"
+                                                Value="Blue" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Rating}"
+                                                 Value="3">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource threeStar}" />
+                                        <Setter Property="Foreground"
+                                                Value="Blue" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </StackPanel>
                 <DataGrid ItemsSource="{Binding CustomersCollectionView}"
                           Grid.Row="3"
                           HorizontalAlignment="Left"
@@ -93,9 +179,41 @@
                         <DataGridTextColumn Header="Ηλικία"
                                             Width="60"
                                             Binding="{Binding Age}" />
+                        <DataGridTemplateColumn Width="60"
+                                                SortMemberPath="Rating">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ContentControl Content="{Binding Rating}">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource noStar}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Rating}"
+                                                                 Value="1">
+                                                        <Setter Property="ContentTemplate"
+                                                                Value="{StaticResource oneStar}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Rating}"
+                                                                 Value="2">
+                                                        <Setter Property="ContentTemplate"
+                                                                Value="{StaticResource twoStar}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Rating}"
+                                                                 Value="3">
+                                                        <Setter Property="ContentTemplate"
+                                                                Value="{StaticResource threeStar}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <StackPanel Grid.Row="3"
+                <!--<StackPanel Grid.Row="3"
                             Grid.Column="1">
                     <Label Content="Χρήστης:" />
                     <ComboBox ItemsSource="{Binding Gymnasts}"
@@ -103,7 +221,7 @@
                               Margin="5 0"
                               Width="100"
                               HorizontalAlignment="Left" />
-                </StackPanel>
+                </StackPanel>-->
                 <StackPanel Grid.Row="4"
                             Orientation="Horizontal">
                     <Button Content="Προσθήκη σε αναμονή"

@@ -379,6 +379,7 @@
     <Compile Include="Converters\IsCustomerNullToBoolConverter.cs" />
     <Compile Include="Converters\IsSelectedProgramTypeConverter.cs" />
     <Compile Include="Converters\MeetingsToColorConverter.cs" />
+    <Compile Include="Converters\RatingToStatConverter.cs" />
     <Compile Include="Converters\RemainingAmountToColorConverter.cs" />
     <Compile Include="Converters\RowToIndexConverter.cs" />
     <Compile Include="Converters\UserToVisibility.cs" />

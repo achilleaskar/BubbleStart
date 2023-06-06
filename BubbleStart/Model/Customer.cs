@@ -33,6 +33,27 @@ namespace BubbleStart.Model
             Changes = new ObservableCollection<Change>();
         }
 
+        private int _Rating;
+
+        public int Rating
+        {
+            get
+            {
+                return _Rating;
+            }
+
+            set
+            {
+                if (_Rating == value)
+                {
+                    return;
+                }
+
+                _Rating = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public Customer(bool isnew)
         {
             if (isnew)
@@ -3771,6 +3792,7 @@ namespace BubbleStart.Model
             if (e.PropertyName == nameof(DefaultProgram.Selected))
             {
                 DefaultProgramModes = string.Join(",", DefaultPrograms.Where(t => t.Selected).Select(r => r.Id));
+                SelectedDefaultProgram = DefaultPrograms.FirstOrDefault(p => p.Selected);
             }
         }
 
@@ -4812,8 +4834,6 @@ namespace BubbleStart.Model
             ShowUpsMedicalCollectionView = null;
             ShowUpsPersonalCollectionView = null;
         }
-
-
 
         private void CustomerLeft()
         {
@@ -6244,6 +6264,28 @@ namespace BubbleStart.Model
             RaisePropertyChanged(nameof(BMI));
         }
 
+        private DefaultProgram _SelectedDefaultProgram;
+
+        [NotMapped]
+        public DefaultProgram SelectedDefaultProgram
+        {
+            get
+            {
+                return _SelectedDefaultProgram;
+            }
+
+            set
+            {
+                if (_SelectedDefaultProgram == value)
+                {
+                    return;
+                }
+
+                _SelectedDefaultProgram = value;
+                RaisePropertyChanged();
+            }
+        }
+
         internal void FillDefaultProframs()
         {
             DefaultPrograms = new ObservableCollection<DefaultProgram>(BasicDataManager.ProgramModes
@@ -6259,6 +6301,7 @@ namespace BubbleStart.Model
             {
                 item.PropertyChanged += Item_PropertyChanged;
             }
+            SelectedDefaultProgram = DefaultPrograms.FirstOrDefault(p => p.Selected);
         }
 
         #endregion Methods

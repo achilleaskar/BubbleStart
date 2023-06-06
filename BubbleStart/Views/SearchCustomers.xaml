@@ -22,6 +22,49 @@
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:IsSelectedProgramTypeConverter x:Key="IsSelectedProgramTypeConverter" />
         <Converters:EnumConverter x:Key="EnumConverter" />
+        <DataTemplate x:Key="noStar">
+            <StackPanel Orientation="Horizontal">
+              
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="oneStar">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Margin="3,0">
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarRegular"
+                                               Margin="1.5,0"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarRegular"
+                                               Foreground="Orange" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="twoStar">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center" Margin="3,0">
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Margin="1.5,0"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarRegular"
+                                               Foreground="Orange" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="threeStar">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Margin="3,0">
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Margin="1.5,0"
+                                               Foreground="Orange" />
+                <iconPacks:PackIconFontAwesome Kind="StarSolid"
+                                               Foreground="Orange" />
+            </StackPanel>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -408,13 +451,13 @@
                         <DataGridTextColumn Header="#"
                                             Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource  RowToIndexConverter}}" />
                         <DataGridTextColumn Header="Όνομα"
-                                            Width="110"
+                                            Width="100"
                                             Binding="{Binding Name}" />
                         <DataGridTextColumn Header="Επίθετο"
-                                            Width="110"
+                                            Width="100"
                                             Binding="{Binding SureName}" />
-                        <DataGridTextColumn Header="Ηλικ."
-                                            Width="35"
+                        <DataGridTextColumn Header="Ηλ."
+                                            Width="30"
                                             Binding="{Binding Age}" />
                         <DataGridTemplateColumn Header="Εν."
                                                 SortMemberPath="IsActiveColor.Color.G"
@@ -426,11 +469,43 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="60"
+                                                SortMemberPath="Rating">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ContentControl Content="{Binding Rating}">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource noStar}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Rating}"
+                                                                 Value="1">
+                                                        <Setter Property="ContentTemplate"
+                                                                Value="{StaticResource oneStar}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Rating}"
+                                                                 Value="2">
+                                                        <Setter Property="ContentTemplate"
+                                                                Value="{StaticResource twoStar}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Rating}"
+                                                                 Value="3">
+                                                        <Setter Property="ContentTemplate"
+                                                                Value="{StaticResource threeStar}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Πρόγραμμα"
-                                            Width="105"
+                                            Width="100"
                                             Binding="{Binding TypeOfProgram}" />
-                        <DataGridTextColumn Header="Τελ. Αγορ."
-                                            Width="70"
+                        <DataGridTextColumn Header="Τελ. Αγ."
+                                            Width="60"
                                             Binding="{Binding LastBuy,Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
                         <DataGridTextColumn Header="Gym"
                                             Width="35"
@@ -456,7 +531,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown"
-                                            Content="Γυμν." />
+                                            Content="Γυμ." />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -469,7 +544,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Last"
-                                            Width="75"
+                                            Width="60"
                                             Binding="{Binding LastPart}">
                             <DataGridTextColumn.CellStyle>
                                 <Style TargetType="DataGridCell">
@@ -500,13 +575,16 @@
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Επίθετο"
+                                                Width="80"
                                                 Binding="{Binding SureName}" />
                             <DataGridTextColumn Header="Όνομα"
+                                                Width="70"
                                                 Binding="{Binding Name}" />
-                            <DataGridTextColumn Header="Διάρκεια"
-                                                Width="60"
+                            <DataGridTextColumn Header="Διάρ."
+                                                Width="40"
                                                 Binding="{Binding Duration, FallbackValue=00:00, StringFormat=\{0:hh\}:\{0:mm\}}" />
-                            <DataGridTemplateColumn Header="Αποχώρηση">
+                            <DataGridTemplateColumn Header="Αποχ."
+                                                    Width="50">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Content="Τέλος"
@@ -550,10 +628,10 @@
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Όνομα"
-                                                    Width="95"
+                                                    Width="80"
                                                     Binding="{Binding Customer.Name}" />
                                 <DataGridTextColumn Header="Επίθετο"
-                                                    Width="105"
+                                                    Width="95"
                                                     Binding="{Binding Customer.SureName}" />
                                 <DataGridTextColumn Header="Ώρα"
                                                     Width="40"

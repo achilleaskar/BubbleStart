@@ -646,7 +646,7 @@ namespace BubbleStart.ViewModels
                         }
                     }
                     hour.GymnastsWorking = hour.GymnastsWorking.TrimEnd(' ').TrimEnd(',');
-                }
+                  }
             }
 
             RaisePropertyChanged(nameof(HasDays));
@@ -1140,6 +1140,153 @@ namespace BubbleStart.ViewModels
     public class Hour : BaseModel
     {
         #region Constructors
+
+        private double _RatingFunctional;
+
+        public double RatingFunctional
+        {
+            get
+            {
+                return _RatingFunctional;
+            }
+
+            set
+            {
+                if (_RatingFunctional == value)
+                {
+                    return;
+                }
+
+                _RatingFunctional = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _RatingPilates;
+
+        public double RatingPilates
+        {
+            get
+            {
+                return _RatingPilates;
+            }
+
+            set
+            {
+                if (_RatingPilates == value)
+                {
+                    return;
+                }
+
+                _RatingPilates = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _RatingMassage;
+
+        public double RatingMassage
+        {
+            get
+            {
+                return _RatingMassage;
+            }
+
+            set
+            {
+                if (_RatingMassage == value)
+                {
+                    return;
+                }
+
+                _RatingMassage = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _RatingMassage30;
+
+        public double RatingMassage30
+        {
+            get
+            {
+                return _RatingMassage30;
+            }
+
+            set
+            {
+                if (_RatingMassage30 == value)
+                {
+                    return;
+                }
+
+                _RatingMassage30 = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _RatingPersonal;
+
+        public double RatingPersonal
+        {
+            get
+            {
+                return _RatingPersonal;
+            }
+
+            set
+            {
+                if (_RatingPersonal == value)
+                {
+                    return;
+                }
+
+                _RatingPersonal = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _RatingOutdoor;
+
+        public double RatingOutdoor
+        {
+            get
+            {
+                return _RatingOutdoor;
+            }
+
+            set
+            {
+                if (_RatingOutdoor == value)
+                {
+                    return;
+                }
+
+                _RatingOutdoor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _ShowStars;
+
+        public bool ShowStars
+        {
+            get
+            {
+                return _ShowStars;
+            }
+
+            set
+            {
+                if (_ShowStars == value)
+                {
+                    return;
+                }
+
+                _ShowStars = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public Hour(DateTime time, BasicDataManager basicDataManager)
         {
@@ -2448,6 +2595,7 @@ namespace BubbleStart.ViewModels
                         GymnastOutdoor = null;
                     }
                     break;
+
                 case 4:
                     if (GymnastMassageHalf != null)
                     {
@@ -2463,7 +2611,6 @@ namespace BubbleStart.ViewModels
                         GymnastPersonal = null;
                     }
                     break;
-
             }
             if (parent != null)
             {
@@ -2508,7 +2655,7 @@ namespace BubbleStart.ViewModels
                     }
                     if (h.SelectedP && !(h == this && obj == 5))
                     {
-                        if (h.GymnastPersonal!= null)
+                        if (h.GymnastPersonal != null)
                         {
                             if (h.GymnastPersonal.Id > 0)
                                 BasicDataManager.Delete(h.GymnastPersonal);
@@ -2537,7 +2684,6 @@ namespace BubbleStart.ViewModels
             await BasicDataManager.SaveAsync();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
-
 
         private async Task ToggleCanceled(string obj)
         {
@@ -2569,11 +2715,13 @@ namespace BubbleStart.ViewModels
                     SelectedAppointmentOutdoor.RaisePropertyChanged(nameof(Apointment.ApColor));
                     TryCancelForUser(SelectedAppointmentOutdoor, SelectedAppointmentOutdoor.Canceled);
                     break;
+
                 case "4":
                     SelectedAppointmentMassageHalf.Canceled = !SelectedAppointmentMassageHalf.Canceled;
                     SelectedAppointmentMassageHalf.RaisePropertyChanged(nameof(Apointment.ApColor));
                     TryCancelForUser(SelectedAppointmentMassageHalf, SelectedAppointmentMassageHalf.Canceled);
                     break;
+
                 case "5":
                     SelectedAppointmentPersonal.Canceled = !SelectedAppointmentPersonal.Canceled;
                     SelectedAppointmentPersonal.RaisePropertyChanged(nameof(Apointment.ApColor));
@@ -2877,6 +3025,7 @@ namespace BubbleStart.ViewModels
                         To = SelectedAppointmentOutdoor.DateTime.AddHours(1)
                     });
                     break;
+
                 case "4":
                     SelectedAppointmentMassageHalf.Waiting = !SelectedAppointmentMassageHalf.Waiting;
                     SelectedAppointmentMassageHalf.RaisePropertyChanged(nameof(Apointment.ApColor));
@@ -2888,6 +3037,7 @@ namespace BubbleStart.ViewModels
                         To = SelectedAppointmentMassageHalf.DateTime.AddHours(1)
                     });
                     break;
+
                 case "5":
                     SelectedAppointmentPersonal.Waiting = !SelectedAppointmentPersonal.Waiting;
                     SelectedAppointmentPersonal.RaisePropertyChanged(nameof(Apointment.ApColor));

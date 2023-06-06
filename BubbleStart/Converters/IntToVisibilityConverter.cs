@@ -17,6 +17,10 @@ namespace BubbleStart.Converters
             {
                 return Visibility.Collapsed;
             }
+            if (value is double d && d <= 0)
+            {
+                return Visibility.Collapsed;
+            }
             return Visibility.Visible;
         }
 

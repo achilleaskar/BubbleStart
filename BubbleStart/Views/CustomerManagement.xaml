@@ -262,6 +262,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal"
                             Grid.ColumnSpan="3">
@@ -419,6 +420,7 @@
                 <ComboBox Grid.Row="5"
                           Grid.Column="1"
                           Margin="0,4"
+                          SelectedItem="{Binding SelectedDefaultProgram}"
                           ItemsSource="{Binding DefaultPrograms}"
                           Width="110">
                     <ComboBox.ItemTemplate>
@@ -438,20 +440,33 @@
                            Grid.Row="6"
                            Grid.Column="1"
                            Margin="0,4" />
-                <Label Content="Υπόλοιπο:"
+                <Label Content="Επίπεδο:"
                        Grid.Row="7"
+                       Grid.Column="0" />
+                <ComboBox Grid.Row="7"
+                          Grid.Column="1"
+                          Margin="0,4"
+                          SelectedIndex="{Binding Rating}"
+                          Width="110">
+                    <ComboBoxItem>Χωρίς</ComboBoxItem>
+                    <ComboBoxItem>Αρχάριος</ComboBoxItem>
+                    <ComboBoxItem>Μέτριο</ComboBoxItem>
+                    <ComboBoxItem>Προχωρημένος</ComboBoxItem>
+                </ComboBox>
+                <Label Content="Υπόλοιπο:"
+                       Grid.Row="8"
                        Margin="0"
                        Padding="5 5 5 0"
                        d:Visibility="Visible"
                        Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                        Grid.Column="0" />
                 <TextBlock Text="{Binding RemainingAmount, StringFormat=c1}"
-                           Grid.Row="7"
+                           Grid.Row="8"
                            d:Visibility="Visible"
                            Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                            Grid.Column="1"
                            Margin="0,4,0,0" />
-                <StackPanel Grid.Row="8"
+                <StackPanel Grid.Row="9"
                             Orientation="Horizontal"
                             HorizontalAlignment="Left"
                             Grid.ColumnSpan="2"
@@ -643,7 +658,7 @@
                 <!--
                         </Grid>
                     </GroupBox>-->
-                <GroupBox Grid.Row="9"
+                <GroupBox Grid.Row="10"
                           Grid.ColumnSpan="2"
                           HorizontalAlignment="Left"
                           d:Visibility="Visible"
