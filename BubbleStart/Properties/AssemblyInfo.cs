@@ -1,5 +1,4 @@
-﻿using crypto;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -18,7 +17,7 @@ using System.Windows;
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
-// COM, set the ComVisible attribute to true on that type.
+// COM, set the ComVisible attribute to true on that type.S
 [assembly: ComVisible(false)]
 
 //In order to begin building localizable applications, set
@@ -28,11 +27,9 @@ using System.Windows;
 //the NeutralResourceLanguage attribute below.  Update the "en-US" in
 //the line below to match the UICulture setting in the project file.
 
-
 //Severity Code    Description Project File Line    Suppression State
-//Error The command "nuget pack MyApp.nuspec -Version 0.5.2.0 -Properties Configuration=Release -OutputDirectory bin\Release\ -BasePath bin\Release\" exited with code 1.	
-//BubbleStart	C:\Users\achil\Source\Repos\BubbleStart\BubbleStart\BubbleStart.csproj	686	
-
+//Error The command "nuget pack MyApp.nuspec -Version 0.5.2.0 -Properties Configuration=Release -OutputDirectory bin\Release\ -BasePath bin\Release\" exited with code 1.
+//BubbleStart	C:\Users\achil\Source\Repos\BubbleStart\BubbleStart\BubbleStart.csproj	686
 
 //[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
 
@@ -48,7 +45,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.1.9")]
-[assembly: AssemblyFileVersion("3.1.9")]
+[assembly: AssemblyVersion("3.3.6")]
+[assembly: AssemblyFileVersion("3.3.6")]
 [assembly: NeutralResourcesLanguage("el-GR")]
- 

@@ -394,7 +394,18 @@ namespace BubbleStart.Model
 
                 case ProgramMode.outdoor:
                     return "Outdoor";
-
+                case ProgramMode.pilates:
+                    return "Pilates";
+                case ProgramMode.yoga:
+                    return "Yoga";
+                case ProgramMode.pilatesFunctional:
+                    return "Pil+Fun";
+                case ProgramMode.aerialYoga:
+                    return "Aerial";
+                case ProgramMode.personal:
+                    return "Personal";
+                case ProgramMode.medical:
+                    return "Medical";
                 default:
                     return "Σφάλμα";
             }

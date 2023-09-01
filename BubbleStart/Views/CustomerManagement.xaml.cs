@@ -10,7 +10,6 @@ using System.Windows.Media;
 using BubbleStart.Helpers;
 using BubbleStart.Model;
 using BubbleStart.ViewModels;
-using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace BubbleStart.Views
 {
@@ -66,7 +65,7 @@ namespace BubbleStart.Views
             }
         }
 
-        private void Window_ContentRendered(object sender, System.EventArgs e)
+        private void Window_ContentRendered(object sender, EventArgs e)
         {
             var childs = functionall.Children;
 

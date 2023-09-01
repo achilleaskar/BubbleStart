@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,7 +31,7 @@ namespace BubbleStart.ViewModels
             CreateNewCustomerCommand = new RelayCommand(CreateNewCustomer);
             SaveCustomerCommand = new RelayCommand(async () => { await SaveCustomer(); }, CanSaveCustomer);
             ShowedUpCommand = new RelayCommand<int>(async (obj) => { await CustomerShowedUp(obj); });
-            CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); },CanDoIt);
+            CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); }, CanDoIt);
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
             DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(true); });
@@ -45,7 +46,7 @@ namespace BubbleStart.ViewModels
 
         private bool CanDoIt()
         {
-           return SelectedPracticingCustomer != null;
+            return SelectedPracticingCustomer != null;
         }
 
         #endregion Constructors
@@ -526,9 +527,13 @@ namespace BubbleStart.ViewModels
 
         public async Task CustomerLeft()
         {
-            SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
-            SelectedPracticingCustomer.LastShowUp.BodyPart = SelectedBodyPart;
-            SelectedPracticingCustomer.LastShowUp.SecBodyPartsString = string.Join(",", SecBodyParts.Where(x => x.Selected).Select(t => ((int)t.SecBodyPart)));
+            if (SelectedPracticingCustomer.LastShowUp != null)
+            {
+
+                SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
+                SelectedPracticingCustomer.LastShowUp.BodyPart = SelectedBodyPart;
+                SelectedPracticingCustomer.LastShowUp.SecBodyPartsString = string.Join(",", SecBodyParts.Where(x => x.Selected).Select(t => ((int)t.SecBodyPart)));
+            }
             SelectedPracticingCustomer.IsPracticing = false;
             SelectedPracticingCustomer.RaisePropertyChanged(nameof(SelectedPracticingCustomer.LastPart));
             CustomersPracticing.Remove(SelectedPracticingCustomer);
@@ -746,6 +751,26 @@ namespace BubbleStart.ViewModels
         {
             if (SelectedCustomer != null)
             {
+                if (SelectedCustomer.Id == 0)
+                {
+                    var existing = await BasicDataManager.Context.Context.Customers.Where(c => c.Tel == SelectedCustomer.Tel).FirstOrDefaultAsync();
+                    if (existing != null)
+                    {
+                        if (existing.ForceDisable == ForceDisable.forceDisable)
+                        {
+                            MessageBox.Show("Υπαρχει ήδη πελάτης οριστικά διεγραμένος με αυτο το τηλέφωνο. Επικοινωνήστε με τον προγραμματιστή να τον επαναφέρει.");
+                        }
+                        else if (!existing.Enabled)
+                        {
+                            MessageBox.Show("Υπαρχει ήδη ανενεργός πελάτης με αυτο το τηλέφωνο.");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Υπαρχει ήδη πελάτης με αυτο το τηλέφωνο.");
+                        }
+                        return;
+                    }
+                }
                 if (!string.IsNullOrEmpty(SelectedCustomer.DistrictText) && BasicDataManager.Districts.All(d => d.Name != SelectedCustomer.DistrictText))
                 {
                     var d = new District { Name = SelectedCustomer.DistrictText };

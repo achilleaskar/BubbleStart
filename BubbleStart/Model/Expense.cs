@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Windows;
 
 namespace BubbleStart.Model
 {
@@ -55,7 +56,7 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public ObservableCollection<ExpenseCategoryClass> SecondaryCategories => parent != null && MainCategory != null ? (Income ?
-            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == 20 || p.Id == -1).OrderBy(r=>r.Name)) :
+            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == 20 || p.Id == -1).OrderBy(r => r.Name)) :
             new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == MainCategory.Id || p.Id == -1).OrderBy(r => r.Name)))
             : new ObservableCollection<ExpenseCategoryClass>();
 
@@ -137,7 +138,7 @@ namespace BubbleStart.Model
                 }
 
                 _MainCategory = value;
-                if (value?.Id==-1)
+                if (value?.Id == -1)
                 {
                     _MainCategory = null;
                 }
@@ -147,6 +148,56 @@ namespace BubbleStart.Model
         }
 
         public int? MainCategoryId { get; set; }
+
+
+
+
+        private decimal _Bank;
+
+
+        public decimal Bank
+        {
+            get
+            {
+                return _Bank;
+            }
+
+            set
+            {
+                if (_Bank == value)
+                {
+                    return;
+                }
+
+                _Bank = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        public Visibility ShowBankCash => MainCategory?.Id == 3 ? Visibility.Visible : Visibility.Collapsed;
+
+        private decimal _Cash;
+
+
+        public decimal Cash
+        {
+            get
+            {
+                return _Cash;
+            }
+
+            set
+            {
+                if (_Cash == value)
+                {
+                    return;
+                }
+
+                _Cash = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string Reason
         {

@@ -64,7 +64,7 @@ namespace BubbleStart.Helpers
         internal static BasicDataManager context;
 
         //public static string[] Districts { get; set; } = { "Ευζώνων", "Λαογραφικό Μουσείο", "Μπότσαρη", "Πανόραμα", "Σχολή Τυφλων", "Φάληρο", "Άλλο" };
-        public static List<int> Months { get; set; } = new List<int> { 0, 1, 2, 3, 6, 12 };
+        public static List<int> Months { get; set; } = new List<int> { 0, 1, 2, 3,4,5, 6, 12 };
 
         public static CustomerManagement OpenWindow { get; internal set; }
         public static DateTime OneWeekBefore { get; internal set; } = DateTime.Today.AddDays(-7);

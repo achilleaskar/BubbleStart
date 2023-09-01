@@ -83,7 +83,7 @@ namespace BubbleStart.Database
         internal async Task<List<ShowUp>> GetAllShowUpsInRangeAsyncsAsync(DateTime StartDate, DateTime EndDate, int CId = -1, bool nolimit = false)
         {
             return await Context.ShowUps
-           .Where(s => (s.Arrived >= StartDate && s.Arrived < EndDate && (nolimit || s.Arrived >= Limit)) && (CId == -1 || CId == s.Customer.Id))
+           .Where(s => (s.Arrived >= StartDate && s.Arrived <= EndDate && (nolimit || s.Arrived >= Limit)) && (CId == -1 || CId == s.Customer.Id))
            .OrderBy(s => s.Arrived)
            .ToListAsync();
         }
@@ -354,11 +354,15 @@ namespace BubbleStart.Database
             //        // log deleted
             //    }
             //}
-            await Context.SaveChangesAsync();
+            if (Context.ChangeTracker.HasChanges())
+            {
+                await Context.SaveChangesAsync();
+            }
         }
 
         public void Save()
         {
+#if DEBUG
             List<DbEntityEntry> AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
 
             AddedEntities.ForEach(E =>
@@ -378,7 +382,13 @@ namespace BubbleStart.Database
                     E.Property("ModifiedDate").CurrentValue = DateTime.Now;
                 }
             });
-            Context.SaveChanges();
+
+            List<DbEntityEntry> DeletedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Deleted).ToList();
+#endif
+            if (Context.ChangeTracker.HasChanges())
+            {
+                Context.SaveChanges();
+            }
         }
 
         public bool RollBack()
@@ -447,7 +457,7 @@ namespace BubbleStart.Database
             {
                 endDateCash = endDateCash.AddDays(1);
                 return await Context.Payments
-                    .Where(p => p.Date >= startDateCash && p.Date <= endDateCash && (!limit || p.Date >= Limit))
+                    .Where(p => p.Date >= startDateCash && p.Date < endDateCash && (!limit || p.Date >= Limit))
                     .Include(c => c.Customer)
                     .Include(c => c.Program)
                     .ToListAsync();
@@ -553,7 +563,8 @@ namespace BubbleStart.Database
                     (s.Program == null && (s.Date >= s.Customer.ResetDate || s.Date >= s.Customer.MassageResetDay))))
                     .ToListAsync();
 
-                var x = (await Context.Set<Customer>().Where(c => c.Enabled)
+                var x = (await Context.Set<Customer>()
+                        .Where(c => c.Enabled)
                         .Select(c => new
                         {
                             c,
@@ -571,17 +582,33 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<Apointment>> GetAllAppointmentsThisDayAsync(int id, DateTime time, RoomEnum room)
+        internal async Task<List<Apointment>> GetAllAppointmentsThisDayAsync(int id, DateTime time)
         {
-            List<DateTime> dates = new List<DateTime>();
-            var limit = time.AddMonths(3);
-            while (time.Month != 8)
-            {
-                dates.Add(time);
-                time = time.AddDays(7);
-            }
+            //List<DateTime> dates = new List<DateTime>();
+            //int counter = 0;
+            //while (time.Month != 8 || counter < 10)
+            //{
+            //    dates.Add(time.Date);
+            //    time = time.AddDays(7);
+            //    counter++;
+            //}
+            var today = DateTime.Today;
+            return await Context.Apointments.Where(a => a.Customer.Id == id && a.DateTime >= today).ToListAsync();
+        }
 
-            return await Context.Apointments.Where(a => a.Customer.Id == id && dates.Any(d => d == a.DateTime)).ToListAsync();
+        public string GetTime(string time, DateTime dateTime, RoomEnum room)
+        {
+            if (string.IsNullOrEmpty(time))
+            {
+                if (room == RoomEnum.Functional && dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.Hour > 15)
+                {
+                    return dateTime.AddMinutes(-15).ToString("HH:mm");
+
+                }
+                return dateTime.ToString("HH:mm");
+            }
+            else
+                return time;
         }
 
         internal async Task<List<Apointment>> GetApointmentsJoined(int customerId, DateTime historyFrom)
@@ -603,7 +630,8 @@ namespace BubbleStart.Database
                 DateTime = o.DateTime,
                 Room = o.Room,
                 Person = o.Person,
-                TimeString = o.DateTime.ToString("dd/MM/yy") + " " + (string.IsNullOrEmpty(o.Time)?o.DateTime.ToString("HH:mm"):o.Time)
+                TimeString = o.DateTime.ToString("dd/MM/yy") + " " + GetTime(o.Time, o.DateTime, o.Room),
+                DayString = o.DateTime.ToString("ddd"),
             }).ToList();
         }
     }

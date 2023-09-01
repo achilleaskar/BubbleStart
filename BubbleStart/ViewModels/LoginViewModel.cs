@@ -8,6 +8,8 @@ using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Security;
 using GalaSoft.MvvmLight.CommandWpf;
+using Google.Protobuf.WellKnownTypes;
+using Serilog;
 
 namespace BubbleStart.ViewModels
 {
@@ -79,7 +81,7 @@ namespace BubbleStart.ViewModels
         }
 
         public BasicDataManager BasicDataManager { get; }
- 
+
 
         private bool CanLogin()
         {
@@ -88,6 +90,7 @@ namespace BubbleStart.ViewModels
                 return true;
             return false;
         }
+        private readonly ILogger logger = Log.ForContext<MainViewModel>();
 
         async private Task TryLogin()
         {
@@ -128,6 +131,7 @@ namespace BubbleStart.ViewModels
                 }
 
                 ErrorMessage = "Επιτυχής σύνδεση!";
+                logger.Information($"Επιτυχής σύνδεση: {userFound.UserName}");
                 StaticResources.User = userFound;
                 MessengerInstance.Send(new LoginLogOutMessage(true));
             }

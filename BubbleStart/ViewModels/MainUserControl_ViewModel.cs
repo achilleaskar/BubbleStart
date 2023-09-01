@@ -30,7 +30,7 @@ namespace BubbleStart.ViewModels
             OpenItemsEditCommand = new RelayCommand(async () => await OpenItemsWindow(), CanEditWindows);
             OpenProgramTypesEditCommand = new RelayCommand(async () => await OpenProgramTypesWindow(), CanEditWindows);
             OpenExpenseCategoriesCommand = new RelayCommand(async () => await OpenExpenseCategories(), CanEditWindows);
-            PrintCustomersCommand = new RelayCommand(PrintCustomers);
+            PrintCustomersCommand = new RelayCommand(async () => await PrintCustomers());
 
             RefreshAllDataCommand = new RelayCommand(async () => { await RefreshAllData(); });
 
@@ -73,14 +73,16 @@ namespace BubbleStart.ViewModels
             MessengerInstance.Send(new OpenChildWindowCommand(new ShiftsManagement_Window { DataContext = vm }));
         }
 
-        private void PrintCustomers()
+        private async Task PrintCustomers()
         {
+
+            Mouse.OverrideCursor = Cursors.Wait;
             int lineNum = 1;
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Πελάτες.xlsx";
 
             FileInfo fileInfo = new FileInfo(path);
             ExcelPackage p = new ExcelPackage();
-            p.Workbook.Worksheets.Add("Customers");
+            p.Workbook.Worksheets.Add("Active");
             ExcelWorksheet myWorksheet = p.Workbook.Worksheets[1];
 
             myWorksheet.Cells["A1"].Value = "#";
@@ -97,10 +99,12 @@ namespace BubbleStart.ViewModels
             myWorksheet.Cells["L1"].Value = "Τσάντα";
             myWorksheet.Cells["M1"].Value = "Google";
             myWorksheet.Cells["N1"].Value = "Μαλιαρ";
+
+            var inactiveCustomers = BasicDataManager.Context.Context.Customers.Where(c => !c.Enabled);
             foreach (Customer customer in BasicDataManager.Customers)
             {
                 lineNum++;
-                bool yes ;
+                bool yes;
                 myWorksheet.Cells["A" + lineNum].Value = lineNum - 1;
                 myWorksheet.Cells["B" + lineNum].Value = customer.Name;
                 myWorksheet.Cells["C" + lineNum].Value = customer.SureName;
@@ -120,15 +124,15 @@ namespace BubbleStart.ViewModels
                     string.Join(", ", l1.Select(i => i.Size.ToString()).Distinct()) : "OXI";
                 myWorksheet.Cells["K" + lineNum].Value = customer.Items.Where(t => t.ItemId == 1) is IEnumerable<ItemPurchase> l2 && l2.Count() > 0 ?
                     string.Join(", ", l2.Select(i => i.Size.ToString()).Distinct()) : "OXI";
-               yes = customer.Items.Where(t => t.ItemId == 3) is IEnumerable<ItemPurchase> l3 && l3.Count() > 0;
+                yes = customer.Items.Where(t => t.ItemId == 3) is IEnumerable<ItemPurchase> l3 && l3.Count() > 0;
                 myWorksheet.Cells["L" + lineNum].Value = yes ?
                     "NAI" : "OXI";
                 myWorksheet.Cells["L" + lineNum].Style.Font.Color.SetColor(yes ? System.Drawing.Color.Black : System.Drawing.Color.Red);
-              
+
                 myWorksheet.Cells["M" + lineNum].Value = customer.Google ?
                     "NAI" : "OXI";
                 myWorksheet.Cells["M" + lineNum].Style.Font.Color.SetColor(customer.Google ? System.Drawing.Color.Black : System.Drawing.Color.Red);
-               
+
                 myWorksheet.Cells["N" + lineNum].Value = customer.Maliar ?
                     "NAI" : "OXI";
                 myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
@@ -148,9 +152,74 @@ namespace BubbleStart.ViewModels
             myWorksheet.Column(12).Width = 8;
 
 
+            p.Workbook.Worksheets.Add("Inactive");
+              myWorksheet = p.Workbook.Worksheets[2];
+            myWorksheet.Cells["A1"].Value = "#";
+            myWorksheet.Cells["B1"].Value = "Όνομα";
+            myWorksheet.Cells["C1"].Value = "Επίθετο";
+            myWorksheet.Cells["D1"].Value = "Τηλέφωνο";
+            myWorksheet.Cells["E1"].Value = "Email";
+            myWorksheet.Cells["F1"].Value = "Ενεργός";
+            myWorksheet.Cells["G1"].Value = "Εμβόλιο";
+            myWorksheet.Cells["H1"].Value = "3η δόση";
+            myWorksheet.Cells["I1"].Value = "Χαρτί";
+            myWorksheet.Cells["J1"].Value = "Μπλούζα";
+            myWorksheet.Cells["K1"].Value = "Φούτερ";
+            myWorksheet.Cells["L1"].Value = "Τσάντα";
+            myWorksheet.Cells["M1"].Value = "Google";
+            myWorksheet.Cells["N1"].Value = "Μαλιαρ";
+
+            lineNum = 1;
+
+            foreach (Customer customer in inactiveCustomers)
+            {
+                lineNum++;
+                bool yes;
+                myWorksheet.Cells["A" + lineNum].Value = lineNum - 1;
+                myWorksheet.Cells["B" + lineNum].Value = customer.Name;
+                myWorksheet.Cells["C" + lineNum].Value = customer.SureName;
+                myWorksheet.Cells["D" + lineNum].Value = !string.IsNullOrEmpty(customer.Tel) && customer.Tel.Length >= 10 && !customer.Tel.StartsWith("000") ? customer.Tel : "";
+                myWorksheet.Cells["E" + lineNum].Value = customer.Email;
+                myWorksheet.Cells["F" + lineNum].Value = customer.ActiveCustomer ? "ΝΑΙ" : "ΟΧΙ";
+                myWorksheet.Cells["F" + lineNum].Style.Font.Color.SetColor(customer.ActiveCustomer ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["G" + lineNum].Value = customer.Vacinated ? "Έκανε" : "Δεν έκανε";
+                myWorksheet.Cells["G" + lineNum].Style.Font.Color.SetColor(customer.Vacinated ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["H" + lineNum].Value = customer.ThirdDose ? "Έκανε" : "Δεν έκανε";
+                myWorksheet.Cells["H" + lineNum].Style.Font.Color.SetColor(customer.ThirdDose ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["I" + lineNum].Value = customer.Doctor ? "Έχει" : "Δεν έχει";
+                myWorksheet.Cells["M" + lineNum].Value = customer.Google ?
+                    "NAI" : "OXI";
+                myWorksheet.Cells["M" + lineNum].Style.Font.Color.SetColor(customer.Google ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["N" + lineNum].Value = customer.Maliar ?
+                    "NAI" : "OXI";
+                myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+            }
+
+
+            myWorksheet.Column(1).Width = 4;
+            myWorksheet.Column(2).Width = 16;
+            myWorksheet.Column(3).Width = 18;
+            myWorksheet.Column(4).Width = 12;
+            myWorksheet.Column(5).Width = 30;
+            myWorksheet.Column(6).Width = 8;
+            myWorksheet.Column(7).Width = 13;
+            myWorksheet.Column(8).Width = 13;
+            myWorksheet.Column(9).Width = 13;
+            myWorksheet.Column(10).Width = 13;
+            myWorksheet.Column(11).Width = 8;
+            myWorksheet.Column(12).Width = 8;
+
+
             //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());
             p.SaveAs(fileInfo);
             Process.Start(path);
+            Mouse.OverrideCursor = Cursors.Arrow;
+
         }
 
         #endregion Constructors

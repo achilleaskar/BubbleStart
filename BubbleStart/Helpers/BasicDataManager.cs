@@ -8,6 +8,7 @@ using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -277,6 +278,31 @@ namespace BubbleStart.Helpers
             }
 
             StaticResources.User = StaticResources.User != null ? Users.FirstOrDefault(u => u.Id == StaticResources.User.Id) : null;
+
+            var aspps = await Context.Context.Apointments.Where(a => a.DateTime > DateTime.Now).ToListAsync();
+
+            var grouped = aspps.GroupBy(c => new
+            {
+                c.DateTime,
+                c.Customer,
+                c.Room,
+                c.Person
+            });
+            //.Select(gcs => new Apointment()
+            //{
+            //    DateTime = gcs.Key.DateTime,
+            //    Customer = gcs.Key.Customer,
+            //    Room = gcs.Key.Room,
+            //    Person = gcs.Key.Person
+            //});
+
+            foreach (var item in grouped.Where(d=>d.Count()>1))
+            {
+                if (item.Count() > 1)
+                    Context.Delete(item.First());
+            }
+
+            await Context.SaveAsync();
 
             //var not = DateTime.Today;
             //var t = await Context.GetAllAsync<Customer>(c => c.Apointments.Any(a => a.DateTime > not) && c.Enabled == false);

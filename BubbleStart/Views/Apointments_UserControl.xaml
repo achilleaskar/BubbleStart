@@ -17,6 +17,7 @@
     <UserControl.Resources>
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+        <Converters:GymnastoForeverColorConverter x:Key="GymnastoForeverColorConverter" />
         <Converters:DoubleParameterConverter x:Key="DoubleParameterConverter" />
     </UserControl.Resources>
     <GroupBox Header="Πρόγραμμα Εβδομάδας">
@@ -68,11 +69,11 @@
             </Popup>
             <Grid Margin="0 0 0 2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="400" />
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -105,16 +106,38 @@
                 <StackPanel Grid.Column="2"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right">
-                    <Button  Margin="25 0"
+                    <Button  Margin="25 2"
+                             Padding="5"
                              Command="{Binding PreviousWeekCommand}">
                         <iconPacks:PackIconFontAwesome Kind="ArrowCircleLeftSolid" />
                     </Button>
-                    <Button Margin="25 0"
+                    <Button Margin="0 2"
+                            Padding="5"
+                            Command="{Binding CurrentWeekCommand}">
+                        <iconPacks:PackIconFontAwesome Kind="ArrowCircleDownSolid" />
+                    </Button>
+                    <Button Margin="25 2"
+                            Padding="5"
                             Command="{Binding NextWeekCommand}">
                         <iconPacks:PackIconFontAwesome Kind="ArrowCircleRightSolid" />
                     </Button>
                 </StackPanel>
-                <StackPanel Grid.Column="5"
+                <StackPanel Grid.Column="4"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <DatePicker Margin="5 0"
+                                Width="100"
+                                SelectedDate="{Binding SelectedDayToGo}"
+                                VerticalAlignment="Center" />
+                    <Button Content="Φόρτωση"
+                            Padding="10,3"
+                            Margin="3"
+                            FontSize="14"
+                            Command="{Binding ShowProgramCommand}"
+                            VerticalAlignment="Center"
+                            Background="PaleVioletRed" />
+                </StackPanel>
+                <StackPanel Grid.Column="6"
                             Orientation="Horizontal"
                             Margin="0 0 10 0"
                             HorizontalAlignment="Left">
@@ -147,19 +170,6 @@
                            HorizontalContentAlignment="Center"
                            Background="Pink" />
                 </StackPanel>
-                <StackPanel Grid.Column="6"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                    <DatePicker Margin="5 0"
-                                Width="100"
-                                SelectedDate="{Binding SelectedDayToGo}"
-                                VerticalAlignment="Center" />
-                    <Button Content="Φόρτωση" Padding="10,3"
-                            Margin="3"
-                            Command="{Binding ShowProgramCommand}"
-                            VerticalAlignment="Center"
-                            Background="PaleVioletRed" />
-                </StackPanel>
             </Grid>
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
                           Visibility="{Binding HasDays,Converter={StaticResource booleanToVisibilityConverter}}"
@@ -184,7 +194,7 @@
                                           HorizontalAlignment="Left">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" />
+                                        <VirtualizingStackPanel Orientation="Vertical" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
@@ -329,9 +339,394 @@
                             <!-- to pragmatiko itemscontrol-->
                             <ItemsControl ItemsSource="{Binding Days}"
                                           VerticalAlignment="Top">
+                                <ItemsControl.Resources>
+                                    <ContextMenu x:Key="HourContextMenu"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling"
+                                                 DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="(Απ)ενεργοποίηση"
+                                                  Command="{Binding ToggleEnabledCommand}"
+                                                  CommandParameter="0" />
+                                        <MenuItem Header="Απενεργοποίηση για 3 μήνες"
+                                                  Command="{Binding ToggleEnabledForEverCommand}"
+                                                  CommandParameter="0" />
+                                        <MenuItem Header="Ενεργοποίηση επόμενων"
+                                                  Command="{Binding EnableForEverCommand}"
+                                                  CommandParameter="0" />
+                                        <MenuItem Header="Αλλαγή Ώρας"
+                                                  Command="{Binding ChangeTimeCommand}"
+                                                  CommandParameter="0" />
+                                        <MenuItem Header="Γυμναστής"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=0}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Γυμναστής για πάντα"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=10}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Χωρίς Γυμναστή"
+                                                  Command="{Binding NoGymnastCommand}"
+                                                  CommandParameter="0" />
+                                    </ContextMenu>
+                                    <ContextMenu x:Key="AddRemoveContextMenu"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                                        <MenuItem Header="Αναμονή / Κανονικό"
+                                                  Command="{Binding ToggleWaitingCommand}"
+                                                  CommandParameter="0" />
+                                        <Separator />
+                                        <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                  Command="{Binding ToggleCanceledCommand}"
+                                                  CommandParameter="0" />
+                                    </ContextMenu>
+
+                                    <ContextMenu x:Key="HourContextMenuRe"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling"
+                                                 DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="(Απ)ενεργοποίηση"
+                                                  Command="{Binding ToggleEnabledCommand}"
+                                                  CommandParameter="1" />
+                                        <MenuItem Header="Απενεργοποίηση για 3 μήνες"
+                                                  Command="{Binding ToggleEnabledForEverCommand}"
+                                                  CommandParameter="1" />
+                                        <MenuItem Header="Ενεργοποίηση επόμενων"
+                                                  Command="{Binding EnableForEverCommand}"
+                                                  CommandParameter="1" />
+                                        <MenuItem Header="Αλλαγή Ώρας"
+                                                  Command="{Binding ChangeTimeCommand}"
+                                                  CommandParameter="1" />
+                                        <MenuItem Header="Γυμναστής"
+          ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                    Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                    Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Γυμναστής για πάντα"
+          ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                    Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                    Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=11}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Χωρίς Γυμναστή"
+                                                  Command="{Binding NoGymnastCommand}"
+                                                  CommandParameter="1" />
+                                    </ContextMenu>
+                                    <ContextMenu x:Key="AddRemoveContextMenuRe"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                                        <MenuItem Header="Αναμονή / Κανονικό"
+                                                  Command="{Binding ToggleWaitingCommand}"
+                                                  CommandParameter="1" />
+                                        <Separator />
+                                        <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                  Command="{Binding ToggleCanceledCommand}"
+                                                  CommandParameter="1" />
+                                    </ContextMenu>
+
+                                    <ContextMenu x:Key="HourContextMenuMas"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling"
+                                                 DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="(Απ)ενεργοποίηση"
+                                                  Command="{Binding ToggleEnabledCommand}"
+                                                  CommandParameter="2" />
+                                        <MenuItem Header="Απενεργοποίηση για 3 μήνες"
+                                                  Command="{Binding ToggleEnabledForEverCommand}"
+                                                  CommandParameter="2" />
+                                        <MenuItem Header="Ενεργοποίηση επόμενων"
+                                                  Command="{Binding EnableForEverCommand}"
+                                                  CommandParameter="2" />
+                                        <MenuItem Header="Αλλαγή Ώρας"
+                                                  Command="{Binding ChangeTimeCommand}"
+                                                  CommandParameter="2" />
+                                        <MenuItem Header="Γυμναστής"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Γυμναστής για πάντα"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=12}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Χωρίς Γυμναστή"
+                                                  Command="{Binding NoGymnastCommand}"
+                                                  CommandParameter="2" />
+                                    </ContextMenu>
+                                    <ContextMenu x:Key="AddRemoveContextMenuMas"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                                        <MenuItem Header="Αναμονή / Κανονικό"
+                                                  Command="{Binding ToggleWaitingCommand}"
+                                                  CommandParameter="2" />
+                                        <Separator />
+                                        <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                  Command="{Binding ToggleCanceledCommand}"
+                                                  CommandParameter="2" />
+                                    </ContextMenu>
+
+                                    <ContextMenu x:Key="HourContextMenuMasHalf"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling"
+                                                 DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="(Απ)ενεργοποίηση"
+                                                  Command="{Binding ToggleEnabledCommand}"
+                                                  CommandParameter="4" />
+                                        <MenuItem Header="Απενεργοποίηση για 3 μήνες"
+                                                  Command="{Binding ToggleEnabledForEverCommand}"
+                                                  CommandParameter="4" />
+                                        <MenuItem Header="Ενεργοποίηση επόμενων"
+                                                  Command="{Binding EnableForEverCommand}"
+                                                  CommandParameter="4" />
+                                        <MenuItem Header="Αλλαγή Ώρας"
+                                                  Command="{Binding ChangeTimeCommand}"
+                                                  CommandParameter="4" />
+                                        <MenuItem Header="Γυμναστής"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=4}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Γυμναστής για πάντα"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=14}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Χωρίς Γυμναστή"
+                                                  Command="{Binding NoGymnastCommand}"
+                                                  CommandParameter="4" />
+                                    </ContextMenu>
+                                    <ContextMenu x:Key="AddRemoveContextMenuMasHalf"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                                        <MenuItem Header="Αναμονή / Κανονικό"
+                                                  Command="{Binding ToggleWaitingCommand}"
+                                                  CommandParameter="4" />
+                                        <Separator />
+                                        <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                  Command="{Binding ToggleCanceledCommand}"
+                                                  CommandParameter="4" />
+                                    </ContextMenu>
+
+                                    <ContextMenu x:Key="HourContextMenuPer"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling"
+                                                 DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="(Απ)ενεργοποίηση"
+                                                  Command="{Binding ToggleEnabledCommand}"
+                                                  CommandParameter="5" />
+                                        <MenuItem Header="Απενεργοποίηση για 3 μήνες"
+                                                  Command="{Binding ToggleEnabledForEverCommand}"
+                                                  CommandParameter="5" />
+                                        <MenuItem Header="Ενεργοποίηση επόμενων"
+                                                  Command="{Binding EnableForEverCommand}"
+                                                  CommandParameter="5" />
+                                        <MenuItem Header="Αλλαγή Ώρας"
+                                                  Command="{Binding ChangeTimeCommand}"
+                                                  CommandParameter="5" />
+                                        <MenuItem Header="Γυμναστής"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=5}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Γυμναστής για πάντα"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=15}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Χωρίς Γυμναστή"
+                                                  Command="{Binding NoGymnastCommand}"
+                                                  CommandParameter="5" />
+                                    </ContextMenu>
+                                    <ContextMenu x:Key="AddRemoveContextMenuPer"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                                        <MenuItem Header="Αναμονή / Κανονικό"
+                                                  Command="{Binding ToggleWaitingCommand}"
+                                                  CommandParameter="5" />
+                                        <Separator />
+                                        <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                  Command="{Binding ToggleCanceledCommand}"
+                                                  CommandParameter="5" />
+                                    </ContextMenu>
+
+                                    <ContextMenu x:Key="HourContextMenuOut"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling"
+                                                 DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="(Απ)ενεργοποίηση"
+                                                  Command="{Binding ToggleEnabledCommand}"
+                                                  CommandParameter="3" />
+                                        <MenuItem Header="Απενεργοποίηση για 3 μήνες"
+                                                  Command="{Binding ToggleEnabledForEverCommand}"
+                                                  CommandParameter="3" />
+                                        <MenuItem Header="Ενεργοποίηση επόμενων"
+                                                  Command="{Binding EnableForEverCommand}"
+                                                  CommandParameter="3" />
+                                        <MenuItem Header="Αλλαγή Ώρας"
+                                                  Command="{Binding ChangeTimeCommand}"
+                                                  CommandParameter="3" />
+                                        <MenuItem Header="Γυμναστής"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Γυμναστής για πάντα"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=13}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Χωρίς Γυμναστή"
+                                                  Command="{Binding NoGymnastCommand}"
+                                                  CommandParameter="3" />
+                                    </ContextMenu>
+                                    <ContextMenu x:Key="AddRemoveContextMenuOut"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                                        <MenuItem Header="Αναμονή / Κανονικό"
+                                                  Command="{Binding ToggleWaitingCommand}"
+                                                  CommandParameter="3" />
+                                        <Separator />
+                                        <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                  Command="{Binding ToggleCanceledCommand}"
+                                                  CommandParameter="3" />
+                                    </ContextMenu>
+                                </ItemsControl.Resources>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" />
+                                        <VirtualizingStackPanel Orientation="Vertical" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
@@ -362,7 +757,7 @@
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal" />
+                                                        <VirtualizingStackPanel Orientation="Horizontal" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
@@ -403,6 +798,7 @@
                                                                         <TextBlock FontWeight="Bold"
                                                                                    VerticalAlignment="Center"
                                                                                    Grid.Column="1"
+                                                                                   Foreground="{Binding GymnastFunctional, Converter={StaticResource GymnastoForeverColorConverter}}"
                                                                                    Text="{Binding GymnastFunctional.Gymnast.Name}"
                                                                                    HorizontalAlignment="Left" />
                                                                     </Grid>
@@ -410,19 +806,9 @@
                                                                 <ListBox BorderThickness="0"
                                                                          Grid.Row="1"
                                                                          Background="{Binding ClosedColor0}"
+                                                                         ContextMenu="{StaticResource AddRemoveContextMenu}"
                                                                          SelectedItem="{Binding SelectedApointmentFunctional}"
                                                                          ItemsSource="{Binding AppointmentsFunctional}">
-                                                                    <ListBox.ContextMenu>
-                                                                        <ContextMenu>
-                                                                            <MenuItem Header="Αναμονή / Κανονικό"
-                                                                                      Command="{Binding ToggleWaitingCommand}"
-                                                                                      CommandParameter="0" />
-                                                                            <Separator />
-                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
-                                                                                      Command="{Binding ToggleCanceledCommand}"
-                                                                                      CommandParameter="0" />
-                                                                        </ContextMenu>
-                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -474,43 +860,9 @@
                                                                         PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpF"
                                                                         Grid.ColumnSpan="3"
                                                                         BorderBrush="Gray"
+                                                                        ContextMenu="{StaticResource HourContextMenu}"
                                                                         BorderThickness="0 0 0 1"
                                                                         Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
-                                                                    <Border.ContextMenu>
-                                                                        <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                                                                            <MenuItem Header="(Απ)ενεργοποίηση"
-                                                                                      Command="{Binding ToggleEnabledCommand}"
-                                                                                      CommandParameter="0" />
-                                                                            <MenuItem Header="Απενεργοποίηση για 3 μήνες"
-                                                                                      Command="{Binding ToggleEnabledForEverCommand}"
-                                                                                      CommandParameter="0" />
-                                                                            <MenuItem Header="Ενεργοποίηση επόμενων"
-                                                                                      Command="{Binding EnableForEverCommand}"
-                                                                                      CommandParameter="0" />
-                                                                            <MenuItem Header="Αλλαγή Ώρας"
-                                                                                      Command="{Binding ChangeTimeCommand}"
-                                                                                      CommandParameter="0" />
-                                                                            <MenuItem Header="Γυμναστής"
-                                                                                      ItemsSource="{Binding BasicDataManager.Gymnasts}">
-                                                                                <MenuItem.ItemTemplate>
-                                                                                    <DataTemplate>
-                                                                                        <TextBlock Text="{Binding Name}" />
-                                                                                    </DataTemplate>
-                                                                                </MenuItem.ItemTemplate>
-                                                                                <MenuItem.ItemContainerStyle>
-                                                                                    <Style TargetType="{x:Type MenuItem}">
-                                                                                        <Setter Property="Command"
-                                                                                                Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
-                                                                                        <Setter Property="CommandParameter"
-                                                                                                Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=0}" />
-                                                                                    </Style>
-                                                                                </MenuItem.ItemContainerStyle>
-                                                                            </MenuItem>
-                                                                            <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Command="{Binding NoGymnastCommand}"
-                                                                                      CommandParameter="0" />
-                                                                        </ContextMenu>
-                                                                    </Border.ContextMenu>
                                                                     <Border ToolTip="{Binding GymnastsWorking}"
                                                                             Width="40"
                                                                             Background="Transparent" />
@@ -527,7 +879,7 @@
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal" />
+                                                        <VirtualizingStackPanel Orientation="Horizontal" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
@@ -567,26 +919,18 @@
                                                                         <TextBlock FontWeight="Bold"
                                                                                    VerticalAlignment="Center"
                                                                                    Grid.Column="1"
+                                                                                   Foreground="{Binding GymnastReformer, Converter={StaticResource GymnastoForeverColorConverter}}"
+
                                                                                    Text="{Binding GymnastReformer.Gymnast.Name}"
                                                                                    HorizontalAlignment="Left" />
                                                                     </Grid>
                                                                 </Border>
                                                                 <ListBox BorderThickness="0"
                                                                          Grid.Row="1"
+                                                                         ContextMenu="{StaticResource AddRemoveContextMenuRe}"
                                                                          Background="{Binding ClosedColor1}"
                                                                          SelectedItem="{Binding SelectedApointmentReformer}"
                                                                          ItemsSource="{Binding AppointmentsReformer}">
-                                                                    <ListBox.ContextMenu>
-                                                                        <ContextMenu>
-                                                                            <MenuItem Header="Αναμονή / Κανονικό"
-                                                                                      Command="{Binding ToggleWaitingCommand}"
-                                                                                      CommandParameter="1" />
-                                                                            <Separator />
-                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
-                                                                                      Command="{Binding ToggleCanceledCommand}"
-                                                                                      CommandParameter="1" />
-                                                                        </ContextMenu>
-                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -609,7 +953,6 @@
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
-                                                                                            
                                                                                     </TextBlock>
                                                                                 </ContentControl>
                                                                             </StackPanel>
@@ -638,42 +981,8 @@
                                                                 <Border Background="Transparent"
                                                                         PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpR"
                                                                         Grid.ColumnSpan="3"
+                                                                        ContextMenu="{StaticResource HourContextMenuRe}"
                                                                         Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
-                                                                    <Border.ContextMenu>
-                                                                        <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                                                                            <MenuItem Header="(Απ)ενεργοποίηση"
-                                                                                      Command="{Binding ToggleEnabledCommand}"
-                                                                                      CommandParameter="1" />
-                                                                            <MenuItem Header="Απενεργοποίηση για 3 μήνες"
-                                                                                      Command="{Binding ToggleEnabledForEverCommand}"
-                                                                                      CommandParameter="1" />
-                                                                            <MenuItem Header="Ενεργοποίηση επόμενων"
-                                                                                      Command="{Binding EnableForEverCommand}"
-                                                                                      CommandParameter="1" />
-                                                                            <MenuItem Header="Αλλαγή Ώρας"
-                                                                                      Command="{Binding ChangeTimeCommand}"
-                                                                                      CommandParameter="1" />
-                                                                            <MenuItem Header="Γυμναστής"
-                                                                                      ItemsSource="{Binding BasicDataManager.Gymnasts}">
-                                                                                <MenuItem.ItemTemplate>
-                                                                                    <DataTemplate>
-                                                                                        <TextBlock Text="{Binding Name}" />
-                                                                                    </DataTemplate>
-                                                                                </MenuItem.ItemTemplate>
-                                                                                <MenuItem.ItemContainerStyle>
-                                                                                    <Style TargetType="{x:Type MenuItem}">
-                                                                                        <Setter Property="Command"
-                                                                                                Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
-                                                                                        <Setter Property="CommandParameter"
-                                                                                                Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}" />
-                                                                                    </Style>
-                                                                                </MenuItem.ItemContainerStyle>
-                                                                            </MenuItem>
-                                                                            <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Command="{Binding NoGymnastCommand}"
-                                                                                      CommandParameter="1" />
-                                                                        </ContextMenu>
-                                                                    </Border.ContextMenu>
                                                                     <Border ToolTip="{Binding GymnastsWorking}"
                                                                             Width="40"
                                                                             Background="Transparent" />
@@ -692,7 +1001,7 @@
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal" />
+                                                        <VirtualizingStackPanel Orientation="Horizontal" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
@@ -732,26 +1041,18 @@
                                                                         <TextBlock FontWeight="Bold"
                                                                                    VerticalAlignment="Center"
                                                                                    Grid.Column="1"
+                                                                                   Foreground="{Binding GymnastMassage, Converter={StaticResource GymnastoForeverColorConverter}}"
+
                                                                                    Text="{Binding GymnastMassage.Gymnast.Name}"
                                                                                    HorizontalAlignment="Left" />
                                                                     </Grid>
                                                                 </Border>
                                                                 <ListBox BorderThickness="0"
                                                                          Grid.Row="1"
+                                                                         ContextMenu="{StaticResource AddRemoveContextMenuMas}"
                                                                          Background="{Binding ClosedColorMassage}"
                                                                          SelectedItem="{Binding SelectedAppointmentMassage}"
                                                                          ItemsSource="{Binding AppointmentsMassage}">
-                                                                    <ListBox.ContextMenu>
-                                                                        <ContextMenu>
-                                                                            <MenuItem Header="Αναμονή / Κανονικό"
-                                                                                      Command="{Binding ToggleWaitingCommand}"
-                                                                                      CommandParameter="2" />
-                                                                            <Separator />
-                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
-                                                                                      Command="{Binding ToggleCanceledCommand}"
-                                                                                      CommandParameter="2" />
-                                                                        </ContextMenu>
-                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -774,7 +1075,6 @@
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
-                                                                                             
                                                                                     </TextBlock>
                                                                                 </ContentControl>
                                                                             </StackPanel>
@@ -803,42 +1103,8 @@
                                                                 <Border Background="Transparent"
                                                                         PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpM"
                                                                         Grid.ColumnSpan="3"
+                                                                        ContextMenu="{StaticResource HourContextMenuMas}"
                                                                         Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
-                                                                    <Border.ContextMenu>
-                                                                        <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                                                                            <MenuItem Header="(Απ)ενεργοποίηση"
-                                                                                      Command="{Binding ToggleEnabledCommand}"
-                                                                                      CommandParameter="2" />
-                                                                            <MenuItem Header="Απενεργοποίηση για 3 μήνες"
-                                                                                      Command="{Binding ToggleEnabledForEverCommand}"
-                                                                                      CommandParameter="2" />
-                                                                            <MenuItem Header="Ενεργοποίηση επόμενων"
-                                                                                      Command="{Binding EnableForEverCommand}"
-                                                                                      CommandParameter="2" />
-                                                                            <MenuItem Header="Αλλαγή Ώρας"
-                                                                                      Command="{Binding ChangeTimeCommand}"
-                                                                                      CommandParameter="2" />
-                                                                            <MenuItem Header="Γυμναστής"
-                                                                                      ItemsSource="{Binding BasicDataManager.Gymnasts}">
-                                                                                <MenuItem.ItemTemplate>
-                                                                                    <DataTemplate>
-                                                                                        <TextBlock Text="{Binding Name}" />
-                                                                                    </DataTemplate>
-                                                                                </MenuItem.ItemTemplate>
-                                                                                <MenuItem.ItemContainerStyle>
-                                                                                    <Style TargetType="{x:Type MenuItem}">
-                                                                                        <Setter Property="Command"
-                                                                                                Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
-                                                                                        <Setter Property="CommandParameter"
-                                                                                                Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}" />
-                                                                                    </Style>
-                                                                                </MenuItem.ItemContainerStyle>
-                                                                            </MenuItem>
-                                                                            <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Command="{Binding NoGymnastCommand}"
-                                                                                      CommandParameter="2" />
-                                                                        </ContextMenu>
-                                                                    </Border.ContextMenu>
                                                                     <Border ToolTip="{Binding GymnastsWorking}"
                                                                             Width="40"
                                                                             Background="Transparent" />
@@ -857,7 +1123,7 @@
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal" />
+                                                        <VirtualizingStackPanel Orientation="Horizontal" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
@@ -896,6 +1162,7 @@
                                                                                  Content="{Binding TimeString5}" />
                                                                         <TextBlock FontWeight="Bold"
                                                                                    VerticalAlignment="Center"
+                                                                                   Foreground="{Binding GymnastMassageHalf, Converter={StaticResource GymnastoForeverColorConverter}}"
                                                                                    Grid.Column="1"
                                                                                    Text="{Binding GymnastMassageHalf.Gymnast.Name}"
                                                                                    HorizontalAlignment="Left" />
@@ -903,20 +1170,10 @@
                                                                 </Border>
                                                                 <ListBox BorderThickness="0"
                                                                          Grid.Row="1"
+                                                                         ContextMenu="{StaticResource AddRemoveContextMenuMasHalf}"
                                                                          Background="{Binding ClosedColorMassageHalf}"
                                                                          SelectedItem="{Binding SelectedAppointmentMassageHalf}"
                                                                          ItemsSource="{Binding AppointmentsMassageHalf}">
-                                                                    <ListBox.ContextMenu>
-                                                                        <ContextMenu>
-                                                                            <MenuItem Header="Αναμονή / Κανονικό"
-                                                                                      Command="{Binding ToggleWaitingCommand}"
-                                                                                      CommandParameter="4" />
-                                                                            <Separator />
-                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
-                                                                                      Command="{Binding ToggleCanceledCommand}"
-                                                                                      CommandParameter="4" />
-                                                                        </ContextMenu>
-                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -939,7 +1196,6 @@
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
-                                                                                             
                                                                                     </TextBlock>
                                                                                 </ContentControl>
                                                                             </StackPanel>
@@ -967,43 +1223,9 @@
                                                                 </Border>
                                                                 <Border Background="Transparent"
                                                                         PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpMH"
+                                                                        ContextMenu="{StaticResource HourContextMenuMasHalf}"
                                                                         Grid.ColumnSpan="3"
                                                                         Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
-                                                                    <Border.ContextMenu>
-                                                                        <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                                                                            <MenuItem Header="(Απ)ενεργοποίηση"
-                                                                                      Command="{Binding ToggleEnabledCommand}"
-                                                                                      CommandParameter="4" />
-                                                                            <MenuItem Header="Απενεργοποίηση για 3 μήνες"
-                                                                                      Command="{Binding ToggleEnabledForEverCommand}"
-                                                                                      CommandParameter="4" />
-                                                                            <MenuItem Header="Ενεργοποίηση επόμενων"
-                                                                                      Command="{Binding EnableForEverCommand}"
-                                                                                      CommandParameter="4" />
-                                                                            <MenuItem Header="Αλλαγή Ώρας"
-                                                                                      Command="{Binding ChangeTimeCommand}"
-                                                                                      CommandParameter="4" />
-                                                                            <MenuItem Header="Γυμναστής"
-                                                                                      ItemsSource="{Binding BasicDataManager.Gymnasts}">
-                                                                                <MenuItem.ItemTemplate>
-                                                                                    <DataTemplate>
-                                                                                        <TextBlock Text="{Binding Name}" />
-                                                                                    </DataTemplate>
-                                                                                </MenuItem.ItemTemplate>
-                                                                                <MenuItem.ItemContainerStyle>
-                                                                                    <Style TargetType="{x:Type MenuItem}">
-                                                                                        <Setter Property="Command"
-                                                                                                Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
-                                                                                        <Setter Property="CommandParameter"
-                                                                                                Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=4}" />
-                                                                                    </Style>
-                                                                                </MenuItem.ItemContainerStyle>
-                                                                            </MenuItem>
-                                                                            <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Command="{Binding NoGymnastCommand}"
-                                                                                      CommandParameter="4" />
-                                                                        </ContextMenu>
-                                                                    </Border.ContextMenu>
                                                                     <Border ToolTip="{Binding GymnastsWorking}"
                                                                             Width="40"
                                                                             Background="Transparent" />
@@ -1022,7 +1244,7 @@
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal" />
+                                                        <VirtualizingStackPanel Orientation="Horizontal" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
@@ -1062,26 +1284,17 @@
                                                                         <TextBlock FontWeight="Bold"
                                                                                    VerticalAlignment="Center"
                                                                                    Grid.Column="1"
+                                                                                   Foreground="{Binding GymnastPersonal, Converter={StaticResource GymnastoForeverColorConverter}}"
                                                                                    Text="{Binding GymnastPersonal.Gymnast.Name}"
                                                                                    HorizontalAlignment="Left" />
                                                                     </Grid>
                                                                 </Border>
                                                                 <ListBox BorderThickness="0"
                                                                          Grid.Row="1"
+                                                                         ContextMenu="{StaticResource AddRemoveContextMenuPer}"
                                                                          Background="{Binding ClosedColorPersonal}"
                                                                          SelectedItem="{Binding SelectedAppointmentPersonal}"
                                                                          ItemsSource="{Binding AppointmentsPersonal}">
-                                                                    <ListBox.ContextMenu>
-                                                                        <ContextMenu>
-                                                                            <MenuItem Header="Αναμονή / Κανονικό"
-                                                                                      Command="{Binding ToggleWaitingCommand}"
-                                                                                      CommandParameter="5" />
-                                                                            <Separator />
-                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
-                                                                                      Command="{Binding ToggleCanceledCommand}"
-                                                                                      CommandParameter="5" />
-                                                                        </ContextMenu>
-                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -1104,7 +1317,6 @@
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
-                                                                                             
                                                                                     </TextBlock>
                                                                                 </ContentControl>
                                                                             </StackPanel>
@@ -1132,43 +1344,9 @@
                                                                 </Border>
                                                                 <Border Background="Transparent"
                                                                         PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpP"
+                                                                        ContextMenu="{StaticResource HourContextMenuPer}"
                                                                         Grid.ColumnSpan="3"
                                                                         Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
-                                                                    <Border.ContextMenu>
-                                                                        <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                                                                            <MenuItem Header="(Απ)ενεργοποίηση"
-                                                                                      Command="{Binding ToggleEnabledCommand}"
-                                                                                      CommandParameter="5" />
-                                                                            <MenuItem Header="Απενεργοποίηση για 3 μήνες"
-                                                                                      Command="{Binding ToggleEnabledForEverCommand}"
-                                                                                      CommandParameter="5" />
-                                                                            <MenuItem Header="Ενεργοποίηση επόμενων"
-                                                                                      Command="{Binding EnableForEverCommand}"
-                                                                                      CommandParameter="5" />
-                                                                            <MenuItem Header="Αλλαγή Ώρας"
-                                                                                      Command="{Binding ChangeTimeCommand}"
-                                                                                      CommandParameter="5" />
-                                                                            <MenuItem Header="Γυμναστής"
-                                                                                      ItemsSource="{Binding BasicDataManager.Gymnasts}">
-                                                                                <MenuItem.ItemTemplate>
-                                                                                    <DataTemplate>
-                                                                                        <TextBlock Text="{Binding Name}" />
-                                                                                    </DataTemplate>
-                                                                                </MenuItem.ItemTemplate>
-                                                                                <MenuItem.ItemContainerStyle>
-                                                                                    <Style TargetType="{x:Type MenuItem}">
-                                                                                        <Setter Property="Command"
-                                                                                                Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
-                                                                                        <Setter Property="CommandParameter"
-                                                                                                Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=5}" />
-                                                                                    </Style>
-                                                                                </MenuItem.ItemContainerStyle>
-                                                                            </MenuItem>
-                                                                            <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Command="{Binding NoGymnastCommand}"
-                                                                                      CommandParameter="5" />
-                                                                        </ContextMenu>
-                                                                    </Border.ContextMenu>
                                                                     <Border ToolTip="{Binding GymnastsWorking}"
                                                                             Width="40"
                                                                             Background="Transparent" />
@@ -1186,7 +1364,7 @@
                                                           HorizontalAlignment="Left">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal" />
+                                                        <VirtualizingStackPanel Orientation="Horizontal" />
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
@@ -1226,26 +1404,17 @@
                                                                         <TextBlock FontWeight="Bold"
                                                                                    VerticalAlignment="Center"
                                                                                    Grid.Column="1"
+                                                                                   Foreground="{Binding GymnastOutdoor, Converter={StaticResource GymnastoForeverColorConverter}}"
                                                                                    Text="{Binding GymnastOutdoor.Gymnast.Name}"
                                                                                    HorizontalAlignment="Left" />
                                                                     </Grid>
                                                                 </Border>
                                                                 <ListBox BorderThickness="0"
                                                                          Grid.Row="1"
+                                                                         ContextMenu="{StaticResource AddRemoveContextMenuOut}"
                                                                          Background="{Binding ClosedColorOutdoor}"
                                                                          SelectedItem="{Binding SelectedAppointmentOutdoor}"
                                                                          ItemsSource="{Binding AppointemntsOutdoor}">
-                                                                    <ListBox.ContextMenu>
-                                                                        <ContextMenu>
-                                                                            <MenuItem Header="Αναμονή / Κανονικό"
-                                                                                      Command="{Binding ToggleWaitingCommand}"
-                                                                                      CommandParameter="3" />
-                                                                            <Separator />
-                                                                            <MenuItem Header="Ηρθε / Δεν ήρθε"
-                                                                                      Command="{Binding ToggleCanceledCommand}"
-                                                                                      CommandParameter="3" />
-                                                                        </ContextMenu>
-                                                                    </ListBox.ContextMenu>
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
@@ -1268,7 +1437,6 @@
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
-                                                                                            
                                                                                     </TextBlock>
                                                                                 </ContentControl>
                                                                             </StackPanel>
@@ -1297,42 +1465,8 @@
                                                                 <Border Background="Transparent"
                                                                         PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpO"
                                                                         Grid.ColumnSpan="3"
+                                                                        ContextMenu="{StaticResource HourContextMenuOut}"
                                                                         Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
-                                                                    <Border.ContextMenu>
-                                                                        <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                                                                            <MenuItem Header="(Απ)ενεργοποίηση"
-                                                                                      Command="{Binding ToggleEnabledCommand}"
-                                                                                      CommandParameter="3" />
-                                                                            <MenuItem Header="Απενεργοποίηση για 3 μήνες"
-                                                                                      Command="{Binding ToggleEnabledForEverCommand}"
-                                                                                      CommandParameter="3" />
-                                                                            <MenuItem Header="Ενεργοποίηση επόμενων"
-                                                                                      Command="{Binding EnableForEverCommand}"
-                                                                                      CommandParameter="3" />
-                                                                            <MenuItem Header="Αλλαγή Ώρας"
-                                                                                      Command="{Binding ChangeTimeCommand}"
-                                                                                      CommandParameter="3" />
-                                                                            <MenuItem Header="Γυμναστής"
-                                                                                      ItemsSource="{Binding BasicDataManager.Gymnasts}">
-                                                                                <MenuItem.ItemTemplate>
-                                                                                    <DataTemplate>
-                                                                                        <TextBlock Text="{Binding Name}" />
-                                                                                    </DataTemplate>
-                                                                                </MenuItem.ItemTemplate>
-                                                                                <MenuItem.ItemContainerStyle>
-                                                                                    <Style TargetType="{x:Type MenuItem}">
-                                                                                        <Setter Property="Command"
-                                                                                                Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
-                                                                                        <Setter Property="CommandParameter"
-                                                                                                Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}" />
-                                                                                    </Style>
-                                                                                </MenuItem.ItemContainerStyle>
-                                                                            </MenuItem>
-                                                                            <MenuItem Header="Χωρίς Γυμναστή"
-                                                                                      Command="{Binding NoGymnastCommand}"
-                                                                                      CommandParameter="3" />
-                                                                        </ContextMenu>
-                                                                    </Border.ContextMenu>
                                                                     <Border ToolTip="{Binding GymnastsWorking}"
                                                                             Width="40"
                                                                             Visibility="{Binding GymnastsWorking,Converter={StaticResource UserToVisibilityConverter}}"

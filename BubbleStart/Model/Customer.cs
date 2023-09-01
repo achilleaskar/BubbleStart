@@ -1024,6 +1024,7 @@ namespace BubbleStart.Model
         }
 
         public DateTime LastBuy => GetLastBuy();
+        public bool Today => Apointments.Any(a => a.DateTime.Date == DateTime.Today);
 
         [NotMapped]
         public ShowUp LastGymShowUp
@@ -1959,7 +1960,6 @@ namespace BubbleStart.Model
         [NotMapped]
         public RelayCommand<Payment> ReleasePaymentCommand { get; set; }
 
-        public int RemainingAerialYogaDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga).Sum(p => p.RemainingDays);
 
         [NotMapped]
         public decimal RemainingAmount
@@ -1997,8 +1997,10 @@ namespace BubbleStart.Model
         public int RemainingTrainingFullDays => RemainingFunctionalPilatesDays + RemainingTrainingDays + RemainingPilatesDays + RemainingPersonalDays + RemainingMedicalDays;
 
         public int RemainingYogaDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.yoga).Sum(p => p.RemainingDays);
+        public int RemainingAerialYogaDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga).Sum(p => p.RemainingDays);
 
         public int RemainingYogaFullDays => RemainingYogaDays + RemainingAerialYogaDays;
+        public int RemainingDaysTotal => RemainingTrainingFullDays + RemainingYogaFullDays +RemainingMassageDays+RemainingOnlineDays+RemainingOutDoorDays;
 
         public DateTime ResetDate
         {
@@ -3855,10 +3857,23 @@ namespace BubbleStart.Model
 
         public void SetColors()
         {
+            //Full = true;
             DateTime startDate = Full ? new DateTime() : ResetDate;
             DateTime startDateM = Full ? new DateTime() : MassageResetDay;
 
+
             if (!Loaded) return;
+
+            if (Programs?.Count > 0 && ShowUps.Count > 0 != true)
+            {
+                foreach (var p in Programs)
+                {
+                    if (p.Showups > 0)
+                        p.RemainingDays = p.Showups;
+                    else
+                        p.SetRemainingDays();
+                }
+            }
 
             if (Programs != null && ShowUps != null && ShowUps.Count > 0 && Programs.Count > 0)
             {
@@ -3887,10 +3902,8 @@ namespace BubbleStart.Model
                     foreach (var showUp in showUpsReserved)
                     {
                         if (selProg == null || (selProg.Showups > 0 && selProg.RemainingDays == 0) ||
-                            (selProg.Showups == 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months))
-                            //||
-                            //(selProg.ProgramTypeO.Id == 20 && showUp.Arrived.Date > selProg.AddMonth(1)) || //afto na fygei otan vgalume ta palia miniaia
-                            //selProg.ProgramTypeO.Id == 21 && showUp.Arrived.Date > selProg.AddMonth(3)//kai afto to idio
+                            (selProg.Showups == 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months)) ||
+                            (selProg.Showups > 0 && selProg.Months > 0 &&   showUp.Arrived.Date > selProg.AddMonth(selProg.Months))
                             && progIndex < programsReversed.Count)
                         {
                             if (progIndex >= programsReversed.Count)
@@ -3905,10 +3918,9 @@ namespace BubbleStart.Model
                             if (selProg != null)
                                 selProg.RemainingDays = 0;
                             selProg = programsReversed[progIndex];
-                            if ((selProg.Showups == 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months))
-                                //||
-                                //(selProg.ProgramTypeO.Id == 20 && showUp.Arrived.Date > selProg.AddMonth(1)) ||
-                                //(selProg.ProgramTypeO.Id == 21 && showUp.Arrived.Date > selProg.AddMonth(3))
+                            if (
+                                (selProg.Showups == 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months)) ||
+                                (selProg.Showups > 0 && selProg.Months > 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months))
                                 )
                             {
                                 progIndex++;
@@ -3952,7 +3964,8 @@ namespace BubbleStart.Model
 
                         if (selProg == null || selProg.StartDay > showUp.Arrived
                             || (selProg.Showups == 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months) && progIndex == programsReversed.Count)
-                            || (selProg.Showups > 0 && selProg.RemainingDays == 0 && progIndex == programsReversed.Count))
+                            || (selProg.Showups > 0 && selProg.RemainingDays == 0 && progIndex == programsReversed.Count)
+                            || (selProg.Showups > 0 && selProg.Months > 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months)))
                             continue;
                         showUp.Color = selProg.Color;
                         showUp.Count = counter++;
@@ -3967,6 +3980,10 @@ namespace BubbleStart.Model
                     if (selProg?.Showups == 0)
                     {
                         selProg.SetRemainingDays();
+                    }
+                    if (selProg?.Showups > 0 && selProg.Months > 0)
+                    {
+                        selProg.SetRemainingDaysBoth();
                     }
                     if (progIndex < programsReversed.Count)
                     {
@@ -4414,7 +4431,7 @@ namespace BubbleStart.Model
         internal bool ProgramDataCheck()
         {
             ValidateProgram();
-            return ProgramPrice >= 0 && SelectedProgramType != null && ((NumOfShowUps > 0 && ProgramDuration == 0) || (NumOfShowUps == 0 && ProgramDuration > 0));
+            return ProgramPrice >= 0 && SelectedProgramType != null && ((NumOfShowUps > 0) || (ProgramDuration > 0));
         }
 
         internal bool ShowedUp(bool arrived, ProgramMode mode, bool is30min = false, int? secondaryProgMode = 0, User gymnast = null)
@@ -4436,10 +4453,10 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingTrainingDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία γυμναστικής του {ToString()}"
-                        : $"Οι συνεδρίες γυμναστικής του {ToString()} έχουν τελειώσει");
+                    if (RemainingTrainingDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία γυμναστικής του {ToString()}"
+                            : $"Οι συνεδρίες γυμναστικής του {ToString()} έχουν τελειώσει");
                     break;
 
                 case ProgramMode.massage:
@@ -4447,10 +4464,10 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingMassageDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία μασάζ του {ToString()}"
-                        : $"Οι συνεδρίες μασάζ του {ToString()} έχουν τελειώσει");
+                    if (RemainingMassageDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία μασάζ του {ToString()}"
+                            : $"Οι συνεδρίες μασάζ του {ToString()} έχουν τελειώσει");
                     break;
 
                 case ProgramMode.online:
@@ -4458,10 +4475,10 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingOnlineDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία Online του {ToString()}"
-                        : $"Οι συνεδρίες Online του {ToString()} έχουν τελειώσει");
+                    if (RemainingOnlineDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία Online του {ToString()}"
+                            : $"Οι συνεδρίες Online του {ToString()} έχουν τελειώσει");
                     break;
 
                 case ProgramMode.outdoor:
@@ -4469,10 +4486,10 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingOutDoorDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία OutDoor του {ToString()}"
-                        : $"Οι συνεδρίες OutDoor του {ToString()} έχουν τελειώσει");
+                    if (RemainingOutDoorDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία OutDoor του {ToString()}"
+                            : $"Οι συνεδρίες OutDoor του {ToString()} έχουν τελειώσει");
                     break;
 
                 case ProgramMode.pilates:
@@ -4480,10 +4497,10 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingPilatesDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία Pilates του {ToString()}"
-                        : $"Οι συνεδρίες Pilates του {ToString()} έχουν τελειώσει");
+                    if (RemainingPilatesDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία Pilates του {ToString()}"
+                            : $"Οι συνεδρίες Pilates του {ToString()} έχουν τελειώσει");
                     break;
 
                 case ProgramMode.yoga:
@@ -4491,10 +4508,10 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingYogaDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία yoga του {ToString()}"
-                        : $"Οι συνεδρίες yoga του {ToString()} έχουν τελειώσει");
+                    if (RemainingYogaDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία yoga του {ToString()}"
+                            : $"Οι συνεδρίες yoga του {ToString()} έχουν τελειώσει");
                     break;
 
                 case ProgramMode.pilatesFunctional:
@@ -4502,10 +4519,10 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, ProgramMode = (ProgramMode)secondaryProgMode, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingFunctionalPilatesDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία functional-pilates yoga του {ToString()}"
-                        : $"Οι συνεδρίες functional-pilates του {ToString()} έχουν τελειώσει");
+                    if (RemainingFunctionalPilatesDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία functional-pilates yoga του {ToString()}"
+                            : $"Οι συνεδρίες functional-pilates του {ToString()} έχουν τελειώσει");
                     break;
 
                 case ProgramMode.aerialYoga:
@@ -4513,10 +4530,10 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingAerialYogaDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία Aerial-Yoga του {ToString()}"
-                        : $"Οι συνεδρίες Aerial-Yoga του {ToString()} έχουν τελειώσει");
+                    if (RemainingAerialYogaDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία Aerial-Yoga του {ToString()}"
+                            : $"Οι συνεδρίες Aerial-Yoga του {ToString()} έχουν τελειώσει");
                     break;
 
                 case ProgramMode.personal:
@@ -4524,10 +4541,10 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingPersonalDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία Personal του {ToString()}"
-                        : $"Οι συνεδρίες Personal του {ToString()} έχουν τελειώσει");
+                    if (RemainingPersonalDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία Personal του {ToString()}"
+                            : $"Οι συνεδρίες Personal του {ToString()} έχουν τελειώσει");
                     break;
 
                 case ProgramMode.medical:
@@ -4535,16 +4552,17 @@ namespace BubbleStart.Model
                     su = new ShowUp { Arrive = arrived, Arrived = DateTime.Now, ProgramModeNew = mode, Is30min = is30min, Gymnast = gymnast };
                     ShowUps.Add(su);
                     ShowUps_CollectionChanged();
-                    if (RemainingMedicalDays != 0) return true;
-                    MessageBox.Show(remain > 0
-                        ? $"Αυτή ήταν η τελευταία συνεδρία Medical του {ToString()}"
-                        : $"Οι συνεδρίες Aerial-Yoga του {ToString()} έχουν τελειώσει");
+                    if (RemainingMedicalDays == 0)
+                        MessageBox.Show(remain > 0
+                            ? $"Αυτή ήταν η τελευταία συνεδρία Medical του {ToString()}"
+                            : $"Οι συνεδρίες Aerial-Yoga του {ToString()} έχουν τελειώσει");
                     break;
 
                 default:
                     MessageBox.Show("Error");
                     return false;
             }
+            CheckIfCancel(su);
             return true;
         }
 
@@ -4618,6 +4636,7 @@ namespace BubbleStart.Model
             else
                 su = new ShowUp { Arrived = OldShowUpDate, ProgramModeNew = (ProgramMode)programMode, Left = new DateTime(1234, 1, 1), Is30min = Is30min };
             ShowUps.Add(su);
+            CheckIfCancel(su);
             Popup1Open = false;
             ShowUps_CollectionChanged();
         }
@@ -5565,7 +5584,7 @@ namespace BubbleStart.Model
             OldShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(HistoryFrom, DateTime.Now, Id, true)).OrderByDescending(a => a.Arrived));
             var apps = await BasicDataManager.Context.GetApointmentsJoined(customerId: Id, historyFrom: HistoryFrom);
             //await BasicDataManager.Context.Context.Apointments.Where(a => a.Customer.Id == Id && a.DateTime >= HistoryFrom).ToListAsync();
-            NextAppointments = new ObservableCollection<Apointment>(apps.Where(a => a.DateTime > DateTime.Now).OrderBy(a => a.DateTime));
+            NextAppointments = new ObservableCollection<Apointment>(apps.Where(a => a.DateTime >= DateTime.Now).OrderBy(a => a.DateTime));
             UpdateCollections();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -5898,6 +5917,15 @@ namespace BubbleStart.Model
             }
             showup.Real = !showup.Real;
             //await BasicDataManager.SaveAsync();
+        }
+
+        private void CheckIfCancel(ShowUp su)
+        {
+            if (Apointments.Any(a => a.DateTime.Date == su.Arrived.Date && a.Canceled))
+            {
+                if (MessageBox.Show($"O πελάτης έχει ένα ραντεβού την ίδια ημέρα στο οποίο ΔΕΝ ΗΡΘΕ, θέλετε να οριστεί και η παρουσία ως ΔΕΝ ΗΡΘΕ?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    su.Real = false;
+            }
         }
 
         private void TogleShowUp(object[] props)

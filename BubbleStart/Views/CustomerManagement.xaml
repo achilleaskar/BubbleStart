@@ -1827,16 +1827,17 @@
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="Massage">
-                        <StackPanel Orientation="Horizontal"
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal"
                                     Height="250"
                                     VerticalAlignment="Top"
                                     Margin="0 0 0 5"
                                     HorizontalAlignment="Left">
-                            <GroupBox Header="Συνεδρίες Massage"
+                                <GroupBox Header="Συνεδρίες Massage"
                                       VerticalAlignment="Stretch"
                                       HorizontalAlignment="Left"
                                       Grid.Column="1">
-                                <DataGrid ItemsSource="{Binding ShowUpsMassCollectionView}"
+                                    <DataGrid ItemsSource="{Binding ShowUpsMassCollectionView}"
                                           SelectedItem="{Binding SelectedMassShowUp}"
                                           CanUserAddRows="False"
                                           VerticalAlignment="Stretch"
@@ -1845,133 +1846,133 @@
                                           Width="200"
                                           VirtualizingPanel.VirtualizationMode="Standard"
                                           AutoGenerateColumns="False">
-                                    <DataGrid.Resources>
-                                        <ContextMenu x:Key="ShowUpsSubMenu">
-                                            <MenuItem Header="Διαγραφή"
+                                        <DataGrid.Resources>
+                                            <ContextMenu x:Key="ShowUpsSubMenu">
+                                                <MenuItem Header="Διαγραφή"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.DeleteShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
-                                                <MenuItem.Icon>
-                                                    <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                            <MenuItem Header="Αλλαγή σε:">
-                                                <MenuItem Header="Functional"
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Αλλαγή σε:">
+                                                    <MenuItem Header="Functional"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=0}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Pilates"
+                                                    <MenuItem Header="Pilates"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=4}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Pilates-Functional"
+                                                    <MenuItem Header="Pilates-Functional"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=6}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Massage"
+                                                    <MenuItem Header="Massage"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Online"
+                                                    <MenuItem Header="Online"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Outdoor"
+                                                    <MenuItem Header="Outdoor"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Yoga"
+                                                    <MenuItem Header="Yoga"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=5}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Aerial Yoga"
+                                                    <MenuItem Header="Aerial Yoga"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=7}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Personal"
+                                                    <MenuItem Header="Personal"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=8}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                                <MenuItem Header="Medical"
+                                                    <MenuItem Header="Medical"
                                                           CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=9}"
                                                           Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            </MenuItem>
-                                            <MenuItem Header="Ήρθε/Δεν ήρθε"
+                                                </MenuItem>
+                                                <MenuItem Header="Ήρθε/Δεν ήρθε"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.ToggleRealCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            <MenuItem Header="30'/60'"
+                                                <MenuItem Header="30'/60'"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.Toggle30_60Command,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            <MenuItem Header="Δώρο Ναί/Όχι'"
+                                                <MenuItem Header="Δώρο Ναί/Όχι'"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.ToggleIsPresentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            <MenuItem Header="Online Ναί/Όχι'"
+                                                <MenuItem Header="Online Ναί/Όχι'"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.ToggleIsTestCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                        </ContextMenu>
-                                    </DataGrid.Resources>
-                                    <DataGrid.RowStyle>
-                                        <Style TargetType="{x:Type DataGridRow}"
+                                            </ContextMenu>
+                                        </DataGrid.Resources>
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="{x:Type DataGridRow}"
                                                BasedOn="{StaticResource {x:Type DataGridRow}}">
-                                            <Setter Property="ContextMenu"
+                                                <Setter Property="ContextMenu"
                                                     Value="{StaticResource ShowUpsSubMenu}" />
-                                            <Setter Property="Background"
+                                                <Setter Property="Background"
                                                     Value="{Binding Color}" />
-                                            <Setter Property="IsSelected"
+                                                <Setter Property="IsSelected"
                                                     Value="{Binding IsSelected, Mode=TwoWay,
                                         UpdateSourceTrigger=PropertyChanged}" />
-                                            <EventSetter Event="MouseLeftButtonUp"
+                                                <EventSetter Event="MouseLeftButtonUp"
                                                          Handler="DataGridRow_MouseLeftButtonUp" />
-                                        </Style>
-                                    </DataGrid.RowStyle>
-                                    <DataGrid.Columns>
-                                        <DataGridTemplateColumn Header="#">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Border Background="{Binding RealColor}">
-                                                        <TextBlock Text="{Binding Count}" />
-                                                    </Border>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Ημέρα"
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn Header="#">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Border Background="{Binding RealColor}">
+                                                            <TextBlock Text="{Binding Count}" />
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Ημέρα"
                                                                 Width="18"
                                                                 MinWidth="10">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Margin="1 0"
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Margin="1 0"
                                                                Text="{Binding Arrived,ConverterParameter='ddd', Converter={StaticResource DateTimeToString}}">
-                                                        <TextBlock.ToolTip>
-                                                            <TextBlock Text="{Binding Arrived,ConverterParameter='dddd', Converter={StaticResource DateTimeToString}}" />
-                                                        </TextBlock.ToolTip>
+                                                            <TextBlock.ToolTip>
+                                                                <TextBlock Text="{Binding Arrived,ConverterParameter='dddd', Converter={StaticResource DateTimeToString}}" />
+                                                            </TextBlock.ToolTip>
                                                </TextBlock>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTextColumn Header="Ημερομηνία"
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Ημερομηνία"
                                                             Width="86"
                                                             Binding="{Binding Arrived,ConverterParameter='d/MM/yy HH:mm', Converter={StaticResource DateTimeToString}}" />
-                                        <DataGridTemplateColumn Header=""
+                                            <DataGridTemplateColumn Header=""
                                                                 Width="22">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock>
-                                                        <TextBlock.Style>
-                                                            <Style TargetType="TextBlock">
-                                                                <Setter Property="Text"
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock>
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Setter Property="Text"
                                                                         Value="60'" />
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Is30min}"
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Is30min}"
                                                                                  Value="True">
-                                                                        <Setter Property="Text"
+                                                                            <Setter Property="Text"
                                                                                 Value="30'" />
-                                                                        <Setter Property="Background"
+                                                                            <Setter Property="Background"
                                                                                 Value="Yellow" />
-                                                                        <Setter Property="Foreground"
+                                                                            <Setter Property="Foreground"
                                                                                 Value="Black" />
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBlock.Style></TextBlock>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </GroupBox>
-                            <GroupBox Header="Πακέτα Massage"
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style></TextBlock>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </GroupBox>
+                                <GroupBox Header="Πακέτα Massage"
                                       VerticalAlignment="Stretch">
-                                <DataGrid  Name="DatagridOnline"
+                                    <DataGrid  Name="DatagridOnline"
                                            ItemsSource="{Binding ProgramsMassageColelctionView}"
                                            VerticalAlignment="Stretch"
                                            CanUserAddRows="False"
@@ -1983,117 +1984,117 @@
                                            Width="600"
                                            CanUserDeleteRows="False"
                                            AutoGenerateColumns="False">
-                                    <DataGrid.Resources>
-                                        <ContextMenu x:Key="ProgramsSubMenu">
-                                            <MenuItem Header="Διαγραφή"
+                                        <DataGrid.Resources>
+                                            <ContextMenu x:Key="ProgramsSubMenu">
+                                                <MenuItem Header="Διαγραφή"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.DeleteProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
-                                                <MenuItem.Icon>
-                                                    <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                            <MenuItem Header="Πιστόλι"
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Πιστόλι"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.GunProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
-                                                <MenuItem.Icon>
-                                                    <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                        </ContextMenu>
-                                    </DataGrid.Resources>
-                                    <DataGrid.RowStyle>
-                                        <Style TargetType="{x:Type DataGridRow}"
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="RunningSolid" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </DataGrid.Resources>
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="{x:Type DataGridRow}"
                                                BasedOn="{StaticResource {x:Type DataGridRow}}">
-                                            <Setter Property="ContextMenu"
+                                                <Setter Property="ContextMenu"
                                                     Value="{StaticResource ProgramsSubMenu}" />
-                                            <Setter Property="Background"
+                                                <Setter Property="Background"
                                                     Value="{Binding Color}" />
-                                            <Setter Property="IsSelected"
+                                                <Setter Property="IsSelected"
                                                     Value="{Binding IsSelected, Mode=TwoWay,
                                         UpdateSourceTrigger=PropertyChanged}" />
-                                            <EventSetter Event="MouseLeftButtonUp"
+                                                <EventSetter Event="MouseLeftButtonUp"
                                                          Handler="DataGridRow_MouseLeftButtonUp" />
-                                        </Style>
-                                    </DataGrid.RowStyle>
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Έναρξη"
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Έναρξη"
                                                             Width="60"
                                                             Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                        <DataGridTemplateColumn Header="Τύπος"
+                                            <DataGridTemplateColumn Header="Τύπος"
                                                                 Width="120">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
                                                               SelectedItem="{Binding ProgramTypeO,UpdateSourceTrigger=PropertyChanged}" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTextColumn Header="Συν."
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Συν."
                                                             Width="30"
                                                             Binding="{Binding Showups}" />
-                                        <DataGridTextColumn Header="Μήνες"
+                                            <DataGridTextColumn Header="Μήνες"
                                                             Width="35"
                                                             Binding="{Binding Months,UpdateSourceTrigger=PropertyChanged}" />
-                                        <DataGridTextColumn Header="Τιμή Συν."
+                                            <DataGridTextColumn Header="Τιμή Συν."
                                                             Width="55"
                                                             IsReadOnly="true"
                                                             Binding="{Binding ShowUpPrice,StringFormat=c}" />
-                                        <DataGridTextColumn Header="Σύνολο"
+                                            <DataGridTextColumn Header="Σύνολο"
                                                             Width="55"
                                                             Binding="{Binding Amount,StringFormat=c}" />
-                                        <DataGridTextColumn Header="Αγορά"
+                                            <DataGridTextColumn Header="Αγορά"
                                                             Width="60"
                                                             Binding="{Binding DayOfIssue,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                        <DataGridTemplateColumn Header="Πληρωμή"
+                                            <DataGridTemplateColumn Header="Πληρωμή"
                                                                 Width="60">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Border>
-                                                        <TextBlock Text="{Binding Paid, Converter={StaticResource BoolToShowedUp_Converter}}">
-                                                            <TextBlock.Style>
-                                                                <Style>
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding PaidCol}"
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Border>
+                                                            <TextBlock Text="{Binding Paid, Converter={StaticResource BoolToShowedUp_Converter}}">
+                                                                <TextBlock.Style>
+                                                                    <Style>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding PaidCol}"
                                                                                      Value="true">
-                                                                            <Setter Property="TextBlock.Background"
+                                                                                <Setter Property="TextBlock.Background"
                                                                                     Value="LightGreen" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding PaidCol}"
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding PaidCol}"
                                                                                      Value="false">
-                                                                            <Setter Property="TextBlock.Background"
+                                                                                <Setter Property="TextBlock.Background"
                                                                                     Value="#FFE67979" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Gun}"
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding Gun}"
                                                                                      Value="true">
-                                                                            <Setter Property="TextBlock.Background"
+                                                                                <Setter Property="TextBlock.Background"
                                                                                     Value="HotPink" />
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </TextBlock.Style></TextBlock>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Deal"
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style></TextBlock>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Deal"
                                                                 Width="100">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
                                                               DisplayMemberPath="Name"
                                                               SelectedItem="{Binding Deal,UpdateSourceTrigger=PropertyChanged}" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </GroupBox>
-                            <GroupBox Header="Πληρ. Massage"
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </GroupBox>
+                                <GroupBox Header="Πληρ. Massage"
                                       Grid.Column="3"
                                       Grid.RowSpan="30"
                                       VerticalAlignment="Stretch"
                                       HorizontalAlignment="Left">
-                                <DataGrid ItemsSource="{Binding PaymentsMassCollectionView}"
+                                    <DataGrid ItemsSource="{Binding PaymentsMassCollectionView}"
                                           VerticalAlignment="Stretch"
                                           SelectedItem="{Binding SelectedMassPayment}"
                                           CanUserAddRows="False"
@@ -2101,62 +2102,62 @@
                                           VirtualizingPanel.VirtualizationMode="Standard"
                                           CanUserDeleteRows="False"
                                           AutoGenerateColumns="False">
-                                    <DataGrid.Resources>
-                                        <ContextMenu x:Key="PaymentsSubMenuMass">
-                                            <MenuItem Header="Διαγραφή"
+                                        <DataGrid.Resources>
+                                            <ContextMenu x:Key="PaymentsSubMenuMass">
+                                                <MenuItem Header="Διαγραφή"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.DeletePaymentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}">
-                                                <MenuItem.Icon>
-                                                    <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
-                                                </MenuItem.Icon>
-                                            </MenuItem>
-                                            <MenuItem Header="Σύνδεση με πακέτο"
+                                                    <MenuItem.Icon>
+                                                        <iconPacks:PackIconFontAwesome Kind="TrashAltRegular" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Σύνδεση με πακέτο"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.SetToProgramCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                            <MenuItem Header="Αποσύνδεση"
+                                                <MenuItem Header="Αποσύνδεση"
                                                       CommandParameter="{Binding}"
                                                       Command="{Binding DataContext.ReleasePaymentCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
-                                        </ContextMenu>
-                                    </DataGrid.Resources>
-                                    <DataGrid.RowStyle>
-                                        <Style TargetType="{x:Type DataGridRow}"
+                                            </ContextMenu>
+                                        </DataGrid.Resources>
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="{x:Type DataGridRow}"
                                                BasedOn="{StaticResource {x:Type DataGridRow}}">
-                                            <Setter Property="ContextMenu"
+                                                <Setter Property="ContextMenu"
                                                     Value="{StaticResource PaymentsSubMenuMass}" />
-                                            <Setter Property="Background"
+                                                <Setter Property="Background"
                                                     Value="{Binding PaymentColor}" />
-                                            <Setter Property="IsSelected"
+                                                <Setter Property="IsSelected"
                                                     Value="{Binding IsSelected, Mode=TwoWay,
                                         UpdateSourceTrigger=PropertyChanged}" />
-                                            <EventSetter Event="MouseLeftButtonUp"
+                                                <EventSetter Event="MouseLeftButtonUp"
                                                          Handler="DataGridRow_MouseLeftButtonUp" />
-                                        </Style>
-                                    </DataGrid.RowStyle>
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Ημερομ."
-                                                            SortDirection="Descending"
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Ημερομ."
                                                             Width="55"
                                                             Binding="{Binding Date,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
-                                        <DataGridTextColumn Header="Ποσό"
+                                            <DataGridTextColumn Header="Ποσό"
                                                             Width="45"
                                                             Binding="{Binding Amount,StringFormat=c1}" />
-                                        <DataGridCheckBoxColumn Header="Απ."
+                                            <DataGridCheckBoxColumn Header="Απ."
                                                                 Width="25"
                                                                 Binding="{Binding Reciept}" />
-                                        <DataGridTemplateColumn Header="Τύπος"
+                                            <DataGridTemplateColumn Header="Τύπος"
                                                                 Width="80"
                                                                 CellStyle="{StaticResource DataGridCellStyle}">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <ComboBox VerticalAlignment="Center"
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ComboBox VerticalAlignment="Center"
                                                               ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:PaymentType}}}"
                                                               SelectedItem="{Binding PaymentType}" />
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </GroupBox>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </GroupBox>
+                            </StackPanel>
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="Online-Outdoor">
@@ -4342,6 +4343,20 @@
                                       VirtualizingPanel.VirtualizationMode="Standard"
                                       AutoGenerateColumns="False">
                                 <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Ημέρα"
+                           Width="18"
+                           MinWidth="10">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Margin="1 0"
+                          Text="{Binding Arrived,ConverterParameter='ddd', Converter={StaticResource DateTimeToString}}">
+                                                    <TextBlock.ToolTip>
+                                                        <TextBlock Text="{Binding Arrived,ConverterParameter='dddd', Converter={StaticResource DateTimeToString}}" />
+                                                    </TextBlock.ToolTip>
+      </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn Header="Ημερ."
                                                         Width="88"
                                                         Binding="{Binding Arrived,ConverterParameter='d/MM/yy hh:mm', Converter={StaticResource DateTimeToString}}" />
@@ -4360,6 +4375,16 @@
                                       VirtualizingPanel.VirtualizationMode="Standard"
                                       AutoGenerateColumns="False">
                                 <DataGrid.Columns>
+                                    <DataGridTemplateColumn Header="Ημέρα"
+                           Width="18"
+                           MinWidth="10">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Margin="1 0"
+                          Text="{Binding DayString}"       />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn Header="Ημερ."
                                                         Width="88"
                                                         Binding="{Binding TimeString}" />
@@ -4375,6 +4400,8 @@
                               VerticalAlignment="Top"
                               CanUserAddRows="False"
                               Height="185"
+                              d:Visibility="Visible"
+                          Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}"
                               SelectionMode="Single"
                               SelectedItem="{Binding SelectedChange}"
                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -4415,7 +4442,9 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </TabItem>
-                <TabItem Header="Σύνολα">
+                <TabItem Header="Σύνολα"
+                              d:Visibility="Visible"
+                          Visibility="{Binding ConverterParameter=2, Converter={StaticResource UserToVisibilityConverter}}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />

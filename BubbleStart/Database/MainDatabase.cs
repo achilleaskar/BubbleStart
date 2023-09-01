@@ -34,8 +34,6 @@ namespace BubbleStart.Database
 
         }
         private const string normal = "Server=server19.cretaforce.gr;Database=readmore_achill2;pooling=true;user id=readmore_achill2;Pwd=986239787346;Convert Zero Datetime=True; default command timeout=3600;SslMode=none;TreatTinyAsBoolean=true;charset=utf8;";
-        private const string norma2 = "Server=localhost;Database=updatedbase;pooling=true;Uid=root;Pwd=Tr6981001676!;Convert Zero Datetime=True;  default command timeout=3600;SslMode=none;TreatTinyAsBoolean=true;";
-        private const string test = "Server=readmoreachill2.clq6srsguoz6.eu-west-3.rds.amazonaws.com;Database=readmore_achill2;pooling=true;Uid=readmore_achill2;Pwd=986239787346;Convert Zero Datetime=True;  default command timeout=3600;SslMode=none;TreatTinyAsBoolean=true;";
 
         public DateTime Limit { get; set; }
 
@@ -70,12 +68,6 @@ namespace BubbleStart.Database
              .WithMany(r => r.GymnastHours)
              .HasForeignKey(t => t.Gymnast_Id);
 
-            //modelBuilder.Entity<ShowUp>()
-            //        .Property(p => p.Arrive)
-            //        .HasColumnType("bit");
-            //modelBuilder.Entity<Illness>()
-            //   .HasRequired(s => s.Customer)
-            //   .WithRequiredPrincipal(ad => ad.Illness);
             base.OnModelCreating(modelBuilder);
         }
     }

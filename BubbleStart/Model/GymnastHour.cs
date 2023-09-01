@@ -26,6 +26,27 @@ namespace BubbleStart.Model
             }
         }
 
+        private bool _Forever;
+
+        public bool Forever
+        {
+            get
+            {
+                return _Forever;
+            }
+
+            set
+            {
+                if (_Forever == value)
+                {
+                    return;
+                }
+
+                _Forever = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private RoomEnum _Room;
 
         public RoomEnum Room

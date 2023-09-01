@@ -648,5 +648,16 @@ namespace BubbleStart.Model
             var r = (int)(AddMonth(Months) - DateTime.Today).TotalDays + 1;
             RemainingDays = r > 0 ? r : 0;
         }
+
+        internal void SetRemainingDaysBoth()
+        {
+            if (RemainingDays<=0)
+            {
+                return;
+            }
+            var r = (int)(AddMonth(Months) - DateTime.Today).TotalDays + 1;
+            if (r <RemainingDays)
+                RemainingDays = r;
+        }
     }
 }

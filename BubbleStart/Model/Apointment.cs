@@ -241,6 +241,29 @@ namespace BubbleStart.Model
 
 
 
+
+        private string _DayString;
+
+        [NotMapped]
+        public string DayString
+        {
+            get
+            {
+                return _DayString;
+            }
+
+            set
+            {
+                if (_DayString == value)
+                {
+                    return;
+                }
+
+                _DayString = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private string _TimeString;
 
         [NotMapped]

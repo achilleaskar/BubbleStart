@@ -44,6 +44,27 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        private int _Days;
+
+        public int Days
+        {
+            get
+            {
+                return _Days;
+            }
+
+            set
+            {
+                if (_Days == value)
+                {
+                    return;
+                }
+
+                _Days = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public EconomicData_ViewModel(BasicDataManager basicDataManager)
         {
             BasicDataManager = basicDataManager;
@@ -53,6 +74,8 @@ namespace BubbleStart.ViewModels
             NewIncome = new Expense { Income = true, MainCategoryId = 20 };
             ShowCashDataCommand = new RelayCommand(async () => { await ShowCashData(); });//
             ShowExpensesGroupedDataCommand = new RelayCommand(async () => { await ShowExpensesGroupedData(); });//
+            ShowExpireShowUpsCommand = new RelayCommand(ShowExpireShowUps);//
+            ShowExpireDaysCommand = new RelayCommand(async () => { await ShowExpireDays(); });//
             ShowOwningCustomersCommand = new RelayCommand(ShowOwningCustomers);
             StartDateCash = StartDateExpenses = StartDatePreview = StartDatePayments = DateTime.Today;
             Expenses = new ObservableCollection<Expense>();
@@ -72,7 +95,7 @@ namespace BubbleStart.ViewModels
             OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
 
             ShowSalesDataCommand = new RelayCommand(async () => { await ShowSalesData(); });
-
+            CustomersExpire = new ObservableCollection<Customer>();
             DeleteExpenseCommand = new RelayCommand(async () => { await DeleteExpense(); });
             DeleteIncomeCommand = new RelayCommand(async () => { await DeleteIncome(); });
             Messenger.Default.Register<UpdateExpenseCategoriesMessage>(this, msg => Load());
@@ -80,6 +103,22 @@ namespace BubbleStart.ViewModels
             Sales = new ObservableCollection<Program>();
             StartDateSales = DateTime.Today;
             Load();
+        }
+
+        private void ShowExpireShowUps()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            var date = DateTime.Today.AddDays(-Days);
+            CustomersExpireInShowUps = new ObservableCollection<Customer>(BasicDataManager.Customers.Where(c => c.Enabled && c.RemainingDaysTotal < ShowUps));
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private async Task ShowExpireDays()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            var date = DateTime.Today.AddDays(-Days);
+            CustomersExpire = new ObservableCollection<Customer>(await BasicDataManager.Context.Context.Customers.Where(c => c.Enabled && !c.ShowUps.Any(s => s.Arrived >= date)).Include(r => r.ShowUps).ToListAsync());
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private ObservableCollection<IGrouping<ExpenseCategoryClass, Expense>> _ExpensesGrouped;
@@ -99,6 +138,48 @@ namespace BubbleStart.ViewModels
                 }
 
                 _ExpensesGrouped = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _ShowUps;
+
+        public int ShowUps
+        {
+            get
+            {
+                return _ShowUps;
+            }
+
+            set
+            {
+                if (_ShowUps == value)
+                {
+                    return;
+                }
+
+                _ShowUps = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<Customer> _CustomersExpireInShowUps;
+
+        public ObservableCollection<Customer> CustomersExpireInShowUps
+        {
+            get
+            {
+                return _CustomersExpireInShowUps;
+            }
+
+            set
+            {
+                if (_CustomersExpireInShowUps == value)
+                {
+                    return;
+                }
+
+                _CustomersExpireInShowUps = value;
                 RaisePropertyChanged();
             }
         }
@@ -525,10 +606,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
         private ObservableCollection<Customer> _CustomersWithGun;
-
 
         public ObservableCollection<Customer> CustomersWithGun
         {
@@ -548,6 +626,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public ObservableCollection<Customer> CustomersWhoOwn
         {
             get
@@ -875,7 +954,11 @@ namespace BubbleStart.ViewModels
             if (NewExpense == null || NewExpense.MainCategory == null || !BasicDataManager.ExpenseCategoryClasses.Any(r => r.Parent?.Id == NewExpense.MainCategory.Id))
                 SecondaryCategories = new ObservableCollection<ExpenseCategoryClass>();
             else
-                SecondaryCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses.Where(r => !r.Disabled && r.ParentId == NewExpense.MainCategory.Id || r.Id == -1));
+            {
+                var t = BasicDataManager.ExpenseCategoryClasses.Where(r => !r.Disabled && r.ParentId == NewExpense.MainCategory.Id || r.Id == -1);
+
+                SecondaryCategories = new ObservableCollection<ExpenseCategoryClass>(t);
+            }
         }
 
         public ObservableCollection<ExpenseCheck> ExpenseTypes
@@ -1160,6 +1243,7 @@ namespace BubbleStart.ViewModels
         public RelayCommand RegisterIncomeCommand { get; set; }
 
         public RelayCommand SaveChangesCommand { get; set; }
+        public RelayCommand ShowExpireShowUpsCommand { get; set; }
         public RelayCommand SelectAllCommand { get; set; }
         public RelayCommand SelectAllIncomeCommand { get; set; }
         public RelayCommand<ExpenseCheck> ShowEconomicDetailsCommand { get; set; }
@@ -1324,7 +1408,29 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        private ObservableCollection<Customer> _CustomersExpire;
+
+        public ObservableCollection<Customer> CustomersExpire
+        {
+            get
+            {
+                return _CustomersExpire;
+            }
+
+            set
+            {
+                if (_CustomersExpire == value)
+                {
+                    return;
+                }
+
+                _CustomersExpire = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public RelayCommand ShowCashDataCommand { get; set; }
+        public RelayCommand ShowExpireDaysCommand { get; set; }
         public RelayCommand ShowExpensesGroupedDataCommand { get; set; }
 
         public RelayCommand ShowExpensesDataCommand { get; set; }
@@ -1483,11 +1589,7 @@ namespace BubbleStart.ViewModels
 
         public decimal TotalPayments => GetSum();
 
-
-
-
         private decimal _TotalRemainingGun;
-
 
         public decimal TotalRemainingGun
         {
@@ -2024,7 +2126,6 @@ namespace BubbleStart.ViewModels
 
         private void ShowOwningCustomers()
         {
-
             var own = new List<Customer>();
             var gun = new List<Customer>();
             foreach (var customer in BasicDataManager.Customers.Where(c => c.RemainingAmount > 0))
@@ -2089,7 +2190,7 @@ namespace BubbleStart.ViewModels
             List<PreviewData> realpreviewData = new List<PreviewData>();
             List<Expense> expensesPreview = await BasicDataManager.Context.GetAllExpensesAsync(e => (e.To >= StartDatePreview && e.To <= EndDatePreview) || (e.From >= StartDatePreview && e.From <= EndDatePreview), false);
             List<Program> programsPreview = (await BasicDataManager.Context.GetProgramsFullAsync(p => p.ShowUpsList.Any(s => s.Arrived >= StartDatePreview && s.Arrived <= EndDatePreview))).ToList();
-
+            var t = programs.Where(x => !programsPreview.Any(y => y.Id == x.Id)).ToList();
             PreviewData tmpMonth;
             foreach (var expense in expenses.Where(e => !e.Income))
             {
@@ -2151,7 +2252,7 @@ namespace BubbleStart.ViewModels
                 {
                     foreach (var mon in months)
                     {
-                        mon.Expenses += GetAmountInMonth(mon, expense);
+                        mon.Expenses += decimal.Round(GetAmountInMonth(mon, expense), 2);
                     }
                 }
                 else
@@ -2192,7 +2293,7 @@ namespace BubbleStart.ViewModels
                 if (months.Count() > 0)
                     foreach (var mon in months)
                     {
-                        mon.Recieved += GetProgramAmountInMonth(mon, program);
+                        mon.Recieved += decimal.Round(GetProgramAmountInMonth(mon, program), 2);
                     }
                 else
                 {
@@ -2201,12 +2302,189 @@ namespace BubbleStart.ViewModels
             }
 
             Preview = new ObservableCollection<PreviewData>(previewData.OrderBy(r => r.Date));
+
             RealPreview = new ObservableCollection<PreviewData>(realpreviewData.OrderBy(r => r.Date));
             CreatePlot();
+            RecievedTot = Preview.Sum(r => r.Recieved);
+            PackTot = Preview.Sum(r => r.Sold);
+            IncomesTot = Preview.Sum(r => r.Recieved);
+            ExpenseTot = Preview.Sum(r => r.Expenses);
+            DiffTot = Preview.Sum(r => r.Profit);
+            IncomesTotR = RealPreview.Sum(r => r.Recieved);
+            ExpenseTotR = RealPreview.Sum(r => r.Expenses);
+            DiffTotR = decimal.Round(RealPreview.Sum(r => r.Profit), 2);
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         #endregion Methods
+
+        private decimal _RecievedTot;
+
+        public decimal RecievedTot
+        {
+            get
+            {
+                return _RecievedTot;
+            }
+
+            set
+            {
+                if (_RecievedTot == value)
+                {
+                    return;
+                }
+
+                _RecievedTot = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _IncomesTot;
+
+        public decimal IncomesTot
+        {
+            get
+            {
+                return _IncomesTot;
+            }
+
+            set
+            {
+                if (_IncomesTot == value)
+                {
+                    return;
+                }
+
+                _IncomesTot = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _ExpenseTot;
+
+        public decimal ExpenseTot
+        {
+            get
+            {
+                return _ExpenseTot;
+            }
+
+            set
+            {
+                if (_ExpenseTot == value)
+                {
+                    return;
+                }
+
+                _ExpenseTot = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _IncomesTotR;
+
+        public decimal IncomesTotR
+        {
+            get
+            {
+                return _IncomesTotR;
+            }
+
+            set
+            {
+                if (_IncomesTotR == value)
+                {
+                    return;
+                }
+
+                _IncomesTotR = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _ExpenseTotR;
+
+        public decimal ExpenseTotR
+        {
+            get
+            {
+                return _ExpenseTotR;
+            }
+
+            set
+            {
+                if (_ExpenseTotR == value)
+                {
+                    return;
+                }
+
+                _ExpenseTotR = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _DiffTotR;
+
+        public decimal DiffTotR
+        {
+            get
+            {
+                return _DiffTotR;
+            }
+
+            set
+            {
+                if (_DiffTotR == value)
+                {
+                    return;
+                }
+
+                _DiffTotR = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _DiffTot;
+
+        public decimal DiffTot
+        {
+            get
+            {
+                return _DiffTot;
+            }
+
+            set
+            {
+                if (_DiffTot == value)
+                {
+                    return;
+                }
+
+                _DiffTot = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _PackTot;
+
+        public decimal PackTot
+        {
+            get
+            {
+                return _PackTot;
+            }
+
+            set
+            {
+                if (_PackTot == value)
+                {
+                    return;
+                }
+
+                _PackTot = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 
     public class ExpenseCheck : ObservableObject
