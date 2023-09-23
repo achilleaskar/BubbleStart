@@ -5,7 +5,6 @@ using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -35,7 +34,7 @@ namespace BubbleStart.ViewModels
             ShowProgramCommand = new RelayCommand(async () => { await CreateProgram(); }, CanRun);
             NoGymnastCommand = new RelayCommand<Hour>(async (obj) => await NoGymnast(obj));
             SetCustomTimeCommand = new RelayCommand(async () => { await (SetCustomTime()); }, CanRun);
-            ReformerVisible = FunctionalVisible = OutdoorVisible = MassageVisible = MassageHalfVisible = PersonalVisible = true;
+            ReformerVisible = FunctionalVisible = FunctionalBVisible = OutdoorVisible = MassageVisible = MassageHalfVisible = PersonalVisible = true;
             BasicDataManager = basicDataManager;
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
             Messenger.Default.Register<UpdateProgramMessage>(this, async (msg) => await CreateProgram(false));
@@ -319,6 +318,27 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        private bool _FunctionalBVisible;
+
+        public bool FunctionalBVisible
+        {
+            get
+            {
+                return _FunctionalBVisible;
+            }
+
+            set
+            {
+                if (_FunctionalBVisible == value)
+                {
+                    return;
+                }
+
+                _FunctionalBVisible = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public RelayCommand PreviousWeekCommand { get; set; }
         public RelayCommand CurrentWeekCommand { get; set; }
 
@@ -353,36 +373,41 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
                 if (RoomIndex == 0)
                 {
-                    FunctionalVisible = ReformerVisible = MassageVisible = MassageHalfVisible = PersonalVisible = OutdoorVisible = true;
+                    FunctionalVisible = FunctionalBVisible = ReformerVisible = MassageVisible = MassageHalfVisible = PersonalVisible = OutdoorVisible = true;
                 }
                 else if (RoomIndex == 1)
                 {
-                    ReformerVisible = MassageVisible = MassageHalfVisible = PersonalVisible = OutdoorVisible = false;
+                    ReformerVisible = FunctionalBVisible = MassageVisible = MassageHalfVisible = PersonalVisible = OutdoorVisible = false;
                     FunctionalVisible = true;
                 }
                 else if (RoomIndex == 2)
                 {
-                    FunctionalVisible = MassageVisible = MassageHalfVisible = PersonalVisible = OutdoorVisible = false;
-                    ReformerVisible = true;
+                    ReformerVisible = FunctionalVisible = MassageVisible = MassageHalfVisible = PersonalVisible = OutdoorVisible = false;
+                    FunctionalBVisible = true;
                 }
                 else if (RoomIndex == 3)
                 {
-                    FunctionalVisible = ReformerVisible = MassageHalfVisible = PersonalVisible = OutdoorVisible = false;
-                    MassageVisible = true;
+                    FunctionalVisible = FunctionalBVisible = MassageVisible = MassageHalfVisible = PersonalVisible = OutdoorVisible = false;
+                    ReformerVisible = true;
                 }
                 else if (RoomIndex == 4)
                 {
-                    FunctionalVisible = ReformerVisible = MassageVisible = PersonalVisible = OutdoorVisible = false;
-                    MassageHalfVisible = true;
+                    FunctionalVisible = FunctionalBVisible = ReformerVisible = MassageHalfVisible = PersonalVisible = OutdoorVisible = false;
+                    MassageVisible = true;
                 }
                 else if (RoomIndex == 5)
                 {
-                    FunctionalVisible = ReformerVisible = MassageVisible = MassageHalfVisible = OutdoorVisible = false;
-                    PersonalVisible = true;
+                    FunctionalVisible = FunctionalBVisible = ReformerVisible = MassageVisible = PersonalVisible = OutdoorVisible = false;
+                    MassageHalfVisible = true;
                 }
                 else if (RoomIndex == 6)
                 {
-                    FunctionalVisible = ReformerVisible = MassageVisible = MassageHalfVisible = PersonalVisible = false;
+                    FunctionalVisible = FunctionalBVisible = ReformerVisible = MassageVisible = MassageHalfVisible = OutdoorVisible = false;
+                    PersonalVisible = true;
+                }
+                else if (RoomIndex == 7)
+                {
+                    FunctionalVisible = FunctionalBVisible = ReformerVisible = MassageVisible = MassageHalfVisible = PersonalVisible = false;
                     OutdoorVisible = true;
                 }
             }
@@ -453,11 +478,7 @@ namespace BubbleStart.ViewModels
 
         #region Methods
 
-
-
-
         private bool _Loading;
-
 
         public bool Loading
         {
@@ -477,7 +498,9 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public List<GymnastHour> GymnastsLocal;
+
         public async Task CreateProgram(bool refresh = true)
         {
             if (Loading)
@@ -538,6 +561,10 @@ namespace BubbleStart.ViewModels
                     {
                         Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHour0 = ch;
                     }
+                    else if (ch.Room == RoomEnum.FunctionalB)
+                    {
+                        Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHourFB = ch;
+                    }
                     else if (ch.Room == RoomEnum.Pilates)
                     {
                         Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHour1 = ch;
@@ -579,21 +606,31 @@ namespace BubbleStart.ViewModels
                         case RoomEnum.Functional:
                             Days[numOfDay].Hours[ap.DateTime.Hour - 7].AppointmentsFunctional.Add(ap);
                             break;
+
+                        case RoomEnum.FunctionalB:
+                            Days[numOfDay].Hours[ap.DateTime.Hour - 7].AppointmentsFB.Add(ap);
+                            break;
+
                         case RoomEnum.Pilates:
                             Days[numOfDay].Hours[ap.DateTime.Hour - 7].AppointmentsReformer.Add(ap);
                             break;
+
                         case RoomEnum.Massage:
                             Days[numOfDay].Hours[ap.DateTime.Hour - 7].AppointmentsMassage.Add(ap);
                             break;
+
                         case RoomEnum.Outdoor:
                             Days[numOfDay].Hours[ap.DateTime.Hour - 7].AppointemntsOutdoor.Add(ap);
                             break;
+
                         case RoomEnum.MassageHalf:
                             Days[numOfDay].Hours[ap.DateTime.Hour - 7].AppointmentsMassageHalf.Add(ap);
                             break;
+
                         case RoomEnum.Personal:
                             Days[numOfDay].Hours[ap.DateTime.Hour - 7].AppointmentsPersonal.Add(ap);
                             break;
+
                         default:
                             MessageBox.Show("Σφάλμα στην επιλογή αίθουσας");
                             break;
@@ -613,6 +650,10 @@ namespace BubbleStart.ViewModels
                     {
                         case RoomEnum.Functional:
                             t.CustomTime1 = ct;
+                            break;
+
+                        case RoomEnum.FunctionalB:
+                            t.CustomTime7 = ct;
                             break;
 
                         case RoomEnum.Pilates:
@@ -641,22 +682,35 @@ namespace BubbleStart.ViewModels
             {
                 if (d.Date.DayOfWeek != DayOfWeek.Saturday)
                     foreach (var h in d.Hours)
+                    {
                         if (h.Time.Hour > 15 && h.CustomTime1 == null)
+
                             h.CustomTime1 = new CustomeTime
                             {
                                 Time = h.Time.AddMinutes(-15).ToString("HH:mm")
                             };
+                        if (h.Time.Hour > 15 && h.CustomTime7 == null)
+
+                            h.CustomTime7 = new CustomeTime
+                            {
+                                Time = h.Time.AddMinutes(-15).ToString("HH:mm")
+                            };
+                    }
             }
 
             foreach (var gh in gymnasts.OrderByDescending(r => r.Forever).ThenBy(r => r.Id))
             {
-                t = Days.FirstOrDefault(d => d.Date == gh.Datetime.Date || (gh.Forever && gh.Datetime.DayOfWeek == d.Date.DayOfWeek))?
+                t = Days.FirstOrDefault(d => d.Date == gh.Datetime.Date || (gh.Forever && gh.Datetime <= d.Date && gh.Datetime.DayOfWeek == d.Date.DayOfWeek))?
                     .Hours.FirstOrDefault(h => h.Time.Hour == gh.Datetime.Hour && gh.Datetime.Minute == h.Time.Minute);
                 if (t != null)
                     switch (gh.Room)
                     {
                         case RoomEnum.Functional:
                             t.GymnastFunctional = gh;
+                            break;
+
+                        case RoomEnum.FunctionalB:
+                            t.GymnastFunctionalB = gh;
                             break;
 
                         case RoomEnum.Pilates:
@@ -762,31 +816,35 @@ namespace BubbleStart.ViewModels
                 foreach (var ch in closedHours)
                 {
                     numOfDay = ((int)ch.Date.DayOfWeek + 6) % 7;
-                    if (numOfDay < 6 && ch.Date.Hour >= 8 && ch.Date.Hour <= 22)
+                    if (numOfDay < 6 && ch.Date.Hour >= 7 && ch.Date.Hour <= 22)
                     {
                         if (ch.Room == RoomEnum.Functional)
                         {
-                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHour0 = ch;
+                            Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHour0 = ch;
+                        }
+                        else if (ch.Room == RoomEnum.FunctionalB)
+                        {
+                            Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHourFB = ch;
                         }
                         else if (ch.Room == RoomEnum.Pilates)
                         {
-                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHour1 = ch;
+                            Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHour1 = ch;
                         }
                         else if (ch.Room == RoomEnum.Massage)
                         {
-                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHourMassage = ch;
+                            Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHourMassage = ch;
                         }
                         else if (ch.Room == RoomEnum.MassageHalf)
                         {
-                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHourMassageHalf = ch;
+                            Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHourMassageHalf = ch;
                         }
                         else if (ch.Room == RoomEnum.Personal)
                         {
-                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHourPersonal = ch;
+                            Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHourPersonal = ch;
                         }
                         else if (ch.Room == RoomEnum.Outdoor)
                         {
-                            Days[numOfDay].Hours[ch.Date.Hour - 8].ClosedHourOutdoor = ch;
+                            Days[numOfDay].Hours[ch.Date.Hour - 7].ClosedHourOutdoor = ch;
                         }
                         else
                         {
@@ -879,6 +937,20 @@ namespace BubbleStart.ViewModels
                 }
                 selectedHour.RaisePropertyChanged(nameof(Hour.TimeString1));
             }
+            if (selectedRoom == RoomEnum.FunctionalB)
+            {
+                if (selectedHour.CustomTime7?.Id > 0)
+                {
+                    selectedHour.CustomTime7.Time = CustomTime;
+                }
+                else
+                {
+                    selectedHour.CustomTime7 = new CustomeTime { Datetime = selectedHour.Time, Room = selectedRoom, Time = CustomTime };
+
+                    BasicDataManager.Add(selectedHour.CustomTime7);
+                }
+                selectedHour.RaisePropertyChanged(nameof(Hour.TimeString7));
+            }
             else if (selectedRoom == RoomEnum.Pilates)
             {
                 if (selectedHour.CustomTime2?.Id > 0)
@@ -970,7 +1042,6 @@ namespace BubbleStart.ViewModels
             {
                 if (!HasChanges && stopWatch.Elapsed.TotalSeconds >= 3 && stopWatchLE.Elapsed.TotalSeconds >= 60)
                 {
-
                     HasChanges = await db.ProgramChanges.AnyAsync(c => c.InstanceGuid != StaticResources.Guid && c.Date > LastExecuted && c.To >= StartDate && c.From <= To);
 
                     if (HasChanges)
@@ -1085,6 +1156,27 @@ namespace BubbleStart.ViewModels
                 }
 
                 _HeightFunctional = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _HeightFunctionalB;
+
+        public double HeightFunctionalB
+        {
+            get
+            {
+                return _HeightFunctionalB;
+            }
+
+            set
+            {
+                if (_HeightFunctionalB == value)
+                {
+                    return;
+                }
+
+                _HeightFunctionalB = value;
                 RaisePropertyChanged();
             }
         }
@@ -1371,6 +1463,7 @@ namespace BubbleStart.ViewModels
             ChangeTimeCommand = new RelayCommand<int>(ChangeTime);
 
             AppointmentsFunctional = new ObservableCollection<Apointment>();
+            AppointmentsFB = new ObservableCollection<Apointment>();
             AppointmentsReformer = new ObservableCollection<Apointment>();
             AppointmentsMassage = new ObservableCollection<Apointment>();
             AppointmentsMassageHalf = new ObservableCollection<Apointment>();
@@ -1382,7 +1475,7 @@ namespace BubbleStart.ViewModels
 
         #region Fields
 
-        private ObservableCollection<Apointment> _ApointmentsFunctional;
+        private ObservableCollection<Apointment> _AppointmentsFunctional;
         private ObservableCollection<Apointment> _AppointemntsOutdoor;
         private ObservableCollection<Apointment> _AppointmentsMassage;
         private ObservableCollection<Apointment> _AppointmentsMassageHalf;
@@ -1443,21 +1536,46 @@ namespace BubbleStart.ViewModels
 
         public ObservableCollection<Apointment> AppointmentsFunctional
         {
-            get => _ApointmentsFunctional;
+            get => _AppointmentsFunctional;
 
             set
             {
-                if (_ApointmentsFunctional == value)
+                if (_AppointmentsFunctional == value)
                 {
                     return;
                 }
 
-                _ApointmentsFunctional = value;
+                _AppointmentsFunctional = value;
                 RaisePropertyChanged();
-                FunctionalCV = (CollectionView)CollectionViewSource.GetDefaultView(_ApointmentsFunctional);
+                FunctionalCV = (CollectionView)CollectionViewSource.GetDefaultView(_AppointmentsFunctional);
                 FunctionalCV.Filter = AppointmensFilter;
                 FunctionalCV.SortDescriptions.Add(new SortDescription(nameof(Apointment.Person), ListSortDirection.Ascending));
                 FunctionalCV.Refresh();
+            }
+        }
+
+        private ObservableCollection<Apointment> _AppointmentsFB;
+
+        public ObservableCollection<Apointment> AppointmentsFB
+        {
+            get
+            {
+                return _AppointmentsFB;
+            }
+
+            set
+            {
+                if (_AppointmentsFB == value)
+                {
+                    return;
+                }
+
+                _AppointmentsFB = value;
+                RaisePropertyChanged();
+                FunctionalBCV = (CollectionView)CollectionViewSource.GetDefaultView(_AppointmentsFB);
+                FunctionalBCV.Filter = AppointmensFilter;
+                FunctionalBCV.SortDescriptions.Add(new SortDescription(nameof(Apointment.Person), ListSortDirection.Ascending));
+                FunctionalBCV.Refresh();
             }
         }
 
@@ -1551,6 +1669,8 @@ namespace BubbleStart.ViewModels
 
         public SolidColorBrush ClosedColor1 => GetClosedColor(1);
 
+        public SolidColorBrush ClosedColorFB => GetClosedColor(6);
+
         public SolidColorBrush ClosedColorMassage => GetClosedColor(2);
 
         public SolidColorBrush ClosedColorMassageHalf => GetClosedColor(4);
@@ -1572,6 +1692,29 @@ namespace BubbleStart.ViewModels
 
                 _ClosedHour0 = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ClosedColor0));
+            }
+        }
+
+        private ClosedHour _ClosedHourFB;
+
+        public ClosedHour ClosedHourFB
+        {
+            get
+            {
+                return _ClosedHourFB;
+            }
+
+            set
+            {
+                if (_ClosedHourFB == value)
+                {
+                    return;
+                }
+
+                _ClosedHourFB = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ClosedColorFB));
             }
         }
 
@@ -1588,6 +1731,7 @@ namespace BubbleStart.ViewModels
 
                 _ClosedHour1 = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ClosedColor1));
             }
         }
 
@@ -1604,6 +1748,7 @@ namespace BubbleStart.ViewModels
 
                 _ClosedHourMassage = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ClosedColorMassage));
             }
         }
 
@@ -1623,6 +1768,7 @@ namespace BubbleStart.ViewModels
 
                 _ClosedHourMassageHalf = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ClosedColorMassageHalf));
             }
         }
 
@@ -1639,6 +1785,7 @@ namespace BubbleStart.ViewModels
 
                 _ClosedHourOutdoor = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ClosedColorOutdoor));
             }
         }
 
@@ -1658,6 +1805,7 @@ namespace BubbleStart.ViewModels
 
                 _ClosedHourPersonal = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ClosedColorPersonal));
             }
         }
 
@@ -1674,6 +1822,7 @@ namespace BubbleStart.ViewModels
         public CustomeTime CustomTime5 { get; set; }
 
         public CustomeTime CustomTime6 { get; set; }
+        public CustomeTime CustomTime7 { get; set; }
 
         public RelayCommand<object> DeleteApointmentCommand { get; set; }
 
@@ -1709,6 +1858,7 @@ namespace BubbleStart.ViewModels
                 _GymIndex = value;
                 RaisePropertyChanged();
                 FunctionalCV.Refresh();
+                FunctionalBCV.Refresh();
                 ReformerCV.Refresh();
                 MassageCV.Refresh();
                 OutdoorCv.Refresh();
@@ -1732,6 +1882,27 @@ namespace BubbleStart.ViewModels
                 }
 
                 _GymnastFunctional = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private GymnastHour _GymnastFunctionalB;
+
+        public GymnastHour GymnastFunctionalB
+        {
+            get
+            {
+                return _GymnastFunctionalB;
+            }
+
+            set
+            {
+                if (_GymnastFunctionalB == value)
+                {
+                    return;
+                }
+
+                _GymnastFunctionalB = value;
                 RaisePropertyChanged();
             }
         }
@@ -1866,6 +2037,27 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        private ICollectionView _FunctionalBCV;
+
+        public ICollectionView FunctionalBCV
+        {
+            get
+            {
+                return _FunctionalBCV;
+            }
+
+            set
+            {
+                if (_FunctionalBCV == value)
+                {
+                    return;
+                }
+
+                _FunctionalBCV = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public ICollectionView MassageHalfCV
         {
             get => _MassageHalfCV;
@@ -1937,6 +2129,7 @@ namespace BubbleStart.ViewModels
         public Apointment SelectedApointmentFunctional { get; set; }
 
         public Apointment SelectedApointmentReformer { get; set; }
+        public Apointment SelectedApointmentFB { get; set; }
 
         public Apointment SelectedAppointmentMassage { get; set; }
 
@@ -2060,6 +2253,27 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        private bool _SelectedFB;
+
+        public bool SelectedFB
+        {
+            get
+            {
+                return _SelectedFB;
+            }
+
+            set
+            {
+                if (_SelectedFB == value)
+                {
+                    return;
+                }
+
+                _SelectedFB = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public Hour Self => this;
 
         public DateTime Time { get; set; }
@@ -2075,6 +2289,7 @@ namespace BubbleStart.ViewModels
         public string TimeString5 => CustomTime5 != null ? CustomTime5.Time : Time.AddMinutes(30).ToString("HH:mm");
 
         public string TimeString6 => CustomTime6 != null ? CustomTime6.Time : Time.ToString("HH:mm");
+        public string TimeString7 => CustomTime7 != null ? CustomTime7.Time : Time.ToString("HH:mm");
 
         public RelayCommand<string> ToggleCanceledCommand { get; set; }
 
@@ -2098,7 +2313,6 @@ namespace BubbleStart.ViewModels
                 Apointment ap = new Apointment { Customer = customer, DateTime = Time, Person = selectedPerson, Room = room, Gymnast = SelectedGymnast, Waiting = waiting };
                 if (forever)
                 {
-
                     BasicDataManager.Add(new ProgramChange
                     {
                         Date = DateTime.Now,
@@ -2149,6 +2363,7 @@ namespace BubbleStart.ViewModels
                     });
                 }
                 if ((room == RoomEnum.Functional && !AppointmentsFunctional.Any(a => a.Customer.Id == ap.Customer.Id)) ||
+                    (room == RoomEnum.FunctionalB && !AppointmentsFB.Any(api => api.Customer.Id == ap.Customer.Id)) ||
                     (room == RoomEnum.Pilates && !AppointmentsReformer.Any(api => api.Customer.Id == ap.Customer.Id)) ||
                     (room == RoomEnum.Massage && !AppointmentsMassage.Any(api => api.Customer.Id == ap.Customer.Id)) ||
                     (room == RoomEnum.MassageHalf && !AppointmentsMassageHalf.Any(api => api.Customer.Id == ap.Customer.Id)) ||
@@ -2158,6 +2373,11 @@ namespace BubbleStart.ViewModels
                     if (room == RoomEnum.Functional)
                     {
                         AppointmentsFunctional.Add(ap);
+                        BasicDataManager.Add(ap);
+                    }
+                    else if (room == RoomEnum.FunctionalB)
+                    {
+                        AppointmentsFB.Add(ap);
                         BasicDataManager.Add(ap);
                     }
                     else if (room == RoomEnum.Pilates)
@@ -2198,9 +2418,20 @@ namespace BubbleStart.ViewModels
             if (obj[0] is User u && obj[1] is string st && int.TryParse(st, out int v))
             {
                 bool forever = v >= 10;
-                if (forever && parent != null && parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => h.SelectedF || h.SelectedR || h.SelectedM || h.SelectedMH || h.SelectedP || h.SelectedO).Count() > 0)
+                var selHours = parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => h.SelectedF || h.SelectedFB || h.SelectedR || h.SelectedM || h.SelectedMH || h.SelectedP || h.SelectedO);
+
+                if (forever && selHours.Any(s =>
+                s.SelectedF && s.GymnastFunctional != null ||
+                s.SelectedFB && s.GymnastFunctionalB != null ||
+                s.SelectedM && s.GymnastMassage != null ||
+                s.SelectedMH && s.GymnastMassageHalf != null ||
+                s.SelectedO && s.GymnastOutdoor != null ||
+                s.SelectedP && s.GymnastPersonal != null ||
+                s.SelectedR && s.GymnastReformer != null
+                ))
                 {
-                    MessageBox.Show("Δεν μπορούν να μπούν για πάντα γυμναστές ταυτόχρονα σε πολλά κουτάκια");
+                    MessageBox.Show("Αφαιρέστε τους υπάρχοντες γυμναστές πρίν βάλετε γυμναστές για πάντα στα επιλεγμένα κουτάκια");
+                    Mouse.OverrideCursor = Cursors.Arrow;
                     return;
                 }
                 v %= 10;
@@ -2210,13 +2441,31 @@ namespace BubbleStart.ViewModels
                     {
                         GymnastFunctional = new GymnastHour { Datetime = Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastFunctional);
+                        parent.GymnastsLocal.Add(GymnastFunctional);
                     }
                     else
                     {
-                        if (ShowMessage(forever, GymnastFunctional))
+                        if (ShowMessage(forever, GymnastFunctional, u))
                         {
                             GymnastFunctional.Gymnast = u;
                             GymnastFunctional.Gymnast_Id = u.Id;
+                        }
+                    }
+                }
+                else if (v == 6)
+                {
+                    if (GymnastFunctionalB == null || (!forever && GymnastFunctionalB.Forever))
+                    {
+                        GymnastFunctionalB = new GymnastHour { Datetime = Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
+                        BasicDataManager.Add(GymnastFunctionalB);
+                        parent.GymnastsLocal.Add(GymnastFunctionalB);
+                    }
+                    else
+                    {
+                        if (ShowMessage(forever, GymnastFunctionalB, u))
+                        {
+                            GymnastFunctionalB.Gymnast = u;
+                            GymnastFunctionalB.Gymnast_Id = u.Id;
                         }
                     }
                 }
@@ -2226,10 +2475,11 @@ namespace BubbleStart.ViewModels
                     {
                         GymnastReformer = new GymnastHour { Datetime = Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastReformer);
+                        parent.GymnastsLocal.Add(GymnastReformer);
                     }
                     else
                     {
-                        if (ShowMessage(forever,GymnastReformer))
+                        if (ShowMessage(forever, GymnastReformer, u))
                         {
                             GymnastReformer.Gymnast = u;
                             GymnastReformer.Gymnast_Id = u.Id;
@@ -2242,10 +2492,11 @@ namespace BubbleStart.ViewModels
                     {
                         GymnastMassage = new GymnastHour { Datetime = Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastMassage);
+                        parent.GymnastsLocal.Add(GymnastMassage);
                     }
                     else
                     {
-                        if (ShowMessage(forever, GymnastMassage))
+                        if (ShowMessage(forever, GymnastMassage, u))
                         {
                             GymnastMassage.Gymnast = u;
                             GymnastMassage.Gymnast_Id = u.Id;
@@ -2258,10 +2509,11 @@ namespace BubbleStart.ViewModels
                     {
                         GymnastOutdoor = new GymnastHour { Datetime = Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastOutdoor);
+                        parent.GymnastsLocal.Add(GymnastOutdoor);
                     }
                     else
                     {
-                        if (ShowMessage(forever, GymnastOutdoor))
+                        if (ShowMessage(forever, GymnastOutdoor, u))
                         {
                             GymnastOutdoor.Gymnast = u;
                             GymnastOutdoor.Gymnast_Id = u.Id;
@@ -2274,10 +2526,11 @@ namespace BubbleStart.ViewModels
                     {
                         GymnastMassageHalf = new GymnastHour { Datetime = Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastMassageHalf);
+                        parent.GymnastsLocal.Add(GymnastMassageHalf);
                     }
                     else
                     {
-                        if (ShowMessage(forever, GymnastMassageHalf))
+                        if (ShowMessage(forever, GymnastMassageHalf, u))
                         {
                             GymnastMassageHalf.Gymnast = u;
                             GymnastMassageHalf.Gymnast_Id = u.Id;
@@ -2290,10 +2543,11 @@ namespace BubbleStart.ViewModels
                     {
                         GymnastPersonal = new GymnastHour { Datetime = Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = (RoomEnum)v };
                         BasicDataManager.Add(GymnastPersonal);
+                        parent.GymnastsLocal.Add(GymnastPersonal);
                     }
                     else
                     {
-                        if (ShowMessage(forever, GymnastPersonal))
+                        if (ShowMessage(forever, GymnastPersonal, u))
                         {
                             GymnastPersonal.Gymnast = u;
                             GymnastPersonal.Gymnast_Id = u.Id;
@@ -2302,83 +2556,121 @@ namespace BubbleStart.ViewModels
                 }
                 if (parent != null)
                 {
-                    foreach (var h in parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => h.SelectedF || h.SelectedR || h.SelectedM || h.SelectedMH || h.SelectedP || h.SelectedO))
+                    foreach (var h in selHours)
                     {
                         if (h.SelectedF)
                         {
-                            if (h.GymnastFunctional == null)
+                            if (h.GymnastFunctional == null || (!forever && GymnastFunctional.Forever))
                             {
                                 h.GymnastFunctional = new GymnastHour { Datetime = h.Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.Functional };
                                 BasicDataManager.Add(h.GymnastFunctional);
+                                parent.GymnastsLocal.Add(GymnastFunctional);
                             }
                             else
                             {
+                                if (ShowMessage(forever, GymnastFunctional, u))
+                                {
                                     h.GymnastFunctional.Gymnast = u;
                                     h.GymnastFunctional.Gymnast_Id = u.Id;
+                                }
+                            }
+                        }
+                        if (h.SelectedFB)
+                        {
+                            if (h.GymnastFunctionalB == null || (!forever && GymnastFunctionalB.Forever))
+                            {
+                                h.GymnastFunctionalB = new GymnastHour { Datetime = h.Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.FunctionalB };
+                                BasicDataManager.Add(h.GymnastFunctionalB);
+                                parent.GymnastsLocal.Add(GymnastFunctionalB);
+                            }
+                            else
+                            {
+                                if (ShowMessage(forever, GymnastFunctionalB, u))
+                                {
+                                    h.GymnastFunctionalB.Gymnast = u;
+                                    h.GymnastFunctionalB.Gymnast_Id = u.Id;
+                                }
                             }
                         }
                         if (h.SelectedR)
                         {
-                            if (h.GymnastReformer == null)
+                            if (h.GymnastReformer == null || (!forever && GymnastReformer.Forever))
                             {
                                 h.GymnastReformer = new GymnastHour { Datetime = h.Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.Pilates };
                                 BasicDataManager.Add(h.GymnastReformer);
+                                parent.GymnastsLocal.Add(GymnastReformer);
                             }
                             else
                             {
+                                if (ShowMessage(forever, GymnastReformer, u))
+                                {
                                     h.GymnastReformer.Gymnast = u;
                                     h.GymnastReformer.Gymnast_Id = u.Id;
+                                }
                             }
                         }
                         if (h.SelectedM)
                         {
-                            if (h.GymnastMassage == null)
+                            if (h.GymnastMassage == null || (!forever && GymnastMassage.Forever))
                             {
                                 h.GymnastMassage = new GymnastHour { Datetime = h.Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.Massage };
                                 BasicDataManager.Add(h.GymnastMassage);
+                                parent.GymnastsLocal.Add(GymnastMassage);
                             }
                             else
                             {
+                                if (ShowMessage(forever, GymnastMassage, u))
+                                {
                                     h.GymnastMassage.Gymnast = u;
                                     h.GymnastMassage.Gymnast_Id = u.Id;
+                                }
                             }
                         }
                         if (h.SelectedMH)
                         {
-                            if (h.GymnastMassageHalf == null)
+                            if (h.GymnastMassageHalf == null || (!forever && GymnastMassageHalf.Forever))
                             {
                                 h.GymnastMassageHalf = new GymnastHour { Datetime = h.Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.MassageHalf };
                                 BasicDataManager.Add(h.GymnastMassageHalf);
+                                parent.GymnastsLocal.Add(GymnastMassageHalf);
                             }
                             else
                             {
+                                if (ShowMessage(forever, GymnastMassageHalf, u))
+                                {
                                     h.GymnastMassageHalf.Gymnast = u;
                                     h.GymnastMassageHalf.Gymnast_Id = u.Id;
+                                }
                             }
                         }
                         if (h.SelectedP)
                         {
-                            if (h.GymnastPersonal == null)
+                            if (h.GymnastPersonal == null || (!forever && GymnastPersonal.Forever))
                             {
                                 h.GymnastPersonal = new GymnastHour { Datetime = h.Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.Personal };
                                 BasicDataManager.Add(h.GymnastPersonal);
+                                parent.GymnastsLocal.Add(GymnastPersonal);
                             }
                             else
                             {
+                                if (ShowMessage(forever, GymnastPersonal, u))
+                                {
                                     h.GymnastPersonal.Gymnast = u;
                                     h.GymnastPersonal.Gymnast_Id = u.Id;
+                                }
                             }
                         }
                         if (h.SelectedO)
                         {
-                            if (h.GymnastOutdoor == null || (!forever && h.GymnastFunctional.Forever))
+                            if (h.GymnastOutdoor == null || (!forever && h.GymnastOutdoor.Forever))
                             {
                                 h.GymnastOutdoor = new GymnastHour { Datetime = h.Time, Forever = forever, Gymnast = u, Gymnast_Id = u.Id, Room = RoomEnum.Outdoor };
                                 BasicDataManager.Add(h.GymnastOutdoor);
+                                parent.GymnastsLocal.Add(GymnastOutdoor);
                             }
                             else
                             {
-                                if (ShowMessage(forever, h.GymnastOutdoor))
+                                if (ShowMessage(forever, GymnastOutdoor, u))
                                 {
                                     h.GymnastOutdoor.Gymnast = u;
                                     h.GymnastOutdoor.Gymnast_Id = u.Id;
@@ -2400,8 +2692,10 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        private bool ShowMessage(bool forever, GymnastHour gymnast)
+        private bool ShowMessage(bool forever, GymnastHour gymnastHour, User u)
         {
+            if (forever && gymnastHour.Forever && gymnastHour.Gymnast.Id == u.Id)
+                return false;
             if (forever)
             {
                 MessageBox.Show("Παρακαλώ αφάιρέστε τον υπάρχον γυμναστή πριν προσθέσετε κάποιον για πάντα");
@@ -2412,7 +2706,7 @@ namespace BubbleStart.ViewModels
 
         internal void DeselectAll()
         {
-            SelectedF = SelectedM = SelectedMH = SelectedP = SelectedO = SelectedR = false;
+            SelectedF = SelectedFB = SelectedM = SelectedMH = SelectedP = SelectedO = SelectedR = false;
         }
 
         private void AddApointment(int room)
@@ -2437,6 +2731,9 @@ namespace BubbleStart.ViewModels
             {
                 case "0":
                     return SelectedApointmentFunctional != null;
+
+                case "6":
+                    return SelectedApointmentFB != null;
 
                 case "1":
                     return SelectedApointmentReformer != null;
@@ -2479,6 +2776,21 @@ namespace BubbleStart.ViewModels
                         });
                         BasicDataManager.Delete(SelectedApointmentFunctional);
                         AppointmentsFunctional.Remove(SelectedApointmentFunctional);
+                    }
+                    break;
+
+                case "6":
+                    if (MessageBox.Show($"Θέλετε σίγουρα να ΔΙΑΓΡΑΨΕΤΕ το επιλεγμένο ραντεβού? {SelectedApointmentFB.Description}", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        BasicDataManager.Add(new ProgramChange
+                        {
+                            Date = DateTime.Now,
+                            InstanceGuid = StaticResources.Guid,
+                            From = SelectedApointmentFB.DateTime,
+                            To = SelectedApointmentFB.DateTime.AddHours(1)
+                        });
+                        BasicDataManager.Delete(SelectedApointmentFB);
+                        AppointmentsFB.Remove(SelectedApointmentFB);
                     }
                     break;
 
@@ -2574,7 +2886,7 @@ namespace BubbleStart.ViewModels
 
             try
             {
-                List<ClosedHour> ClosedHours = await BasicDataManager.Context.GetAllClosedHoursAsync(room, Time);
+                List<ClosedHour> ClosedHours = await BasicDataManager.Context.GetAllClosedHoursAsync(room, Time, null);
 
                 foreach (var item in ClosedHours)
                 {
@@ -2592,7 +2904,7 @@ namespace BubbleStart.ViewModels
                 }
 
                 await BasicDataManager.SaveAsync();
-                ClosedHour0 = ClosedHour1 = ClosedHourMassage = ClosedHourMassageHalf = ClosedHourPersonal = ClosedHourOutdoor = null;
+                ClosedHour0 = ClosedHourFB = ClosedHour1 = ClosedHourMassage = ClosedHourMassageHalf = ClosedHourPersonal = ClosedHourOutdoor = null;
                 Messenger.Default.Send(new UpdateClosedHoursMessage());
             }
             catch (Exception ex)
@@ -2602,6 +2914,7 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
 
             RaisePropertyChanged(nameof(ClosedColor1));
+            RaisePropertyChanged(nameof(ClosedColorFB));
             RaisePropertyChanged(nameof(ClosedColor0));
             RaisePropertyChanged(nameof(ClosedColorMassage));
             RaisePropertyChanged(nameof(ClosedColorMassageHalf));
@@ -2614,6 +2927,17 @@ namespace BubbleStart.ViewModels
             if (v == 0)
             {
                 if (ClosedHour0 != null)
+                {
+                    return new SolidColorBrush(Colors.Red);
+                }
+                else
+                {
+                    return new SolidColorBrush(Colors.LightYellow);
+                }
+            }
+            else if (v == 6)
+            {
+                if (ClosedHourFB != null)
                 {
                     return new SolidColorBrush(Colors.Red);
                 }
@@ -2682,62 +3006,113 @@ namespace BubbleStart.ViewModels
 
         private async Task NoGymnast(int obj)
         {
+            //kai edw lathos mallon
             Mouse.OverrideCursor = Cursors.Wait;
-            var forevers = parent.GymnastsLocal.Where(te => te.Forever);
+            var forevers = parent.GymnastsLocal.Where(te => te?.Forever == true).ToList();
             switch (obj)
             {
                 case 0:
                     if (GymnastFunctional != null)
                     {
+                        if (parent != null && GymnastFunctional.Forever)
+                        {
+                            forevers.Remove(GymnastFunctional);
+                            parent?.GymnastsLocal.Remove(GymnastFunctional);
+                            GymnastFunctional.Forever = false;
+                        }
                         BasicDataManager.Delete(GymnastFunctional);
-                        GymnastFunctional = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute);
+                        GymnastFunctional = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute && g.Room == RoomEnum.Functional);
+                    }
+                    break;
+
+                case 6:
+                    if (GymnastFunctionalB != null)
+                    {
+                        if (parent != null && GymnastFunctionalB.Forever)
+                        {
+                            forevers.Remove(GymnastFunctionalB);
+                            parent?.GymnastsLocal.Remove(GymnastFunctionalB);
+                            GymnastFunctionalB.Forever = false;
+                        }
+                        BasicDataManager.Delete(GymnastFunctionalB);
+                        GymnastFunctionalB = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute && g.Room == RoomEnum.FunctionalB);
                     }
                     break;
 
                 case 1:
                     if (GymnastReformer != null)
                     {
+                        if (parent != null && GymnastReformer.Forever)
+                        {
+                            forevers.Remove(GymnastReformer);
+                            parent?.GymnastsLocal.Remove(GymnastReformer);
+                            GymnastReformer.Forever = false;
+                        }
                         BasicDataManager.Delete(GymnastReformer);
-                        GymnastReformer = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute);
+                        GymnastReformer = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute && g.Room == RoomEnum.Pilates);
                     }
                     break;
 
                 case 2:
                     if (GymnastMassage != null)
                     {
+                        if (parent != null && GymnastMassage.Forever)
+                        {
+                            forevers.Remove(GymnastMassage);
+                            parent?.GymnastsLocal.Remove(GymnastMassage);
+                            GymnastMassage.Forever = false;
+                        }
                         BasicDataManager.Delete(GymnastMassage);
-                        GymnastMassage = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute);
+                        GymnastMassage = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute && g.Room == RoomEnum.Massage);
                     }
                     break;
 
                 case 3:
                     if (GymnastOutdoor != null)
                     {
+                        if (parent != null && GymnastOutdoor.Forever)
+                        {
+                            forevers.Remove(GymnastOutdoor);
+                            parent?.GymnastsLocal.Remove(GymnastOutdoor);
+                            GymnastOutdoor.Forever = false;
+                        }
                         BasicDataManager.Delete(GymnastOutdoor);
-                        GymnastOutdoor = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute);
+                        GymnastOutdoor = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute && g.Room == RoomEnum.Outdoor);
                     }
                     break;
 
                 case 4:
                     if (GymnastMassageHalf != null)
                     {
+                        if (parent != null && GymnastMassageHalf.Forever)
+                        {
+                            forevers.Remove(GymnastMassageHalf);
+                            parent?.GymnastsLocal.Remove(GymnastMassageHalf);
+                            GymnastMassageHalf.Forever = false;
+                        }
                         BasicDataManager.Delete(GymnastMassageHalf);
-                        GymnastMassageHalf = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute);
+                        GymnastMassageHalf = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute && g.Room == RoomEnum.MassageHalf);
                     }
                     break;
 
                 case 5:
                     if (GymnastPersonal != null)
                     {
+                        if (parent != null && GymnastPersonal.Forever)
+                        {
+                            forevers.Remove(GymnastPersonal);
+                            parent?.GymnastsLocal.Remove(GymnastPersonal);
+                            GymnastPersonal.Forever = false;
+                        }
                         BasicDataManager.Delete(GymnastPersonal);
-                        GymnastPersonal = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute);
+                        GymnastPersonal = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == Time.DayOfWeek && g.Datetime.Hour == Time.Hour && g.Datetime.Minute == Time.Minute && g.Room == RoomEnum.Personal);
                     }
                     break;
             }
             if (parent != null)
             {
-
-                var t = parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => (h.SelectedF || h.SelectedR || h.SelectedM || h.SelectedMH || h.SelectedP || h.SelectedO));
+                //den epilego swsta ton gia panta
+                var t = parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => (h.SelectedF || h.SelectedFB || h.SelectedR || h.SelectedM || h.SelectedMH || h.SelectedP || h.SelectedO));
                 foreach (var h in t)
                 {
                     if (h.SelectedF && !(h == this && obj == 0))
@@ -2745,8 +3120,25 @@ namespace BubbleStart.ViewModels
                         if (h.GymnastFunctional != null)
                         {
                             if (h.GymnastFunctional.Id > 0)
+                            {
+                                if (parent != null && h.GymnastFunctional.Forever)
+                                    parent?.GymnastsLocal.Remove(h.GymnastFunctional);
                                 BasicDataManager.Delete(h.GymnastFunctional);
-                            h.GymnastFunctional = forevers.FirstOrDefault(g=>g.Datetime.DayOfWeek==h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute );
+                            }
+                            h.GymnastFunctional = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute && g.Room == RoomEnum.Functional);
+                        }
+                    }
+                    if (h.SelectedFB && !(h == this && obj == 6))
+                    {
+                        if (h.GymnastFunctionalB != null)
+                        {
+                            if (h.GymnastFunctionalB.Id > 0)
+                            {
+                                if (parent != null && h.GymnastFunctionalB.Forever)
+                                    parent?.GymnastsLocal.Remove(h.GymnastFunctionalB);
+                                BasicDataManager.Delete(h.GymnastFunctionalB);
+                            }
+                            h.GymnastFunctionalB = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute && g.Room == RoomEnum.FunctionalB);
                         }
                     }
                     if (h.SelectedR && !(h == this && obj == 1))
@@ -2754,8 +3146,12 @@ namespace BubbleStart.ViewModels
                         if (h.GymnastReformer != null)
                         {
                             if (h.GymnastReformer.Id > 0)
+                            {
+                                if (parent != null && h.GymnastReformer.Forever)
+                                    parent?.GymnastsLocal.Remove(h.GymnastReformer);
                                 BasicDataManager.Delete(h.GymnastReformer);
-                            h.GymnastReformer = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute);
+                            }
+                            h.GymnastReformer = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute && g.Room == RoomEnum.Pilates);
                         }
                     }
                     if (h.SelectedM && !(h == this && obj == 2))
@@ -2763,8 +3159,12 @@ namespace BubbleStart.ViewModels
                         if (h.GymnastMassage != null)
                         {
                             if (h.GymnastMassage.Id > 0)
+                            {
+                                if (parent != null && h.GymnastMassage.Forever)
+                                    parent?.GymnastsLocal.Remove(h.GymnastMassage);
                                 BasicDataManager.Delete(h.GymnastMassage);
-                            h.GymnastMassage = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute);
+                            }
+                            h.GymnastMassage = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute && g.Room == RoomEnum.Massage);
                         }
                     }
                     if (h.SelectedMH && !(h == this && obj == 4))
@@ -2772,8 +3172,12 @@ namespace BubbleStart.ViewModels
                         if (h.GymnastMassageHalf != null)
                         {
                             if (h.GymnastMassageHalf.Id > 0)
+                            {
+                                if (parent != null && h.GymnastMassageHalf.Forever)
+                                    parent?.GymnastsLocal.Remove(h.GymnastMassageHalf);
                                 BasicDataManager.Delete(h.GymnastMassageHalf);
-                            h.GymnastMassageHalf = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute);
+                            }
+                            h.GymnastMassageHalf = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute && g.Room == RoomEnum.MassageHalf);
                         }
                     }
                     if (h.SelectedP && !(h == this && obj == 5))
@@ -2781,8 +3185,12 @@ namespace BubbleStart.ViewModels
                         if (h.GymnastPersonal != null)
                         {
                             if (h.GymnastPersonal.Id > 0)
+                            {
+                                if (parent != null && GymnastPersonal.Forever)
+                                    parent?.GymnastsLocal.Remove(h.GymnastPersonal);
                                 BasicDataManager.Delete(h.GymnastPersonal);
-                            h.GymnastPersonal = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute);
+                            }
+                            h.GymnastPersonal = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute && g.Room == RoomEnum.Personal);
                         }
                     }
                     if (h.SelectedO && !(h == this && obj == 3))
@@ -2790,8 +3198,12 @@ namespace BubbleStart.ViewModels
                         if (h.GymnastOutdoor != null)
                         {
                             if (h.GymnastOutdoor.Id > 0)
+                            {
+                                if (parent != null && h.GymnastOutdoor.Forever)
+                                    parent?.GymnastsLocal.Remove(h.GymnastOutdoor);
                                 BasicDataManager.Delete(h.GymnastOutdoor);
-                            h.GymnastOutdoor = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute);
+                            }
+                            h.GymnastOutdoor = forevers.FirstOrDefault(g => g.Datetime.DayOfWeek == h.Time.DayOfWeek && g.Datetime.Hour == h.Time.Hour && g.Datetime.Minute == h.Time.Minute && g.Room == RoomEnum.Outdoor);
                         }
                     }
                 }
@@ -2806,7 +3218,6 @@ namespace BubbleStart.ViewModels
             });
             await BasicDataManager.SaveAsync();
 
-            
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -2819,6 +3230,12 @@ namespace BubbleStart.ViewModels
                     SelectedApointmentFunctional.Canceled = !SelectedApointmentFunctional.Canceled;
                     SelectedApointmentFunctional.RaisePropertyChanged(nameof(Apointment.ApColor));
                     TryCancelForUser(SelectedApointmentFunctional, SelectedApointmentFunctional.Canceled);
+                    break;
+
+                case "6":
+                    SelectedApointmentFB.Canceled = !SelectedApointmentFB.Canceled;
+                    SelectedApointmentFB.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    TryCancelForUser(SelectedApointmentFB, SelectedApointmentFB.Canceled);
                     break;
 
                 case "1":
@@ -2877,6 +3294,22 @@ namespace BubbleStart.ViewModels
                     BasicDataManager.Add(ClosedHour0);
                 }
                 RaisePropertyChanged(nameof(ClosedColor0));
+            }
+            else if (room == RoomEnum.FunctionalB)
+            {
+                if (ClosedHourFB != null)
+                {
+                    disable = false;
+                    BasicDataManager.Context.Delete(ClosedHourFB);
+                    ClosedHourFB = null;
+                }
+                else
+                {
+                    disable = true;
+                    ClosedHourFB = new ClosedHour { Date = Time, Room = room };
+                    BasicDataManager.Add(ClosedHourFB);
+                }
+                RaisePropertyChanged(nameof(ClosedColorFB));
             }
             else if (room == RoomEnum.Pilates)
             {
@@ -2965,7 +3398,7 @@ namespace BubbleStart.ViewModels
 
             if (parent != null)
             {
-                var t = parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => (h.SelectedF || h.SelectedR || h.SelectedM || h.SelectedMH || h.SelectedP || h.SelectedO));
+                var t = parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours.Where(h => (h.SelectedF || h.SelectedFB || h.SelectedR || h.SelectedM || h.SelectedMH || h.SelectedP || h.SelectedO));
                 foreach (var h in t)
                 {
                     if (h.SelectedF && !(h == this && room == RoomEnum.Functional))
@@ -2981,6 +3414,20 @@ namespace BubbleStart.ViewModels
                             BasicDataManager.Add(h.ClosedHour0);
                         }
                         h.RaisePropertyChanged(nameof(ClosedColor0));
+                    }
+                    if (h.SelectedFB && !(h == this && room == RoomEnum.FunctionalB))
+                    {
+                        if (h.ClosedHourFB != null && !disable)
+                        {
+                            BasicDataManager.Context.Delete(h.ClosedHourFB);
+                            h.ClosedHourFB = null;
+                        }
+                        else if (h.ClosedHourFB == null && disable)
+                        {
+                            h.ClosedHourFB = new ClosedHour { Date = h.Time, Room = RoomEnum.FunctionalB };
+                            BasicDataManager.Add(h.ClosedHourFB);
+                        }
+                        h.RaisePropertyChanged(nameof(ClosedColorFB));
                     }
                     if (h.SelectedR && !(h == this && room == RoomEnum.Pilates))
                     {
@@ -3067,16 +3514,144 @@ namespace BubbleStart.ViewModels
         private async Task ToggleEnabledForEver(RoomEnum room)
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            List<ClosedHour> ClosedHours = await BasicDataManager.Context.GetAllClosedHoursAsync(room, Time);
-            var limit = Time.AddMonths(3);
-            var tmpTime = Time;
-            while (tmpTime < limit)
+            List<Hour> selectedHours = null;
+            if (parent != null)
             {
-                if (!ClosedHours.Any(c => c.Date == tmpTime))
+                selectedHours = parent.Days.FirstOrDefault(d => d.Date.DayOfYear == Time.DayOfYear).Hours
+                    .Where(h => (h.SelectedF || h.SelectedFB || h.SelectedR || h.SelectedM || h.SelectedMH || h.SelectedP || h.SelectedO)).ToList();
+                //    if (t.Any())
+                //    {
+                //        MessageBox.Show("Προς το παρόν δεν μπορείτε να (απ)ενεργοποιήσετε για 3 μήνες πολλά κουτάκια ταυτόχρονα.");
+                //        Mouse.OverrideCursor = Cursors.Arrow;
+                //        return;
+                //    }
+            }
+            List<ClosedHour> ClosedHours = await BasicDataManager.Context.GetAllClosedHoursAsync(room, Time, selectedHours);
+            if (selectedHours == null)
+            {
+                selectedHours = new List<Hour>();
+            }
+            if (!selectedHours.Any())
+            {
+                selectedHours.Add(this);
+            }
+            DateTime limit = Time.AddMonths(3);
+            DateTime tmpTime = Time;
+            int counter = 0;
+            foreach (var h in selectedHours)
+            {
+                if (h.SelectedF)
                 {
-                    BasicDataManager.Add(new ClosedHour { Date = tmpTime, Room = (RoomEnum)room });
+                    limit = h.Time.AddMonths(3);
+                    tmpTime = h.Time;
+                    while (tmpTime <= limit)
+                    {
+                        if (!ClosedHours.Any(c => c.Date == tmpTime && c.Room == RoomEnum.Functional))
+                        {
+                            BasicDataManager.Add(new ClosedHour { Date = tmpTime, Room = RoomEnum.Functional });
+                            counter++;
+                            if (counter > 30)
+                                await BasicDataManager.SaveAsync();
+                        }
+                        tmpTime = tmpTime.AddDays(7);
+                    }
                 }
-                tmpTime = tmpTime.AddDays(7);
+                if (h.SelectedFB)
+                {
+                    limit = h.Time.AddMonths(3);
+                    tmpTime = h.Time;
+                    while (tmpTime <= limit)
+                    {
+                        if (!ClosedHours.Any(c => c.Date == tmpTime && c.Room == RoomEnum.FunctionalB))
+                        {
+                            BasicDataManager.Add(new ClosedHour { Date = tmpTime, Room = RoomEnum.FunctionalB });
+                            counter++;
+                            if (counter > 30)
+                                await BasicDataManager.SaveAsync();
+                        }
+                        tmpTime = tmpTime.AddDays(7);
+                    }
+                }
+                if (h.SelectedR)
+                {
+                    limit = h.Time.AddMonths(3);
+                    tmpTime = h.Time;
+                    while (tmpTime <= limit)
+                    {
+                        if (!ClosedHours.Any(c => c.Date == tmpTime && c.Room == RoomEnum.Pilates))
+                        {
+                            BasicDataManager.Add(new ClosedHour { Date = tmpTime, Room = RoomEnum.Pilates });
+                            counter++;
+                            if (counter > 30)
+                                await BasicDataManager.SaveAsync();
+                        }
+                        tmpTime = tmpTime.AddDays(7);
+                    }
+                }
+                if (h.SelectedP)
+                {
+                    limit = h.Time.AddMonths(3);
+                    tmpTime = h.Time;
+                    while (tmpTime <= limit)
+                    {
+                        if (!ClosedHours.Any(c => c.Date == tmpTime && c.Room == RoomEnum.Personal))
+                        {
+                            BasicDataManager.Add(new ClosedHour { Date = tmpTime, Room = RoomEnum.Personal });
+                            counter++;
+                            if (counter > 30)
+                                await BasicDataManager.SaveAsync();
+                        }
+                        tmpTime = tmpTime.AddDays(7);
+                    }
+                }
+                if (h.SelectedM)
+                {
+                    limit = h.Time.AddMonths(3);
+                    tmpTime = h.Time;
+                    while (tmpTime <= limit)
+                    {
+                        if (!ClosedHours.Any(c => c.Date == tmpTime && c.Room == RoomEnum.Massage))
+                        {
+                            BasicDataManager.Add(new ClosedHour { Date = tmpTime, Room = RoomEnum.Massage });
+                            counter++;
+                            if (counter > 30)
+                                await BasicDataManager.SaveAsync();
+                        }
+                        tmpTime = tmpTime.AddDays(7);
+                    }
+                }
+                if (h.SelectedMH)
+                {
+                    limit = h.Time.AddMonths(3);
+                    tmpTime = h.Time;
+                    while (tmpTime <= limit)
+                    {
+                        if (!ClosedHours.Any(c => c.Date == tmpTime && c.Room == RoomEnum.MassageHalf))
+                        {
+                            BasicDataManager.Add(new ClosedHour { Date = tmpTime, Room = RoomEnum.MassageHalf });
+                            counter++;
+                            if (counter > 30)
+                                await BasicDataManager.SaveAsync();
+                        }
+                        tmpTime = tmpTime.AddDays(7);
+                    }
+                }
+                if (h.SelectedO)
+                {
+                    limit = h.Time.AddMonths(3);
+                    tmpTime = h.Time;
+                    while (tmpTime <= limit)
+                    {
+                        if (!ClosedHours.Any(c => c.Date == tmpTime && c.Room == RoomEnum.Outdoor))
+                        {
+                            BasicDataManager.Add(new ClosedHour { Date = tmpTime, Room = RoomEnum.Outdoor });
+                            counter++;
+                            if (counter > 30)
+                                await BasicDataManager.SaveAsync();
+                        }
+                        tmpTime = tmpTime.AddDays(7);
+                    }
+                }
             }
 
             BasicDataManager.Add(new ProgramChange
@@ -3091,6 +3666,7 @@ namespace BubbleStart.ViewModels
             Messenger.Default.Send(new UpdateClosedHoursMessage());
             Mouse.OverrideCursor = Cursors.Arrow;
             RaisePropertyChanged(nameof(ClosedColor1));
+            RaisePropertyChanged(nameof(ClosedColorFB));
             RaisePropertyChanged(nameof(ClosedColor0));
             RaisePropertyChanged(nameof(ClosedColorMassage));
             RaisePropertyChanged(nameof(ClosedColorMassageHalf));
@@ -3112,6 +3688,18 @@ namespace BubbleStart.ViewModels
                         InstanceGuid = StaticResources.Guid,
                         From = SelectedApointmentFunctional.DateTime,
                         To = SelectedApointmentFunctional.DateTime.AddHours(1)
+                    });
+                    break;
+
+                case "6":
+                    SelectedApointmentFB.Waiting = !SelectedApointmentFB.Waiting;
+                    SelectedApointmentFB.RaisePropertyChanged(nameof(Apointment.ApColor));
+                    BasicDataManager.Add(new ProgramChange
+                    {
+                        Date = DateTime.Now,
+                        InstanceGuid = StaticResources.Guid,
+                        From = SelectedApointmentFB.DateTime,
+                        To = SelectedApointmentFB.DateTime.AddHours(1)
                     });
                     break;
 

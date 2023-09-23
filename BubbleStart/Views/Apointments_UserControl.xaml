@@ -85,6 +85,7 @@
                               Margin=" 5 0 0 0">
                         <ComboBoxItem Content="Όλες" />
                         <ComboBoxItem Content="Functional" />
+                        <ComboBoxItem Content="Functional B" />
                         <ComboBoxItem Content="Reformer" />
                         <ComboBoxItem Content="Massage" />
                         <ComboBoxItem Content="Massage:30" />
@@ -221,6 +222,7 @@
                                                         <RowDefinition Height="Auto" />
                                                         <RowDefinition Height="Auto" />
                                                         <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
                                                     </Grid.RowDefinitions>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition />
@@ -231,7 +233,7 @@
                                                            Width="90"
                                                            FontSize="14"
                                                            Margin="-3 0 0 0"
-                                                           Grid.RowSpan="6"
+                                                           Grid.RowSpan="7"
                                                            FontWeight="Bold"
                                                            HorizontalContentAlignment="Center"
                                                            VerticalAlignment="Center"
@@ -257,6 +259,21 @@
                                                     </Border>
                                                     <Border BorderBrush="Gray"
                                                             Grid.Row="1"
+                                                            Visibility="{Binding DataContext.FunctionalBVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                            Grid.Column="1"
+                                                            Background="LightYellow"
+                                                            Height="{Binding HeightFunctionalB}"
+                                                            BorderThickness="1 0 0 1">
+                                                        <TextBlock Text="Functional B"
+                                                                   FontSize="13"
+                                                                   Margin="-2 0 0 0"
+                                                                   VerticalAlignment="Center">
+                                                            <TextBlock.LayoutTransform>
+                                                                <RotateTransform Angle="-90" />
+                                                            </TextBlock.LayoutTransform></TextBlock>
+                                                    </Border>
+                                                    <Border BorderBrush="Gray"
+                                                            Grid.Row="2"
                                                             Height="{Binding HeightPilates}"
                                                             Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                             Grid.Column="1"
@@ -271,37 +288,7 @@
                                                             </TextBlock.LayoutTransform></TextBlock>
                                                     </Border>
                                                     <Border BorderBrush="Gray"
-                                                            Grid.Row="2"
-                                                            Height="{Binding HeightMassage}"
-                                                            Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
-                                                            Grid.Column="1"
-                                                            Background="LightYellow"
-                                                            BorderThickness="1 0 0 1">
-                                                        <TextBlock Text="Massage"
-                                                                   FontSize="13"
-                                                                   Margin="-2 0 0 0"
-                                                                   VerticalAlignment="Center">
-                                                            <TextBlock.LayoutTransform>
-                                                                <RotateTransform Angle="-90" />
-                                                            </TextBlock.LayoutTransform></TextBlock>
-                                                    </Border>
-                                                    <Border BorderBrush="Gray"
                                                             Grid.Row="3"
-                                                            Height="{Binding HeightMassageHalf}"
-                                                            Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
-                                                            Grid.Column="1"
-                                                            Background="LightYellow"
-                                                            BorderThickness="1 0 0 1">
-                                                        <TextBlock Text="Massage 30"
-                                                                   FontSize="13"
-                                                                   Margin="-2 0 0 0"
-                                                                   VerticalAlignment="Center">
-                                                            <TextBlock.LayoutTransform>
-                                                                <RotateTransform Angle="-90" />
-                                                            </TextBlock.LayoutTransform></TextBlock>
-                                                    </Border>
-                                                    <Border BorderBrush="Gray"
-                                                            Grid.Row="4"
                                                             Height="{Binding HeightPersonal}"
                                                             Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                             Grid.Column="1"
@@ -316,7 +303,37 @@
                                                             </TextBlock.LayoutTransform></TextBlock>
                                                     </Border>
                                                     <Border BorderBrush="Gray"
+                                                            Grid.Row="4"
+                                                            Height="{Binding HeightMassage}"
+                                                            Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                            Grid.Column="1"
+                                                            Background="LightYellow"
+                                                            BorderThickness="1 0 0 1">
+                                                        <TextBlock Text="Massage"
+                                                                   FontSize="13"
+                                                                   Margin="-2 0 0 0"
+                                                                   VerticalAlignment="Center">
+                                                            <TextBlock.LayoutTransform>
+                                                                <RotateTransform Angle="-90" />
+                                                            </TextBlock.LayoutTransform></TextBlock>
+                                                    </Border>
+                                                    <Border BorderBrush="Gray"
                                                             Grid.Row="5"
+                                                            Height="{Binding HeightMassageHalf}"
+                                                            Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                            Grid.Column="1"
+                                                            Background="LightYellow"
+                                                            BorderThickness="1 0 0 1">
+                                                        <TextBlock Text="Massage 30"
+                                                                   FontSize="13"
+                                                                   Margin="-2 0 0 0"
+                                                                   VerticalAlignment="Center">
+                                                            <TextBlock.LayoutTransform>
+                                                                <RotateTransform Angle="-90" />
+                                                            </TextBlock.LayoutTransform></TextBlock>
+                                                    </Border>
+                                                    <Border BorderBrush="Gray"
+                                                            Grid.Row="6"
                                                             Height="{Binding HeightOutdoor}"
                                                             Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                             Grid.Column="1"
@@ -403,7 +420,69 @@
                                                   Command="{Binding ToggleCanceledCommand}"
                                                   CommandParameter="0" />
                                     </ContextMenu>
-
+                                    <ContextMenu x:Key="HourContextMenuFB"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling"
+                                                 DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="(Απ)ενεργοποίηση"
+                                                  Command="{Binding ToggleEnabledCommand}"
+                                                  CommandParameter="6" />
+                                        <MenuItem Header="Απενεργοποίηση για 3 μήνες"
+                                                  Command="{Binding ToggleEnabledForEverCommand}"
+                                                  CommandParameter="6" />
+                                        <MenuItem Header="Ενεργοποίηση επόμενων"
+                                                  Command="{Binding EnableForEverCommand}"
+                                                  CommandParameter="6" />
+                                        <MenuItem Header="Αλλαγή Ώρας"
+                                                  Command="{Binding ChangeTimeCommand}"
+                                                  CommandParameter="6" />
+                                        <MenuItem Header="Γυμναστής"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=6}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Γυμναστής για πάντα"
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                            <MenuItem.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </MenuItem.ItemTemplate>
+                                            <MenuItem.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}">
+                                                    <Setter Property="Command"
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                    <Setter Property="CommandParameter"
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=16}" />
+                                                </Style>
+                                            </MenuItem.ItemContainerStyle>
+                                        </MenuItem>
+                                        <MenuItem Header="Χωρίς Γυμναστή"
+                                                  Command="{Binding NoGymnastCommand}"
+                                                  CommandParameter="6" />
+                                    </ContextMenu>
+                                    <ContextMenu x:Key="AddRemoveContextMenuFB"
+                                                 VirtualizingPanel.IsVirtualizing="True"
+                                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                                        <MenuItem Header="Αναμονή / Κανονικό"
+                                                  Command="{Binding ToggleWaitingCommand}"
+                                                  CommandParameter="6" />
+                                        <Separator />
+                                        <MenuItem Header="Ηρθε / Δεν ήρθε"
+                                                  Command="{Binding ToggleCanceledCommand}"
+                                                  CommandParameter="6" />
+                                    </ContextMenu>
                                     <ContextMenu x:Key="HourContextMenuRe"
                                                  VirtualizingPanel.IsVirtualizing="True"
                                                  VirtualizingPanel.VirtualizationMode="Recycling"
@@ -421,7 +500,7 @@
                                                   Command="{Binding ChangeTimeCommand}"
                                                   CommandParameter="1" />
                                         <MenuItem Header="Γυμναστής"
-          ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
                                             <MenuItem.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Name}" />
@@ -430,14 +509,14 @@
                                             <MenuItem.ItemContainerStyle>
                                                 <Style TargetType="{x:Type MenuItem}">
                                                     <Setter Property="Command"
-                    Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
                                                     <Setter Property="CommandParameter"
-                    Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}" />
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}" />
                                                 </Style>
                                             </MenuItem.ItemContainerStyle>
                                         </MenuItem>
                                         <MenuItem Header="Γυμναστής για πάντα"
-          ItemsSource="{Binding BasicDataManager.Gymnasts}">
+                                                  ItemsSource="{Binding BasicDataManager.Gymnasts}">
                                             <MenuItem.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Name}" />
@@ -446,9 +525,9 @@
                                             <MenuItem.ItemContainerStyle>
                                                 <Style TargetType="{x:Type MenuItem}">
                                                     <Setter Property="Command"
-                    Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
+                                                            Value="{Binding DataContext.ChangeGymnastCommand, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" />
                                                     <Setter Property="CommandParameter"
-                    Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=11}" />
+                                                            Value="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=11}" />
                                                 </Style>
                                             </MenuItem.ItemContainerStyle>
                                         </MenuItem>
@@ -467,7 +546,6 @@
                                                   Command="{Binding ToggleCanceledCommand}"
                                                   CommandParameter="1" />
                                     </ContextMenu>
-
                                     <ContextMenu x:Key="HourContextMenuMas"
                                                  VirtualizingPanel.IsVirtualizing="True"
                                                  VirtualizingPanel.VirtualizationMode="Recycling"
@@ -531,7 +609,6 @@
                                                   Command="{Binding ToggleCanceledCommand}"
                                                   CommandParameter="2" />
                                     </ContextMenu>
-
                                     <ContextMenu x:Key="HourContextMenuMasHalf"
                                                  VirtualizingPanel.IsVirtualizing="True"
                                                  VirtualizingPanel.VirtualizationMode="Recycling"
@@ -595,7 +672,6 @@
                                                   Command="{Binding ToggleCanceledCommand}"
                                                   CommandParameter="4" />
                                     </ContextMenu>
-
                                     <ContextMenu x:Key="HourContextMenuPer"
                                                  VirtualizingPanel.IsVirtualizing="True"
                                                  VirtualizingPanel.VirtualizationMode="Recycling"
@@ -659,7 +735,6 @@
                                                   Command="{Binding ToggleCanceledCommand}"
                                                   CommandParameter="5" />
                                     </ContextMenu>
-
                                     <ContextMenu x:Key="HourContextMenuOut"
                                                  VirtualizingPanel.IsVirtualizing="True"
                                                  VirtualizingPanel.VirtualizationMode="Recycling"
@@ -733,6 +808,7 @@
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
@@ -874,6 +950,125 @@
                                             </ItemsControl>
                                             <ItemsControl ItemsSource="{Binding Hours}"
                                                           Grid.Row="2"
+                                                          SizeChanged="FunctionalBControl_SizeChanged"
+                                                          Visibility="{Binding DataContext.FunctionalBVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                          HorizontalAlignment="Left">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel Orientation="Horizontal" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="Gray"
+                                                                Width="97"
+                                                                MinHeight="80"
+                                                                BorderThickness="1 1 0 0">
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto" />
+                                                                    <RowDefinition Height="*" />
+                                                                    <RowDefinition Height="Auto" />
+                                                                </Grid.RowDefinitions>
+                                                                <Border BorderThickness="0 0 0 1"
+                                                                        Grid.Row="0"
+                                                                        Height="21"
+                                                                        BorderBrush="Gray">
+                                                                    <Border.Style>
+                                                                        <Style TargetType="Border">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding SelectedFB}"
+                                                                                             Value="True">
+                                                                                    <Setter Property="Background"
+                                                                                            Value="Cyan" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Border.Style>
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                            <ColumnDefinition Width="*" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Label   VerticalAlignment="Center"
+                                                                                 Content="{Binding TimeString7}" />
+                                                                        <TextBlock FontWeight="Bold"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Grid.Column="1"
+                                                                                   Foreground="{Binding GymnastFunctionalB, Converter={StaticResource GymnastoForeverColorConverter}}"
+                                                                                   Text="{Binding GymnastFunctionalB.Gymnast.Name}"
+                                                                                   HorizontalAlignment="Left" />
+                                                                    </Grid>
+                                                                </Border>
+                                                                <ListBox BorderThickness="0"
+                                                                         Grid.Row="1"
+                                                                         ContextMenu="{StaticResource AddRemoveContextMenuFB}"
+                                                                         Background="{Binding ClosedColorFB}"
+                                                                         SelectedItem="{Binding SelectedApointmentFB}"
+                                                                         ItemsSource="{Binding AppointmentsFB}">
+                                                                    <ListBox.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <ContentControl MouseDoubleClick="OnDoubleClick">
+                                                                                    <TextBlock Text="{Binding Customer}"
+                                                                                               Background="{Binding ApColor}"
+                                                                                               Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                                               Padding="1">
+                                                                                        <TextBlock.Style>
+                                                                                            <Style TargetType="TextBlock">
+                                                                                                <Style.Triggers>
+                                                                                                    <DataTrigger Binding="{Binding Canceled}"
+                                                                                                                 Value="true">
+                                                                                                        <Setter Property="TextDecorations"
+                                                                                                                Value="Strikethrough" />
+                                                                                                    </DataTrigger>
+                                                                                                </Style.Triggers>
+                                                                                            </Style>
+                                                                                        </TextBlock.Style>
+                                                                                        <TextBlock.ToolTip>
+                                                                                            <TextBlock Text="{Binding PersonName}" />
+                                                                                        </TextBlock.ToolTip>
+                                                                                    </TextBlock>
+                                                                                </ContentControl>
+                                                                            </StackPanel>
+                                                                        </DataTemplate>
+                                                                    </ListBox.ItemTemplate>
+                                                                </ListBox>
+                                                                <Border Grid.Row="2"
+                                                                        Background="BlanchedAlmond"
+                                                                        BorderBrush="Black"
+                                                                        BorderThickness="0 1 0 0">
+                                                                    <Grid>
+                                                                        <Button Content="+"
+                                                                                Width="14"
+                                                                                Command="{Binding AddApointmentCommand}"
+                                                                                CommandParameter="6"
+                                                                                Margin="5 0"
+                                                                                HorizontalAlignment="Left" />
+                                                                        <Button Content="-"
+                                                                                Width="14"
+                                                                                Command="{Binding DeleteApointmentCommand   }"
+                                                                                CommandParameter="6"
+                                                                                Margin="5 0"
+                                                                                HorizontalAlignment="Right" />
+                                                                    </Grid>
+                                                                </Border>
+                                                                <Border Background="Transparent"
+                                                                        PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpFB"
+                                                                        Grid.ColumnSpan="3"
+                                                                        ContextMenu="{StaticResource HourContextMenuFB}"
+                                                                        Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
+                                                                    <Border ToolTip="{Binding GymnastsWorking}"
+                                                                            Width="40"
+                                                                            Background="Transparent" />
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <ItemsControl ItemsSource="{Binding Hours}"
+                                                          Grid.Row="3"
                                                           SizeChanged="ReformerControl_SizeChanged"
                                                           Visibility="{Binding DataContext.ReformerVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                           HorizontalAlignment="Left">
@@ -920,7 +1115,6 @@
                                                                                    VerticalAlignment="Center"
                                                                                    Grid.Column="1"
                                                                                    Foreground="{Binding GymnastReformer, Converter={StaticResource GymnastoForeverColorConverter}}"
-
                                                                                    Text="{Binding GymnastReformer.Gymnast.Name}"
                                                                                    HorizontalAlignment="Left" />
                                                                     </Grid>
@@ -953,7 +1147,7 @@
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
-                                                                                    </TextBlock>
+                                         </TextBlock>
                                                                                 </ContentControl>
                                                                             </StackPanel>
                                                                         </DataTemplate>
@@ -992,252 +1186,9 @@
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
-                                            <!--massage-->
-                                            <ItemsControl ItemsSource="{Binding Hours}"
-                                                          Grid.Row="3"
-                                                          SizeChanged="MassageControl_SizeChanged"
-                                                          Visibility="{Binding DataContext.MassageVisible, Converter={StaticResource booleanToVisibilityConverter},
-                                                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
-                                                          HorizontalAlignment="Left">
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <VirtualizingStackPanel Orientation="Horizontal" />
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Border BorderBrush="Gray"
-                                                                Width="97"
-                                                                MinHeight="80"
-                                                                BorderThickness="1 1 0 0">
-                                                            <Grid>
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="Auto" />
-                                                                    <RowDefinition Height="*" />
-                                                                    <RowDefinition Height="Auto" />
-                                                                </Grid.RowDefinitions>
-                                                                <Border BorderThickness="0 0 0 1"
-                                                                        Grid.Row="0"
-                                                                        Height="20"
-                                                                        BorderBrush="Gray">
-                                                                    <Border.Style>
-                                                                        <Style TargetType="Border">
-                                                                            <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding SelectedM}"
-                                                                                             Value="True">
-                                                                                    <Setter Property="Background"
-                                                                                            Value="Cyan" />
-                                                                                </DataTrigger>
-                                                                            </Style.Triggers>
-                                                                        </Style>
-                                                                    </Border.Style>
-                                                                    <Grid>
-                                                                        <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="Auto" />
-                                                                            <ColumnDefinition Width="*" />
-                                                                        </Grid.ColumnDefinitions>
-                                                                        <Label   VerticalAlignment="Center"
-                                                                                 Content="{Binding TimeString3}" />
-                                                                        <TextBlock FontWeight="Bold"
-                                                                                   VerticalAlignment="Center"
-                                                                                   Grid.Column="1"
-                                                                                   Foreground="{Binding GymnastMassage, Converter={StaticResource GymnastoForeverColorConverter}}"
-
-                                                                                   Text="{Binding GymnastMassage.Gymnast.Name}"
-                                                                                   HorizontalAlignment="Left" />
-                                                                    </Grid>
-                                                                </Border>
-                                                                <ListBox BorderThickness="0"
-                                                                         Grid.Row="1"
-                                                                         ContextMenu="{StaticResource AddRemoveContextMenuMas}"
-                                                                         Background="{Binding ClosedColorMassage}"
-                                                                         SelectedItem="{Binding SelectedAppointmentMassage}"
-                                                                         ItemsSource="{Binding AppointmentsMassage}">
-                                                                    <ListBox.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <StackPanel Orientation="Horizontal">
-                                                                                <ContentControl MouseDoubleClick="OnDoubleClick">
-                                                                                    <TextBlock Text="{Binding Customer}"
-                                                                                               Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                                                                               Background="{Binding ApColor}"
-                                                                                               Padding="1">
-                                                                                        <TextBlock.Style>
-                                                                                            <Style TargetType="TextBlock">
-                                                                                                <Style.Triggers>
-                                                                                                    <DataTrigger Binding="{Binding Canceled}"
-                                                                                                                 Value="true">
-                                                                                                        <Setter Property="TextDecorations"
-                                                                                                                Value="Strikethrough" />
-                                                                                                    </DataTrigger>
-                                                                                                </Style.Triggers>
-                                                                                            </Style>
-                                                                                        </TextBlock.Style>
-                                                                                        <TextBlock.ToolTip>
-                                                                                            <TextBlock Text="{Binding PersonName}" />
-                                                                                        </TextBlock.ToolTip>
-                                                                                    </TextBlock>
-                                                                                </ContentControl>
-                                                                            </StackPanel>
-                                                                        </DataTemplate>
-                                                                    </ListBox.ItemTemplate>
-                                                                </ListBox>
-                                                                <Border Grid.Row="2"
-                                                                        BorderBrush="Black"
-                                                                        Background="LightYellow"
-                                                                        BorderThickness="0 1 0 0">
-                                                                    <Grid>
-                                                                        <Button Content="+"
-                                                                                Width="14"
-                                                                                Command="{Binding AddApointmentCommand}"
-                                                                                CommandParameter="2"
-                                                                                Margin="5 0"
-                                                                                HorizontalAlignment="Left" />
-                                                                        <Button Content="-"
-                                                                                Width="14"
-                                                                                Command="{Binding DeleteApointmentCommand}"
-                                                                                CommandParameter="2"
-                                                                                Margin="5 0"
-                                                                                HorizontalAlignment="Right" />
-                                                                    </Grid>
-                                                                </Border>
-                                                                <Border Background="Transparent"
-                                                                        PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpM"
-                                                                        Grid.ColumnSpan="3"
-                                                                        ContextMenu="{StaticResource HourContextMenuMas}"
-                                                                        Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
-                                                                    <Border ToolTip="{Binding GymnastsWorking}"
-                                                                            Width="40"
-                                                                            Background="Transparent" />
-                                                                </Border>
-                                                            </Grid>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                            <!--massageHalf-->
-                                            <ItemsControl ItemsSource="{Binding Hours}"
-                                                          Grid.Row="4"
-                                                          SizeChanged="MassageHalfControl_SizeChanged"
-                                                          Visibility="{Binding DataContext.MassageHalfVisible, Converter={StaticResource booleanToVisibilityConverter},
-                                                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
-                                                          HorizontalAlignment="Left">
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <VirtualizingStackPanel Orientation="Horizontal" />
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Border BorderBrush="Gray"
-                                                                Width="97"
-                                                                MinHeight="80"
-                                                                BorderThickness="1 1 0 0">
-                                                            <Grid>
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="Auto" />
-                                                                    <RowDefinition Height="*" />
-                                                                    <RowDefinition Height="Auto" />
-                                                                </Grid.RowDefinitions>
-                                                                <Border BorderThickness="0 0 0 1"
-                                                                        Grid.Row="0"
-                                                                        Height="20"
-                                                                        BorderBrush="Gray">
-                                                                    <Border.Style>
-                                                                        <Style TargetType="Border">
-                                                                            <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding SelectedMH}"
-                                                                                             Value="True">
-                                                                                    <Setter Property="Background"
-                                                                                            Value="Cyan" />
-                                                                                </DataTrigger>
-                                                                            </Style.Triggers>
-                                                                        </Style>
-                                                                    </Border.Style>
-                                                                    <Grid>
-                                                                        <Grid.ColumnDefinitions>
-                                                                            <ColumnDefinition Width="Auto" />
-                                                                            <ColumnDefinition Width="*" />
-                                                                        </Grid.ColumnDefinitions>
-                                                                        <Label   VerticalAlignment="Center"
-                                                                                 Content="{Binding TimeString5}" />
-                                                                        <TextBlock FontWeight="Bold"
-                                                                                   VerticalAlignment="Center"
-                                                                                   Foreground="{Binding GymnastMassageHalf, Converter={StaticResource GymnastoForeverColorConverter}}"
-                                                                                   Grid.Column="1"
-                                                                                   Text="{Binding GymnastMassageHalf.Gymnast.Name}"
-                                                                                   HorizontalAlignment="Left" />
-                                                                    </Grid>
-                                                                </Border>
-                                                                <ListBox BorderThickness="0"
-                                                                         Grid.Row="1"
-                                                                         ContextMenu="{StaticResource AddRemoveContextMenuMasHalf}"
-                                                                         Background="{Binding ClosedColorMassageHalf}"
-                                                                         SelectedItem="{Binding SelectedAppointmentMassageHalf}"
-                                                                         ItemsSource="{Binding AppointmentsMassageHalf}">
-                                                                    <ListBox.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <StackPanel Orientation="Horizontal">
-                                                                                <ContentControl MouseDoubleClick="OnDoubleClick">
-                                                                                    <TextBlock Text="{Binding Customer}"
-                                                                                               Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                                                                                               Background="{Binding ApColor}"
-                                                                                               Padding="1">
-                                                                                        <TextBlock.Style>
-                                                                                            <Style TargetType="TextBlock">
-                                                                                                <Style.Triggers>
-                                                                                                    <DataTrigger Binding="{Binding Canceled}"
-                                                                                                                 Value="true">
-                                                                                                        <Setter Property="TextDecorations"
-                                                                                                                Value="Strikethrough" />
-                                                                                                    </DataTrigger>
-                                                                                                </Style.Triggers>
-                                                                                            </Style>
-                                                                                        </TextBlock.Style>
-                                                                                        <TextBlock.ToolTip>
-                                                                                            <TextBlock Text="{Binding PersonName}" />
-                                                                                        </TextBlock.ToolTip>
-                                                                                    </TextBlock>
-                                                                                </ContentControl>
-                                                                            </StackPanel>
-                                                                        </DataTemplate>
-                                                                    </ListBox.ItemTemplate>
-                                                                </ListBox>
-                                                                <Border Grid.Row="2"
-                                                                        BorderBrush="Black"
-                                                                        Background="LightYellow"
-                                                                        BorderThickness="0 1 0 0">
-                                                                    <Grid>
-                                                                        <Button Content="+"
-                                                                                Width="14"
-                                                                                Command="{Binding AddApointmentCommand}"
-                                                                                CommandParameter="4"
-                                                                                Margin="5 0"
-                                                                                HorizontalAlignment="Left" />
-                                                                        <Button Content="-"
-                                                                                Width="14"
-                                                                                Command="{Binding DeleteApointmentCommand}"
-                                                                                CommandParameter="4"
-                                                                                Margin="5 0"
-                                                                                HorizontalAlignment="Right" />
-                                                                    </Grid>
-                                                                </Border>
-                                                                <Border Background="Transparent"
-                                                                        PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpMH"
-                                                                        ContextMenu="{StaticResource HourContextMenuMasHalf}"
-                                                                        Grid.ColumnSpan="3"
-                                                                        Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
-                                                                    <Border ToolTip="{Binding GymnastsWorking}"
-                                                                            Width="40"
-                                                                            Background="Transparent" />
-                                                                </Border>
-                                                            </Grid>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
                                             <!--personal-->
                                             <ItemsControl ItemsSource="{Binding Hours}"
-                                                          Grid.Row="5"
+                                                          Grid.Row="4"
                                                           SizeChanged="PersonalControl_SizeChanged"
                                                           Visibility="{Binding DataContext.PersonalVisible, Converter={StaticResource booleanToVisibilityConverter},
                                                 RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
@@ -1356,9 +1307,251 @@
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
-                                            <!--outdoor-->
+                                            <!--massage-->
+                                            <ItemsControl ItemsSource="{Binding Hours}"
+                                                          Grid.Row="5"
+                                                          SizeChanged="MassageControl_SizeChanged"
+                                                          Visibility="{Binding DataContext.MassageVisible, Converter={StaticResource booleanToVisibilityConverter},
+                                                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                          HorizontalAlignment="Left">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel Orientation="Horizontal" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="Gray"
+                                                                Width="97"
+                                                                MinHeight="80"
+                                                                BorderThickness="1 1 0 0">
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto" />
+                                                                    <RowDefinition Height="*" />
+                                                                    <RowDefinition Height="Auto" />
+                                                                </Grid.RowDefinitions>
+                                                                <Border BorderThickness="0 0 0 1"
+                                                                        Grid.Row="0"
+                                                                        Height="20"
+                                                                        BorderBrush="Gray">
+                                                                    <Border.Style>
+                                                                        <Style TargetType="Border">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding SelectedM}"
+                                                                                             Value="True">
+                                                                                    <Setter Property="Background"
+                                                                                            Value="Cyan" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Border.Style>
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                            <ColumnDefinition Width="*" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Label   VerticalAlignment="Center"
+                                                                                 Content="{Binding TimeString3}" />
+                                                                        <TextBlock FontWeight="Bold"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Grid.Column="1"
+                                                                                   Foreground="{Binding GymnastMassage, Converter={StaticResource GymnastoForeverColorConverter}}"
+                                                                                   Text="{Binding GymnastMassage.Gymnast.Name}"
+                                                                                   HorizontalAlignment="Left" />
+                                                                    </Grid>
+                                                                </Border>
+                                                                <ListBox BorderThickness="0"
+                                                                         Grid.Row="1"
+                                                                         ContextMenu="{StaticResource AddRemoveContextMenuMas}"
+                                                                         Background="{Binding ClosedColorMassage}"
+                                                                         SelectedItem="{Binding SelectedAppointmentMassage}"
+                                                                         ItemsSource="{Binding AppointmentsMassage}">
+                                                                    <ListBox.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <ContentControl MouseDoubleClick="OnDoubleClick">
+                                                                                    <TextBlock Text="{Binding Customer}"
+                                                                                               Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                                               Background="{Binding ApColor}"
+                                                                                               Padding="1">
+                                                                                        <TextBlock.Style>
+                                                                                            <Style TargetType="TextBlock">
+                                                                                                <Style.Triggers>
+                                                                                                    <DataTrigger Binding="{Binding Canceled}"
+                                                                                                                 Value="true">
+                                                                                                        <Setter Property="TextDecorations"
+                                                                                                                Value="Strikethrough" />
+                                                                                                    </DataTrigger>
+                                                                                                </Style.Triggers>
+                                                                                            </Style>
+                                                                                        </TextBlock.Style>
+                                                                                        <TextBlock.ToolTip>
+                                                                                            <TextBlock Text="{Binding PersonName}" />
+                                                                                        </TextBlock.ToolTip>
+                                           </TextBlock>
+                                                                                </ContentControl>
+                                                                            </StackPanel>
+                                                                        </DataTemplate>
+                                                                    </ListBox.ItemTemplate>
+                                                                </ListBox>
+                                                                <Border Grid.Row="2"
+                                                                        BorderBrush="Black"
+                                                                        Background="LightYellow"
+                                                                        BorderThickness="0 1 0 0">
+                                                                    <Grid>
+                                                                        <Button Content="+"
+                                                                                Width="14"
+                                                                                Command="{Binding AddApointmentCommand}"
+                                                                                CommandParameter="2"
+                                                                                Margin="5 0"
+                                                                                HorizontalAlignment="Left" />
+                                                                        <Button Content="-"
+                                                                                Width="14"
+                                                                                Command="{Binding DeleteApointmentCommand}"
+                                                                                CommandParameter="2"
+                                                                                Margin="5 0"
+                                                                                HorizontalAlignment="Right" />
+                                                                    </Grid>
+                                                                </Border>
+                                                                <Border Background="Transparent"
+                                                                        PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpM"
+                                                                        Grid.ColumnSpan="3"
+                                                                        ContextMenu="{StaticResource HourContextMenuMas}"
+                                                                        Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
+                                                                    <Border ToolTip="{Binding GymnastsWorking}"
+                                                                            Width="40"
+                                                                            Background="Transparent" />
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <!--massageHalf-->
                                             <ItemsControl ItemsSource="{Binding Hours}"
                                                           Grid.Row="6"
+                                                          SizeChanged="MassageHalfControl_SizeChanged"
+                                                          Visibility="{Binding DataContext.MassageHalfVisible, Converter={StaticResource booleanToVisibilityConverter},
+       RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
+                                                          HorizontalAlignment="Left">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <VirtualizingStackPanel Orientation="Horizontal" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="Gray"
+                                                                Width="97"
+                                                                MinHeight="80"
+                                                                BorderThickness="1 1 0 0">
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto" />
+                                                                    <RowDefinition Height="*" />
+                                                                    <RowDefinition Height="Auto" />
+                                                                </Grid.RowDefinitions>
+                                                                <Border BorderThickness="0 0 0 1"
+                                                                        Grid.Row="0"
+                                                                        Height="20"
+                                                                        BorderBrush="Gray">
+                                                                    <Border.Style>
+                                                                        <Style TargetType="Border">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding SelectedMH}"
+                                                                                             Value="True">
+                                                                                    <Setter Property="Background"
+                                                                                            Value="Cyan" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Border.Style>
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto" />
+                                                                            <ColumnDefinition Width="*" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Label   VerticalAlignment="Center"
+                                                                                 Content="{Binding TimeString5}" />
+                                                                        <TextBlock FontWeight="Bold"
+                                                                                   VerticalAlignment="Center"
+                                                                                   Foreground="{Binding GymnastMassageHalf, Converter={StaticResource GymnastoForeverColorConverter}}"
+                                                                                   Grid.Column="1"
+                                                                                   Text="{Binding GymnastMassageHalf.Gymnast.Name}"
+                                                                                   HorizontalAlignment="Left" />
+                                                                    </Grid>
+                                                                </Border>
+                                                                <ListBox BorderThickness="0"
+                                                                         Grid.Row="1"
+                                                                         ContextMenu="{StaticResource AddRemoveContextMenuMasHalf}"
+                                                                         Background="{Binding ClosedColorMassageHalf}"
+                                                                         SelectedItem="{Binding SelectedAppointmentMassageHalf}"
+                                                                         ItemsSource="{Binding AppointmentsMassageHalf}">
+                                                                    <ListBox.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <ContentControl MouseDoubleClick="OnDoubleClick">
+                                                                                    <TextBlock Text="{Binding Customer}"
+                                                                                               Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                                                               Background="{Binding ApColor}"
+                                                                                               Padding="1">
+                                                                                        <TextBlock.Style>
+                                                                                            <Style TargetType="TextBlock">
+                                                                                                <Style.Triggers>
+                                                                                                    <DataTrigger Binding="{Binding Canceled}"
+                                                                                                                 Value="true">
+                                                                                                        <Setter Property="TextDecorations"
+                                                                                                                Value="Strikethrough" />
+                                                                                                    </DataTrigger>
+                                                                                                </Style.Triggers>
+                                                                                            </Style>
+                                                                                        </TextBlock.Style>
+                                                                                        <TextBlock.ToolTip>
+                                                                                            <TextBlock Text="{Binding PersonName}" />
+                                                                                        </TextBlock.ToolTip>
+                                           </TextBlock>
+                                                                                </ContentControl>
+                                                                            </StackPanel>
+                                                                        </DataTemplate>
+                                                                    </ListBox.ItemTemplate>
+                                                                </ListBox>
+                                                                <Border Grid.Row="2"
+                                                                        BorderBrush="Black"
+                                                                        Background="LightYellow"
+                                                                        BorderThickness="0 1 0 0">
+                                                                    <Grid>
+                                                                        <Button Content="+"
+                                                                                Width="14"
+                                                                                Command="{Binding AddApointmentCommand}"
+                                                                                CommandParameter="4"
+                                                                                Margin="5 0"
+                                                                                HorizontalAlignment="Left" />
+                                                                        <Button Content="-"
+                                                                                Width="14"
+                                                                                Command="{Binding DeleteApointmentCommand}"
+                                                                                CommandParameter="4"
+                                                                                Margin="5 0"
+                                                                                HorizontalAlignment="Right" />
+                                                                    </Grid>
+                                                                </Border>
+                                                                <Border Background="Transparent"
+                                                                        PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUpMH"
+                                                                        ContextMenu="{StaticResource HourContextMenuMasHalf}"
+                                                                        Grid.ColumnSpan="3"
+                                                                        Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}">
+                                                                    <Border ToolTip="{Binding GymnastsWorking}"
+                                                                            Width="40"
+                                                                            Background="Transparent" />
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <!--outdoor-->
+                                            <ItemsControl ItemsSource="{Binding Hours}"
+                                                          Grid.Row="7"
                                                           SizeChanged="OutdoorControl_SizeChanged"
                                                           Visibility="{Binding DataContext.OutdoorVisible, Converter={StaticResource booleanToVisibilityConverter}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}},UpdateSourceTrigger=PropertyChanged}"
                                                           HorizontalAlignment="Left">

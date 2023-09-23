@@ -108,8 +108,7 @@ namespace BubbleStart
 
         private static void SelectivelyHandleMouseButton(object sender, MouseButtonEventArgs e)
         {
-            var textbox = sender as TextBox;
-            if (textbox != null && !textbox.IsKeyboardFocusWithin)
+            if (sender is TextBox textbox && !textbox.IsKeyboardFocusWithin)
             {
                 if (e.OriginalSource.GetType().Name == "TextBoxView")
                 {
@@ -121,7 +120,7 @@ namespace BubbleStart
 
         private static void SelectAllText(object sender, RoutedEventArgs e)
         {
-            if (e.OriginalSource is TextBox textBox && !(textBox.DataContext is Expense))
+            if (e.OriginalSource is TextBox textBox && !(textBox.DataContext is Expense) )
                 textBox.SelectAll();
         }
 

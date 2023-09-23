@@ -144,7 +144,7 @@ namespace BubbleStart.Model
             {
                 return "Ρεπό";
             }
-            return $"{Name} ({From.ToString("HH:mm")}-{To.ToString("HH:mm")}" + (FromB.HasValue && ToB.HasValue ? $" & {FromB.Value.ToString("HH:mm")}-{ToB.Value.ToString("HH:mm")})" : ")");
+            return $"{Name} ({From:HH:mm}-{To:HH:mm}" + (FromB.HasValue && ToB.HasValue ? $" & {FromB.Value:HH:mm}-{ToB.Value:HH:mm})" : ")");
         }
     }
 }

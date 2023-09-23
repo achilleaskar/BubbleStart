@@ -550,12 +550,12 @@ namespace BubbleStart.ViewModels
             {
                 if (programMode > 50)
                 {
-                    if (SelectedCustomer.ShowedUp(true, (ProgramMode)(programMode / 10), Is30min, programMode % 10, gymnast: SelectedGymanst))
+                    if (await SelectedCustomer.ShowedUp(true, (ProgramMode)(programMode / 10), Is30min, programMode % 10, gymnast: SelectedGymanst))
                         CustomersPracticing.Add(SelectedCustomer);
                 }
                 else
                 {
-                    if (SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min, gymnast: SelectedGymanst))
+                    if (await SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min, gymnast: SelectedGymanst))
                         CustomersPracticing.Add(SelectedCustomer);
                 }
 

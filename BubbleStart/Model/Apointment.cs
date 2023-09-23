@@ -59,7 +59,7 @@ namespace BubbleStart.Model
         {
             get
             {
-                if (Room == RoomEnum.Massage|| Room == RoomEnum.MassageHalf)
+                if (Room == RoomEnum.Massage || Room == RoomEnum.MassageHalf)
                     return Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Today && s.ProgramModeNew == ProgramMode.massage);
                 return Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Today && !s.Massage);
             }
@@ -75,7 +75,7 @@ namespace BubbleStart.Model
                 }
                 if (DateTime < DateTime.Now)
                 {
-                    if (Room == RoomEnum.Massage|| Room == RoomEnum.MassageHalf)
+                    if (Room == RoomEnum.Massage || Room == RoomEnum.MassageHalf)
                     {
                         if (!Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date && s.ProgramModeNew == ProgramMode.massage))
                             return Colors.Red.ToString();
@@ -175,7 +175,7 @@ namespace BubbleStart.Model
             {
                 return "Yoga";
             }
-            if (Room == RoomEnum.Functional)
+            if (Room == RoomEnum.Functional || Room == RoomEnum.FunctionalB)
             {
                 return "Functional, " + PersonName;
             }

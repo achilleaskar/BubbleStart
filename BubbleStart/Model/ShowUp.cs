@@ -117,10 +117,7 @@ namespace BubbleStart.Model
 
                 _BodyPart = value;
                 RaisePropertyChanged();
-                if (Customer != null)
-                {
-                    Customer.RaisePropertyChanged(nameof(Customer.LastPart));
-                }
+                Customer?.RaisePropertyChanged(nameof(Customer.LastPart));
             }
         }
 

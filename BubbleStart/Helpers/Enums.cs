@@ -27,69 +27,69 @@ namespace BubbleStart.Helpers
         medical = 9
     }
 
-    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum ProgramTypes
-    {
-        [Description("Reformer Pilates")]
-        ReformerPilates = 0,
+    //[TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    //public enum ProgramTypes
+    //{
+    //    [Description("Reformer Pilates")]
+    //    ReformerPilates = 0,
 
-        [Description("Pilates")]
-        Pilates = 1,
+    //    [Description("Pilates")]
+    //    Pilates = 1,
 
-        [Description("Functional")]
-        Functional = 2,
+    //    [Description("Functional")]
+    //    Functional = 2,
 
-        [Description("Pilates &amp; Functional")]
-        PilatesFunctional = 3,
+    //    [Description("Pilates &amp; Functional")]
+    //    PilatesFunctional = 3,
 
-        [Description("Ελεύθερη Χρήση")]
-        freeUse = 4,
+    //    [Description("Ελεύθερη Χρήση")]
+    //    freeUse = 4,
 
-        [Description("Medical Exercise")]
-        MedicalExersise = 5,
+    //    [Description("Medical Exercise")]
+    //    MedicalExersise = 5,
 
-        [Description("Personal")]
-        dokimastiko = 6,
+    //    [Description("Personal")]
+    //    dokimastiko = 6,
 
-        [Description("Yoga")]
-        yoga = 7,
+    //    [Description("Yoga")]
+    //    yoga = 7,
 
-        [Description("Aerial Yoga")]
-        aerial = 8,
+    //    [Description("Aerial Yoga")]
+    //    aerial = 8,
 
-        [Description("Μασάζ Χαλαρωτικό 30'")]
-        masasRel30 = 9,
+    //    [Description("Μασάζ Χαλαρωτικό 30'")]
+    //    masasRel30 = 9,
 
-        [Description("Μασάζ Χαλαρωτικό 50'")]
-        masazRel50 = 10,
+    //    [Description("Μασάζ Χαλαρωτικό 50'")]
+    //    masazRel50 = 10,
 
-        [Description("Μασάζ Θεραπευτικό 30'")]
-        masazTher30 = 11,
+    //    [Description("Μασάζ Θεραπευτικό 30'")]
+    //    masazTher30 = 11,
 
-        [Description("Μασάζ Θεραπευτικό 50'")]
-        masazTher50 = 12,
+    //    [Description("Μασάζ Θεραπευτικό 50'")]
+    //    masazTher50 = 12,
 
-        [Description("Black Friday Deal")]
-        blackfriday = 13,
+    //    [Description("Black Friday Deal")]
+    //    blackfriday = 13,
 
-        [Description("4+1 massage")]
-        massage41 = 14,
+    //    [Description("4+1 massage")]
+    //    massage41 = 14,
 
-        [Description("Online")]
-        online = 15,
+    //    [Description("Online")]
+    //    online = 15,
 
-        [Description("Summer Deal")]
-        summerDeal = 16,
+    //    [Description("Summer Deal")]
+    //    summerDeal = 16,
 
-        [Description("OutDoor")]
-        OutDoor = 17,
+    //    [Description("OutDoor")]
+    //    OutDoor = 17,
 
-        [Description("September Deal")]
-        September = 18,
+    //    [Description("September Deal")]
+    //    September = 18,
 
-        [Description("Μηνιαίο πακέτο Γυμναστικής")]
-        Month = 19
-    }
+    //    [Description("Μηνιαίο πακέτο Γυμναστικής")]
+    //    Month = 19
+    //}
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum BodyPart
@@ -223,6 +223,7 @@ namespace BubbleStart.Helpers
     public enum RoomEnum
     {
         Functional = 0,
+        FunctionalB = 6,
         Pilates = 1,
         Massage = 2,
         Outdoor = 3,

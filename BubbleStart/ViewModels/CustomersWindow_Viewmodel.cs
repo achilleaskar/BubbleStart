@@ -305,6 +305,9 @@ namespace BubbleStart.ViewModels
                 case RoomEnum.Functional:
                     return Hour.AppointmentsFunctional.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsFunctional.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
 
+                case RoomEnum.FunctionalB:
+                    return Hour.AppointmentsFB.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsFB.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
+
                 case RoomEnum.Pilates:
                     return Hour.AppointmentsReformer.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsReformer.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
 
@@ -382,6 +385,8 @@ namespace BubbleStart.ViewModels
             {
                 if (Hour.AppointmentsFunctional.Any(q => q.Customer.Id == SelectedCustomer.Id))
                     Hour.AppointmentsFunctional.Remove(Hour.AppointmentsFunctional.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
+                if (Hour.AppointmentsFB.Any(q => q.Customer.Id == SelectedCustomer.Id))
+                    Hour.AppointmentsFB.Remove(Hour.AppointmentsFB.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
                 if (Hour.AppointmentsReformer.Any(q => q.Customer.Id == SelectedCustomer.Id))
                     Hour.AppointmentsReformer.Remove(Hour.AppointmentsReformer.Where(q => q.Customer.Id == SelectedCustomer.Id).FirstOrDefault());
                 if (Hour.AppointmentsMassage.Any(q => q.Customer.Id == SelectedCustomer.Id))

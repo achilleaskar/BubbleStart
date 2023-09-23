@@ -15,19 +15,18 @@ namespace BubbleStart.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Customer)
+            if (value is Customer customer)
             {
-                return ((Customer)value).DefaultProgramModes?.Split(',').Contains((parameter ?? "-").ToString());
+                return customer.DefaultProgramModes?.Split(',').Contains((parameter ?? "-").ToString());
             }
             return false;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            DateTime datet;
             if (value is string date && parameter is string par)
             {
-                if (!DateTime.TryParseExact(date, par, CultureInfo.CurrentUICulture, DateTimeStyles.None, out datet))
+                if (!DateTime.TryParseExact(date, par, CultureInfo.CurrentUICulture, DateTimeStyles.None, out DateTime datet))
                 {
                     return null;
                 }

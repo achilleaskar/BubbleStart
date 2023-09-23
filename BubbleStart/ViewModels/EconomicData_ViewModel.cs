@@ -1864,7 +1864,7 @@ namespace BubbleStart.ViewModels
 
         private async Task DeleteExpense()
         {
-            BasicDataManager.Add(new Change($"Διαγράφηκε ΕΞΟΔΟ {SelectedExpense.Amount}€ που είχε περαστεί {SelectedExpense.Date.ToString("ddd dd/MM/yy")} απο τον χρήστη {SelectedExpense.User.UserName}", StaticResources.User));
+            BasicDataManager.Add(new Change($"Διαγράφηκε ΕΞΟΔΟ {SelectedExpense.Amount}€ που είχε περαστεί {SelectedExpense.Date:ddd dd/MM/yy} απο τον χρήστη {SelectedExpense.User.UserName}", StaticResources.User));
             BasicDataManager.Delete(SelectedExpense);
             await BasicDataManager.SaveAsync();
             Expenses.Remove(SelectedExpense);
@@ -1873,7 +1873,7 @@ namespace BubbleStart.ViewModels
 
         private async Task DeleteIncome()
         {
-            BasicDataManager.Add(new Change($"Διαγράφηκε ΕΣΟΔΟ {SelectedIncome.Amount}€ που είχε περαστεί {SelectedIncome.Date.ToString("ddd dd/MM/yy")} απο τον χρήστη {SelectedIncome.User.UserName}", StaticResources.User));
+            BasicDataManager.Add(new Change($"Διαγράφηκε ΕΣΟΔΟ {SelectedIncome.Amount}€ που είχε περαστεί {SelectedIncome.Date:ddd dd/MM/yy} απο τον χρήστη {SelectedIncome.User.UserName}", StaticResources.User));
             BasicDataManager.Delete(SelectedIncome);
             await BasicDataManager.SaveAsync();
             Incomes.Remove(SelectedIncome);
@@ -2310,8 +2310,8 @@ namespace BubbleStart.ViewModels
             IncomesTot = Preview.Sum(r => r.Recieved);
             ExpenseTot = Preview.Sum(r => r.Expenses);
             DiffTot = Preview.Sum(r => r.Profit);
-            IncomesTotR = RealPreview.Sum(r => r.Recieved);
-            ExpenseTotR = RealPreview.Sum(r => r.Expenses);
+            IncomesTotR = decimal.Round(RealPreview.Sum(r => r.Recieved),2);
+            ExpenseTotR = decimal.Round(RealPreview.Sum(r => r.Expenses),2);
             DiffTotR = decimal.Round(RealPreview.Sum(r => r.Profit), 2);
             Mouse.OverrideCursor = Cursors.Arrow;
         }

@@ -112,6 +112,39 @@ namespace BubbleStart.Views
                         hour.DeselectAll();
         }
 
+        private void Border_PreviewMouseLeftButtonUpFB(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border b && b.DataContext is Hour h)
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    if (h.parent != null)
+                    {
+                        var t = h.parent.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours.OrderBy(h1 => h1.Time);
+                        if (t.Any(tr => tr.SelectedFB))
+                        {
+                            bool found = false;
+                            foreach (var o in t)
+                            {
+                                if (o.SelectedFB)
+                                    found = true;
+                                else if (o == h)
+                                {
+                                    o.SelectedFB = true;
+                                    break;
+                                }
+                                else if (found)
+                                    o.SelectedFB = true;
+                            }
+                        }
+                    }
+                }
+                else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+                    h.SelectedFB = !h.SelectedFB;
+                else if (DataContext is Apointments_ViewModel vm)
+                    foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
+                        hour.DeselectAll();
+        }
+
         private void Border_PreviewMouseLeftButtonUpM(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border b && b.DataContext is Hour h)
@@ -144,6 +177,7 @@ namespace BubbleStart.Views
                     foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
                         hour.DeselectAll();
         }
+
         private void Border_PreviewMouseLeftButtonUpMH(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border b && b.DataContext is Hour h)
@@ -176,6 +210,7 @@ namespace BubbleStart.Views
                     foreach (var hour in vm.Days.FirstOrDefault(d => d.Date.DayOfYear == h.Time.DayOfYear).Hours)
                         hour.DeselectAll();
         }
+
         private void Border_PreviewMouseLeftButtonUpP(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border b && b.DataContext is Hour h)
@@ -247,6 +282,14 @@ namespace BubbleStart.Views
             if (sender is ItemsControl ic && ic.DataContext is Day d)
             {
                 d.HeightFunctional = ic.ActualHeight;
+            }
+        }
+
+        private void FunctionalBControl_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            if (sender is ItemsControl ic && ic.DataContext is Day d)
+            {
+                d.HeightFunctionalB = ic.ActualHeight;
             }
         }
 

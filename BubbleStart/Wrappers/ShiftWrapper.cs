@@ -64,7 +64,7 @@ namespace BubbleStart.Wrappers
             {
                 return string.Empty;
             }
-            return $"{From.Value.ToString("HH:mm")}-{To.Value.ToString("HH:mm")}" + (Parted && FromB.HasValue && ToB.HasValue ? $" & {FromB.Value.ToString("HH:mm")}-{ToB.Value.ToString("HH:mm")}" : "");
+            return $"{From.Value:HH:mm}-{To.Value:HH:mm}" + (Parted && FromB.HasValue && ToB.HasValue ? $" & {FromB.Value:HH:mm}-{ToB.Value:HH:mm}" : "");
         }
     }
 }

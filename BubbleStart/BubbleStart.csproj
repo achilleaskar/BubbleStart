@@ -108,7 +108,6 @@
     <Compile Include="Converters\GroupExpenseToHeaderConverter.cs" />
     <Compile Include="Converters\GymnastoForeverColorConverter.cs" />
     <Compile Include="Converters\GymToColorConverter.cs" />
-    <Compile Include="Converters\HourClosedToColorConverter.cs" />
     <Compile Include="Converters\IntToDayConverter.cs" />
     <Compile Include="Converters\IntToVisibilityConverter.cs" />
     <Compile Include="Converters\IsCustomerNullToBoolConverter.cs" />

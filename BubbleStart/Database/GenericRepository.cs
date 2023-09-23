@@ -1,5 +1,6 @@
 ﻿using BubbleStart.Helpers;
 using BubbleStart.Model;
+using BubbleStart.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -180,8 +181,8 @@ namespace BubbleStart.Database
                 var thisWeek = DateTime.Today.AddDays(-7);
 
                 await Context.Set<ShowUp>()
-                    .Where(s => s.Customer.Id == id && ((s.ProgramMode != ProgramMode.massage && s.Arrived >= s.Customer.ResetDate) ||
-                    (s.ProgramMode == ProgramMode.massage && s.Arrived >= s.Customer.MassageResetDay) ||
+                    .Where(s => s.Customer.Id == id && ((s.ProgramModeNew != ProgramMode.massage && s.Arrived >= s.Customer.ResetDate) ||
+                    (s.ProgramModeNew == ProgramMode.massage && s.Arrived >= s.Customer.MassageResetDay) ||
                     s.Arrived >= thisWeek))
                     .ToListAsync();
 
@@ -422,7 +423,7 @@ namespace BubbleStart.Database
                 RejectNavigationChanges();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Η επαναφορά απέτυχε, παρακαλώ βγείτε και ξαναμπείτε");
                 return false;
@@ -519,14 +520,24 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<ClosedHour>> GetAllClosedHoursAsync(RoomEnum room, DateTime time)
+        internal async Task<List<ClosedHour>> GetAllClosedHoursAsync(RoomEnum room, DateTime time, IEnumerable<Hour> selectedHours)
         {
             List<DateTime> dates = new List<DateTime>();
-            var limit = time.AddMonths(3);
-            while (time < limit)
+
+            DateTime limit;
+     
+                limit = time.AddMonths(3);
+                while (time < limit)
+                {
+                    dates.Add(time);
+                    time = time.AddDays(7);
+                }
+          
+
+            if (selectedHours?.Any() == true)
             {
-                dates.Add(time);
-                time = time.AddDays(7);
+                dates=dates.Select(d => d.Date).ToList();
+                return await Context.ClosedHours.Where(e => dates.Any(d => d == DbFunctions.TruncateTime(e.Date))).ToListAsync();
             }
 
             return await Context.ClosedHours.Where(e => e.Room == room && dates.Any(d => d == e.Date)).ToListAsync();
@@ -582,7 +593,9 @@ namespace BubbleStart.Database
             }
         }
 
+#pragma warning disable IDE0060 // Remove unused parameter
         internal async Task<List<Apointment>> GetAllAppointmentsThisDayAsync(int id, DateTime time)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             //List<DateTime> dates = new List<DateTime>();
             //int counter = 0;
@@ -600,7 +613,7 @@ namespace BubbleStart.Database
         {
             if (string.IsNullOrEmpty(time))
             {
-                if (room == RoomEnum.Functional && dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.Hour > 15)
+                if ((room == RoomEnum.Functional || room == RoomEnum.FunctionalB) && dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.Hour > 15)
                 {
                     return dateTime.AddMinutes(-15).ToString("HH:mm");
 

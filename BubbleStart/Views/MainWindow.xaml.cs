@@ -69,6 +69,8 @@ namespace BubbleStart.Views
                             a.RaisePropertyChanged(nameof(a.ApColor));
                         foreach (var a in h.AppointmentsFunctional)
                             a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsFB)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
                         foreach (var a in h.AppointmentsMassage)
                             a.RaisePropertyChanged(nameof(a.ApColor));
                         foreach (var a in h.AppointmentsReformer)

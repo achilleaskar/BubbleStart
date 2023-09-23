@@ -1616,10 +1616,6 @@ namespace BubbleStart.Model
             }
         }
 
-        //        _Pregnancy = value;
-        //        RaisePropertyChanged();
-        //    }
-        //}
         [NotMapped]
         public decimal ProgramPrice
         {
@@ -1642,12 +1638,54 @@ namespace BubbleStart.Model
             }
         }
 
-        //    set
-        //    {
-        //        if (_Pregnancy == value)
-        //        {
-        //            return;
-        //        }
+
+
+
+        private PaymentType? _ProgramPaymentType;
+
+        [NotMapped]
+        public PaymentType? ProgramPaymentType
+        {
+            get
+            {
+                return _ProgramPaymentType;
+            }
+
+            set
+            {
+                if (_ProgramPaymentType == value)
+                {
+                    return;
+                }
+
+                _ProgramPaymentType = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _ProgramReciept;
+
+        [NotMapped]
+        public bool ProgramReciept
+        {
+            get
+            {
+                return _ProgramReciept;
+            }
+
+            set
+            {
+                if (_ProgramReciept == value)
+                {
+                    return;
+                }
+
+                _ProgramReciept = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
         [NotMapped]
         public string ProgramResult
         {
@@ -2000,7 +2038,7 @@ namespace BubbleStart.Model
         public int RemainingAerialYogaDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga).Sum(p => p.RemainingDays);
 
         public int RemainingYogaFullDays => RemainingYogaDays + RemainingAerialYogaDays;
-        public int RemainingDaysTotal => RemainingTrainingFullDays + RemainingYogaFullDays +RemainingMassageDays+RemainingOnlineDays+RemainingOutDoorDays;
+        public int RemainingDaysTotal => RemainingTrainingFullDays + RemainingYogaFullDays + RemainingMassageDays + RemainingOnlineDays + RemainingOutDoorDays;
 
         public DateTime ResetDate
         {
@@ -3678,7 +3716,7 @@ namespace BubbleStart.Model
                     lastShowUp = lastShUp.Arrived;
                 if (RemainingAmount > 0 ||
                     ShowUps.Any(s => !s.Present && s.Prog == null &&
-                    ((s.ProgramMode != ProgramMode.massage && s.Arrived >= ResetDate) || (s.ProgramMode == ProgramMode.massage && s.Arrived >= MassageResetDay))))
+                    ((s.ProgramModeNew != ProgramMode.massage && s.Arrived >= ResetDate) || (s.ProgramModeNew == ProgramMode.massage && s.Arrived >= MassageResetDay))))
                 {
                     ActiveCustomer = true;
 
@@ -3755,7 +3793,7 @@ namespace BubbleStart.Model
             ShowSumsCommand = new RelayCommand(async () => { await ShowSums(); });
             BookCommand = new RelayCommand<string>(async obj => { await MakeBooking(obj); }, CanMakeBooking);
             DeleteItemCommand = new RelayCommand<object>((obj) => DeleteItem(obj));
-            AddOldShowUpCommand = new RelayCommand<int>(AddOldShowUp);
+            AddOldShowUpCommand = new RelayCommand<int>(async (obj) => { await AddOldShowUp(obj); });
             ShowHistoryCommand = new RelayCommand(async () => await ShowHistory());
             SaveChangesAsyncCommand = new RelayCommand(async () => { await SaveChanges(); }, CanSaveChanges);
             CancelChangesAsyncCommand = new RelayCommand(RollBackChanges, CanSaveChanges);
@@ -3903,7 +3941,7 @@ namespace BubbleStart.Model
                     {
                         if (selProg == null || (selProg.Showups > 0 && selProg.RemainingDays == 0) ||
                             (selProg.Showups == 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months)) ||
-                            (selProg.Showups > 0 && selProg.Months > 0 &&   showUp.Arrived.Date > selProg.AddMonth(selProg.Months))
+                            (selProg.Showups > 0 && selProg.Months > 0 && showUp.Arrived.Date > selProg.AddMonth(selProg.Months))
                             && progIndex < programsReversed.Count)
                         {
                             if (progIndex >= programsReversed.Count)
@@ -4166,7 +4204,7 @@ namespace BubbleStart.Model
                 ProgramsPersonalCollectionView?.Refresh();
                 ProgramsMedicalCollectionView?.Refresh();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }
@@ -4418,7 +4456,7 @@ namespace BubbleStart.Model
 
         internal void MakeProgramPayment()
         {
-            var p = new Payment { Amount = ProgramPrice, Date = DateOfIssue, User = StaticResources.User };
+            var p = new Payment { Amount = ProgramPrice, Date = DateOfIssue, User = StaticResources.User, PaymentType = ProgramPaymentType.Value, Reciept = ProgramReciept };
             Payments.Add(p);
             p.PropertyChanged += PaymentPropertyChanged;
             if (Loaded)
@@ -4428,15 +4466,20 @@ namespace BubbleStart.Model
             }
         }
 
-        internal bool ProgramDataCheck()
+        internal bool ProgramDataCheck(string arg)
         {
+            if (arg == "1" && ProgramPaymentType is null)
+                return false;
             ValidateProgram();
             return ProgramPrice >= 0 && SelectedProgramType != null && ((NumOfShowUps > 0) || (ProgramDuration > 0));
         }
 
-        internal bool ShowedUp(bool arrived, ProgramMode mode, bool is30min = false, int? secondaryProgMode = 0, User gymnast = null)
+        internal async Task<bool> ShowedUp(bool arrived, ProgramMode mode, bool is30min = false, int? secondaryProgMode = 0, User gymnast = null)
         {
-            if (mode != ProgramMode.massage && ShowUps.Any(s => s.ProgramModeNew != ProgramMode.massage && s.Arrived.Date == DateTime.Today))
+            Mouse.OverrideCursor = Cursors.Wait;
+            var from = DateTime.Today;
+            var to = DateTime.Today.AddDays(1);
+            if (mode != ProgramMode.massage && await BasicDataManager.Context.Context.ShowUps.AnyAsync(s => s.Customer.Id == Id && s.ProgramModeNew != ProgramMode.massage && s.Arrived >= from && s.Arrived < to))
             {
                 if (MessageBox.Show("Υπάρχει ήδη μία παρουσία σήμερα, Θέλετε σίγουρα να συνεχίσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                 {
@@ -4563,6 +4606,8 @@ namespace BubbleStart.Model
                     return false;
             }
             CheckIfCancel(su);
+            Mouse.OverrideCursor = Cursors.Arrow;
+
             return true;
         }
 
@@ -4621,12 +4666,17 @@ namespace BubbleStart.Model
             ClothPrice = 0;
         }
 
-        private void AddOldShowUp(int programMode)
+        private async Task AddOldShowUp(int programMode)
         {
-            if (programMode != 1 && ShowUps.Any(s => s.ProgramModeNew != ProgramMode.massage && s.Arrived.Date == OldShowUpDate))
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            var from = DateTime.Today;
+            var to = DateTime.Today.AddDays(1);
+            if (programMode != 1 && await BasicDataManager.Context.Context.ShowUps.AnyAsync(s => s.Customer.Id == Id && s.ProgramModeNew != ProgramMode.massage && s.Arrived >= from && s.Arrived < to))
             {
                 if (MessageBox.Show("Υπάρχει ήδη μία παρουσία σήμερα, Θέλετε σίγουρα να συνεχίσετε?", "Προσοχή", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                 {
+                    Mouse.OverrideCursor = Cursors.Arrow;
                     return;
                 }
             }
@@ -4639,6 +4689,7 @@ namespace BubbleStart.Model
             CheckIfCancel(su);
             Popup1Open = false;
             ShowUps_CollectionChanged();
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         //private ObservableCollection<Program> _AvailablePrograms;
@@ -4725,7 +4776,7 @@ namespace BubbleStart.Model
             return showup != null;
         }
 
-        private bool CanMakeBooking(string arg) => ProgramDataCheck();
+        private bool CanMakeBooking(string arg) => ProgramDataCheck(arg);
 
         private bool CanReleasePayment(Payment p)
         {
@@ -4948,10 +4999,7 @@ namespace BubbleStart.Model
                 return;
             Changes.Add(new Change($"Διαγράφηκε ΠΑΡΟΥΣΊΑ {StaticResources.GetDescription(showup.ProgramModeNew)} με ημερομηνία {showup.Arrived:ddd dd/MM/yy}", StaticResources.User));
             Program prog = showup.Prog;
-            if (prog != null)
-            {
-                prog.ShowUpsList.Remove(showup);
-            }
+            prog?.ShowUpsList.Remove(showup);
             BasicDataManager.Delete(showup);
             UpdateCollections();
             ShowUps_CollectionChanged();
@@ -5129,6 +5177,8 @@ namespace BubbleStart.Model
             RaisePropertyChanged(nameof(PaymentVisibility));
 
             ProgramPrice = ShowUpPrice = 0;
+            ProgramReciept = false;
+            ProgramPaymentType = null;
             ProgramDuration = NumOfShowUps = 0;
             SelectedProgramType = null;
             DateOfIssue = StartDate = DateTime.Today;
@@ -5229,20 +5279,13 @@ namespace BubbleStart.Model
                 SetColors();
             else
             {
-                if (SelectedFunctionalProgram != null)
-                    SelectedFunctionalProgram.CalculateRemainingAmount();
-                if (SelectedPilatesProgram != null)
-                    SelectedPilatesProgram.CalculateRemainingAmount();
-                if (SelectedFunctionalPilatesProgram != null)
-                    SelectedFunctionalPilatesProgram.CalculateRemainingAmount();
-                if (SelectedMasageProgram != null)
-                    SelectedMasageProgram.CalculateRemainingAmount();
-                if (SelectedOnlineProgram != null)
-                    SelectedOnlineProgram.CalculateRemainingAmount();
-                if (SelectedOutdoorProgram != null)
-                    SelectedOutdoorProgram.CalculateRemainingAmount();
-                if (SelectedYogaProgram != null)
-                    SelectedYogaProgram.CalculateRemainingAmount();
+                SelectedFunctionalProgram?.CalculateRemainingAmount();
+                SelectedPilatesProgram?.CalculateRemainingAmount();
+                SelectedFunctionalPilatesProgram?.CalculateRemainingAmount();
+                SelectedMasageProgram?.CalculateRemainingAmount();
+                SelectedOnlineProgram?.CalculateRemainingAmount();
+                SelectedOutdoorProgram?.CalculateRemainingAmount();
+                SelectedYogaProgram?.CalculateRemainingAmount();
                 SelectedAerialYogaProgram?.CalculateRemainingAmount();
             }
         }
@@ -5462,18 +5505,18 @@ namespace BubbleStart.Model
             }
         }
 
-        private void RaiseAllChanged()
-        {
-            RaisePropertyChanged(nameof(Payments));
-            RaisePropertyChanged(nameof(PaymentsFunctionalCollectionView));
-            RaisePropertyChanged(nameof(PaymentsPilatesCollectionView));
-            RaisePropertyChanged(nameof(PaymentsFunctionalPilatesCollectionView));
-            RaisePropertyChanged(nameof(PaymentsOnlineCollectionView));
-            RaisePropertyChanged(nameof(PaymentsOutDoorCollectionView));
-            RaisePropertyChanged(nameof(PaymentsMassCollectionView));
-            RaisePropertyChanged(nameof(PaymentsYogaCollectionView));
-            RaisePropertyChanged(nameof(PaymentsAerialYogaCollectionView));
-        }
+        //private void RaiseAllChanged()
+        //{
+        //    RaisePropertyChanged(nameof(Payments));
+        //    RaisePropertyChanged(nameof(PaymentsFunctionalCollectionView));
+        //    RaisePropertyChanged(nameof(PaymentsPilatesCollectionView));
+        //    RaisePropertyChanged(nameof(PaymentsFunctionalPilatesCollectionView));
+        //    RaisePropertyChanged(nameof(PaymentsOnlineCollectionView));
+        //    RaisePropertyChanged(nameof(PaymentsOutDoorCollectionView));
+        //    RaisePropertyChanged(nameof(PaymentsMassCollectionView));
+        //    RaisePropertyChanged(nameof(PaymentsYogaCollectionView));
+        //    RaisePropertyChanged(nameof(PaymentsAerialYogaCollectionView));
+        //}
 
         private void ReleasePayment(Payment p)
         {
