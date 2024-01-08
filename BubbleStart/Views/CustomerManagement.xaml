@@ -4380,7 +4380,7 @@
                                     </DataGridTemplateColumn>
                                     <DataGridTextColumn Header="Ημερ."
                                                         Width="88"
-                                                        Binding="{Binding Arrived,ConverterParameter='d/MM/yy hh:mm', Converter={StaticResource DateTimeToString}}" />
+                                                        Binding="{Binding AppointmentTime,ConverterParameter='dd/MM/yy hh:mm', Converter={StaticResource DateTimeToString}}" />
                                     <DataGridTextColumn Header="Τύπος"
                                                         Width="115"
                                                         Binding="{Binding Description}" />

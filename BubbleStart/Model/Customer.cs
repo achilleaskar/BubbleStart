@@ -5620,12 +5620,12 @@ namespace BubbleStart.Model
             await BasicDataManager.SaveAsync();
             SetColors();
         }
-
+        public List<Apointment> apps;
         private async Task ShowHistory()
         {
             Mouse.OverrideCursor = Cursors.Wait;
+            apps = await BasicDataManager.Context.GetApointmentsJoined(customerId: Id, historyFrom: HistoryFrom);
             OldShowUps = new ObservableCollection<ShowUp>((await BasicDataManager.Context.GetAllShowUpsInRangeAsyncsAsync(HistoryFrom, DateTime.Now, Id, true)).OrderByDescending(a => a.Arrived));
-            var apps = await BasicDataManager.Context.GetApointmentsJoined(customerId: Id, historyFrom: HistoryFrom);
             //await BasicDataManager.Context.Context.Apointments.Where(a => a.Customer.Id == Id && a.DateTime >= HistoryFrom).ToListAsync();
             NextAppointments = new ObservableCollection<Apointment>(apps.Where(a => a.DateTime >= DateTime.Now).OrderBy(a => a.DateTime));
             UpdateCollections();

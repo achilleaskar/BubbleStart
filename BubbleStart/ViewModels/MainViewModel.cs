@@ -15,13 +15,18 @@ namespace BubbleStart.ViewModels
         public MainViewModel()
         {
             Messenger.Default.Register<ChangeVisibilityMessage>(this, msg => { Visibility = msg.Visible ? Visibility.Visible : Visibility.Collapsed; });
-            Messenger.Default.Register<LoginLogOutMessage>(this, msg => ChangeViewModel(msg.Login));
+            Messenger.Default.Register<LoginLogOutMessage>(this, async msg => await ChangeViewModel(msg.Login));
         }
 
-        private void ChangeViewModel(bool login)
+        private async Task ChangeViewModel(bool login)
         {
             if (login)
             {
+                if (BasicDataManager.LogedOut)
+                {
+                    await BasicDataManager.Refresh();
+                    BasicDataManager.LogedOut = false;
+                }
                 SelectedViewmodel = new MainUserControl_ViewModel(BasicDataManager);
             }
             else

@@ -109,7 +109,9 @@ namespace BubbleStart.ViewModels
         {
             Mouse.OverrideCursor = Cursors.Wait;
             var date = DateTime.Today.AddDays(-Days);
-            CustomersExpireInShowUps = new ObservableCollection<Customer>(BasicDataManager.Customers.Where(c => c.Enabled && c.RemainingDaysTotal < ShowUps));
+            CustomersExpireInShowUps = new ObservableCollection<Customer>(BasicDataManager.Customers.Where(c => c.Enabled && c.RemainingDaysTotal < ShowUps
+            //&& c.Apointments.Any(a=>a.DateTime>DateTime.Now)
+            ));
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 

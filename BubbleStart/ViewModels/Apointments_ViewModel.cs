@@ -683,13 +683,13 @@ namespace BubbleStart.ViewModels
                 if (d.Date.DayOfWeek != DayOfWeek.Saturday)
                     foreach (var h in d.Hours)
                     {
-                        if (h.Time.Hour > 15 && h.CustomTime1 == null)
+                        if (h.Time.Hour > 14 && h.CustomTime1 == null)
 
                             h.CustomTime1 = new CustomeTime
                             {
                                 Time = h.Time.AddMinutes(-15).ToString("HH:mm")
                             };
-                        if (h.Time.Hour > 15 && h.CustomTime7 == null)
+                        if (h.Time.Hour > 14 && h.CustomTime7 == null)
 
                             h.CustomTime7 = new CustomeTime
                             {

@@ -26,7 +26,17 @@ namespace BubbleStart.Helpers
         {
             Context = genericRepository;
             RefreshCommand = new RelayCommand(async () => await Refresh());
+            //Messenger.Default.Register<LoginLogOutMessage>(this, async msg => await LogedIn(msg.Login));
         }
+
+        //private async Task LogedIn(bool login)
+        //{
+        //    if (LogedOut)
+        //    {
+        //        await Refresh();
+        //        LogedOut = false;
+        //    }
+        //}
 
         #endregion Constructors
 
@@ -48,6 +58,7 @@ namespace BubbleStart.Helpers
 
         #region Properties
 
+        public bool LogedOut { get; set; }
         public Dictionary<int, string> ProgramModes { get; set; }
 
         private ObservableCollection<Shift> _Shifts;
@@ -296,7 +307,7 @@ namespace BubbleStart.Helpers
             //    Person = gcs.Key.Person
             //});
 
-            foreach (var item in grouped.Where(d=>d.Count()>1))
+            foreach (var item in grouped.Where(d => d.Count() > 1))
             {
                 if (item.Count() > 1)
                     Context.Delete(item.First());

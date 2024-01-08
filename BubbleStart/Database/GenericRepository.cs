@@ -613,7 +613,7 @@ namespace BubbleStart.Database
         {
             if (string.IsNullOrEmpty(time))
             {
-                if ((room == RoomEnum.Functional || room == RoomEnum.FunctionalB) && dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.Hour > 15)
+                if ((room == RoomEnum.Functional || room == RoomEnum.FunctionalB) && dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.Hour > 14)
                 {
                     return dateTime.AddMinutes(-15).ToString("HH:mm");
 

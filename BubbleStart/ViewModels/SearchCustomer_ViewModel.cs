@@ -782,6 +782,10 @@ namespace BubbleStart.ViewModels
                     BasicDataManager.Add(SelectedCustomer);
                     BasicDataManager.Customers.Add(SelectedCustomer);
                     Customers.Add(SelectedCustomer);
+                    SelectedCustomer.Loaded = true;
+                    SelectedCustomer.InitialLoad();
+                    SelectedCustomer.UpdateCollections();
+                    SelectedCustomer.SetColors();
                     Messenger.Default.Send(new CustomersChangedMessage());
                 }
                 await BasicDataManager.SaveAsync();

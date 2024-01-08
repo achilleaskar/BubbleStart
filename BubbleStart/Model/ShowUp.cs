@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Helpers;
+using DocumentFormat.OpenXml.Wordprocessing;
 using EnumsNET;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
-        
+
         public bool Test
         {
             get
@@ -349,6 +350,41 @@ namespace BubbleStart.Model
         }
 
         public string Description => GetDescription();
+        public DateTime AppointmentTime => GetAppointmentTime();
+
+        private DateTime GetAppointmentTime()
+        {
+            var daysAppos = Customer.apps?.Where(d => d.DateTime.Date == Arrived.Date.Date).ToList();
+            return daysAppos?.FirstOrDefault(a => a.Room == GetProgramModeToRoom())?.DateTime ?? daysAppos?.FirstOrDefault()?.DateTime ?? Arrived;
+        }
+
+        internal RoomEnum GetProgramModeToRoom()
+        {
+            switch (ProgramModeNew)
+            {
+                case ProgramMode.functional:
+                    return RoomEnum.Functional;
+                case ProgramMode.massage:
+                    return RoomEnum.Massage;
+                case ProgramMode.online:
+                case ProgramMode.outdoor:
+                case ProgramMode.aerialYoga:
+                case ProgramMode.medical:
+                    return RoomEnum.Outdoor;
+                case ProgramMode.pilates:
+                    return RoomEnum.Pilates;
+                case ProgramMode.yoga:
+                    return RoomEnum.Outdoor;
+                case ProgramMode.pilatesFunctional:
+                    if (ProgramMode == ProgramMode.pilates)
+                        return RoomEnum.Pilates;
+                    else
+                        return RoomEnum.Functional;
+                case ProgramMode.personal:
+                    return RoomEnum.Personal;
+            }
+            return RoomEnum.Functional;
+        }
 
         private string GetDescription()
         {

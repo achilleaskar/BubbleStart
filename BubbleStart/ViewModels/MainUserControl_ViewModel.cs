@@ -409,6 +409,7 @@ namespace BubbleStart.ViewModels
                     return;
                 }
             }
+            BasicDataManager.LogedOut = true;
             Mouse.OverrideCursor = Cursors.Wait;
             MessengerInstance.Send(new LoginLogOutMessage(false));
 
