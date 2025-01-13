@@ -106,6 +106,7 @@ namespace BubbleStart.Database
             {
                 Context.ProgramChanges.Add(new ProgramChange
                 {
+                    GymNum = -1,
                     Date = DateTime.Now,
                     InstanceGuid = StaticResources.Guid,
                     From = date,
@@ -115,6 +116,7 @@ namespace BubbleStart.Database
             else
                 Context.ProgramChanges.Add(new ProgramChange
                 {
+                    GymNum = -1,
                     Date = DateTime.Now,
                     InstanceGuid = StaticResources.Guid,
                     From = date,
@@ -301,25 +303,25 @@ namespace BubbleStart.Database
 
         public async Task SaveAsync()
         {
-            List<DbEntityEntry> AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
+            //List<DbEntityEntry> AddedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Added).ToList();
 
-            AddedEntities.ForEach(E =>
-            {
-                if (E.CurrentValues.PropertyNames.Contains("CreatedDate"))
-                {
-                    E.Property("CreatedDate").CurrentValue = DateTime.Now;
-                }
-            });
+            //AddedEntities.ForEach(E =>
+            //{
+            //    if (E.CurrentValues.PropertyNames.Contains("CreatedDate"))
+            //    {
+            //        E.Property("CreatedDate").CurrentValue = DateTime.Now;
+            //    }
+            //});
 
-            List<DbEntityEntry> EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
+            //List<DbEntityEntry> EditedEntities = Context.ChangeTracker.Entries().Where(E => E.State == EntityState.Modified).ToList();
 
-            EditedEntities.ForEach(E =>
-            {
-                if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
-                {
-                    //   E.Property("ModifiedDate").CurrentValue = DateTime.Now;
-                }
-            });
+            //EditedEntities.ForEach(E =>
+            //{
+            //    if (E.OriginalValues.PropertyNames.Contains("ModifiedDate"))
+            //    {
+            //        //   E.Property("ModifiedDate").CurrentValue = DateTime.Now;
+            //    }
+            //});
 
             // ReSharper disable once UnusedVariable
             //IEnumerable<DbEntityEntry> changes = from e in Context.ChangeTracker.Entries()
@@ -452,13 +454,18 @@ namespace BubbleStart.Database
             return keys.Any(key => objectContext.ObjectStateManager.GetObjectStateEntry(key).Entity == null);
         }
 
-        internal async Task<IEnumerable<Payment>> GetAllPaymentsAsync(DateTime startDateCash, DateTime endDateCash, bool limit = true)
+        internal async Task<IEnumerable<Payment>> GetAllPaymentsAsync(DateTime startDateCash, DateTime endDateCash, ProgramMode? programMode = null, bool limit = true, int SelectedProgramCountIndex = 0)
         {
             try
             {
                 endDateCash = endDateCash.AddDays(1);
                 return await Context.Payments
-                    .Where(p => p.Date >= startDateCash && p.Date < endDateCash && (!limit || p.Date >= Limit))
+                    .Where(p => p.Date >= startDateCash && p.Date < endDateCash && (!limit || p.Date >= Limit)
+                    && (programMode == null || p.Program.ProgramTypeO.ProgramMode == programMode)
+                    && (SelectedProgramCountIndex == 0 ||
+                    (SelectedProgramCountIndex == 1 && p.Program.Months > 0) ||
+                    (SelectedProgramCountIndex == 2 && p.Program.Showups > 0)
+                    ))
                     .Include(c => c.Customer)
                     .Include(c => c.Program)
                     .ToListAsync();
@@ -474,10 +481,12 @@ namespace BubbleStart.Database
             if (expensetypes == null || expensetypes.Count == 0)
                 return await Context.Expenses.Where(e => (!limit || e.Date >= Limit) &&
                 (mainId <= 0 || mainId == e.MainCategoryId) &&
+                (StaticResources.User.Level <= 1 || (mainId > 0 && StaticResources.afroallowedExpCat.Contains(mainId)) || (mainId <= 0 && (e.MainCategory == null || StaticResources.afroallowedExpCat.Contains(e.MainCategoryId.Value)))) &&
                 (secId <= 0 || secId == e.SecondaryCategoryId)).Where(filterp)
                    .ToListAsync();
             else
                 return await Context.Expenses.Where(e => e.MainCategoryId != null && (!limit || e.Date >= Limit) &&
+                (StaticResources.User.Level <= 1 || (mainId > 0 && StaticResources.afroallowedExpCat.Contains(mainId)) || (mainId <= 0 && (e.MainCategory == null || StaticResources.afroallowedExpCat.Contains(e.MainCategoryId.Value)))) &&
                 (mainId <= 0 || mainId == e.MainCategoryId) &&
                 (secId <= 0 || secId == e.SecondaryCategoryId) && expensetypes.Contains((int)e.MainCategoryId)).Where(filterp)
                    .Include(e => e.User)
@@ -525,22 +534,42 @@ namespace BubbleStart.Database
             List<DateTime> dates = new List<DateTime>();
 
             DateTime limit;
-     
-                limit = time.AddMonths(3);
-                while (time < limit)
-                {
-                    dates.Add(time);
-                    time = time.AddDays(7);
-                }
-          
+
+            limit = time.AddMonths(3);
+            while (time < limit)
+            {
+                dates.Add(time);
+                time = time.AddDays(7);
+            }
 
             if (selectedHours?.Any() == true)
             {
-                dates=dates.Select(d => d.Date).ToList();
+                dates = dates.Select(d => d.Date).ToList();
                 return await Context.ClosedHours.Where(e => dates.Any(d => d == DbFunctions.TruncateTime(e.Date))).ToListAsync();
             }
 
             return await Context.ClosedHours.Where(e => e.Room == room && dates.Any(d => d == e.Date)).ToListAsync();
+        }
+
+        internal async Task<List<GymnastHour>> GetAllNextGymnastsAsync(DateTime date, IEnumerable<Hour> selectedHours, bool forever)
+        {
+            List<DateTime> dates = new List<DateTime>();
+
+            DateTime limit;
+
+            limit = forever ? date.AddMonths(3) : new DateTime(date.Year, date.Month, date.Day, 23, 59, 0);
+            while (date < limit)
+            {
+                dates.Add(date);
+                date = date.AddDays(7);
+            }
+
+            if (selectedHours?.Any() == true)
+            {
+                dates = dates.Select(d => d.Date).ToList();
+                return await Context.GymnastHours.Where(e => dates.Any(d => d == DbFunctions.TruncateTime(e.Datetime))).ToListAsync();
+            }
+            return new List<GymnastHour>();
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsyncSortedByUserName()
@@ -594,8 +623,8 @@ namespace BubbleStart.Database
         }
 
 #pragma warning disable IDE0060 // Remove unused parameter
+
         internal async Task<List<Apointment>> GetAllAppointmentsThisDayAsync(int id, DateTime time)
-#pragma warning restore IDE0060 // Remove unused parameter
         {
             //List<DateTime> dates = new List<DateTime>();
             //int counter = 0;
@@ -613,10 +642,9 @@ namespace BubbleStart.Database
         {
             if (string.IsNullOrEmpty(time))
             {
-                if ((room == RoomEnum.Functional || room == RoomEnum.FunctionalB) && dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.Hour > 14)
+                if ((room == RoomEnum.Functional || room == RoomEnum.FunctionalB || room == RoomEnum.Fitness || room == RoomEnum.Strength) && dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.Hour > 14)
                 {
                     return dateTime.AddMinutes(-15).ToString("HH:mm");
-
                 }
                 return dateTime.ToString("HH:mm");
             }
@@ -646,6 +674,21 @@ namespace BubbleStart.Database
                 TimeString = o.DateTime.ToString("dd/MM/yy") + " " + GetTime(o.Time, o.DateTime, o.Room),
                 DayString = o.DateTime.ToString("ddd"),
             }).ToList();
+        }
+
+        internal async Task<List<Program>> GetAllGunAsync()
+        {
+            return await Context.Programs.Where(r => r.Gun)
+                .Include(r => r.Payments)
+                .Include(r => r.Customer)
+                .ToListAsync();
+        }
+
+        internal async Task<List<Program>> GetAllGiftAsync()
+        {
+            return await Context.Programs.Where(r => r.Gift)
+                .Include(r => r.Customer)
+                .ToListAsync();
         }
     }
 }

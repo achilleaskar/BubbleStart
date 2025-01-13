@@ -36,11 +36,13 @@ namespace BubbleStart.ViewModels
 
             SearchCustomer_ViewModel = new SearchCustomer_ViewModel(basicDataManager);
             EconomicData_ViewModel = new EconomicData_ViewModel(basicDataManager);
-            Apointments_ViewModel = new Apointments_ViewModel(BasicDataManager);
+            Apointments_ViewModel = new Apointments_ViewModel(BasicDataManager,GymNum: 0);
+            Apointments2_ViewModel = new Apointments_ViewModel(BasicDataManager, GymNum: 1);
             ShowUpsPerDay_ViewModel = new ShowUpsPerDay_ViewModel(BasicDataManager);
             EmployeeManagement_ViewModel = new EmployeeManagement_ViewModel(BasicDataManager);
             Shop_ViewModel = new Shop_ViewModel(BasicDataManager);
             InActiveCustomers_ViewModel = new InActiveCustomers_ViewModel(BasicDataManager, SearchCustomer_ViewModel);
+            MarketingCustomers_ViewModel = new InActiveCustomers_ViewModel(BasicDataManager, SearchCustomer_ViewModel, true);
 
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
         }
@@ -96,9 +98,10 @@ namespace BubbleStart.ViewModels
             myWorksheet.Cells["I1"].Value = "Χαρτί";
             myWorksheet.Cells["J1"].Value = "Μπλούζα";
             myWorksheet.Cells["K1"].Value = "Φούτερ";
-            myWorksheet.Cells["L1"].Value = "Τσάντα";
-            myWorksheet.Cells["M1"].Value = "Google";
-            myWorksheet.Cells["N1"].Value = "Μαλιαρ";
+            myWorksheet.Cells["L1"].Value = "Θερμό";
+            myWorksheet.Cells["M1"].Value = "Τσάντα";
+            myWorksheet.Cells["N1"].Value = "Google";
+            myWorksheet.Cells["O1"].Value = "Μαλιαρ";
 
             var inactiveCustomers = BasicDataManager.Context.Context.Customers.Where(c => !c.Enabled);
             foreach (Customer customer in BasicDataManager.Customers)
@@ -120,22 +123,20 @@ namespace BubbleStart.ViewModels
                 myWorksheet.Cells["H" + lineNum].Style.Font.Color.SetColor(customer.ThirdDose ? System.Drawing.Color.Black : System.Drawing.Color.Red);
 
                 myWorksheet.Cells["I" + lineNum].Value = customer.Doctor ? "Έχει" : "Δεν έχει";
-                myWorksheet.Cells["J" + lineNum].Value = customer.Items.Where(t => t.ItemId == 2) is IEnumerable<ItemPurchase> l1 && l1.Count() > 0 ?
+                myWorksheet.Cells["J" + lineNum].Value = customer.Items.Where(t => t.ItemId == 2) is IEnumerable<ItemPurchase> l1 && l1.Any() ?
                     string.Join(", ", l1.Select(i => i.Size.ToString()).Distinct()) : "OXI";
-                myWorksheet.Cells["K" + lineNum].Value = customer.Items.Where(t => t.ItemId == 1) is IEnumerable<ItemPurchase> l2 && l2.Count() > 0 ?
+                myWorksheet.Cells["K" + lineNum].Value = customer.Items.Where(t => t.ItemId == 1) is IEnumerable<ItemPurchase> l2 && l2.Any() ?
                     string.Join(", ", l2.Select(i => i.Size.ToString()).Distinct()) : "OXI";
-                yes = customer.Items.Where(t => t.ItemId == 3) is IEnumerable<ItemPurchase> l3 && l3.Count() > 0;
-                myWorksheet.Cells["L" + lineNum].Value = yes ?
-                    "NAI" : "OXI";
+                yes = customer.Items.Where(t => t.ItemId == 17) is IEnumerable<ItemPurchase> l3 && l3.Any();
+                myWorksheet.Cells["L" + lineNum].Value = yes ? "NAI" : "OXI";
                 myWorksheet.Cells["L" + lineNum].Style.Font.Color.SetColor(yes ? System.Drawing.Color.Black : System.Drawing.Color.Red);
-
-                myWorksheet.Cells["M" + lineNum].Value = customer.Google ?
-                    "NAI" : "OXI";
-                myWorksheet.Cells["M" + lineNum].Style.Font.Color.SetColor(customer.Google ? System.Drawing.Color.Black : System.Drawing.Color.Red);
-
-                myWorksheet.Cells["N" + lineNum].Value = customer.Maliar ?
-                    "NAI" : "OXI";
-                myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                yes = customer.Items.Where(t => t.ItemId == 3) is IEnumerable<ItemPurchase> l4 && l4.Any();
+                myWorksheet.Cells["M" + lineNum].Value = yes ? "NAI" : "OXI";
+                myWorksheet.Cells["M" + lineNum].Style.Font.Color.SetColor(yes ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                myWorksheet.Cells["N" + lineNum].Value = customer.Google ? "NAI" : "OXI";
+                myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Google ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                myWorksheet.Cells["O" + lineNum].Value = customer.Maliar ? "NAI" : "OXI";
+                myWorksheet.Cells["O" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
 
             }
             myWorksheet.Column(1).Width = 4;
@@ -150,10 +151,11 @@ namespace BubbleStart.ViewModels
             myWorksheet.Column(10).Width = 13;
             myWorksheet.Column(11).Width = 8;
             myWorksheet.Column(12).Width = 8;
+            myWorksheet.Column(13).Width = 8;
 
 
             p.Workbook.Worksheets.Add("Inactive");
-              myWorksheet = p.Workbook.Worksheets[2];
+            myWorksheet = p.Workbook.Worksheets[2];
             myWorksheet.Cells["A1"].Value = "#";
             myWorksheet.Cells["B1"].Value = "Όνομα";
             myWorksheet.Cells["C1"].Value = "Επίθετο";
@@ -171,10 +173,70 @@ namespace BubbleStart.ViewModels
 
             lineNum = 1;
 
-            foreach (Customer customer in inactiveCustomers)
+            foreach (Customer customer in inactiveCustomers.Where(c => c.ForceDisable != ForceDisable.marketing))
             {
                 lineNum++;
-                bool yes;
+                myWorksheet.Cells["A" + lineNum].Value = lineNum - 1;
+                myWorksheet.Cells["B" + lineNum].Value = customer.Name;
+                myWorksheet.Cells["C" + lineNum].Value = customer.SureName;
+                myWorksheet.Cells["D" + lineNum].Value = !string.IsNullOrEmpty(customer.Tel) && customer.Tel.Length >= 10 && !customer.Tel.StartsWith("000") ? customer.Tel : "";
+                myWorksheet.Cells["E" + lineNum].Value = customer.Email;
+                myWorksheet.Cells["F" + lineNum].Value = customer.ActiveCustomer ? "ΝΑΙ" : "ΟΧΙ";
+                myWorksheet.Cells["F" + lineNum].Style.Font.Color.SetColor(customer.ActiveCustomer ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["G" + lineNum].Value = customer.Vacinated ? "Έκανε" : "Δεν έκανε";
+                myWorksheet.Cells["G" + lineNum].Style.Font.Color.SetColor(customer.Vacinated ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["H" + lineNum].Value = customer.ThirdDose ? "Έκανε" : "Δεν έκανε";
+                myWorksheet.Cells["H" + lineNum].Style.Font.Color.SetColor(customer.ThirdDose ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["I" + lineNum].Value = customer.Doctor ? "Έχει" : "Δεν έχει";
+                myWorksheet.Cells["M" + lineNum].Value = customer.Google ?
+                    "NAI" : "OXI";
+                myWorksheet.Cells["M" + lineNum].Style.Font.Color.SetColor(customer.Google ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["N" + lineNum].Value = customer.Maliar ?
+                    "NAI" : "OXI";
+                myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+            }
+
+
+            myWorksheet.Column(1).Width = 4;
+            myWorksheet.Column(2).Width = 16;
+            myWorksheet.Column(3).Width = 18;
+            myWorksheet.Column(4).Width = 12;
+            myWorksheet.Column(5).Width = 30;
+            myWorksheet.Column(6).Width = 8;
+            myWorksheet.Column(7).Width = 13;
+            myWorksheet.Column(8).Width = 13;
+            myWorksheet.Column(9).Width = 13;
+            myWorksheet.Column(10).Width = 13;
+            myWorksheet.Column(11).Width = 8;
+            myWorksheet.Column(12).Width = 8;
+
+            p.Workbook.Worksheets.Add("Marketing");
+            myWorksheet = p.Workbook.Worksheets[3];
+            myWorksheet.Cells["A1"].Value = "#";
+            myWorksheet.Cells["B1"].Value = "Όνομα";
+            myWorksheet.Cells["C1"].Value = "Επίθετο";
+            myWorksheet.Cells["D1"].Value = "Τηλέφωνο";
+            myWorksheet.Cells["E1"].Value = "Email";
+            myWorksheet.Cells["F1"].Value = "Ενεργός";
+            myWorksheet.Cells["G1"].Value = "Εμβόλιο";
+            myWorksheet.Cells["H1"].Value = "3η δόση";
+            myWorksheet.Cells["I1"].Value = "Χαρτί";
+            myWorksheet.Cells["J1"].Value = "Μπλούζα";
+            myWorksheet.Cells["K1"].Value = "Φούτερ";
+            myWorksheet.Cells["L1"].Value = "Τσάντα";
+            myWorksheet.Cells["M1"].Value = "Google";
+            myWorksheet.Cells["N1"].Value = "Μαλιαρ";
+
+            lineNum = 1;
+
+            foreach (Customer customer in inactiveCustomers.Where(c => c.ForceDisable == ForceDisable.marketing))
+            {
+                lineNum++;
                 myWorksheet.Cells["A" + lineNum].Value = lineNum - 1;
                 myWorksheet.Cells["B" + lineNum].Value = customer.Name;
                 myWorksheet.Cells["C" + lineNum].Value = customer.SureName;
@@ -239,6 +301,31 @@ namespace BubbleStart.ViewModels
         #region Properties
 
         public static string UserName => StaticResources.User != null ? StaticResources.User.Name : "Error";
+
+
+
+
+        private Apointments_ViewModel _Apointments2_ViewModel;
+
+
+        public Apointments_ViewModel Apointments2_ViewModel
+        {
+            get
+            {
+                return _Apointments2_ViewModel;
+            }
+
+            set
+            {
+                if (_Apointments2_ViewModel == value)
+                {
+                    return;
+                }
+
+                _Apointments2_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public Apointments_ViewModel Apointments_ViewModel
         {
@@ -347,6 +434,32 @@ namespace BubbleStart.ViewModels
             }
         }
 
+
+
+
+
+        private InActiveCustomers_ViewModel _MarketingCustomers_ViewModel;
+
+
+        public InActiveCustomers_ViewModel MarketingCustomers_ViewModel
+        {
+            get
+            {
+                return _MarketingCustomers_ViewModel;
+            }
+
+            set
+            {
+                if (_MarketingCustomers_ViewModel == value)
+                {
+                    return;
+                }
+
+                _MarketingCustomers_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private InActiveCustomers_ViewModel _InActiveCustomers_ViewModel;
 
         public InActiveCustomers_ViewModel InActiveCustomers_ViewModel
@@ -412,7 +525,6 @@ namespace BubbleStart.ViewModels
             BasicDataManager.LogedOut = true;
             Mouse.OverrideCursor = Cursors.Wait;
             MessengerInstance.Send(new LoginLogOutMessage(false));
-
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 

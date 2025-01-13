@@ -1,8 +1,4 @@
-﻿using BubbleStart.Model;
-using BubbleStart.Views;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,6 +9,10 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using BubbleStart.Model;
+using BubbleStart.Views;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace BubbleStart.Helpers
 {
@@ -64,7 +64,9 @@ namespace BubbleStart.Helpers
         internal static BasicDataManager context;
 
         //public static string[] Districts { get; set; } = { "Ευζώνων", "Λαογραφικό Μουσείο", "Μπότσαρη", "Πανόραμα", "Σχολή Τυφλων", "Φάληρο", "Άλλο" };
-        public static List<int> Months { get; set; } = new List<int> { 0, 1, 2, 3,4,5, 6, 12 };
+        public static List<int> Months { get; set; } = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 12 };
+
+        public static readonly int[] afroallowedExpCat = new[] { 2, 6, 7, 8, 111 };
 
         public static CustomerManagement OpenWindow { get; internal set; }
         public static DateTime OneWeekBefore { get; internal set; } = DateTime.Today.AddDays(-7);
@@ -73,7 +75,7 @@ namespace BubbleStart.Helpers
 
         public static string DecimalToString(decimal value) => value.ToString("C2").Replace(".00", "").Replace(",00", "").Replace(" ", "");
 
-        public static void PrintDatagrid(DataGrid dgrid,int par=0)
+        public static void PrintDatagrid(DataGrid dgrid, int par = 0)
         {
             dgrid.SelectionMode = DataGridSelectionMode.Extended;
             dgrid.SelectAllCells();
@@ -152,7 +154,7 @@ namespace BubbleStart.Helpers
                 row++;
             }
 
-            if (par==1)
+            if (par == 1)
             {
                 myWorksheet.DeleteColumn(1);
                 myWorksheet.DeleteColumn(12, 2);
@@ -297,6 +299,22 @@ namespace BubbleStart.Helpers
                 }
             }
             return toReturn;
+        }
+
+        // Normalize method to replace 'ι' and 'η' with a common character
+        private static string NormalizeForSearch(string input)
+        {
+            return input.Replace("Η", "Ι");
+        }
+
+        public static bool ContainsGreekName(string input, string name)
+        {
+            // Normalize both the input and the name to ensure 'ι' and 'η' are treated as the same
+            string normalizedInput = NormalizeForSearch(input);
+            string normalizedName = NormalizeForSearch(name);
+
+            // Check if the normalized name contains the normalized input
+            return normalizedName.Contains(normalizedInput);
         }
     }
 }

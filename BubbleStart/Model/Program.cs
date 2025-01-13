@@ -1,4 +1,5 @@
 ﻿using BubbleStart.Helpers;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,6 +29,29 @@ namespace BubbleStart.Model
         #endregion Fields
 
 
+
+
+        private bool _Gift;
+
+
+        public bool Gift
+        {
+            get
+            {
+                return _Gift;
+            }
+
+            set
+            {
+                if (_Gift == value)
+                {
+                    return;
+                }
+
+                _Gift = value;
+                RaisePropertyChanged();
+            }
+        }
 
 
         private bool _Gun;
@@ -353,7 +377,7 @@ namespace BubbleStart.Model
                     tmpAmount -= p.Amount;
                 }
             }
-            RemainingAmount = tmpAmount;
+            RemainingAmountLive = tmpAmount;
             if (tmpAmount > 0)
             {
                 PaidCol = false;
@@ -364,10 +388,17 @@ namespace BubbleStart.Model
             }
         }
 
+        public decimal GetRemainingAmmount()
+        {
+            var paid = Payments?.Sum(prop => prop.Amount)??0;
+            return Amount - paid;
+
+        }
+
         private decimal _RemainingAmount;
 
         [NotMapped]
-        public decimal RemainingAmount
+        public decimal RemainingAmountLive
         {
             get => _RemainingAmount;
 
@@ -642,6 +673,8 @@ namespace BubbleStart.Model
                 RaisePropertyChanged();
             }
         }
+
+        public decimal RemainingAmmountLive => GetRemainingAmmount();
 
         internal void SetRemainingDays()
         {

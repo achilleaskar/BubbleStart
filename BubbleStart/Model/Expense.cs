@@ -195,6 +195,12 @@ namespace BubbleStart.Model
                 }
 
                 _Cash = value;
+
+                if (MainCategory?.Id == 3||MainCategoryId==3)
+                {
+                    Amount = Bank + Cash;
+                }
+
                 RaisePropertyChanged();
             }
         }

@@ -303,25 +303,30 @@ namespace BubbleStart.ViewModels
             switch (Room)
             {
                 case RoomEnum.Functional:
+                case RoomEnum.Fitness:
                     return Hour.AppointmentsFunctional.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsFunctional.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
 
                 case RoomEnum.FunctionalB:
+                case RoomEnum.Strength:
                     return Hour.AppointmentsFB.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsFB.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
 
                 case RoomEnum.Pilates:
+                case RoomEnum.Personal2:
                     return Hour.AppointmentsReformer.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsReformer.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
 
                 case RoomEnum.Massage:
+                case RoomEnum.Massage2:
                     return Hour.AppointmentsMassage.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsMassage.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
+
+                case RoomEnum.Personal:
+                case RoomEnum.FreeSpace:
+                    return Hour.AppointmentsPersonal.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsPersonal.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
 
                 case RoomEnum.Outdoor:
                     return Hour.AppointemntsOutdoor.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointemntsOutdoor.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
 
                 case RoomEnum.MassageHalf:
                     return Hour.AppointmentsMassageHalf.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsMassageHalf.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
-
-                case RoomEnum.Personal:
-                    return Hour.AppointmentsPersonal.Any(a => a.Customer.Rating > 0) ? Math.Round(Hour.AppointmentsPersonal.Where(a => a.Customer.Rating > 0).Average(r => r.Customer.Rating) * 2, MidpointRounding.AwayFromZero) / 2 : 0;
 
                 default:
                     return 0;
@@ -406,6 +411,7 @@ namespace BubbleStart.ViewModels
                 BasicDataManager.Add(new ProgramChange
                 {
                     Date = DateTime.Now,
+                    GymNum = -1,
                     InstanceGuid = StaticResources.Guid,
                     From = Hour.Time,
                     To = Hour.Time
@@ -430,7 +436,12 @@ namespace BubbleStart.ViewModels
             }
             SearchTerm = SearchTerm.ToUpper();
             string tmpTerm = StaticResources.ToGreek(SearchTerm);
-            return customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm);
+            string tmpTermWithis = StaticResources.ToGreek(SearchTerm);
+            return customer.Name.ToUpper().Contains(tmpTerm) ||
+                customer.SureName.ToUpper().Contains(tmpTerm) ||
+                customer.Name.ToUpper().Contains(SearchTerm) || 
+                customer.SureName.ToUpper().Contains(SearchTerm) ||
+                customer.Tel.Contains(tmpTerm);
         }
 
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)

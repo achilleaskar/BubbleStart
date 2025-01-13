@@ -4,6 +4,7 @@ using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,7 +35,9 @@ namespace BubbleStart.ViewModels
             CustomerLeftCommand = new RelayCommand(async () => { await CustomerLeft(); }, CanDoIt);
             BodyPartSelected = new RelayCommand<string>(BodyPartChanged);
             CustomersPracticing = new ObservableCollection<Customer>();
-            DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(true); });
+            DeleteCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(1); });
+            MarketingCustomerCommand = new RelayCommand(async () => { await DeleteCustomer(2); });
+            BatchCloseCommand = new RelayCommand(async () => { await BatchClose(true); });
             ToggleForcedDisableCommand = new RelayCommand<object>(async (par) => await DeleteCustomer());
             CancelApointmentCommand = new RelayCommand(async () => { await CancelApointment(); });
             OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
@@ -44,9 +47,18 @@ namespace BubbleStart.ViewModels
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
         }
 
+        private async Task BatchClose(bool v)
+        {
+            if (!PopupFinishOpen)
+            {
+                BatchCustomersLeft = true;
+                PopupFinishOpen = true;
+            }
+        }
+
         private bool CanDoIt()
         {
-            return SelectedPracticingCustomer != null;
+            return SelectedPracticingCustomer != null && SelectedBodyPart != null;
         }
 
         #endregion Constructors
@@ -73,7 +85,7 @@ namespace BubbleStart.ViewModels
 
         private Apointment _SelectedApointment;
 
-        private BodyPart _SelectedBodyPart;
+        private BodyPart? _SelectedBodyPart;
 
         private Customer _SelectedCustomer;
 
@@ -175,6 +187,7 @@ namespace BubbleStart.ViewModels
         public ICollectionView CustomersPracticingCollectionView { get; set; }
 
         public RelayCommand DeleteCustomerCommand { get; set; }
+        public RelayCommand MarketingCustomerCommand { get; set; }
 
         public bool Enabled => SelectedCustomer != null;
 
@@ -224,6 +237,7 @@ namespace BubbleStart.ViewModels
         public RelayCommand OpenCustomerManagementCommand { get; set; }
 
         public RelayCommand OpenPopupCommand { get; set; }
+        public RelayCommand BatchCloseCommand { get; set; }
 
         public bool PopupFinishOpen
         {
@@ -274,7 +288,7 @@ namespace BubbleStart.ViewModels
 
 
         private User _SelectedGymanst;
-
+        private int _SelectedProgramCountIndex;
 
         public User SelectedGymanst
         {
@@ -387,7 +401,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        public BodyPart SelectedBodyPart
+        public BodyPart? SelectedBodyPart
         {
             get
             {
@@ -462,6 +476,25 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+        public int SelectedProgramCountIndex
+        {
+            get
+            {
+                return _SelectedProgramCountIndex;
+            }
+
+            set
+            {
+                if (_SelectedProgramCountIndex == value)
+                {
+                    return;
+                }
+
+                _SelectedProgramCountIndex = value;
+                CustomersCollectionView.Refresh();
+                RaisePropertyChanged();
+            }
+        }
 
         public Customer SelectedSideCustomer
         {
@@ -522,24 +555,40 @@ namespace BubbleStart.ViewModels
         public RelayCommand<object> ToggleForcedDisableCommand { get; set; }
 
         #endregion Properties
+        private readonly ILogger logger = Log.ForContext<SearchCustomer_ViewModel>();
+
+        public bool BatchCustomersLeft { get; set; }
 
         #region Methods
 
         public async Task CustomerLeft()
         {
-            if (SelectedPracticingCustomer.LastShowUp != null)
+            var selectedCustomers = CustomersPracticing.Where(c => c.SelectedPracticing).ToList();
+            if (!BatchCustomersLeft)
             {
-
-                SelectedPracticingCustomer.LastShowUp.Left = DateTime.Now;
-                SelectedPracticingCustomer.LastShowUp.BodyPart = SelectedBodyPart;
-                SelectedPracticingCustomer.LastShowUp.SecBodyPartsString = string.Join(",", SecBodyParts.Where(x => x.Selected).Select(t => ((int)t.SecBodyPart)));
+                selectedCustomers = new List<Customer> { SelectedPracticingCustomer };
             }
-            SelectedPracticingCustomer.IsPracticing = false;
-            SelectedPracticingCustomer.RaisePropertyChanged(nameof(SelectedPracticingCustomer.LastPart));
-            CustomersPracticing.Remove(SelectedPracticingCustomer);
+            foreach (var cust in selectedCustomers)
+            {
+                if (cust.LastShowUp != null)
+                {
+                    cust.LastShowUp.Left = DateTime.Now;
+                    cust.LastShowUp.BodyPart = SelectedBodyPart.Value;
+                    cust.LastShowUp.SecBodyPartsString = string.Join(",", SecBodyParts.Where(x => x.Selected).Select(t => ((int)t.SecBodyPart)));
+                    logger.Information($"Έκλεισε η παρουσία  απο μπροστά στον : {cust.FullName} - {cust.LastShowUp.Description}");
+                }
+                else
+                    logger.Information($"Έκλεισε η παρουσία απο μπροστά στον : {cust.FullName}");
+
+                cust.IsPracticing = false;
+                cust.RaisePropertyChanged(nameof(cust.LastPart));
+                CustomersPracticing.Remove(cust);
+            }
             ResetList();
             await BasicDataManager.SaveAsync();
             PopupFinishOpen = false;
+            BatchCustomersLeft = false;
+
         }
 
         public async Task CustomerShowedUp(int programMode)
@@ -558,6 +607,7 @@ namespace BubbleStart.ViewModels
                     if (await SelectedCustomer.ShowedUp(true, (ProgramMode)programMode, Is30min, gymnast: SelectedGymanst))
                         CustomersPracticing.Add(SelectedCustomer);
                 }
+                logger.Information($"Προστέθηκε παρουσία απο μπροστά στον : {SelectedCustomer.FullName} - {SelectedCustomer.LastShowUp?.Description ?? ""}");
 
                 SelectedCustomer.SetColors();
                 await BasicDataManager.SaveAsync();
@@ -577,7 +627,6 @@ namespace BubbleStart.ViewModels
             CustomersPracticing.Clear();
 
             IEnumerable<Apointment> apps;
-
             foreach (var c in BasicDataManager.Customers)
             {
                 try
@@ -610,31 +659,145 @@ namespace BubbleStart.ViewModels
 
             CustomersCollectionView.Refresh();
             TodaysApointments = new ObservableCollection<Apointment>(TodaysApointments.OrderBy(ta => ta.DateTime));
-            SecBodyParts = new ObservableCollection<BodyPartSelection>();
+
+            List<BodyPartSelection> tmp = new List<BodyPartSelection>();
             foreach (var part in (SecBodyPart[])Enum.GetValues(typeof(SecBodyPart)))
             {
-                SecBodyParts.Add(new BodyPartSelection { SecBodyPart = part });
+                var order = part.GetAttribute<EnumOrderAttribute>();
+                tmp.Add(new BodyPartSelection { SecBodyPart = part, Order = order.Order });
             }
-
+            SecBodyParts = new ObservableCollection<BodyPartSelection>(tmp.OrderBy(r => r.Order));
             Gymnasts = BasicDataManager.Gymnasts;
 
             //int counter = 0;
+            //int noprog = 0;
+            //int freeprogs= 0;
 
-            //MessageBox.Show(Customers.Where(c => c.ActiveCustomer == true).Count()+"");
+            ////MessageBox.Show(Customers.Where(c => c.ActiveCustomer == true).Count()+"");
+
+            //var gymHours = await BasicDataManager.Context.GetAllAsync<GymnastHour>();
 
             //foreach (var c in Customers)
             //{
-            //    if (!c.ActiveCustomer)
+            //    foreach (var a in c.Apointments)
             //    {
-            //        counter++;
-            //        c.Enabled = false;
-            //    }
-            //    if (counter%20==0)
-            //    {
-            //        BasicDataManager.Context.Save();
+            //        if (a.DateTime >= DateTime.Now)
+            //        {
+            //            continue;
+            //        }
+            //        if ((counter+1) % 41 == 0)
+            //        {
+            //            await BasicDataManager.Context.SaveAsync();
+            //            counter++;
+            //        }
+            //        var ui = gymHours.FirstOrDefault(g => g.Datetime == a.DateTime && a.Room == g.Room)?.Gymnast_Id;
+            //        if (ui != a.UserId)
+            //        {
+            //            a.UserId = ui;
+            //            counter++;
+            //        }
+
+            //        ShowUp showup = null;
+            //        var showups = c.ShowUps.Where(s => s.Arrived.Date == a.DateTime.Date).ToList();
+            //        if (showups.Count == 1)
+            //        {
+            //            showup = showups.First();
+            //        }
+            //        else if (showups.Count > 1)
+            //        {
+            //            switch (a.Room)
+            //            {
+            //                case RoomEnum.Functi onal:
+            //                case RoomEnum.Functi onalB:
+            //                    showup = showups.FirstOrDefault(s => s.Prog?.ProgramTypeO.ProgramMode == ProgramMode.functional || s.Prog?.ProgramMode == ProgramMode.pilatesFunctional);
+            //                    break;
+            //                case RoomEnum.Pila tes:
+            //                    showup = showups.FirstOrDefault(s => s.Prog?.ProgramTypeO.ProgramMode == ProgramMode.pilates || s.Prog?.ProgramMode == ProgramMode.pilatesFunctional);
+            //                    break;
+            //                case RoomEnum.Ma ssage:
+            //                    showup = showups.FirstOrDefault(s => s.Prog?.ProgramTypeO.ProgramMode == ProgramMode.massage);
+            //                    break;
+            //                case RoomEnum.Outd oor:
+            //                    showup = showups.FirstOrDefault(s => s.Prog?.ProgramTypeO.ProgramMode == ProgramMode.outdoor);
+            //                    break;
+            //                case RoomEnum.Massag eHalf:
+            //                    showup = showups.FirstOrDefault(s => s.Prog?.ProgramTypeO.ProgramMode == ProgramMode.massage);
+            //                    break;
+            //                case RoomEnum.Pers onal:
+            //                    showup = showups.FirstOrDefault(s => s.Prog?.ProgramTypeO.ProgramMode == ProgramMode.personal);
+            //                    break;
+            //                default:
+            //                    break;
+            //            }
+            //            if (showup == null)
+            //            {
+            //                if (a.Room != RoomEnum.Mas sage)
+            //                {
+            //                    showup = showups.FirstOrDefault(s => s.Prog?.ProgramMode != ProgramMode.massage);
+            //                }
+            //            }
+            //        }
+            //        if (showup != null)
+            //        {
+            //            if (showup.Prog != null)
+            //            {
+            //                var cos = decimal.Round( GetAppointmentCost(a, showup),2);
+
+            //                if (a.Cost != cos && a.UserId != null)
+            //                {
+            //                    a.Cost = cos;
+            //                    counter++;
+            //                }
+            //                else if (cos<1)
+            //                {
+            //                    freeprogs++;
+            //                }
+            //            }
+            //            else
+            //            {
+            //                noprog++;
+            //            }
+            //        }
+            //        else
+            //        {
+
+            //        }
+
             //    }
             //}
             //BasicDataManager.Context.Save();
+        }
+
+        private decimal GetAppointmentCost(Apointment a, ShowUp showup)
+        {
+            decimal fictionShowupsNum;
+            decimal price = 0;
+            if (showup.Prog.Showups == 0 && showup.Prog.StartDay.AddMonths(showup.Prog.Months) <= DateTime.Today)
+            {
+                price = showup.Prog.Amount / showup.Prog.ShowUpsList.Count;
+            }
+            else if (showup.Prog.Showups == 0)
+            {
+                fictionShowupsNum = (decimal)((showup.Prog.StartDay.AddMonths(showup.Prog.Months) - showup.Prog.StartDay).TotalDays * showup.Prog.ShowUpsList.Count() / (DateTime.Today - showup.Prog.StartDay).TotalDays);
+                price = showup.Prog.Amount / fictionShowupsNum;
+            }
+            else if (showup.Prog.Months == 0)
+            {
+                price = showup.Prog.ShowUpPrice;
+            }
+            else if (showup.Prog.Showups > 0 && showup.Prog.Months == 0)
+            {
+                price = showup.Prog.ShowUpPrice;
+            }
+            if (price > 0)
+            {
+                return price;
+            }
+            if (showup.Prog.ShowUpPrice == 0)
+            {
+
+            }
+            return showup.Prog.ShowUpPrice;
         }
 
         public override void Reload()
@@ -653,6 +816,8 @@ namespace BubbleStart.ViewModels
         //}
         public void ResetList()
         {
+
+            SelectedBodyPart = null;
             foreach (var item in SecBodyParts)
             {
                 item.Selected = false;
@@ -697,9 +862,27 @@ namespace BubbleStart.ViewModels
             {
                 return false;
             }
-            if (SelectedProgramModeIndex > 0 && !customer.HasActiveProgram(((ProgramMode)(SelectedProgramModeIndex - 1))))
+            if (SelectedProgramModeIndex > 0 && !customer.HasActiveProgram((ProgramMode)(SelectedProgramModeIndex - 1)))
             {
                 return false;
+            }
+            if (SelectedProgramCountIndex > 0)
+            {
+                if (SelectedProgramCountIndex == 1)
+                {
+                    if (customer.ActivePrograms?.Any(p => p.Months > 0) != true)
+                    {
+                        return false;
+                    }
+                }
+                else if (SelectedProgramCountIndex == 2)
+                {
+                    if (customer.ActivePrograms?.Any(p => p.Showups > 0) != true)
+                    {
+                        return false;
+                    }
+                }
+
             }
             if (EnableStartAfterFilter && customer.FirstDate < StartAfterFilter)
             {
@@ -712,16 +895,33 @@ namespace BubbleStart.ViewModels
             }
             SearchTerm = SearchTerm.ToUpper();
             string tmpTerm = StaticResources.ToGreek(SearchTerm);
-            return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
+            return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) ||
+                customer.SureName.ToUpper().Contains(tmpTerm) ||
+                StaticResources.ContainsGreekName(tmpTerm, customer.Name) ||
+                StaticResources.ContainsGreekName(tmpTerm, customer.SureName) ||
+                customer.Name.ToUpper().Contains(SearchTerm) ||
+                customer.SureName.ToUpper().Contains(SearchTerm) || 
+                customer.Tel.Contains(tmpTerm));
         }
 
-        private async Task DeleteCustomer(bool hide = false)
+        private async Task DeleteCustomer(int type = 0)
         {
-            if (!hide || MessageBox.Show("Θελετε σίγουρα να διαγράψετε τον πελάτη?", "Προσοχή", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (type == 2)
+            {
+                if (MessageBox.Show("Θελετε σίγουρα να στείλετε τον πελάτη στην λίστα Marketing?", "Προσοχή", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    BasicDataManager.Add(new Change($"Μετατράπηκε σε Marketing o Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", StaticResources.User));
+                    SelectedCustomer.Enabled = false;
+                    SelectedCustomer.ForceDisable = ForceDisable.marketing;
+                    Customers.Remove(SelectedCustomer);
+                    await BasicDataManager.SaveAsync();
+                }
+            }
+            else if (type == 1 || MessageBox.Show("Θελετε σίγουρα να διαγράψετε τον πελάτη?", "Προσοχή", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 BasicDataManager.Add(new Change($"Απενεργοποιήθηκε οριστικά Πελάτης με όνομα {SelectedCustomer.Name} και επίθετο {SelectedCustomer.SureName}", StaticResources.User));
                 SelectedCustomer.Enabled = false;
-                if (hide)
+                if (type == 1)
                     SelectedCustomer.ForceDisable = ForceDisable.forceDisable;
                 Customers.Remove(SelectedCustomer);
                 await BasicDataManager.SaveAsync();

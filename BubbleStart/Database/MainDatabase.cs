@@ -33,7 +33,7 @@ namespace BubbleStart.Database
             Configuration.LazyLoadingEnabled = false;
 
         }
-        private const string normal = "Server=server19.cretaforce.gr;Database=readmore_achill2;pooling=true;user id=readmore_achill2;Pwd=986239787346;Convert Zero Datetime=True; default command timeout=3600;SslMode=none;TreatTinyAsBoolean=true;charset=utf8;";
+        private const string normal = "Server=server136.cretaforce.gr;Database=latravel_book;pooling=true;Uid=latravel_book;Pwd=3r1r2f34f234f3f3vsv;Convert Zero Datetime=True; CharSet=utf8; default command timeout=3600;SslMode=none;";
 
         public DateTime Limit { get; set; }
 

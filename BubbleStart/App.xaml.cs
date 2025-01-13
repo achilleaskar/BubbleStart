@@ -136,7 +136,7 @@ namespace BubbleStart
         private void Application_DispatcherUnhandledException(object sender,
           DispatcherUnhandledExceptionEventArgs e)
         {
-            logger.Information($"Σφάλμα: {e}");
+            Messenger.Default.Send(new ErrorMessage(e.Exception.ToString()));
 
             MessageBox.Show("Unexpected error occured. Please inform the admin."
               + Environment.NewLine + e.Exception.Message, "Unexpected error");

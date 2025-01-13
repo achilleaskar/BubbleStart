@@ -29,6 +29,7 @@
                      Text="{Binding SearchTerm, Delay=100, UpdateSourceTrigger=PropertyChanged}" />
             <Button Content="Προβολή"
                     VerticalAlignment="Center"
+                    IsDefault="True"
                     Command="{Binding ShowCustomersCommand}" />
         </StackPanel>
         <DataGrid ItemsSource="{Binding CustomersCollectionView}"

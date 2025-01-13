@@ -1,28 +1,25 @@
-﻿using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using Google.Protobuf.WellKnownTypes;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace BubbleStart.ViewModels
 {
     public class InActiveCustomers_ViewModel : MyViewModelBase
     {
-        public InActiveCustomers_ViewModel(BasicDataManager basicDataManager, SearchCustomer_ViewModel searchCustomer_ViewModel)
+        public InActiveCustomers_ViewModel(BasicDataManager basicDataManager, SearchCustomer_ViewModel searchCustomer_ViewModel, bool marketing = false)
         {
             BasicDataManager = basicDataManager;
             SearchCustomer_ViewModel = searchCustomer_ViewModel;
+            this.marketing = marketing;
             ShowCustomersCommand = new RelayCommand(async () => await ShowCustomers());
             ReActivateCustomerCommand = new RelayCommand<Customer>(async (obj) => { await ReActivateCustomer(obj); });
             DeleteCustomerCommand = new RelayCommand<Customer>(async (obj) => { await DeleteCustomer(obj); });
@@ -64,6 +61,7 @@ namespace BubbleStart.ViewModels
         private ObservableCollection<Customer> _Customers;
         private string _SearchTerm;
         private ICollectionView _CustomersCollectionView;
+        private readonly bool marketing;
 
         public ObservableCollection<Customer> Customers
         {
@@ -101,8 +99,13 @@ namespace BubbleStart.ViewModels
             }
             SearchTerm = SearchTerm.Trim().ToUpper();
             string tmpTerm = StaticResources.ToGreek(SearchTerm);
-            return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || customer.SureName.ToUpper().Contains(tmpTerm) || customer.Name.ToUpper().Contains(SearchTerm) || customer.SureName.ToUpper().Contains(SearchTerm) || customer.Tel.Contains(tmpTerm));
+            return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || 
+                customer.SureName.ToUpper().Contains(tmpTerm) ||
+                customer.Name.ToUpper().Contains(SearchTerm) || 
+                customer.SureName.ToUpper().Contains(SearchTerm) || 
+                customer.Tel.Contains(tmpTerm));
         }
+
         public ICollectionView CustomersCollectionView
         {
             get => _CustomersCollectionView;
@@ -119,7 +122,6 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
         public string SearchTerm
         {
             get => _SearchTerm;
@@ -135,10 +137,14 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         private async Task ShowCustomers()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            Customers = new ObservableCollection<Customer>(await BasicDataManager.Context.GetAllAsync<Customer>(c => !c.Enabled && c.ForceDisable == ForceDisable.normal));
+            if (marketing)
+                Customers = new ObservableCollection<Customer>(await BasicDataManager.Context.GetAllAsync<Customer>(c => !c.Enabled && c.ForceDisable == ForceDisable.marketing));
+            else
+                Customers = new ObservableCollection<Customer>(await BasicDataManager.Context.GetAllAsync<Customer>(c => !c.Enabled && c.ForceDisable == ForceDisable.normal));
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 

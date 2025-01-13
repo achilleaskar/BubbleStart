@@ -19,9 +19,9 @@ namespace BubbleStart.Converters
             if (value is IGrouping<ExpenseCategoryClass, Expense> b)
             {
                 if (b.Key != null)
-                    return $"{b.Key.Name} - {b.Sum(e => e.Amount)} €";
+                    return $"{b.Key.Name} - {b.Sum(e => e.Amount):C2}";
                 else
-                    return $"Χωρίς κατηγορία - {b.Sum(e => e.Amount)} €";
+                    return $"Χωρίς κατηγορία - {b.Sum(e => e.Amount):C2}";
 
             }
             return "Error";

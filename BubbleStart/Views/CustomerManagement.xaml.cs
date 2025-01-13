@@ -10,6 +10,7 @@ using System.Windows.Media;
 using BubbleStart.Helpers;
 using BubbleStart.Model;
 using BubbleStart.ViewModels;
+using EnumsNET;
 
 namespace BubbleStart.Views
 {
@@ -162,10 +163,14 @@ namespace BubbleStart.Views
             {
                 c.SelectedShowUpToEditBP = dc.DataContext as ShowUp;
                 if (c.SecBodyParts.Count == 0)
+                {
                     foreach (var part in (SecBodyPart[])Enum.GetValues(typeof(SecBodyPart)))
                     {
-                        c.SecBodyParts.Add(new BodyPartSelection { SecBodyPart = part });
+                        var order = part.GetAttribute<EnumOrderAttribute>();
+                        c.SecBodyParts.Add(new BodyPartSelection { SecBodyPart = part, Order = order.Order });
                     }
+                    c.SecBodyParts = c.SecBodyParts.OrderBy(x => x.Order).ToList();
+                }
                 if (!string.IsNullOrWhiteSpace(c.SelectedShowUpToEditBP.SecBodyPartsString))
                 {
                     foreach (var item in c.SelectedShowUpToEditBP.SecBodyPartsString.Split(new char[] { ',' }))

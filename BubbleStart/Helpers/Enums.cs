@@ -15,11 +15,11 @@ namespace BubbleStart.Helpers
         outdoor = 3,
         [Description("Pilates")]
         pilates = 4,
-        [Description("Yoga")]
+        [Description("Βιβλίο")]
         yoga = 5,
         [Description("Pilates-Functional")]
         pilatesFunctional = 6,
-        [Description("Aerial Yoga")]
+        [Description("Σεμινάρια")]
         aerialYoga = 7,
         [Description("Personal")]
         personal = 8,
@@ -94,14 +94,19 @@ namespace BubbleStart.Helpers
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum BodyPart
     {
+        [EnumOrder(Order = 0)]
         [Description(" ")]
         Unknown = 0,
+        [EnumOrder(Order = 0)]
         [Description("Total Body")]
         TotalBody = 1,
+        [EnumOrder(Order = 0)]
         [Description("Lower Body")]
         LowerBody = 2,
+        [EnumOrder(Order = 0)]
         [Description("Upper Body")]
         UpperBody = 3,
+        [EnumOrder(Order = 0)]
         [Description("Core Strength")]
         Core = 4
         //[Description("Πόδια")]
@@ -121,23 +126,42 @@ namespace BubbleStart.Helpers
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SecBodyPart
     {
+        [EnumOrder(Order = 0)]
         [Description("Πόδια")]
         Legs = 4,
+        [EnumOrder(Order = 1)]
         [Description("Πλάτη")]
         Back = 5,
+        [EnumOrder(Order = 2)]
         [Description("Στήθος")]
         Chest = 6,
+        [EnumOrder(Order = 3)]
         [Description("Ώμοι")]
         Shoulders = 7,
-        [Description("Δικέφαλος")]
-        Biceps = 8,
-        [Description("Τρικέφαλος")]
-        Triceps = 9,
+        [EnumOrder(Order = 4)]
         [Description("Κορμός")]
         Main = 10,
+        [EnumOrder(Order = 5)]
         [Description("Αερόβιο")]
-        Aerial = 11
-
+        Aerial = 11,
+        [EnumOrder(Order = 6)]
+        [Description("Δικέφαλος")]
+        Biceps = 8,
+        [EnumOrder(Order = 7)]
+        [Description("Τρικέφαλος")]
+        Triceps = 9,
+        [EnumOrder(Order = 8)]
+        [Description("Τετρακέφαλος")]
+        Tetraceps = 12,
+        [EnumOrder(Order = 9)]
+        [Description("Προσαγωγός")]
+        Prosagogos = 13,
+        [EnumOrder(Order = 10)]
+        [Description("Γλουτός")]
+        Glute = 14,
+        [EnumOrder(Order = 11)]
+        [Description("Γαστροκνήμιος")]
+        Gastroknimio = 15
     }
 
     public enum SelectedPersonEnum
@@ -156,7 +180,8 @@ namespace BubbleStart.Helpers
     {
         normal,
         forceDisable,
-        forceEnable
+        forceEnable,
+        marketing
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
@@ -225,9 +250,15 @@ namespace BubbleStart.Helpers
         Functional = 0,
         FunctionalB = 6,
         Pilates = 1,
+        Personal = 5,
         Massage = 2,
-        Outdoor = 3,
         MassageHalf = 4,
-        Personal = 5
+        Outdoor = 3,
+
+        Fitness = 10,
+        Strength = 16,
+        Personal2 = 11,
+        FreeSpace = 15,
+        Massage2 = 12
     }
 }

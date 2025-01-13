@@ -5,6 +5,8 @@ namespace BubbleStart.Model
 {
     public class BodyPartSelection : ObservableObject
     {
+        public int Order { get; set; }
+
         private bool _Selected;
 
         public bool Selected

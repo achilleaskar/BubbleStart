@@ -9,7 +9,7 @@ namespace BubbleStart.Model
     public class ProgramChange : BaseModel
     {
         public Guid InstanceGuid { get; set; }
-
+        public int GymNum { get; set; }
         public DateTime Date { get; set; }
         public DateTime From { get; set; }
         public DateTime To { get; set; }

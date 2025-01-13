@@ -2,9 +2,11 @@
 using BubbleStart.Messages;
 using BubbleStart.Model;
 using BubbleStart.Views;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,6 +23,57 @@ namespace BubbleStart.ViewModels
 {
     public class EconomicData_ViewModel : MyViewModelBase
     {
+
+
+
+
+        private int _SelectedProgramModeIndex;
+
+
+        public int SelectedProgramModeIndex
+        {
+            get
+            {
+                return _SelectedProgramModeIndex;
+            }
+
+            set
+            {
+                if (_SelectedProgramModeIndex == value)
+                {
+                    return;
+                }
+
+                _SelectedProgramModeIndex = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private int _SelectedProgramCountIndex;
+
+
+        public int SelectedProgramCountIndex
+        {
+            get
+            {
+                return _SelectedProgramCountIndex;
+            }
+
+            set
+            {
+                if (_SelectedProgramCountIndex == value)
+                {
+                    return;
+                }
+
+                _SelectedProgramCountIndex = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #region Constructors
 
         private decimal _Total;
@@ -70,13 +123,14 @@ namespace BubbleStart.ViewModels
             BasicDataManager = basicDataManager;
             NewExpense = new Expense();
             Bars = new ObservableCollection<Bar>();
+            RealBars = new ObservableCollection<Bar>();
 
             NewIncome = new Expense { Income = true, MainCategoryId = 20 };
             ShowCashDataCommand = new RelayCommand(async () => { await ShowCashData(); });//
             ShowExpensesGroupedDataCommand = new RelayCommand(async () => { await ShowExpensesGroupedData(); });//
             ShowExpireShowUpsCommand = new RelayCommand(ShowExpireShowUps);//
             ShowExpireDaysCommand = new RelayCommand(async () => { await ShowExpireDays(); });//
-            ShowOwningCustomersCommand = new RelayCommand(ShowOwningCustomers);
+            ShowOwningCustomersCommand = new RelayCommand(async () => { await ShowOwningCustomers(); });
             StartDateCash = StartDateExpenses = StartDatePreview = StartDatePayments = DateTime.Today;
             Expenses = new ObservableCollection<Expense>();
             Incomes = new ObservableCollection<Expense>();
@@ -100,9 +154,15 @@ namespace BubbleStart.ViewModels
             DeleteIncomeCommand = new RelayCommand(async () => { await DeleteIncome(); });
             Messenger.Default.Register<UpdateExpenseCategoriesMessage>(this, msg => Load());
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
+            Messenger.Default.Register<ErrorMessage>(this, msg => LogError(msg.Error));
             Sales = new ObservableCollection<Program>();
             StartDateSales = DateTime.Today;
             Load();
+        }
+
+        private void LogError(string error)
+        {
+            logger.Error(error);
         }
 
         private void ShowExpireShowUps()
@@ -303,24 +363,24 @@ namespace BubbleStart.ViewModels
 
         public bool HasBars => Bars.Count > 0;
 
-        internal void CreatePlot()
+        internal ObservableCollection<Bar> CreatePlot(ObservableCollection<PreviewData> data)
         {
-            Bars = new ObservableCollection<Bar>();
+            var bars = new ObservableCollection<Bar>();
 
-            if (RealPreview == null || RealPreview.Count == 0)
+            if (data == null || data.Count == 0)
             {
-                return;
+                return new ObservableCollection<Bar>();
             }
 
-            foreach (var b in RealPreview)
+            foreach (var b in data)
             {
-                Bars.Add(new Bar { Value = decimal.Round(b.Profit, 2), Label = b.Date.ToString("MMM yyyy") });
+                bars.Add(new Bar { Value = decimal.Round(b.Profit, 2), Label = b.Date.ToString("MMM yyyy") });
             }
 
             int baseHeight = 550;
-            var max = Bars.Max(t => Math.Abs(t.Value));
-            var maxt = Bars.Max(t => t.Value);
-            var mint = Bars.Min(t => t.Value);
+            var max = bars.Max(t => Math.Abs(t.Value));
+            var maxt = bars.Max(t => t.Value);
+            var mint = bars.Min(t => t.Value);
             if (mint >= 0 || maxt <= 0)
             {
                 BarsHeight = baseHeight;
@@ -334,11 +394,11 @@ namespace BubbleStart.ViewModels
                 BarsHeight = ((int)(100 * mint * -1 / (maxt + mint * -1))) * baseHeight / 100;
             }
 
-            foreach (var b in Bars)
+            foreach (var b in bars)
             {
-                b.Height = (int)(b.Value * BarsHeight / max) + 10;
+                b.Height = (int)(b.Value * BarsHeight / (max == 0 ? 1 : max)) + 10;
             }
-            RaisePropertyChanged(nameof(HasBars));
+            return bars;
         }
 
         private int _BarsHeight;
@@ -608,23 +668,44 @@ namespace BubbleStart.ViewModels
             }
         }
 
-        private ObservableCollection<Customer> _CustomersWithGun;
+        private ObservableCollection<Program> _ProgramsGunned;
 
-        public ObservableCollection<Customer> CustomersWithGun
+        public ObservableCollection<Program> ProgramsGunned
         {
             get
             {
-                return _CustomersWithGun;
+                return _ProgramsGunned;
             }
 
             set
             {
-                if (_CustomersWithGun == value)
+                if (_ProgramsGunned == value)
                 {
                     return;
                 }
 
-                _CustomersWithGun = value;
+                _ProgramsGunned = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<Program> _ProgramsGifted;
+
+        public ObservableCollection<Program> ProgramsGifted
+        {
+            get
+            {
+                return _ProgramsGifted;
+            }
+
+            set
+            {
+                if (_ProgramsGifted == value)
+                {
+                    return;
+                }
+
+                _ProgramsGifted = value;
                 RaisePropertyChanged();
             }
         }
@@ -1436,7 +1517,9 @@ namespace BubbleStart.ViewModels
         public RelayCommand ShowExpensesGroupedDataCommand { get; set; }
 
         public RelayCommand ShowExpensesDataCommand { get; set; }
+
         public RelayCommand ShowSalesDataCommand { get; set; }
+
         public RelayCommand FindAndReplaceCommand { get; set; }
 
         public RelayCommand ShowIncomesDataCommand { get; set; }
@@ -1612,6 +1695,30 @@ namespace BubbleStart.ViewModels
             }
         }
 
+
+
+
+        private decimal _TotalRemainingGift;
+
+
+        public decimal TotalRemainingGift
+        {
+            get
+            {
+                return _TotalRemainingGift;
+            }
+
+            set
+            {
+                if (_TotalRemainingGift == value)
+                {
+                    return;
+                }
+
+                _TotalRemainingGift = value;
+                RaisePropertyChanged();
+            }
+        }
         public decimal TotalRemaining
         {
             get
@@ -1766,7 +1873,10 @@ namespace BubbleStart.ViewModels
             Deals = new ObservableCollection<Deal>(BasicDataManager.Deals.Where(d => d.Id > 0));
             if (BasicDataManager.ExpenseCategoryClasses != null)
             {
-                MainCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses.Where(e => (e.Id > 1 || e.Id == -1) && e.Id != 20 && (e.ParentId == 1 || e.Parent == null)));
+                MainCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses
+                    .Where(e => 
+                    //(StaticResources.User.Level <= 1 || StaticResources.afroallowedExpCat.Contains(e.Id)) &&
+                    (e.Id > 1 || e.Id == -1) && e.Id != 20 && (e.ParentId == 1 || e.Parent == null)));
 
                 SecondaryIncomeCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses.Where(e => e.ParentId == 20));
                 UpdateSecondaryCategories();
@@ -1936,20 +2046,53 @@ namespace BubbleStart.ViewModels
             {
                 return expense.Amount;
             }
+            var TotDays = ((expense.To.Date - expense.From.Date).Days + 1);
             if (expense.From.Date >= mon.Date && expense.From.Date < addedMonth && expense.To.Date >= addedMonth)
             {
-                var x = expense.Amount / ((expense.To.Date - expense.From.Date).Days + 1) * (addedMonth - expense.From.Date).Days;
+                var x = (expense.Amount / TotDays) * ((addedMonth - expense.From.Date).Days);
                 return x;
             }
             if (expense.To.Date >= mon.Date && expense.To.Date < addedMonth && expense.From.Date < mon.Date)
             {
-                return expense.Amount / ((expense.To.Date - expense.From.Date).Days + 1) * ((expense.To.Date - mon.Date).Days + 1);
+                decimal t = (expense.Amount / TotDays) * ((expense.To.Date - mon.Date).Days + 1);
+                return t;
+            }
+            if (expense.To.Date >= addedMonth && expense.From.Date < mon.Date)
+            {
+                decimal t = (expense.Amount / TotDays) * ((addedMonth - mon.Date).Days);
+                return t;
             }
             throw new InvalidOperationException(nameof(expense));
         }
 
         private ObservableCollection<Bar> _Bars;
         private ObservableCollection<ExpenseCheck> _incomeTypes;
+
+
+
+
+        private ObservableCollection<Bar> _RealBars;
+
+
+        public ObservableCollection<Bar> RealBars
+        {
+            get
+            {
+                return _RealBars;
+            }
+
+            set
+            {
+                if (_RealBars == value)
+                {
+                    return;
+                }
+
+                _RealBars = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HasBars));
+            }
+        }
 
         public ObservableCollection<Bar> Bars
         {
@@ -1967,6 +2110,7 @@ namespace BubbleStart.ViewModels
 
                 _Bars = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HasBars));
             }
         }
 
@@ -2036,6 +2180,7 @@ namespace BubbleStart.ViewModels
                     (SelectedPaymentMethodIndexIndex == 3 && p.PaymentType == PaymentType.Bank))
                 && (RecieptIndex == 0 || (RecieptIndex == 1 && p.Reciept) || (RecieptIndex == 2 && !p.Reciept));
         }
+        private readonly ILogger logger = Log.ForContext<EconomicData_ViewModel>();
 
         private async Task RegisterExpense()
         {
@@ -2052,7 +2197,13 @@ namespace BubbleStart.ViewModels
                     return;
                 }
             }
+            if (NewExpense.MainCategory.Id==3)
+            {
+                NewExpense.Bank = NewExpense.Amount;
+            }
+
             BasicDataManager.Add(NewExpense);
+
             await BasicDataManager.SaveAsync();
             if (NewExpense.Date >= StartDateExpenses && NewExpense.Date < EndDateExpenses.AddDays(1))
             {
@@ -2101,7 +2252,7 @@ namespace BubbleStart.ViewModels
         private async Task ShowCashData()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            DailyPayments = new ObservableCollection<Payment>((await BasicDataManager.Context.GetAllPaymentsAsync(StartDateCash, EndDateCash)).OrderBy(a => a.Date));
+            DailyPayments = new ObservableCollection<Payment>((await BasicDataManager.Context.GetAllPaymentsAsync(StartDateCash, EndDateCash, (SelectedProgramModeIndex == 0 ? null : ((ProgramMode?)(SelectedProgramModeIndex - 1))), true, SelectedProgramCountIndex)).OrderBy(a => a.Date));
             UpdateAmmounts();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -2126,28 +2277,36 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-        private void ShowOwningCustomers()
+        private async Task ShowOwningCustomers()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
+
             var own = new List<Customer>();
-            var gun = new List<Customer>();
+            //var gun = new List<Customer>();
+            //var gift = new List<Program>();
             foreach (var customer in BasicDataManager.Customers.Where(c => c.RemainingAmount > 0))
             {
-                if (customer.RemainingAmount == customer.Programs.Where(p => p.Gun).Sum(a => a.Amount))
-                    gun.Add(customer);
-                else
-                    own.Add(customer);
+                //if (customer.Programs.Any(p => p.Gun))
+                //    gun.Add(customer);
+
+                own.Add(customer);
             }
 
             CustomersWhoOwn = new ObservableCollection<Customer>(own);
-            CustomersWithGun = new ObservableCollection<Customer>(gun);
+            ProgramsGunned = new ObservableCollection<Program>(await BasicDataManager.Context.GetAllGunAsync());
+            ProgramsGifted = new ObservableCollection<Program>(await BasicDataManager.Context.GetAllGiftAsync());
+
             TotalRemaining = own.Sum(t => t.RemainingAmount);
-            TotalRemainingGun = gun.Sum(t => t.RemainingAmount);
+            TotalRemainingGun = ProgramsGunned.Sum(t => t.RemainingAmountLive);
+            TotalRemainingGift = ProgramsGifted.Sum(t => t.Amount);
+
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private async Task ShowPaymentsData()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            Payments = new ObservableCollection<Payment>(await BasicDataManager.Context.GetAllPaymentsAsync(StartDatePayments, EndDatePayments, false));
+            Payments = new ObservableCollection<Payment>(await BasicDataManager.Context.GetAllPaymentsAsync(StartDatePayments, EndDatePayments, null, false));
             RaisePropertyChanged(nameof(TotalPayments));
 
             CustomerBuys = new ObservableCollection<CustomerBuy>(Payments.GroupBy(c => c.Customer).ToList().Select(g => new CustomerBuy
@@ -2186,13 +2345,18 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             List<PreviewData> previewData = new List<PreviewData>();
             List<Expense> expenses = await BasicDataManager.Context.GetAllExpensesAsync(e => e.Date >= StartDatePreview && e.Date <= EndDatePreview, false);
-            List<Payment> payments = (await BasicDataManager.Context.GetAllPaymentsAsync(StartDatePreview, EndDatePreview, false)).ToList();
+            List<Payment> payments = (await BasicDataManager.Context.GetAllPaymentsAsync(StartDatePreview, EndDatePreview, null, false)).ToList();
             List<Program> programs = (await BasicDataManager.Context.GetAllAsync<Program>(p => p.DayOfIssue >= StartDatePreview && p.DayOfIssue <= EndDatePreview)).ToList();
 
             List<PreviewData> realpreviewData = new List<PreviewData>();
-            List<Expense> expensesPreview = await BasicDataManager.Context.GetAllExpensesAsync(e => (e.To >= StartDatePreview && e.To <= EndDatePreview) || (e.From >= StartDatePreview && e.From <= EndDatePreview), false);
+
+            List<Expense> expensesPreview = await BasicDataManager.Context.GetAllExpensesAsync(e =>
+            (e.To >= StartDatePreview && e.To <= EndDatePreview) ||
+            (e.From >= StartDatePreview && e.From <= EndDatePreview) ||
+            (e.From < StartDatePreview && e.To > EndDatePreview), false);
+
             List<Program> programsPreview = (await BasicDataManager.Context.GetProgramsFullAsync(p => p.ShowUpsList.Any(s => s.Arrived >= StartDatePreview && s.Arrived <= EndDatePreview))).ToList();
-            var t = programs.Where(x => !programsPreview.Any(y => y.Id == x.Id)).ToList();
+            //var t = programs.Where(x => !programsPreview.Any(y => y.Id == x.Id)).ToList();
             PreviewData tmpMonth;
             foreach (var expense in expenses.Where(e => !e.Income))
             {
@@ -2212,7 +2376,7 @@ namespace BubbleStart.ViewModels
                     tmpMonth.Recieved += payment.Amount;
                 else
                 {
-                    previewData.Add(new PreviewData { Date = new DateTime(payment.Date.Year, payment.Date.Month, 1), Expenses = payment.Amount });
+                    previewData.Add(new PreviewData { Date = new DateTime(payment.Date.Year, payment.Date.Month, 1), Recieved = payment.Amount });
                 }
             }
 
@@ -2223,7 +2387,7 @@ namespace BubbleStart.ViewModels
                     tmpMonth.Recieved += incom.Amount;
                 else
                 {
-                    previewData.Add(new PreviewData { Date = new DateTime(incom.Date.Year, incom.Date.Month, 1), Expenses = incom.Amount });
+                    previewData.Add(new PreviewData { Date = new DateTime(incom.Date.Year, incom.Date.Month, 1), Recieved = incom.Amount });
                 }
             }
 
@@ -2234,7 +2398,7 @@ namespace BubbleStart.ViewModels
                     tmpMonth.Sold += program.Amount;
                 else
                 {
-                    previewData.Add(new PreviewData { Date = new DateTime(program.DayOfIssue.Year, program.DayOfIssue.Month, 1), Expenses = program.Amount });
+                    previewData.Add(new PreviewData { Date = new DateTime(program.DayOfIssue.Year, program.DayOfIssue.Month, 1), Sold = program.Amount });
                 }
             }
 
@@ -2246,10 +2410,13 @@ namespace BubbleStart.ViewModels
                 realpreviewData.Add(new PreviewData { Date = firstmonth });
                 firstmonth = firstmonth.AddMonths(1);
             }
-            IEnumerable<PreviewData> months = new List<PreviewData>();
+            List<PreviewData> months = new List<PreviewData>();
             foreach (var expense in expensesPreview.Where(e => !e.Income))
             {
-                months = realpreviewData.Where(m => (expense.To >= m.Date && expense.To < m.Date.AddMonths(1)) || (expense.From >= m.Date && expense.From < m.Date.AddMonths(1)));
+                months = realpreviewData.Where(m =>
+                (expense.To >= m.Date && expense.To < m.Date.AddMonths(1))
+                || (expense.From >= m.Date && expense.From < m.Date.AddMonths(1))
+                || (expense.From < m.Date && expense.To > m.Date.AddMonths(1))).ToList();
                 if (months?.Count() > 0)
                 {
                     foreach (var mon in months)
@@ -2265,7 +2432,10 @@ namespace BubbleStart.ViewModels
 
             foreach (var expense in expensesPreview.Where(e => e.Income))
             {
-                months = realpreviewData.Where(m => (expense.To >= m.Date && expense.To < m.Date.AddMonths(1)) || (expense.From >= m.Date && expense.From < m.Date.AddMonths(1)));
+                months = realpreviewData.Where(m =>
+                (expense.To >= m.Date && expense.To < m.Date.AddMonths(1))
+                || (expense.From >= m.Date && expense.From < m.Date.AddMonths(1))
+                || (expense.From < m.Date && expense.To > m.Date.AddMonths(1))).ToList();
                 if (months?.Count() > 0)
                 {
                     foreach (var mon in months)
@@ -2291,7 +2461,7 @@ namespace BubbleStart.ViewModels
                 }
                 firstProgMonth = new DateTime(program.ShowUpsList.First().Arrived.Year, program.ShowUpsList.First().Arrived.Month, 1);
                 LastProgMonth = new DateTime(program.ShowUpsList.Last().Arrived.Year, program.ShowUpsList.Last().Arrived.Month, 1);
-                months = realpreviewData.Where(m => m.Date >= firstProgMonth && m.Date <= LastProgMonth);
+                months = realpreviewData.Where(m => m.Date >= firstProgMonth && m.Date <= LastProgMonth).ToList();
                 if (months.Count() > 0)
                     foreach (var mon in months)
                     {
@@ -2306,14 +2476,16 @@ namespace BubbleStart.ViewModels
             Preview = new ObservableCollection<PreviewData>(previewData.OrderBy(r => r.Date));
 
             RealPreview = new ObservableCollection<PreviewData>(realpreviewData.OrderBy(r => r.Date));
-            CreatePlot();
+            Bars = CreatePlot(Preview);
+            RealBars = CreatePlot(RealPreview);
+
             RecievedTot = Preview.Sum(r => r.Recieved);
             PackTot = Preview.Sum(r => r.Sold);
             IncomesTot = Preview.Sum(r => r.Recieved);
             ExpenseTot = Preview.Sum(r => r.Expenses);
             DiffTot = Preview.Sum(r => r.Profit);
-            IncomesTotR = decimal.Round(RealPreview.Sum(r => r.Recieved),2);
-            ExpenseTotR = decimal.Round(RealPreview.Sum(r => r.Expenses),2);
+            IncomesTotR = decimal.Round(RealPreview.Sum(r => r.Recieved), 2);
+            ExpenseTotR = decimal.Round(RealPreview.Sum(r => r.Expenses), 2);
             DiffTotR = decimal.Round(RealPreview.Sum(r => r.Profit), 2);
             Mouse.OverrideCursor = Cursors.Arrow;
         }

@@ -1,6 +1,9 @@
 ﻿using BubbleStart.Database;
 using BubbleStart.Messages;
 using BubbleStart.Model;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
@@ -10,11 +13,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Item = BubbleStart.Model.Item;
 
 namespace BubbleStart.Helpers
 {
@@ -22,8 +27,11 @@ namespace BubbleStart.Helpers
     {
         #region Constructors
 
+        public DateTime Created { get; set; }
+
         public BasicDataManager(GenericRepository genericRepository)
         {
+            Created = DateTime.Now;
             Context = genericRepository;
             RefreshCommand = new RelayCommand(async () => await Refresh());
             //Messenger.Default.Register<LoginLogOutMessage>(this, async msg => await LogedIn(msg.Login));
@@ -333,7 +341,298 @@ namespace BubbleStart.Helpers
             var count = await Context.Context.Database.ExecuteSqlCommandAsync($"delete FROM `ProgramChanges` WHERE Date <'{date}'");
 
             Messenger.Default.Send(new BasicDataManagerRefreshedMessage());
+
+            //var t = await Context.Context.Programs
+            //    .Where(p => p.Customer != null)
+            //    .Select(p =>
+            //    new
+            //    {
+            //        p.Customer.Id,
+            //        CustomerName = p.Customer.Name + " " + p.Customer.SureName,
+            //        p.ProgramTypeO.ProgramName,
+            //        Type = p.ProgramTypeO.ProgramMode == ProgramMode.massage ? "Massage" :
+            //        p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga ? "Seminar" :
+            //        p.ProgramTypeO.ProgramMode == ProgramMode.yoga ? "Book" :
+            //        "Gym",
+            //        p.Showups,
+            //        p.Months,
+            //        p.Amount,
+            //        p.DayOfIssue,
+            //        p.StartDay,
+            //    })
+            //    .ToListAsync();
+
+            //var mixedData = new Dictionary<string, object> {
+            //    {"Programs",t }
+            //};
+
+            //var inc
+            //    = await Context.Context.Expenses
+            // .Where(r => r.Income)
+            // .Select(a => new
+            // {
+            //     a.Date,
+            //     a.Reason,
+            //     a.From,
+            //     a.To,
+            //     MainCategory = a.MainCategory.Name,
+            //     SecondaryCategory = a.SecondaryCategory.Name,
+            //     a.Amount,
+            //     a.Bank,
+            //     a.Cash
+            // })
+            // .ToListAsync();
+
+            //var pays = await Context.Context.Payments
+            //.Select(a => new
+            //{
+            //    a.Date,
+            //    Reason = a.Customer.Name + " " + a.Customer.SureName,
+            //    From = a.Date, // No equivalent in Payments
+            //    To = a.Date, // No equivalent in Payments
+            //    MainCategory = "Γυμναστήριο",
+            //    SecondaryCategory = a.Program.ProgramTypeO.ProgramName,
+            //    a.Amount,
+            //    Bank = 0m, // Assuming no Bank value in Payments
+            //    Cash = 0m  // Assuming no Cash value in Payments
+            //})
+            //.ToListAsync();
+            //inc.AddRange(pays);
+
+            //inc = inc.OrderBy(a => a.Date).ToList();
+
+            //mixedData.Add("Incomes", inc);
+
+            //var outc = await Context.Context.Expenses
+            //    .Where(r => !r.Income)
+            //.Select(a => new
+            //{
+            //    a.Date,
+            //    a.Reason,
+            //    a.From,
+            //    a.To,
+            //    MainCategory = a.MainCategory.Name,
+            //    SecondaryCategory = a.SecondaryCategory.Name,
+            //    a.Amount,
+            //    a.Bank,
+            //    a.Cash
+            //})
+            //.ToListAsync();
+
+            //mixedData.Add("Expenses", outc);
+
+            //var gh = await Context.Context.GymnastHours
+            //    .Include(a => a.Gymnast)
+            //    .ToListAsync();
+
+            //var su = await Context.Context.Apointments.Where(c => c.Customer != null && !c.Waiting && !c.Canceled)
+            //    .Select(s =>
+            //        new AppointmentInfo
+            //        {
+            //            Id = s.Customer.Id,
+            //            CustomerName = s.Customer.Name + " " + s.Customer.SureName,
+            //            DateTime = s.DateTime,
+            //            Aithusa = s.Room + "",
+            //            Cost = s.Cost,
+            //            Gymnast = ""
+            //        })
+            //    .ToListAsync();
+
+            //su.ForEach(s =>
+            //{
+            //    s.Gymnast = gh.FirstOrDefault(g => g.Datetime == s.DateTime)?.Gymnast?.Name ?? "";
+            //});
+
+            //mixedData.Add("Appointments", su);
+            //await ExportMixedDictionaryToExcelAsync(mixedData, "Export.xlsx");
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        public static async Task ExportMixedDictionaryToExcelAsync(Dictionary<string, object> dataDictionary, string fileName)
+        {
+            if (dataDictionary == null || !dataDictionary.Any())
+                throw new ArgumentException("The data dictionary is empty or null.");
+
+            // Get the user's Downloads folder
+            string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+            string fullPath = Path.Combine(downloadsPath, fileName);
+
+            using (var spreadsheetDocument = SpreadsheetDocument.Create(fullPath, SpreadsheetDocumentType.Workbook))
+            {
+                // Create the workbook
+                var workbookPart = spreadsheetDocument.AddWorkbookPart();
+                workbookPart.Workbook = new Workbook();
+
+                var stylesPart = workbookPart.AddNewPart<WorkbookStylesPart>();
+                stylesPart.Stylesheet = CreateStylesheet();
+                stylesPart.Stylesheet.Save();
+
+                var sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
+                uint sheetId = 1;
+
+                // Add two empty sheets before processing the dictionary
+                for (int i = 1; i <= 2; i++)
+                {
+                    var emptyWorksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    emptyWorksheetPart.Worksheet = new Worksheet(new SheetData());
+
+                    var emptySheet = new Sheet
+                    {
+                        Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(emptyWorksheetPart),
+                        SheetId = sheetId++,
+                        Name = $"Sheet{i}"
+                    };
+                    sheets.Append(emptySheet);
+                }
+
+                foreach (var kvp in dataDictionary)
+                {
+                    string sheetName = kvp.Key;
+                    var data = kvp.Value;
+
+                    if (data == null)
+                        continue;
+
+                    var dataType = data.GetType();
+                    if (!dataType.IsGenericType || ((dataType.GetGenericTypeDefinition() != typeof(IEnumerable<>)) & dataType.GetGenericTypeDefinition() != typeof(List<>)))
+                        throw new ArgumentException($"Data for sheet {sheetName} is not a valid IEnumerable<T>.");
+
+                    var itemType = dataType.GetGenericArguments()[0];
+                    var properties = itemType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                    // Create a new worksheet part
+                    var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    var sheetData = new SheetData();
+                    worksheetPart.Worksheet = new Worksheet(sheetData);
+
+                    // Add the worksheet to the workbook
+                    var sheet = new Sheet
+                    {
+                        Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
+                        SheetId = sheetId++,
+                        Name = sheetName
+                    };
+                    sheets.Append(sheet);
+
+                    // Write headers
+                    var headerRow = new Row();
+                    var maxColumnLengths = new int[properties.Length];
+                    for (int i = 0; i < properties.Length; i++)
+                    {
+                        var header = properties[i].Name;
+                        headerRow.Append(CreateCell(header, CellValues.String));
+                        maxColumnLengths[i] = header.Length; // Initialize max length with header length
+                    }
+                    sheetData.Append(headerRow);
+
+                    // Write data rows
+                    foreach (var item in (IEnumerable<object>)data)
+                    {
+                        var dataRow = new Row();
+                        for (int i = 0; i < properties.Length; i++)
+                        {
+                            var value = properties[i].GetValue(item);
+                            if (value is DateTime dateValue)
+                            {
+                                dataRow.Append(CreateCell(dateValue.ToOADate().ToString(CultureInfo.InvariantCulture), CellValues.Number, 1));
+                                maxColumnLengths[i] = Math.Max(maxColumnLengths[i], 12); // Adjust for DateTime width
+                            }
+                            else if (value is int || value is double || value is decimal)
+                            {
+                                dataRow.Append(CreateCell(Convert.ToString(value, CultureInfo.InvariantCulture), CellValues.Number));
+                            }
+                            else
+                            {
+                                var stringValue = value?.ToString() ?? "";
+                                if (string.IsNullOrEmpty(stringValue) && ((properties[i].Name == "SecondaryCategory") || properties[i].Name == "MainCategory"))
+                                {
+                                    stringValue = "Others";
+                                }
+
+                                dataRow.Append(CreateCell(stringValue, CellValues.String));
+                                maxColumnLengths[i] = Math.Max(maxColumnLengths[i], stringValue.Length);
+                            }
+                        }
+                        sheetData.Append(dataRow);
+                    }
+
+                    // Adjust column widths
+                    var columns = new Columns();
+                    for (int i = 0; i < maxColumnLengths.Length; i++)
+                    {
+                        var columnWidth = Math.Min(maxColumnLengths[i] + 2, 50); // Limit width to 50
+                        columns.Append(new Column
+                        {
+                            Min = (uint)(i + 1),
+                            Max = (uint)(i + 1),
+                            Width = columnWidth,
+                            CustomWidth = true
+                        });
+                    }
+                    worksheetPart.Worksheet.InsertAt(columns, 0);
+
+                    worksheetPart.Worksheet.Save();
+                }
+
+                workbookPart.Workbook.Save();
+            }
+
+            await Task.CompletedTask; // For async signature
+        }
+
+        private static Cell CreateCell(string value, CellValues? dataType, uint? styleIndex = null)
+        {
+            if (dataType == null)
+            {
+                dataType = CellValues.String;
+            }
+
+            return new Cell
+            {
+                CellValue = new CellValue(value),
+                DataType = dataType,
+                StyleIndex = styleIndex
+            };
+        }
+
+        private static Stylesheet CreateStylesheet()
+        {
+            var stylesheet = new Stylesheet();
+
+            // Create a number format for dates (index 1)
+            var numberFormats = new NumberingFormats();
+            numberFormats.Append(new NumberingFormat
+            {
+                NumberFormatId = 1,
+                FormatCode = "mm/dd/yyyy"
+            });
+
+            // Create a cell format for dates
+            var cellFormats = new CellFormats();
+            cellFormats.Append(new CellFormat()); // Default
+            cellFormats.Append(new CellFormat
+            {
+                NumberFormatId = 1, // Date format
+                ApplyNumberFormat = true
+            });
+
+            stylesheet.Append(numberFormats);
+            stylesheet.Append(new Fonts(new Font())); // Default font
+            stylesheet.Append(new Fills(new Fill(new PatternFill { PatternType = PatternValues.None }))); // Default fill
+            stylesheet.Append(new Borders(new Border())); // Default border
+            stylesheet.Append(cellFormats);
+
+            return stylesheet;
+        }
+
+        public class AppointmentInfo
+        {
+            public int Id { get; set; }
+            public string CustomerName { get; set; }
+            public DateTime DateTime { get; set; }
+            public string Aithusa { get; set; }
+            public decimal Cost { get; set; }
+            public string Gymnast { get; set; }
         }
 
         private ObservableCollection<Item> _ShopItems;
@@ -526,12 +825,14 @@ namespace BubbleStart.Helpers
             Context.RollBack();
         }
 
-        internal async Task SaveAsync()
+        internal async Task SaveAsync(bool cursor = true)
         {
-            Mouse.OverrideCursor = Cursors.Wait;
+            if (cursor)
+                Mouse.OverrideCursor = Cursors.Wait;
 
             await Context.SaveAsync();
-            Mouse.OverrideCursor = Cursors.Arrow;
+            if (cursor)
+                Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         #endregion Methods

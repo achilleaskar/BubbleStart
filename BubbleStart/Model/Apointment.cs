@@ -13,6 +13,10 @@ namespace BubbleStart.Model
         public string ApColor => GetApColor(false);
         public string GymColor => GetApColor(true);
 
+        public int? UserId { get; set; }
+
+        public decimal Cost { get; set; }
+
         private bool _Waiting;
 
         public bool Waiting
@@ -60,7 +64,7 @@ namespace BubbleStart.Model
         {
             get
             {
-                if (Room == RoomEnum.Massage || Room == RoomEnum.MassageHalf)
+                if (Room == RoomEnum.Massage || Room == RoomEnum.Massage2 || Room == RoomEnum.MassageHalf)
                     return Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Today && s.ProgramModeNew == ProgramMode.massage);
                 return Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Today && !s.Massage);
             }
@@ -76,12 +80,12 @@ namespace BubbleStart.Model
                 }
                 if (DateTime < DateTime.Now)
                 {
-                    if (Room == RoomEnum.Massage || Room == RoomEnum.MassageHalf)
+                    if (Room == RoomEnum.Massage || Room == RoomEnum.Massage2 || Room == RoomEnum.MassageHalf)
                     {
-                        if (!Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date && s.ProgramModeNew == ProgramMode.massage))
+                        if (!Customer.ShowUps.Exists(s => s.Arrived.Date == DateTime.Date && s.ProgramModeNew == ProgramMode.massage))
                             return Colors.Red.ToString();
                     }
-                    else if (!Customer.ShowUps.Any(s => s.Arrived.Date == DateTime.Date && s.ProgramModeNew != ProgramMode.massage))
+                    else if (!Customer.ShowUps.Exists(s => s.Arrived.Date == DateTime.Date && s.ProgramModeNew != ProgramMode.massage))
                         return Colors.Red.ToString();
                 }
             }
@@ -176,15 +180,15 @@ namespace BubbleStart.Model
             {
                 return "Yoga";
             }
-            if (Room == RoomEnum.Functional || Room == RoomEnum.FunctionalB)
+            if (Room == RoomEnum.Functional || Room == RoomEnum.FunctionalB|| Room == RoomEnum.Fitness || Room == RoomEnum.Strength)
             {
                 return "Functional, " + PersonName;
             }
-            if (Room == RoomEnum.Pilates)
+            if (Room == RoomEnum.Pilates|| Room == RoomEnum.Personal2)
             {
                 return "Reformer, " + PersonName;
             }
-            if (Room == RoomEnum.Massage)
+            if (Room == RoomEnum.Massage|| Room == RoomEnum.Massage2)
             {
                 return "Massage, " + PersonName;
             }
@@ -196,14 +200,14 @@ namespace BubbleStart.Model
             {
                 return "Massage 30, " + PersonName;
             }
-            if (Room == RoomEnum.Personal)
+            if (Room == RoomEnum.Personal|| Room == RoomEnum.FreeSpace)
             {
                 return "Personal, " + PersonName;
             }
             return "Σφάλμα";
         }
 
-        
+
 
         private RoomEnum _room;
 

@@ -80,6 +80,25 @@ namespace BubbleStart.Views
                         foreach (var a in h.AppointmentsMassageHalf)
                             a.RaisePropertyChanged(nameof(a.ApColor));
                     }
+
+                foreach (var d in mu.Apointments2_ViewModel.Days ?? new ObservableCollection<Day>())
+                    foreach (var h in d.Hours)
+                    {
+                        foreach (var a in h.AppointemntsOutdoor)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsFunctional)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsFB)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsMassage)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsReformer)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsPersonal)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                        foreach (var a in h.AppointmentsMassageHalf)
+                            a.RaisePropertyChanged(nameof(a.ApColor));
+                    }
             }
         }
 

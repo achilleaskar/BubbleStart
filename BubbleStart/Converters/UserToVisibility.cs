@@ -12,28 +12,20 @@ namespace BubbleStart.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter == null && value is int)
+            if (parameter == null && value is int i)
             {
-                if (StaticResources.User.Level <= (int)value)
+                if (StaticResources.User.Level <= i)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
             }
-            if (parameter == null && value is string)
+            if (parameter == null && value is string s)
             {
-                if (string.IsNullOrWhiteSpace((string)value))
+                if (string.IsNullOrWhiteSpace(s))
                     return Visibility.Collapsed;
                 return Visibility.Visible;
             }
-            if (StaticResources.User != null && parameter != null)
-            {
-                //if (value is Reservation r && StaticResources.User.Level == StaticResources.UserLevel.OfficeManager)
-                //    if (r.User.Grafeio == StaticResources.User.Grafeio)
-                //        return Visibility.Visible;
-                //    else
-                //        return Visibility.Collapsed;
-                if (StaticResources.User.Level <= int.Parse(parameter.ToString()))
-                    return Visibility.Visible;
-            }
+            if (StaticResources.User != null && parameter != null && StaticResources.User.Level <= int.Parse(parameter.ToString()))
+                return Visibility.Visible;
             return Visibility.Collapsed;
         }
 

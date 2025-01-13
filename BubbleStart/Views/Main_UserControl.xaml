@@ -106,6 +106,9 @@
                 <TabItem Header=" - Πρόγραμμα -  ">
                     <views:Apointments_UserControl DataContext="{Binding Apointments_ViewModel}" />
                 </TabItem>
+                <TabItem Header=" Πρόγραμμα 2 ">
+                    <views:Apointments2_UserControl DataContext="{Binding Apointments2_ViewModel}" />
+                </TabItem>
                 <TabItem Header="Βάρδιες"
                          Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
                     <views:EmployeeManagement_UserControl DataContext="{Binding  EmployeeManagement_ViewModel}" />
@@ -115,6 +118,9 @@
                 </TabItem>
                 <TabItem Header="Ανενεργοί">
                     <views:InActiveCustomers_UserControl DataContext="{Binding InActiveCustomers_ViewModel }" />
+                </TabItem>
+                <TabItem Header="Ενημέρωση">
+                    <views:InActiveCustomers_UserControl DataContext="{Binding MarketingCustomers_ViewModel }" />
                 </TabItem>
                 <TabItem Header="Shop">
                     <views:Shop_UserControl DataContext="{Binding Shop_ViewModel }" />

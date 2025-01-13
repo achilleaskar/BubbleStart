@@ -21,11 +21,28 @@ namespace BubbleStart.Model
 
         private bool _Test;
 
+        //private int _GymNum;
 
+        //public int GymNum
+        //{
+        //    get
+        //    {
+        //        return _GymNum;
+        //    }
 
+        //    set
+        //    {
+        //        if (_GymNum == value)
+        //        {
+        //            return;
+        //        }
+
+        //        _GymNum = value;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
         private User _Gymnast;
-
 
         public User Gymnast
         {
@@ -66,7 +83,6 @@ namespace BubbleStart.Model
             }
         }
 
-
         public string SecBodyPartsDesc => GetSecBodyPartsDesc();
 
         private string GetSecBodyPartsDesc()
@@ -100,7 +116,6 @@ namespace BubbleStart.Model
         }
 
         private BodyPart _BodyPart;
-
 
         public BodyPart BodyPart
         {
@@ -265,11 +280,7 @@ namespace BubbleStart.Model
             }
         }
 
-
-
-
         private ProgramMode _ProgramModeNew;
-
 
         public ProgramMode ProgramModeNew
         {
@@ -355,31 +366,62 @@ namespace BubbleStart.Model
         private DateTime GetAppointmentTime()
         {
             var daysAppos = Customer.apps?.Where(d => d.DateTime.Date == Arrived.Date.Date).ToList();
-            return daysAppos?.FirstOrDefault(a => a.Room == GetProgramModeToRoom())?.DateTime ?? daysAppos?.FirstOrDefault()?.DateTime ?? Arrived;
+            return daysAppos?.FirstOrDefault(a => a.Room == GetProgramModeToRoom(0) || a.Room == GetProgramModeToRoom(2))?.DateTime ?? daysAppos?.FirstOrDefault()?.DateTime ?? Arrived;
         }
 
-        internal RoomEnum GetProgramModeToRoom()
+        internal RoomEnum GetProgramModeToRoom(int v)
         {
+            if (v == 2)
+            {
+                switch (ProgramModeNew)
+                {
+                    case ProgramMode.functional:
+                        return RoomEnum.Fitness;
+
+                    case ProgramMode.massage:
+                        return RoomEnum.Massage2;
+
+                    case ProgramMode.pilates:
+                        return RoomEnum.Personal2;
+
+                    case ProgramMode.pilatesFunctional:
+                        if (ProgramMode == ProgramMode.pilates)
+                            return RoomEnum.Personal2;
+                        else
+                            return RoomEnum.Fitness;
+
+                    case ProgramMode.personal:
+                        return RoomEnum.FreeSpace;
+                }
+                return RoomEnum.Fitness;
+            }
+
             switch (ProgramModeNew)
             {
                 case ProgramMode.functional:
                     return RoomEnum.Functional;
+
                 case ProgramMode.massage:
                     return RoomEnum.Massage;
+
                 case ProgramMode.online:
                 case ProgramMode.outdoor:
                 case ProgramMode.aerialYoga:
                 case ProgramMode.medical:
                     return RoomEnum.Outdoor;
+
                 case ProgramMode.pilates:
                     return RoomEnum.Pilates;
+
                 case ProgramMode.yoga:
                     return RoomEnum.Outdoor;
+
                 case ProgramMode.pilatesFunctional:
                     if (ProgramMode == ProgramMode.pilates)
                         return RoomEnum.Pilates;
                     else
                         return RoomEnum.Functional;
+
                 case ProgramMode.personal:
                     return RoomEnum.Personal;
             }
@@ -427,18 +469,25 @@ namespace BubbleStart.Model
 
                 case ProgramMode.outdoor:
                     return "Outdoor";
+
                 case ProgramMode.pilates:
                     return "Pilates";
+
                 case ProgramMode.yoga:
                     return "Yoga";
+
                 case ProgramMode.pilatesFunctional:
                     return "Pil+Fun";
+
                 case ProgramMode.aerialYoga:
                     return "Aerial";
+
                 case ProgramMode.personal:
                     return "Personal";
+
                 case ProgramMode.medical:
                     return "Medical";
+
                 default:
                     return "Σφάλμα";
             }

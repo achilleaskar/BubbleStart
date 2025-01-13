@@ -88,10 +88,11 @@ namespace BubbleStart.Views
             }
         }
 
-        private void ButtonFinishClicked(object sender, System.Windows.RoutedEventArgs e)
+        private void ButtonFinishClicked(object sender,  RoutedEventArgs e)
         {
             if (DataContext is SearchCustomer_ViewModel sc && !sc.PopupFinishOpen)
             {
+                sc.BatchCustomersLeft = false;
                 sc.PopupFinishOpen = true;
             }
         }

@@ -23,9 +23,7 @@
         <Converters:IsSelectedProgramTypeConverter x:Key="IsSelectedProgramTypeConverter" />
         <Converters:EnumConverter x:Key="EnumConverter" />
         <DataTemplate x:Key="noStar">
-            <StackPanel Orientation="Horizontal">
-              
-            </StackPanel>
+            <StackPanel Orientation="Horizontal"></StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="oneStar">
             <StackPanel Orientation="Horizontal"
@@ -42,7 +40,8 @@
         </DataTemplate>
         <DataTemplate x:Key="twoStar">
             <StackPanel Orientation="Horizontal"
-                        VerticalAlignment="Center" Margin="3,0">
+                        VerticalAlignment="Center"
+                        Margin="3,0">
                 <iconPacks:PackIconFontAwesome Kind="StarSolid"
                                                Foreground="Orange" />
                 <iconPacks:PackIconFontAwesome Kind="StarSolid"
@@ -260,7 +259,7 @@
                                    Content="{Binding SelectedCustomer.RemainingOnlineDays}" />
                             <CheckBox IsEnabled="False"
                                       VerticalAlignment="Center"
-                                      IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=2}" />
+                                      IsChecked="{Binding SelectedCustomer, Converter={StaticResource IsSelectedProgramTypeConverter},ConverterParameter=1}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="OutDoor"
@@ -364,7 +363,7 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Λέξη Κλειδί:"
-                               Margin="0 0 100 0" />
+                               Margin="0 0 50 0" />
                     <Label Grid.Row="0"
                            Content="Ενεργοί:" />
                     <ComboBox SelectedIndex="{Binding SelectedAciveIndex}"
@@ -388,6 +387,13 @@
                                 <CollectionContainer Collection="{Binding Source={StaticResource CityList}}" />
                             </CompositeCollection>
                         </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <Label Content="Τρόπος:" />
+                    <ComboBox SelectedIndex="{Binding SelectedProgramCountIndex}"
+                              Width="70">
+                        <ComboBoxItem>ΟΛΟΙ</ComboBoxItem>
+                        <ComboBoxItem>Μήνας</ComboBoxItem>
+                        <ComboBoxItem>Συνεδρίες</ComboBoxItem>
                     </ComboBox>
                     <CheckBox Content="Έναρξη μετά:"
                               IsChecked="{Binding EnableStartAfterFilter,UpdateSourceTrigger=PropertyChanged}"
@@ -429,6 +435,9 @@
                             <MenuItem Header="Ανενεργός"
                                       CommandParameter="1"
                                       Command="{Binding DataContext.ToggleForcedDisableCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                            <MenuItem Header="Ενημέρωση"
+                                      CommandParameter="1"
+                                      Command="{Binding DataContext.MarketingCustomerCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                             <MenuItem Header="Αντιγραφή ονόματος"
                                       Click="MenuItem_Click" />
                         </ContextMenu>
@@ -560,20 +569,34 @@
         <TabControl Grid.Column="1">
             <TabItem Header="Τρέχουσα Κατάσταση">
                 <StackPanel Orientation="Horizontal">
-                    <DataGrid ItemsSource="{Binding CustomersPracticing}"
+                        <DataGrid ItemsSource="{Binding CustomersPracticing}"
                               SelectedItem="{Binding SelectedPracticingCustomer}"
                               CanUserAddRows="False"
                               VirtualizingPanel.VirtualizationMode="Standard"
                               IsReadOnly="True"
+                              SelectionMode="Extended"
+                              SelectionUnit="FullRow"
                               CanUserDeleteRows="False"
                               AutoGenerateColumns="False">
+                        <DataGrid.Resources>
+                            <ContextMenu x:Key="appointmentsContextMenu">
+                                <MenuItem Header="Ομαδικό Τέλος"
+                                          Command="{Binding DataContext.BatchCloseCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                            </ContextMenu>
+                        </DataGrid.Resources>
                         <DataGrid.RowStyle>
                             <Style TargetType="{x:Type DataGridRow}">
                                 <EventSetter Event="MouseDoubleClick"
                                              Handler="DataGridRow_MouseDoubleClick" />
+                                <Setter Property="ContextMenu"
+                                        Value="{StaticResource appointmentsContextMenu}" />
+                                <Setter Property="IsSelected"
+                                        Value="{Binding SelectedPracticing, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
                             </Style>
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
+                            <DataGridTextColumn Header="#"
+                                                Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource  RowToIndexConverter}}" />
                             <DataGridTextColumn Header="Επίθετο"
                                                 Width="80"
                                                 Binding="{Binding SureName}" />
@@ -627,6 +650,8 @@
                                 </Style>
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
+                                <DataGridTextColumn Header="#"
+                                                    Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource  RowToIndexConverter}}" />
                                 <DataGridTextColumn Header="Όνομα"
                                                     Width="80"
                                                     Binding="{Binding Customer.Name}" />

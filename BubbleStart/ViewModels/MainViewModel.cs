@@ -14,6 +14,7 @@ namespace BubbleStart.ViewModels
     {
         public MainViewModel()
         {
+            Messenger.Reset();
             Messenger.Default.Register<ChangeVisibilityMessage>(this, msg => { Visibility = msg.Visible ? Visibility.Visible : Visibility.Collapsed; });
             Messenger.Default.Register<LoginLogOutMessage>(this, async msg => await ChangeViewModel(msg.Login));
         }
@@ -24,7 +25,11 @@ namespace BubbleStart.ViewModels
             {
                 if (BasicDataManager.LogedOut)
                 {
-                    await BasicDataManager.Refresh();
+                   // BasicDataManager.Context.Dispose();
+                    StartingRepository = new GenericRepository();
+                    BasicDataManager = new BasicDataManager(StartingRepository);
+                    await BasicDataManager.LoadAsync();
+                    Mouse.OverrideCursor = Cursors.Arrow;
                     BasicDataManager.LogedOut = false;
                 }
                 SelectedViewmodel = new MainUserControl_ViewModel(BasicDataManager);
