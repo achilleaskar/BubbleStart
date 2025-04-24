@@ -5361,13 +5361,11 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.aerialYoga) ||
-                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) ==  pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
-
-
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.aerialYoga) ||
+                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga) ||
@@ -5409,16 +5407,12 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-     
-
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.functional) ||
-                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.functional && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) ==  pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.functional && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.functional) ||
+                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.functional && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.functional && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
-
-                
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.functional) ||
                     (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.functional) ||
@@ -5434,11 +5428,11 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.massage) || 
-                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.massage && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) ==  pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.massage && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.massage) ||
+                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.massage && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.massage && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= MassageResetDay) && p.ProgramTypeO?.ProgramMode == ProgramMode.massage) ||
@@ -5455,11 +5449,11 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.medical) || 
-                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.medical && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) ==  pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.medical && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.medical) ||
+                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.medical && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.medical && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.medical) ||
@@ -5476,11 +5470,11 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.online) || 
-                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.online && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) ==  pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.online && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.online) ||
+                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.online && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.online && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.online) ||
@@ -5497,11 +5491,11 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.outdoor) ||
-                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.outdoor && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) ==  pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.outdoor && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.outdoor) ||
+                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.outdoor && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.outdoor && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.outdoor) ||
@@ -5518,11 +5512,11 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.personal) || 
-                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.personal && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) ==  pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.personal && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.personal) ||
+                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.personal && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.personal && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.personal) ||
@@ -5539,11 +5533,11 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.pilates) ||
-                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.pilates && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) ==  pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.pilates && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.pilates) ||
+                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.pilates && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.pilates && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.pilates) ||
@@ -5560,11 +5554,11 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.pilatesFunctional) 
-                        || (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.pilatesFunctional && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) == pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.pilatesFunctional && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.pilatesFunctional)
+                        || (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.pilatesFunctional && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.pilatesFunctional && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.pilatesFunctional) ||
@@ -5581,11 +5575,11 @@ namespace BubbleStart.Model
         {
             try
             {
-                if (StaticResources.User.Level > 1)
+                if (StaticResources.User.Level > 1 && StaticResources.User.Id != 36)
                 {
-                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore|| (s1.Prog!=null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.yoga) ||
-                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.yoga && (ActivePrograms?.Contains(pr) == true || Programs.Max(t=>t.Id) ==  pr.Id))
-                        || (obj is Payment pa && pa.Program!=null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.yoga && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t=>t.Id) ==  pa.Program.Id));
+                    return (obj is ShowUp s1 && (s1.Arrived.Date >= StaticResources.OneWeekBefore || (s1.Prog != null && (ActivePrograms?.Contains(s1.Prog) == true || Programs.Max(t => t.Id) == s1.Prog.Id))) && s1.ProgramModeNew == ProgramMode.yoga) ||
+                        (obj is Program pr && pr.ProgramTypeO?.ProgramMode == ProgramMode.yoga && (ActivePrograms?.Contains(pr) == true || Programs.Max(t => t.Id) == pr.Id))
+                        || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.yoga && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
                 return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.yoga) ||

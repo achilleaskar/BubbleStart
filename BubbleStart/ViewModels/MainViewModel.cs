@@ -1,4 +1,4 @@
-using BubbleStart.Database;
+﻿using BubbleStart.Database;
 using BubbleStart.Helpers;
 using BubbleStart.Messages;
 using GalaSoft.MvvmLight;
@@ -138,7 +138,13 @@ namespace BubbleStart.ViewModels
             }
             catch (Exception ex)
             {
-                MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
+                if (ex is InvalidOperationException && ex.Message.StartsWith("The model backing the "))
+                {
+                    MessageBox.Show("Περιμένετε για ενημέρωση", "Warning", MessageBoxButton.OK,MessageBoxImage.Hand);
+                    MessageBox.Show("Περιμένετε για ενημέρωση", "Warning", MessageBoxButton.OK,MessageBoxImage.Hand);
+                }
+                else
+                    MessengerInstance.Send(new ShowExceptionMessage_Message(ex.Message));
             }
         }
     }

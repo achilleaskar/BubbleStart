@@ -82,7 +82,7 @@ namespace BubbleStart
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if (StaticResources.User?.Id != 35 && StaticResources.User?.Id != 3 && stopWatch.Elapsed.TotalSeconds >= 180)
+            if (StaticResources.User?.Id != 35 && StaticResources.User?.Id != 3 && StaticResources.User?.Id != 36 && StaticResources.User?.Id != 44 && stopWatch.Elapsed.TotalSeconds >= 180)
             {
                 if (StaticResources.OpenWindow != null)
                 {
@@ -120,7 +120,7 @@ namespace BubbleStart
 
         private static void SelectAllText(object sender, RoutedEventArgs e)
         {
-            if (e.OriginalSource is TextBox textBox && !(textBox.DataContext is Expense) )
+            if (e.OriginalSource is TextBox textBox && !(textBox.DataContext is Expense) && !textBox.Name.Equals("Notes"))
                 textBox.SelectAll();
         }
 
@@ -136,11 +136,20 @@ namespace BubbleStart
         private void Application_DispatcherUnhandledException(object sender,
           DispatcherUnhandledExceptionEventArgs e)
         {
-            Messenger.Default.Send(new ErrorMessage(e.Exception.ToString()));
+            if (e.Exception is InvalidOperationException && e.Exception.Message.StartsWith("The model backing the "))
+            {
+                MessageBox.Show("Περιμένετε για ενημέρωση","Warning",MessageBoxButton.OK);
+                e.Handled = true;
+            }
+            else
+            {
 
-            MessageBox.Show("Unexpected error occured. Please inform the admin."
-              + Environment.NewLine + e.Exception.Message, "Unexpected error");
-            e.Handled = true;
+                Messenger.Default.Send(new ErrorMessage(e.Exception.ToString()));
+
+                MessageBox.Show("Unexpected error occured. Please inform the admin."
+                  + Environment.NewLine + e.Exception.Message, "Unexpected error");
+                e.Handled = true;
+            }
         }
     }
 }

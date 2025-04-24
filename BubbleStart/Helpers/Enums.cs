@@ -27,6 +27,23 @@ namespace BubbleStart.Helpers
         medical = 9
     }
 
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum Stores
+    {
+        [Description(" ")]
+        empty = 0, 
+        [Description("ATHLETIC SEMINARS")]
+        functional = 1,
+        [Description("ΚΑΛΛΙΔΟΠΟΥΛΟΥ 14")]
+        first = 2,
+        [Description("ΚΑΛΛΙΔΟΠΟΥΛΟΥ 13Α")]
+        second = 3,
+        [Description("CORPUS")]
+        corpus = 4,
+        [Description("BOOK")]
+        book = 5
+    }
+
     //[TypeConverter(typeof(EnumDescriptionTypeConverter))]
     //public enum ProgramTypes
     //{
@@ -172,7 +189,8 @@ namespace BubbleStart.Helpers
         Massage = 3,
         Online = 4,
         Personal = 5,
-        PilatesMat = 6
+        PilatesMat = 6,
+        Seminars = 7
 
     }
 

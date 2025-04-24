@@ -40,6 +40,8 @@ namespace BubbleStart.Converters
                         return new SolidColorBrush(Colors.Cyan);
                     if (a.Person == SelectedPersonEnum.PilatesMat)
                         return new SolidColorBrush(Colors.Pink);
+                    if (a.Person == SelectedPersonEnum.Seminars)
+                        return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3b804d"));
                 }
                 else
                 {

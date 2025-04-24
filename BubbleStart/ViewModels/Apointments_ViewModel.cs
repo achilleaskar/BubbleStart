@@ -18,12 +18,15 @@ using BubbleStart.Model;
 using BubbleStart.Views;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using Serilog;
 
 namespace BubbleStart.ViewModels
 {
     public class Apointments_ViewModel : MyViewModelBase
     {
         #region Constructors
+
+        private readonly ILogger logger = Log.ForContext<Apointments_ViewModel>();
 
         public Apointments_ViewModel(BasicDataManager basicDataManager, int GymNum = 0)
         {
@@ -523,7 +526,7 @@ namespace BubbleStart.ViewModels
             LastExecuted = DateTime.Now;
 
             StartDate = SelectedDayToGo.AddDays(-((int)SelectedDayToGo.DayOfWeek + 6) % 7);
-            DateTime tmpdate = StartDate.AddDays(6);
+            DateTime tmpdate = StartDate.AddDays(7);
 
             if (refresh)
                 await BasicDataManager.Context.Context.ShowUps.Where(a => a.Arrived >= StartDate && a.Arrived < tmpdate)
@@ -537,15 +540,17 @@ namespace BubbleStart.ViewModels
             List<CustomeTime> customTimes = refresh ? await BasicDataManager.Context.Context.CustomeTimes.Where(a => (int)a.Room >= RoomFrom && (int)a.Room <= RoomTo && a.Datetime >= StartDate && a.Datetime < tmpdate).Distinct().ToListAsync() :
               BasicDataManager.Context.Context.CustomeTimes.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).Distinct().ToList();
 
-            List<GymnastHour> gymnasts = refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => (int)a.Room >= RoomFrom && (int)a.Room <= RoomTo && a.Datetime >= StartDate && a.Datetime < tmpdate || a.Forever).Distinct().ToListAsync() :
+            List<GymnastHour> gymnasts = refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => (int)a.Room >= RoomFrom && (int)a.Room <= RoomTo && a.Datetime >= StartDate && a.Datetime < tmpdate || a.Forever).ToListAsync() :
              BasicDataManager.Context.Context.GymnastHours.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate || a.Forever).Distinct().ToList();
             GymnastsLocal = gymnasts;
             List<ClosedHour> closedHours = refresh ? await BasicDataManager.Context.Context.ClosedHours.Where(a => (int)a.Room >= RoomFrom && (int)a.Room <= RoomTo && a.Date >= StartDate && a.Date < tmpdate).Distinct().ToListAsync() :
              BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate).Distinct().ToList();
 
+            logger.Information($"Loaded {gymnasts.Count} gymnasts for gymNum {gymNum} : {string.Join(", ", gymnasts.OrderBy(d => d.Datetime).Select(g => $"{g.Gymnast_Id}-{g.Datetime.ToString("dd/MM hh:mm")}-id:{g.Id}-room:{g.Room}"))}");
+
             DateTime tmpDate = StartDate;
             Days.Clear();
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 7; i++)
             {
                 Days.Add(new Day(BasicDataManager, tmpDate, gymNum));
                 tmpDate = tmpDate.AddDays(1);
@@ -562,7 +567,7 @@ namespace BubbleStart.ViewModels
             foreach (var ch in closedHours)
             {
                 numOfDay = ((int)ch.Date.DayOfWeek + 6) % 7;
-                if (numOfDay < 6 && ch.Date.Hour >= 7 && ch.Date.Hour <= 22)
+                if (numOfDay < 7 && ch.Date.Hour >= 7 && ch.Date.Hour <= 22)
                 {
                     if (ch.Room == RoomEnum.Functional || ch.Room == RoomEnum.Fitness)
                     {
@@ -606,7 +611,7 @@ namespace BubbleStart.ViewModels
             foreach (var ap in apointments.OrderBy(a => a.Waiting))
             {
                 numOfDay = ((int)ap.DateTime.DayOfWeek + 6) % 7;
-                if (numOfDay < 6 && ap.DateTime.Hour >= 7 && ap.DateTime.Hour <= 22)
+                if (numOfDay < 7 && ap.DateTime.Hour >= 7 && ap.DateTime.Hour <= 22)
                 {
                     switch (ap.Room)
                     {
@@ -697,17 +702,15 @@ namespace BubbleStart.ViewModels
 
             foreach (var d in Days)
             {
-                if (d.Date.DayOfWeek != DayOfWeek.Saturday)
+                if (d.Date.DayOfWeek != DayOfWeek.Saturday && gymNum == 1)
                     foreach (var h in d.Hours)
                     {
                         if (h.Time.Hour > 14 && h.CustomTime1 == null)
-
                             h.CustomTime1 = new CustomeTime
                             {
                                 Time = h.Time.AddMinutes(-15).ToString("HH:mm")
                             };
                         if (h.Time.Hour > 14 && h.CustomTime7 == null)
-
                             h.CustomTime7 = new CustomeTime
                             {
                                 Time = h.Time.AddMinutes(-15).ToString("HH:mm")
@@ -2445,7 +2448,8 @@ namespace BubbleStart.ViewModels
             {
                 Mouse.OverrideCursor = Cursors.Wait;
 
-                Apointment ap = new Apointment {
+                Apointment ap = new Apointment
+                {
                     Customer = customer,
                     DateTime = Time,
                     Person = selectedPerson,
@@ -2718,7 +2722,7 @@ namespace BubbleStart.ViewModels
                         solo = true;
                     }
 
-                    List<GymnastHour> NextGymnasts = await BasicDataManager.Context.GetAllNextGymnastsAsync(Time, selHours, forever);
+                    List<GymnastHour> NextGymnasts = await BasicDataManager.Context.GetAllNextGymnastsAsync(Time, selHours, forever, gymNum);
                     int counter = 0;
                     foreach (var h in selHours)
                     {
@@ -4201,8 +4205,6 @@ namespace BubbleStart.ViewModels
                         To = SelectedAppointmentMassageHalf.DateTime.AddHours(1)
                     });
                     break;
-
-
             }
 
             await BasicDataManager.SaveAsync();

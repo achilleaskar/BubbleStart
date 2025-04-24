@@ -24,8 +24,23 @@ namespace BubbleStart.Converters
                     return Visibility.Collapsed;
                 return Visibility.Visible;
             }
-            if (StaticResources.User != null && parameter != null && StaticResources.User.Level <= int.Parse(parameter.ToString()))
-                return Visibility.Visible;
+            if (parameter is string sa)
+            {
+                if (sa.Contains("a"))//afro
+                {
+                    if (StaticResources.User?.Id == 36)
+                    {
+                        return Visibility.Visible;
+                    }
+                    else
+                    {
+                        sa = sa.Replace("a", "");
+                    }
+                }
+
+                if (StaticResources.User != null && parameter != null && StaticResources.User.Level <= int.Parse(sa))
+                    return Visibility.Visible;
+            }
             return Visibility.Collapsed;
         }
 

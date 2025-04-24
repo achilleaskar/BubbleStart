@@ -102,6 +102,10 @@
                                      IsChecked="{Binding IsPilatesMatChecked}"
                                      GroupName="Options1"
                                      Margin="5 0" />
+                        <RadioButton Content="Seminars"
+                                     IsChecked="{Binding IsSeminarsMatChecked}"
+                                     GroupName="Options1"
+                                     Margin="5 0" />
                     </WrapPanel>
                 </GroupBox>
                 <TextBlock Grid.Row="1"

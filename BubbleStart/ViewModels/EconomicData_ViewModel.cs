@@ -1865,6 +1865,8 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        public List<string> Answers { get; set; } = new List<string> { "", "ΝΑΙ", "ΟΧΙ", };
+
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             EconomicDetails = new ObservableCollection<EconomicDetail>();
@@ -2197,7 +2199,7 @@ namespace BubbleStart.ViewModels
                     return;
                 }
             }
-            if (NewExpense.MainCategory.Id==3)
+            if (NewExpense.MainCategory?.Id==3)
             {
                 NewExpense.Bank = NewExpense.Amount;
             }
@@ -2265,7 +2267,9 @@ namespace BubbleStart.ViewModels
                 false,
                 expensetypes: ExpenseTypes.Any(e => !e.IsChecked) ? ExpenseTypes.Where(e => e.IsChecked).Select(e => e.ExpenseCategory.Id).ToList() : null,
                 MainCategory?.Id ?? -1,
-                NewExpense?.SecondaryCategory?.Id ?? -1)).OrderBy(a => a.Date));
+                NewExpense?.SecondaryCategory?.Id ?? -1,
+                NewExpense.SelectedStore,
+                NewExpense.Reciept)).OrderBy(a => a.Date));
             foreach (var item in Expenses)
             {
                 item.parent = this;

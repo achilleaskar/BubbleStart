@@ -16,6 +16,7 @@
         <Converters:FloadToStringValueConverter x:Key="FtoSConverter" />
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
         <Converters:BoolToShowedUp_Converter x:Key="BoolToShowedUp_Converter" />
+        <Converters:BoolToGreekStringConverter x:Key="BoolToGreekStringConverter" />
         <Converters:DateTimeToString x:Key="DateTimeToString" />
         <Converters:GroupExpenseToHeaderConverter x:Key="GroupExpenseToHeaderConverter" />
         <Converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
@@ -210,7 +211,7 @@
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedExpense}"
                                               IsReadOnly="False"
-                                              Width="826"
+                                              Width="1126"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -227,13 +228,13 @@
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Ποσό"
-                                                                Width="60"
+                                                                Width="80"
                                                                 Binding="{Binding Amount,StringFormat=c2,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="70"
                                                                 Binding="{Binding Date,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
                                             <DataGridTemplateColumn Header="Κατηγ."
-                                                                    Width="80"
+                                                                    Width="95"
                                                                     SortMemberPath="MainCategory.Name"
                                                                     CellStyle="{StaticResource DataGridCellStyle}">
                                                 <DataGridTemplateColumn.CellTemplate>
@@ -248,7 +249,7 @@
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Υποκατηγ."
                                                                     SortMemberPath="SecondaryCategory.Name"
-                                                                    Width="110"
+                                                                    Width="125"
                                                                     CellStyle="{StaticResource DataGridCellStyle}">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
@@ -260,12 +261,34 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
+                                            <DataGridTemplateColumn Header="Επιχείριση"
+                                                                    SortMemberPath="SecondaryCategory.Store"
+                                                                    Width="110"
+                                                                    CellStyle="{StaticResource DataGridCellStyle}">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ComboBox Width="Auto"
+                                                                  VerticalAlignment="Top"
+                                                                  ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:Stores}}}"
+                                                                  SelectedItem="{Binding SelectedStore, UpdateSourceTrigger=PropertyChanged}">
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding}"
+                                                                               HorizontalAlignment="Right" />
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </ComboBox>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridCheckBoxColumn Header="Παραστ."
+                                                                    Binding="{Binding Reciept,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Χρήστης"
                                                                 MaxWidth="120"
                                                                 IsReadOnly="True"
                                                                 Binding="{Binding User.Name}" />
                                             <DataGridTemplateColumn Header="Αιτιολογία"
-                                                                    Width="240">
+                                                                    Width="270">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <Grid>
@@ -336,6 +359,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition />
                                                 <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Orientation="Horizontal">
                                                 <StackPanel>
@@ -382,7 +406,7 @@
                                             </StackPanel>
                                             <Button Content="Καταχώρηση"
                                                     Grid.Row="1"
-                                                    Grid.Column="2"
+                                                    Grid.Column="3"
                                                     VerticalAlignment="Bottom"
                                                     HorizontalAlignment="Center"
                                                     Margin="5"
@@ -403,6 +427,32 @@
                                                           DisplayMemberPath="Name"
                                                           ItemsSource="{Binding SecondaryCategories}"
                                                           SelectedItem="{Binding NewExpense.SecondaryCategory, UpdateSourceTrigger=PropertyChanged}" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Vertical"
+                                                        Margin="5 0"
+                                                        Grid.Column="3">
+                                                <TextBlock Text="Επιχείριση" />
+                                                <ComboBox VerticalAlignment="Top"
+                                                          Width="100"
+                                                          ItemsSource="{Binding Source={helpers:EnumBindingSource {x:Type helpers:Stores}}}"
+                                                          SelectedItem="{Binding NewExpense.SelectedStore,  UpdateSourceTrigger=PropertyChanged}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding}"
+                                                                       HorizontalAlignment="Right"  />
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                                <TextBlock Text="Παραστατικό" />
+                                                <ComboBox VerticalAlignment="Top"
+                                                          Width="100"
+                                                          SelectedValue="{Binding NewExpense.Reciept, Mode=TwoWay, Converter={StaticResource BoolToGreekStringConverter}}">
+                                                    <ComboBox.Items>
+                                                        <ComboBoxItem Content="" />
+                                                        <ComboBoxItem Content="ΝΑΙ" />
+                                                        <ComboBoxItem Content="ΟΧΙ" />
+                                                    </ComboBox.Items>
+                                                </ComboBox>
                                             </StackPanel>
                                         </Grid>
                                     </GroupBox>

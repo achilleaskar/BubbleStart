@@ -66,7 +66,7 @@ namespace BubbleStart.Helpers
         //public static string[] Districts { get; set; } = { "Ευζώνων", "Λαογραφικό Μουσείο", "Μπότσαρη", "Πανόραμα", "Σχολή Τυφλων", "Φάληρο", "Άλλο" };
         public static List<int> Months { get; set; } = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 12 };
 
-        public static readonly int[] afroallowedExpCat = new[] { 2, 6, 7, 8, 111 };
+        public static readonly int[] afroallowedExpCat = new[] { 2, 4, 6, 7, 8, 111, 77, 109 };
 
         public static CustomerManagement OpenWindow { get; internal set; }
         public static DateTime OneWeekBefore { get; internal set; } = DateTime.Today.AddDays(-7);

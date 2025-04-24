@@ -84,8 +84,8 @@
                               SelectedIndex="{Binding RoomIndex}"
                               Margin=" 5 0 0 0">
                         <ComboBoxItem Content="Όλες" />
-                        <ComboBoxItem Content="Functional" />
-                        <ComboBoxItem Content="Functional B" />
+                        <ComboBoxItem Content="Yoga" />
+                        <ComboBoxItem Content="Mat" />
                         <ComboBoxItem Content="Reformer" />
                         <ComboBoxItem Content="Massage" />
                         <ComboBoxItem Content="Massage:30" />
@@ -102,6 +102,7 @@
                         <ComboBoxItem Content="Massage" />
                         <ComboBoxItem Content="Online" />
                         <ComboBoxItem Content="Pilates Mat" />
+                        <ComboBoxItem Content="Seminars" />
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Grid.Column="2"
@@ -170,6 +171,10 @@
                            MinWidth="55"
                            HorizontalContentAlignment="Center"
                            Background="Pink" />
+                    <Label Content="Seminars"
+                           MinWidth="55"
+                           HorizontalContentAlignment="Center"
+                           Background="#3b804d" />
                 </StackPanel>
             </Grid>
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
@@ -249,7 +254,7 @@
                                                             Background="LightYellow"
                                                             Height="{Binding HeightFunctional}"
                                                             BorderThickness="1 0 0 1">
-                                                        <TextBlock Text="Functional"
+                                                        <TextBlock Text="Yoga"
                                                                    FontSize="13"
                                                                    Margin="-2 0 0 0"
                                                                    VerticalAlignment="Center">
@@ -264,7 +269,7 @@
                                                             Background="LightYellow"
                                                             Height="{Binding HeightFunctionalB}"
                                                             BorderThickness="1 0 0 1">
-                                                        <TextBlock Text="Functional B"
+                                                        <TextBlock Text="Mat"
                                                                    FontSize="13"
                                                                    Margin="-2 0 0 0"
                                                                    VerticalAlignment="Center">

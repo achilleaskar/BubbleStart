@@ -97,6 +97,7 @@
     <Compile Include="AttachedProperties\PasswordBoxMVVMAttachedProperties.cs" />
     <Compile Include="Converters\AppointmentShowedUptoColorConverter.cs" />
     <Compile Include="Converters\BMItoColorConverter.cs" />
+    <Compile Include="Converters\BoolToGreekStringConverter.cs" />
     <Compile Include="Converters\BoolToPaidConverter.cs" />
     <Compile Include="Converters\BoolToShowedUp_Converter.cs" />
     <Compile Include="Converters\ClothToColorConverter.cs" />
@@ -599,6 +600,14 @@
     <Compile Include="Migrations\202410082223514_Second_store.Designer.cs">
       <DependentUpon>202410082223514_Second_store.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202501282029150_reciepts.cs" />
+    <Compile Include="Migrations\202501282029150_reciepts.Designer.cs">
+      <DependentUpon>202501282029150_reciepts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202501282253203_person_nullable.cs" />
+    <Compile Include="Migrations\202501282253203_person_nullable.Designer.cs">
+      <DependentUpon>202501282253203_person_nullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -1083,6 +1092,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202410082223514_Second_store.resx">
       <DependentUpon>202410082223514_Second_store.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202501282029150_reciepts.resx">
+      <DependentUpon>202501282029150_reciepts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202501282253203_person_nullable.resx">
+      <DependentUpon>202501282253203_person_nullable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

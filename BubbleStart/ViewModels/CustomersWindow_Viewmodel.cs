@@ -30,7 +30,7 @@ namespace BubbleStart.ViewModels
 
         private bool CanAdd(object p)
         {
-            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked || IsMassageChecked || IsOnlineChecked || IsPersonalChecked || IsPilatesMatChecked);
+            return !Busy && SelectedCustomer != null && (IsGogoChecked || IsDimitrisChecked || IsYogaChecked || IsMassageChecked || IsOnlineChecked || IsPersonalChecked || IsPilatesMatChecked || IsSeminarsMatChecked);
         }
 
         #endregion Constructors
@@ -152,6 +152,35 @@ namespace BubbleStart.ViewModels
                 if (value)
                 {
                     SelectedPerson = SelectedPersonEnum.PilatesMat;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private bool _IsSeminarsMatChecked;
+
+
+        public bool IsSeminarsMatChecked
+        {
+            get
+            {
+                return _IsSeminarsMatChecked;
+            }
+
+            set
+            {
+                if (_IsSeminarsMatChecked == value)
+                {
+                    return;
+                }
+
+                _IsSeminarsMatChecked = value;
+                if (value)
+                {
+                    SelectedPerson = SelectedPersonEnum.Seminars;
                 }
                 RaisePropertyChanged();
             }
@@ -439,7 +468,7 @@ namespace BubbleStart.ViewModels
             string tmpTermWithis = StaticResources.ToGreek(SearchTerm);
             return customer.Name.ToUpper().Contains(tmpTerm) ||
                 customer.SureName.ToUpper().Contains(tmpTerm) ||
-                customer.Name.ToUpper().Contains(SearchTerm) || 
+                customer.Name.ToUpper().Contains(SearchTerm) ||
                 customer.SureName.ToUpper().Contains(SearchTerm) ||
                 customer.Tel.Contains(tmpTerm);
         }

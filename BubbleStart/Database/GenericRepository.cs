@@ -476,19 +476,25 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null, int mainId = -1, int secId = -1)
+        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null, int mainId = -1, int secId = -1, Stores store = Stores.empty, bool? receipt = null)
         {
             if (expensetypes == null || expensetypes.Count == 0)
                 return await Context.Expenses.Where(e => (!limit || e.Date >= Limit) &&
                 (mainId <= 0 || mainId == e.MainCategoryId) &&
                 (StaticResources.User.Level <= 1 || (mainId > 0 && StaticResources.afroallowedExpCat.Contains(mainId)) || (mainId <= 0 && (e.MainCategory == null || StaticResources.afroallowedExpCat.Contains(e.MainCategoryId.Value)))) &&
-                (secId <= 0 || secId == e.SecondaryCategoryId)).Where(filterp)
+                (secId <= 0 || secId == e.SecondaryCategoryId) &&
+                (store == Stores.empty || store == e.SelectedStore) &&
+                (receipt == null || e.Reciept == receipt)).Where(filterp)
                    .ToListAsync();
             else
                 return await Context.Expenses.Where(e => e.MainCategoryId != null && (!limit || e.Date >= Limit) &&
                 (StaticResources.User.Level <= 1 || (mainId > 0 && StaticResources.afroallowedExpCat.Contains(mainId)) || (mainId <= 0 && (e.MainCategory == null || StaticResources.afroallowedExpCat.Contains(e.MainCategoryId.Value)))) &&
                 (mainId <= 0 || mainId == e.MainCategoryId) &&
-                (secId <= 0 || secId == e.SecondaryCategoryId) && expensetypes.Contains((int)e.MainCategoryId)).Where(filterp)
+                (secId <= 0 || secId == e.SecondaryCategoryId) &&
+                expensetypes.Contains((int)e.MainCategoryId) &&
+                (store == Stores.empty || store == e.SelectedStore) &&
+                (receipt == null || e.Reciept == receipt))
+                    .Where(filterp)
                    .Include(e => e.User)
                    .ToListAsync();
         }
@@ -551,7 +557,7 @@ namespace BubbleStart.Database
             return await Context.ClosedHours.Where(e => e.Room == room && dates.Any(d => d == e.Date)).ToListAsync();
         }
 
-        internal async Task<List<GymnastHour>> GetAllNextGymnastsAsync(DateTime date, IEnumerable<Hour> selectedHours, bool forever)
+        internal async Task<List<GymnastHour>> GetAllNextGymnastsAsync(DateTime date, IEnumerable<Hour> selectedHours, bool forever, int gymNum)
         {
             List<DateTime> dates = new List<DateTime>();
 
@@ -567,7 +573,10 @@ namespace BubbleStart.Database
             if (selectedHours?.Any() == true)
             {
                 dates = dates.Select(d => d.Date).ToList();
-                return await Context.GymnastHours.Where(e => dates.Any(d => d == DbFunctions.TruncateTime(e.Datetime))).ToListAsync();
+                if (gymNum == 0)
+                    return await Context.GymnastHours.Where(e => (int)e.Room < 10 && dates.Any(d => d == DbFunctions.TruncateTime(e.Datetime))).ToListAsync();
+                else if (gymNum == 1)
+                    return await Context.GymnastHours.Where(e => (int)e.Room > 10 && (int)e.Room < 20 && dates.Any(d => d == DbFunctions.TruncateTime(e.Datetime))).ToListAsync();
             }
             return new List<GymnastHour>();
         }
@@ -642,7 +651,7 @@ namespace BubbleStart.Database
         {
             if (string.IsNullOrEmpty(time))
             {
-                if ((room == RoomEnum.Functional || room == RoomEnum.FunctionalB || room == RoomEnum.Fitness || room == RoomEnum.Strength) && dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.Hour > 14)
+                if ((room == RoomEnum.Fitness || room == RoomEnum.Strength) && dateTime.DayOfWeek != DayOfWeek.Saturday && dateTime.Hour > 14)
                 {
                     return dateTime.AddMinutes(-15).ToString("HH:mm");
                 }

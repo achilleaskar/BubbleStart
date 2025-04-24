@@ -458,12 +458,12 @@
                        Margin="0"
                        Padding="5 5 5 0"
                        d:Visibility="Visible"
-                       Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                       Visibility="{Binding ConverterParameter=1a, Converter={StaticResource UserToVisibilityConverter}}"
                        Grid.Column="0" />
                 <TextBlock Text="{Binding RemainingAmount, StringFormat=c1}"
                            Grid.Row="8"
                            d:Visibility="Visible"
-                           Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                           Visibility="{Binding ConverterParameter=1a, Converter={StaticResource UserToVisibilityConverter}}"
                            Grid.Column="1"
                            Margin="0,4,0,0" />
                 <StackPanel Grid.Row="9"
@@ -471,7 +471,7 @@
                             HorizontalAlignment="Left"
                             Grid.ColumnSpan="2"
                             d:Visibility="Visible"
-                            Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                            Visibility="{Binding ConverterParameter=1a, Converter={StaticResource UserToVisibilityConverter}}">
                     <GroupBox Header="Αγορά πακέτου">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -683,7 +683,7 @@
                           Grid.ColumnSpan="2"
                           HorizontalAlignment="Left"
                           d:Visibility="Visible"
-                          Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                          Visibility="{Binding ConverterParameter=1a, Converter={StaticResource UserToVisibilityConverter}}"
                           Header="Προσθήκη Παρουσίας">
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Ημερομ.:" />
@@ -925,7 +925,7 @@
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramFunctionalToDelete}"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              Width="600"
+                                              Width="750"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
@@ -975,7 +975,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -1036,7 +1036,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="150">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -1287,7 +1287,7 @@
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              Width="600"
+                                              Width="750"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -1335,7 +1335,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -1396,7 +1396,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="130">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -1690,7 +1690,7 @@
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              Width="600"
+                                              Width="750"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -1738,7 +1738,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -1799,7 +1799,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="150">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -2038,7 +2038,7 @@
                                                SelectedItem="{Binding SelectedProgramMassageToDelete}"
                                                VirtualizingPanel.VirtualizationMode="Standard"
                                                Margin="0 0 0 0"
-                                               Width="600"
+                                               Width="750"
                                                CanUserDeleteRows="False"
                                                AutoGenerateColumns="False">
                                         <DataGrid.Resources>
@@ -2085,7 +2085,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -2146,7 +2146,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="150">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -2400,7 +2400,7 @@
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              Width="600"
+                                              Width="750"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -2448,7 +2448,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -2509,7 +2509,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="150">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -2760,7 +2760,7 @@
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
-                                              Width="600"
+                                              Width="750"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -2808,7 +2808,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -2869,7 +2869,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="150">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -3124,7 +3124,7 @@
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              Width="600"
+                                              Width="750"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -3172,7 +3172,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -3233,7 +3233,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="150">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -3484,7 +3484,7 @@
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              Width="600"
+                                              Width="750"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -3532,7 +3532,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -3593,7 +3593,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="150">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -3828,7 +3828,7 @@
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
                                               VirtualizingPanel.VirtualizationMode="Standard"
-                                              Width="600"
+                                              Width="750"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -3876,7 +3876,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -3937,7 +3937,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="150">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -4168,7 +4168,7 @@
                                               VirtualizingPanel.VirtualizationMode="Standard"
                                               EnableRowVirtualization="False"
                                               SelectionChanged="Showups_SelectionChanged"
-                                              Width="600"
+                                              Width="750"
                                               CellEditEnding="DataGrid_CellEditEnding"
                                               CanUserDeleteRows="False"
                                               AutoGenerateColumns="False">
@@ -4216,7 +4216,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="120">
+                                                                    Width="250">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -4277,7 +4277,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="100">
+                                                                    Width="150">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -4368,15 +4368,16 @@
                         Margin="5 0 0 0">
                 <TabItem Header="Notes"
                          d:Visibility="Visible"
-                         Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                         Visibility="{Binding ConverterParameter=1a, Converter={StaticResource UserToVisibilityConverter}}">
                     <TextBox Height="210"
                              TextWrapping="Wrap"
                              FontSize="13"
                              Width="320"
+                             Name="Notes"
                              MaxLength="1000"
                              MaxLines="200"
                              d:Visibility="Visible"
-                             Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                             Visibility="{Binding ConverterParameter=1a, Converter={StaticResource UserToVisibilityConverter}}"
                              AcceptsReturn="True"
                              Text="{Binding Notes,UpdateSourceTrigger=PropertyChanged}" />
                 </TabItem>
@@ -4542,7 +4543,7 @@
                               CanUserAddRows="False"
                               Height="185"
                               d:Visibility="Visible"
-                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                              Visibility="{Binding ConverterParameter=1a, Converter={StaticResource UserToVisibilityConverter}}"
                               SelectionMode="Single"
                               SelectedItem="{Binding SelectedChange}"
                               VirtualizingPanel.VirtualizationMode="Standard"
@@ -4585,7 +4586,7 @@
                 </TabItem>
                 <TabItem Header="Σύνολα"
                          d:Visibility="Visible"
-                         Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                         Visibility="{Binding ConverterParameter=1a, Converter={StaticResource UserToVisibilityConverter}}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />

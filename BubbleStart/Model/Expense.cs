@@ -1,6 +1,7 @@
 ﻿using BubbleStart.Helpers;
 using BubbleStart.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -265,6 +266,52 @@ namespace BubbleStart.Model
                 {
                     From = value;
                 }
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private bool? _Reciept;
+
+
+        public bool? Reciept
+        {
+            get
+            {
+                return _Reciept;
+            }
+
+            set
+            {
+                if (_Reciept == value)
+                {
+                    return;
+                }
+
+                _Reciept = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private Stores _SelectedStore;
+
+
+        public Stores SelectedStore
+        {
+            get
+            {
+                return _SelectedStore;
+            }
+
+            set
+            {
+                if (_SelectedStore == value)
+                {
+                    return;
+                }
+
+                _SelectedStore = value;
                 RaisePropertyChanged();
             }
         }

@@ -100,6 +100,7 @@
                         <ComboBoxItem Content="Massage" />
                         <ComboBoxItem Content="Online" />
                         <ComboBoxItem Content="Pilates Mat" />
+                        <ComboBoxItem Content="Seminars" />
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Grid.Column="2"
@@ -168,6 +169,10 @@
                            MinWidth="55"
                            HorizontalContentAlignment="Center"
                            Background="Pink" />
+                    <Label Content="Seminars"
+                           MinWidth="55"
+                           HorizontalContentAlignment="Center"
+                           Background="#3b804d" />
                 </StackPanel>
             </Grid>
             <ScrollViewer HorizontalScrollBarVisibility="Auto"
@@ -990,7 +995,7 @@
                                                                                         <TextBlock.ToolTip>
                                                                                             <TextBlock Text="{Binding PersonName}" />
                                                                                         </TextBlock.ToolTip>
-                                         </TextBlock>
+                                                                                    </TextBlock>
                                                                                 </ContentControl>
                                                                             </StackPanel>
                                                                         </DataTemplate>

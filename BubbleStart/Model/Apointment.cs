@@ -105,6 +105,8 @@ namespace BubbleStart.Model
                     return Colors.Cyan.ToString();
                 if (Person == SelectedPersonEnum.PilatesMat)
                     return Colors.Pink.ToString();
+                if (Person == SelectedPersonEnum.Seminars)
+                    return "#3b804d";
             }
             else
             {
@@ -166,6 +168,9 @@ namespace BubbleStart.Model
                     case SelectedPersonEnum.PilatesMat:
                         return "Pilates Mat" + (Gymnast != null ? " - " + Gymnast.Name : "");
 
+                    case SelectedPersonEnum.Seminars:
+                        return "Seminars" + (Gymnast != null ? " - " + Gymnast.Name : "");
+
                     default:
                         return "Error" + (Gymnast != null ? " - " + Gymnast.Name : "");
                 }
@@ -180,15 +185,32 @@ namespace BubbleStart.Model
             {
                 return "Yoga";
             }
-            if (Room == RoomEnum.Functional || Room == RoomEnum.FunctionalB|| Room == RoomEnum.Fitness || Room == RoomEnum.Strength)
+            if (Room == RoomEnum.Fitness || Room == RoomEnum.Strength)
             {
                 return "Functional, " + PersonName;
             }
-            if (Room == RoomEnum.Pilates|| Room == RoomEnum.Personal2)
+
+            if (Room == RoomEnum.Functional)
+            {
+                if (DateTime.Year >= 2025)
+                {
+                    return "Yoga, " + PersonName;
+                }
+                return "Functional, " + PersonName;
+            }
+            if (Room == RoomEnum.FunctionalB)
+            {
+                if (DateTime.Year >= 2025)
+                {
+                    return "Mat, " + PersonName;
+                }
+                return "Functional, " + PersonName;
+            }
+            if (Room == RoomEnum.Pilates || Room == RoomEnum.Personal2)
             {
                 return "Reformer, " + PersonName;
             }
-            if (Room == RoomEnum.Massage|| Room == RoomEnum.Massage2)
+            if (Room == RoomEnum.Massage || Room == RoomEnum.Massage2)
             {
                 return "Massage, " + PersonName;
             }
@@ -200,7 +222,7 @@ namespace BubbleStart.Model
             {
                 return "Massage 30, " + PersonName;
             }
-            if (Room == RoomEnum.Personal|| Room == RoomEnum.FreeSpace)
+            if (Room == RoomEnum.Personal || Room == RoomEnum.FreeSpace)
             {
                 return "Personal, " + PersonName;
             }
@@ -211,9 +233,9 @@ namespace BubbleStart.Model
 
         private RoomEnum _room;
 
-        private SelectedPersonEnum _person;
+        private SelectedPersonEnum? _person;
 
-        public SelectedPersonEnum Person
+        public SelectedPersonEnum? Person
         {
             get => _person;
 

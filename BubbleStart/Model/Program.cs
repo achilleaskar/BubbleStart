@@ -390,7 +390,7 @@ namespace BubbleStart.Model
 
         public decimal GetRemainingAmmount()
         {
-            var paid = Payments?.Sum(prop => prop.Amount)??0;
+            var paid = Payments?.Sum(prop => prop.Amount) ?? 0;
             return Amount - paid;
 
         }
@@ -622,6 +622,10 @@ namespace BubbleStart.Model
 
         internal DateTime AddMonth(int months)
         {
+            if (StartDay >= new DateTime(2025, 3, 11))
+            {
+                return StartDay.AddDays((months * 30)-1);
+            }
             var x = StartDay.AddMonths(months);
             if (StartDay >= new DateTime(2022, 1, 17))
             {
@@ -684,12 +688,12 @@ namespace BubbleStart.Model
 
         internal void SetRemainingDaysBoth()
         {
-            if (RemainingDays<=0)
+            if (RemainingDays <= 0)
             {
                 return;
             }
             var r = (int)(AddMonth(Months) - DateTime.Today).TotalDays + 1;
-            if (r <RemainingDays)
+            if (r < RemainingDays)
                 RemainingDays = r;
         }
     }
