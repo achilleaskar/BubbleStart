@@ -1,7 +1,9 @@
-﻿using BubbleStart.Model;
-using BubbleStart.ViewModels;
+﻿using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using BubbleStart.Model;
+using BubbleStart.ViewModels;
 
 namespace BubbleStart.Views
 {
@@ -72,7 +74,28 @@ namespace BubbleStart.Views
 
         private void Button_Click()
         {
-
         }
+        private void ExpenseLabel_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Label label && label.Content is string text)
+            {
+                string clean = text.Replace("€", "").Replace(" ", "");
+
+                // Retry up to 5 times if clipboard is busy
+                for (int i = 0; i < 5; i++)
+                {
+                    try
+                    {
+                        Clipboard.SetText(clean);
+                        break; // success
+                    }
+                    catch (System.Runtime.InteropServices.COMException)
+                    {
+                        Thread.Sleep(50); // clipboard is busy, wait and retry
+                    }
+                }
+            }
+        }
+
     }
 }

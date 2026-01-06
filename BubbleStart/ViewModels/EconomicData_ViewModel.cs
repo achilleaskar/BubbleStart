@@ -1,13 +1,4 @@
-﻿using BubbleStart.Helpers;
-using BubbleStart.Messages;
-using BubbleStart.Model;
-using BubbleStart.Views;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using Serilog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -18,17 +9,20 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using BubbleStart.Helpers;
+using BubbleStart.Messages;
+using BubbleStart.Model;
+using BubbleStart.Views;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using Serilog;
 
 namespace BubbleStart.ViewModels
 {
     public class EconomicData_ViewModel : MyViewModelBase
     {
-
-
-
-
         private int _SelectedProgramModeIndex;
-
 
         public int SelectedProgramModeIndex
         {
@@ -49,11 +43,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private int _SelectedProgramCountIndex;
-
 
         public int SelectedProgramCountIndex
         {
@@ -361,7 +351,9 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
+
         public bool HasBars => Bars.Count > 0;
+        public bool HasRealBars => RealBars.Count > 0;
 
         internal ObservableCollection<Bar> CreatePlot(ObservableCollection<PreviewData> data)
         {
@@ -789,6 +781,31 @@ namespace BubbleStart.ViewModels
             }
         }
 
+
+
+
+        private ObservableCollection<ProgramModeObject> _ProgramModes;
+
+
+        public ObservableCollection<ProgramModeObject> ProgramModes
+        {
+            get
+            {
+                return _ProgramModes;
+            }
+
+            set
+            {
+                if (_ProgramModes == value)
+                {
+                    return;
+                }
+
+                _ProgramModes = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public DateTime EndDateExpenses
         {
             get => _EndDateExpenses;
@@ -1157,6 +1174,8 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        public bool FromToFilter { get; set; }
 
         public Expense NewExpense
         {
@@ -1695,11 +1714,7 @@ namespace BubbleStart.ViewModels
             }
         }
 
-
-
-
         private decimal _TotalRemainingGift;
-
 
         public decimal TotalRemainingGift
         {
@@ -1719,6 +1734,7 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         public decimal TotalRemaining
         {
             get
@@ -1876,7 +1892,7 @@ namespace BubbleStart.ViewModels
             if (BasicDataManager.ExpenseCategoryClasses != null)
             {
                 MainCategories = new ObservableCollection<ExpenseCategoryClass>(BasicDataManager.ExpenseCategoryClasses
-                    .Where(e => 
+                    .Where(e =>
                     //(StaticResources.User.Level <= 1 || StaticResources.afroallowedExpCat.Contains(e.Id)) &&
                     (e.Id > 1 || e.Id == -1) && e.Id != 20 && (e.ParentId == 1 || e.Parent == null)));
 
@@ -1892,6 +1908,44 @@ namespace BubbleStart.ViewModels
                 {
                     e.PropertyChanged += I_PropertyChanged;
                 }
+            }
+
+            ProgramModes = new ObservableCollection<ProgramModeObject>(Enum.GetValues(typeof(ProgramMode))
+                   .Cast<ProgramMode>()
+                   .Select(e => new ProgramModeObject
+                   {
+                       Mode = e,
+                       Name = StaticResources.GetDescription(e),
+                       Selected = true
+                   }));
+
+            ExpenseTypesSelection = new ObservableCollection<ExpenseTypeObject>(MainCategories.Select(a => new ExpenseTypeObject
+            {
+                Mode = a,
+                Selected = true,
+                Name = a.Name
+            }));
+        }
+
+        private ObservableCollection<ExpenseTypeObject> _ExpenseTypesSelection;
+
+
+        public ObservableCollection<ExpenseTypeObject> ExpenseTypesSelection
+        {
+            get
+            {
+                return _ExpenseTypesSelection;
+            }
+
+            set
+            {
+                if (_ExpenseTypesSelection == value)
+                {
+                    return;
+                }
+
+                _ExpenseTypesSelection = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -1909,49 +1963,43 @@ namespace BubbleStart.ViewModels
             throw new NotImplementedException();
         }
 
+        private ObservableCollection<ExpenseGroup> _GroupedExpenses;
+
+        public ObservableCollection<ExpenseGroup> GroupedExpenses
+        {
+            get
+            {
+                return _GroupedExpenses;
+            }
+
+            set
+            {
+                if (_GroupedExpenses == value)
+                {
+                    return;
+                }
+
+                _GroupedExpenses = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public void UpdateAmmounts()
         {
-            Pagia = Ektakta = Spitiou = Gwgw = Misthoi = Timologia = Pistotika = Fainomenika = 0;
+            List<Expense> expenses = new List<Expense>();
+
             foreach (Expense exp in CollectionViewSource.GetDefaultView(Expenses))
             {
-                switch (exp.MainCategory?.Id)
-                {
-                    case 2:
-                        Pagia += exp.Amount;
-                        break;
-
-                    case 3:
-                        Misthoi += exp.Amount;
-                        break;
-
-                    case 4:
-                        Ektakta += exp.Amount;
-                        break;
-
-                    case 19:
-                        Spitiou += exp.Amount;
-                        break;
-
-                    case 17:
-                        Gwgw += exp.Amount;
-                        break;
-
-                    case 6:
-                        Timologia += exp.Amount;
-                        break;
-
-                    case 7:
-                        Pistotika += exp.Amount;
-                        break;
-
-                    case 8:
-                        Fainomenika += exp.Amount;
-                        break;
-
-                    default:
-                        break;
-                }
+                expenses.Add(exp);
             }
+            GroupedExpenses = new ObservableCollection<ExpenseGroup>(expenses
+                   .GroupBy(e => e.MainCategory)
+                   .Select(g => new ExpenseGroup
+                   {
+                       Category = g.Key?.Name + ":" ?? "Χωρίς:",
+                       Sort = -1,
+                       Total = g.Sum(x => x.Amount)
+                   }).OrderBy(a => a.Sort).ThenBy(a => a.Category));
 
             CalculateAmounts();
         }
@@ -2070,11 +2118,7 @@ namespace BubbleStart.ViewModels
         private ObservableCollection<Bar> _Bars;
         private ObservableCollection<ExpenseCheck> _incomeTypes;
 
-
-
-
         private ObservableCollection<Bar> _RealBars;
-
 
         public ObservableCollection<Bar> RealBars
         {
@@ -2092,7 +2136,7 @@ namespace BubbleStart.ViewModels
 
                 _RealBars = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(HasBars));
+                RaisePropertyChanged(nameof(HasRealBars));
             }
         }
 
@@ -2163,7 +2207,7 @@ namespace BubbleStart.ViewModels
                 c.EditedInCustomerManagement = true;
                 c.BasicDataManager = BasicDataManager;
                 c.UpdateCollections();
-                c.FillDefaultProframs();
+                c.FillDefaultPrograms();
 
                 Window window = new CustomerManagement
                 {
@@ -2182,6 +2226,7 @@ namespace BubbleStart.ViewModels
                     (SelectedPaymentMethodIndexIndex == 3 && p.PaymentType == PaymentType.Bank))
                 && (RecieptIndex == 0 || (RecieptIndex == 1 && p.Reciept) || (RecieptIndex == 2 && !p.Reciept));
         }
+
         private readonly ILogger logger = Log.ForContext<EconomicData_ViewModel>();
 
         private async Task RegisterExpense()
@@ -2199,7 +2244,7 @@ namespace BubbleStart.ViewModels
                     return;
                 }
             }
-            if (NewExpense.MainCategory?.Id==3)
+            if (NewExpense.MainCategory?.Id == 3)
             {
                 NewExpense.Bank = NewExpense.Amount;
             }
@@ -2254,7 +2299,11 @@ namespace BubbleStart.ViewModels
         private async Task ShowCashData()
         {
             Mouse.OverrideCursor = Cursors.Wait;
-            DailyPayments = new ObservableCollection<Payment>((await BasicDataManager.Context.GetAllPaymentsAsync(StartDateCash, EndDateCash, (SelectedProgramModeIndex == 0 ? null : ((ProgramMode?)(SelectedProgramModeIndex - 1))), true, SelectedProgramCountIndex)).OrderBy(a => a.Date));
+            DailyPayments = new ObservableCollection<Payment>((
+                await BasicDataManager.Context.GetAllPaymentsAsync(StartDateCash, EndDateCash,
+                (SelectedProgramModeIndex == 0 ? null : ((ProgramMode?)(SelectedProgramModeIndex - 1))),
+                true, SelectedProgramCountIndex,
+                ProgramModes.Where(a => a.Selected).Select(a => a.Mode).ToList())).OrderBy(a => a.Date));
             UpdateAmmounts();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -2269,6 +2318,7 @@ namespace BubbleStart.ViewModels
                 MainCategory?.Id ?? -1,
                 NewExpense?.SecondaryCategory?.Id ?? -1,
                 NewExpense.SelectedStore,
+         FromToFilter, NewExpense,
                 NewExpense.Reciept)).OrderBy(a => a.Date));
             foreach (var item in Expenses)
             {
@@ -2347,20 +2397,33 @@ namespace BubbleStart.ViewModels
         private async Task ShowPreviewData()
         {
             Mouse.OverrideCursor = Cursors.Wait;
+
+            var selectedPModes = ProgramModes.Where(a => a.Selected).Select(a => a.Mode).ToList();
             List<PreviewData> previewData = new List<PreviewData>();
-            List<Expense> expenses = await BasicDataManager.Context.GetAllExpensesAsync(e => e.Date >= StartDatePreview && e.Date <= EndDatePreview, false);
-            List<Payment> payments = (await BasicDataManager.Context.GetAllPaymentsAsync(StartDatePreview, EndDatePreview, null, false)).ToList();
-            List<Program> programs = (await BasicDataManager.Context.GetAllAsync<Program>(p => p.DayOfIssue >= StartDatePreview && p.DayOfIssue <= EndDatePreview)).ToList();
+            List<Expense> expenses = await BasicDataManager.Context.GetAllExpensesAsync(e => e.Date >= StartDatePreview && e.Date <= EndDatePreview, false,
+                ExpenseTypesSelection.Where(a => a.Selected).Select(a => a.Mode.Id).ToList());
+            List<Payment> payments = (await BasicDataManager.Context.GetAllPaymentsAsync(StartDatePreview, EndDatePreview, null, false,
+                programModeIds: selectedPModes)).ToList();
+            var ae = payments.Sum(p => p.Amount);
+
+            List<Program> programs = (await BasicDataManager.Context.GetAllAsync<Program>(p => p.DayOfIssue >= StartDatePreview && p.DayOfIssue <= EndDatePreview))
+                .Where(p => p?.ProgramTypeO?.ProgramMode != null && selectedPModes.Contains(p.ProgramTypeO.ProgramMode)).ToList();
 
             List<PreviewData> realpreviewData = new List<PreviewData>();
 
             List<Expense> expensesPreview = await BasicDataManager.Context.GetAllExpensesAsync(e =>
             (e.To >= StartDatePreview && e.To <= EndDatePreview) ||
             (e.From >= StartDatePreview && e.From <= EndDatePreview) ||
-            (e.From < StartDatePreview && e.To > EndDatePreview), false);
+            (e.From < StartDatePreview && e.To > EndDatePreview), false,
+            ExpenseTypesSelection.Where(a => a.Selected).Select(a => a.Mode.Id).ToList());
 
-            List<Program> programsPreview = (await BasicDataManager.Context.GetProgramsFullAsync(p => p.ShowUpsList.Any(s => s.Arrived >= StartDatePreview && s.Arrived <= EndDatePreview))).ToList();
+            List<Program> programsPreview = (
+                await BasicDataManager.Context.GetProgramsFullAsync(p => p.ShowUpsList.Any(s => s.Arrived >= StartDatePreview && s.Arrived <= EndDatePreview)
+                || (p.ShowUpsList.Count() == 0 && p.StartDay >= StartDatePreview && p.StartDay <= EndDatePreview)))
+                .Where(p => selectedPModes.Contains(p.ProgramTypeO.ProgramMode)).ToList();
             //var t = programs.Where(x => !programsPreview.Any(y => y.Id == x.Id)).ToList();
+
+            var b = programsPreview.Sum(p => p.Payments.Sum(r => r.Amount));
             PreviewData tmpMonth;
             foreach (var expense in expenses.Where(e => !e.Income))
             {
@@ -2461,19 +2524,32 @@ namespace BubbleStart.ViewModels
                 program.ShowUpsList = program.ShowUpsList.OrderBy(s => s.Arrived).ToList();
                 if (!program.ShowUpsList.Any())
                 {
-                    continue;
-                }
-                firstProgMonth = new DateTime(program.ShowUpsList.First().Arrived.Year, program.ShowUpsList.First().Arrived.Month, 1);
-                LastProgMonth = new DateTime(program.ShowUpsList.Last().Arrived.Year, program.ShowUpsList.Last().Arrived.Month, 1);
-                months = realpreviewData.Where(m => m.Date >= firstProgMonth && m.Date <= LastProgMonth).ToList();
-                if (months.Count() > 0)
-                    foreach (var mon in months)
+                    months = realpreviewData.Where(m => m.Date.Month == program.StartDay.Month && m.Date.Year == program.StartDay.Year).ToList();
+                    if (months.Count() == 1)
+                        foreach (var mon in months)
+                        {
+                            mon.Recieved += program.Payments.Sum(p => p.Amount);
+                        }
+                    else
                     {
-                        mon.Recieved += decimal.Round(GetProgramAmountInMonth(mon, program), 2);
+                        throw new InvalidOperationException();
                     }
+                }
                 else
                 {
-                    throw new InvalidOperationException();
+
+                    firstProgMonth = new DateTime(program.ShowUpsList.First().Arrived.Year, program.ShowUpsList.First().Arrived.Month, 1);
+                    LastProgMonth = new DateTime(program.ShowUpsList.Last().Arrived.Year, program.ShowUpsList.Last().Arrived.Month, 1);
+                    months = realpreviewData.Where(m => m.Date >= firstProgMonth && m.Date <= LastProgMonth).ToList();
+                    if (months.Count() > 0)
+                        foreach (var mon in months)
+                        {
+                            mon.Recieved += decimal.Round(GetProgramAmountInMonth(mon, program), 2);
+                        }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
                 }
             }
 
@@ -2990,5 +3066,26 @@ namespace BubbleStart.ViewModels
         }
 
         #endregion Properties
+    }
+
+    public class ExpenseGroup
+    {
+        public string Category { get; set; }
+        public decimal Total { get; set; }
+        public int Sort { get; set; }
+    }
+
+    public class ProgramModeObject
+    {
+        public string Name { get; set; }
+        public bool Selected { get; set; }
+        public ProgramMode Mode { get; set; }
+    }
+
+    public class ExpenseTypeObject
+    {
+        public string Name { get; set; }
+        public bool Selected { get; set; }
+        public ExpenseCategoryClass Mode { get; set; }
     }
 }

@@ -936,7 +936,7 @@ namespace BubbleStart.ViewModels
             c.EditedInCustomerManagement = true;
             c.BasicDataManager = BasicDataManager;
             c.UpdateCollections();
-            c.FillDefaultProframs();
+            c.FillDefaultPrograms();
             Window window = new CustomerManagement
             {
                 DataContext = c

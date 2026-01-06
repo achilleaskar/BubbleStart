@@ -43,6 +43,7 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             var c = await BasicDataManager.Context.GetFullCustomerByIdAsync(obj.Id);
             c.Enabled = true;
+            c.ReEnabled = DateTime.Today;
             await BasicDataManager.SaveAsync();
             c.BasicDataManager = BasicDataManager;
             BasicDataManager.Customers.Add(c);
@@ -99,10 +100,10 @@ namespace BubbleStart.ViewModels
             }
             SearchTerm = SearchTerm.Trim().ToUpper();
             string tmpTerm = StaticResources.ToGreek(SearchTerm);
-            return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) || 
+            return customer != null && (customer.Name.ToUpper().Contains(tmpTerm) ||
                 customer.SureName.ToUpper().Contains(tmpTerm) ||
-                customer.Name.ToUpper().Contains(SearchTerm) || 
-                customer.SureName.ToUpper().Contains(SearchTerm) || 
+                customer.Name.ToUpper().Contains(SearchTerm) ||
+                customer.SureName.ToUpper().Contains(SearchTerm) ||
                 customer.Tel.Contains(tmpTerm));
         }
 

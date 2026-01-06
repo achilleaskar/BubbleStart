@@ -208,9 +208,9 @@ namespace BubbleStart.Model
         private ICollectionView _ProgramsAerialYogaCollectionView;
         private ICollectionView _ProgramsFunctionalCollectionView;
         private ICollectionView _ProgramsFunctionalPilatesCollectionView;
-        private ICollectionView _ProgramsMassageColelctionView;
+        private ICollectionView _ProgramsMassageCollectionView;
         private ICollectionView _ProgramsMedicalCollectionView;
-        private ICollectionView _ProgramsOnlineColelctionView;
+        private ICollectionView _ProgramsOnlineCollectionView;
         private ICollectionView _ProgramsOutdoorCollectionView;
         private ICollectionView _ProgramsPersonalCollectionView;
         private ICollectionView _ProgramsPilatesCollectionView;
@@ -720,6 +720,31 @@ namespace BubbleStart.Model
                 }
 
                 _ExtraReasons = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+
+        private DateTime _ReEnabled;
+
+
+        public DateTime ReEnabled
+        {
+            get
+            {
+                return _ReEnabled;
+            }
+
+            set
+            {
+                if (_ReEnabled == value)
+                {
+                    return;
+                }
+
+                _ReEnabled = value;
                 RaisePropertyChanged();
             }
         }
@@ -1806,18 +1831,18 @@ namespace BubbleStart.Model
             }
         }
 
-        public ICollectionView ProgramsMassageColelctionView
+        public ICollectionView ProgramsMassageCollectionView
         {
-            get => _ProgramsMassageColelctionView;
+            get => _ProgramsMassageCollectionView;
 
             set
             {
-                if (_ProgramsMassageColelctionView == value)
+                if (_ProgramsMassageCollectionView == value)
                 {
                     return;
                 }
 
-                _ProgramsMassageColelctionView = value;
+                _ProgramsMassageCollectionView = value;
 
                 RaisePropertyChanged();
             }
@@ -1842,18 +1867,18 @@ namespace BubbleStart.Model
             }
         }
 
-        public ICollectionView ProgramsOnlineColelctionView
+        public ICollectionView ProgramsOnlineCollectionView
         {
-            get => _ProgramsOnlineColelctionView;
+            get => _ProgramsOnlineCollectionView;
 
             set
             {
-                if (_ProgramsOnlineColelctionView == value)
+                if (_ProgramsOnlineCollectionView == value)
                 {
                     return;
                 }
 
-                _ProgramsOnlineColelctionView = value;
+                _ProgramsOnlineCollectionView = value;
                 RaisePropertyChanged();
             }
         }
@@ -2054,13 +2079,33 @@ namespace BubbleStart.Model
 
         public int RemainingTrainingDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.functional).Sum(p => p.RemainingDays);
 
-        public int RemainingTrainingFullDays => RemainingFunctionalPilatesDays + RemainingTrainingDays + RemainingPilatesDays + RemainingPersonalDays + RemainingMedicalDays;
-
         public int RemainingYogaDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.yoga).Sum(p => p.RemainingDays);
         public int RemainingAerialYogaDays => Programs.Where(p => p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga).Sum(p => p.RemainingDays);
 
+        public int RemainingTrainingFullDays => RemainingFunctionalPilatesDays + RemainingTrainingDays + RemainingPilatesDays + RemainingPersonalDays + RemainingMedicalDays;
         public int RemainingYogaFullDays => RemainingYogaDays + RemainingAerialYogaDays;
         public int RemainingDaysTotal => RemainingTrainingFullDays + RemainingYogaFullDays + RemainingMassageDays + RemainingOnlineDays + RemainingOutDoorDays;
+
+        private DateTime _ResetSemDay;
+
+        public DateTime ResetSemDay
+        {
+            get
+            {
+                return _ResetSemDay;
+            }
+
+            set
+            {
+                if (_ResetSemDay == value)
+                {
+                    return;
+                }
+
+                _ResetSemDay = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public DateTime ResetDate
         {
@@ -3737,7 +3782,11 @@ namespace BubbleStart.Model
                     lastShowUp = lastShUp.Arrived;
                 if (RemainingAmount > 0 ||
                     ShowUps.Any(s => !s.Present && s.Prog == null &&
-                    ((s.ProgramModeNew != ProgramMode.massage && s.Arrived >= ResetDate) || (s.ProgramModeNew == ProgramMode.massage && s.Arrived >= MassageResetDay))))
+                    (
+                    (s.ProgramModeNew != ProgramMode.massage && s.ProgramModeNew != ProgramMode.yoga && s.ProgramModeNew != ProgramMode.aerialYoga && s.Arrived >= ResetDate) ||
+                    (s.ProgramModeNew == ProgramMode.massage && s.Arrived >= MassageResetDay) ||
+                    ((s.ProgramModeNew == ProgramMode.yoga || s.ProgramModeNew == ProgramMode.aerialYoga) && s.Arrived >= ResetSemDay)
+                    )))
                 {
                     ActiveCustomer = true;
 
@@ -3920,6 +3969,7 @@ namespace BubbleStart.Model
             //Full = true;
             DateTime startDate = Full ? new DateTime() : ResetDate;
             DateTime startDateM = Full ? new DateTime() : MassageResetDay;
+            DateTime startDateS = Full ? new DateTime() : ResetSemDay;
 
             if (!Loaded) return;
 
@@ -3951,11 +4001,14 @@ namespace BubbleStart.Model
                 {
                     programsReversed = mode == ProgramMode.massage ?
                         Programs.Where(o => o.StartDay >= startDateM && o?.ProgramTypeO?.ProgramMode == mode).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList() :
-                        Programs.Where(o => o.StartDay >= startDate && o?.ProgramTypeO?.ProgramMode == mode).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
+                       (mode == ProgramMode.yoga || mode == ProgramMode.aerialYoga) ? Programs.Where(o => o.StartDay >= startDateS && o?.ProgramTypeO?.ProgramMode == mode).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList() :
+                       Programs.Where(o => o.StartDay >= startDate && o?.ProgramTypeO?.ProgramMode == mode).OrderBy(p => p.StartDay).ThenBy(p => p.Id).ToList();
                     Limit = programsReversed.Count > 0 ? programsReversed[0].StartDay : new DateTime();
                     showUpsReserved = mode == ProgramMode.massage ?
                         ShowUps.Where(s => s.Arrived >= startDateM && s.Arrived >= Limit && s.ProgramModeNew == mode).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList() :
+                        (mode == ProgramMode.yoga || mode == ProgramMode.aerialYoga) ? ShowUps.Where(s => s.Arrived >= startDateS && s.Arrived >= Limit && s.ProgramModeNew == mode).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList() :
                         ShowUps.Where(s => s.Arrived >= startDate && s.Arrived >= Limit && s.ProgramModeNew == mode).OrderBy(r => r.Arrived).ThenByDescending(r => r.Id).ToList();
+
                     selProg = null;
                     progIndex = 0;
                     foreach (var showUp in showUpsReserved)
@@ -4219,8 +4272,8 @@ namespace BubbleStart.Model
                 ProgramsFunctionalCollectionView?.Refresh();
                 ProgramsPilatesCollectionView?.Refresh();
                 ProgramsFunctionalPilatesCollectionView?.Refresh();
-                ProgramsMassageColelctionView?.Refresh();
-                ProgramsOnlineColelctionView?.Refresh();
+                ProgramsMassageCollectionView?.Refresh();
+                ProgramsOnlineCollectionView?.Refresh();
                 ProgramsOutdoorCollectionView?.Refresh();
                 ProgramsYogaCollectionView?.Refresh();
                 ProgramsAerialYogaCollectionView?.Refresh();
@@ -4498,6 +4551,58 @@ namespace BubbleStart.Model
                     return false;
             }
         }
+
+        internal decimal GetActiveProgramPricePerMonth(ProgramMode programMode)
+        {
+            Program p = null;
+            switch (programMode)
+            {
+                case ProgramMode.functional:
+                    p = SelectedFunctionalProgram;
+                    break;
+
+                case ProgramMode.massage:
+                    p = SelectedMasageProgram;
+                    break;
+
+                case ProgramMode.online:
+                    p = SelectedOnlineProgram;
+                    break;
+
+                case ProgramMode.outdoor:
+                    p = SelectedOutdoorProgram;
+                    break;
+
+                case ProgramMode.pilates:
+                    p = SelectedPilatesProgram;
+                    break;
+
+                case ProgramMode.yoga:
+                    p = SelectedYogaProgram;
+                    break;
+
+                case ProgramMode.pilatesFunctional:
+                    p = SelectedFunctionalPilatesProgram;
+                    break;
+
+                case ProgramMode.aerialYoga:
+                    p = SelectedAerialYogaProgram;
+                    break;
+
+                case ProgramMode.personal:
+                    p = SelectedPersonalProgmam;
+                    break;
+
+                case ProgramMode.medical:
+                    p = SelectedMedicalProgram;
+                    break;
+
+                default:
+                    return 0;
+            }
+            return p.Months > 0 && p.Amount > 0 ? (p.Amount / p.Months) : 0;
+        }
+
 
         internal void MakeProgramPayment()
         {
@@ -4931,8 +5036,8 @@ namespace BubbleStart.Model
             ProgramsFunctionalCollectionView = null;
             ProgramsPilatesCollectionView = null;
             ProgramsFunctionalPilatesCollectionView = null;
-            ProgramsMassageColelctionView = null;
-            ProgramsOnlineColelctionView = null;
+            ProgramsMassageCollectionView = null;
+            ProgramsOnlineCollectionView = null;
             ProgramsOutdoorCollectionView = null;
             ProgramsYogaCollectionView = null;
             ProgramsAerialYogaCollectionView = null;
@@ -5319,8 +5424,8 @@ namespace BubbleStart.Model
                 ((IEditableCollectionView)ProgramsFunctionalCollectionView).CommitEdit();
                 ((IEditableCollectionView)ProgramsPilatesCollectionView).CommitEdit();
                 ((IEditableCollectionView)ProgramsFunctionalPilatesCollectionView).CommitEdit();
-                ((IEditableCollectionView)ProgramsMassageColelctionView).CommitEdit();
-                ((IEditableCollectionView)ProgramsOnlineColelctionView).CommitEdit();
+                ((IEditableCollectionView)ProgramsMassageCollectionView).CommitEdit();
+                ((IEditableCollectionView)ProgramsOnlineCollectionView).CommitEdit();
                 ((IEditableCollectionView)ProgramsOutdoorCollectionView).CommitEdit();
                 ((IEditableCollectionView)ProgramsYogaCollectionView).CommitEdit();
                 ((IEditableCollectionView)ProgramsAerialYogaCollectionView).CommitEdit();
@@ -5352,8 +5457,10 @@ namespace BubbleStart.Model
                 SelectedMasageProgram?.CalculateRemainingAmount();
                 SelectedOnlineProgram?.CalculateRemainingAmount();
                 SelectedOutdoorProgram?.CalculateRemainingAmount();
+                SelectedPersonalProgmam?.CalculateRemainingAmount();
                 SelectedYogaProgram?.CalculateRemainingAmount();
                 SelectedAerialYogaProgram?.CalculateRemainingAmount();
+                SelectedMedicalProgram?.CalculateRemainingAmount();
             }
         }
 
@@ -5368,9 +5475,9 @@ namespace BubbleStart.Model
                         || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
-                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga) ||
-                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.aerialYoga) ||
-                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga);
+                return (obj is Program p && (Full || p.StartDay >= ResetSemDay) && p.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetSemDay) && s.ProgramModeNew == ProgramMode.aerialYoga) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetSemDay || (a.Program == null && a.Date > ResetSemDay)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.aerialYoga);
             }
             catch (Exception)
             {
@@ -5508,7 +5615,7 @@ namespace BubbleStart.Model
             }
         }
 
-        private bool ProgramsPersonallFilter(object obj)
+        private bool ProgramsPersonalFilter(object obj)
         {
             try
             {
@@ -5582,9 +5689,9 @@ namespace BubbleStart.Model
                         || (obj is Payment pa && pa.Program != null && pa.Program.ProgramTypeO?.ProgramMode == ProgramMode.yoga && (ActivePrograms?.Contains(pa.Program) == true || Programs.Max(t => t.Id) == pa.Program.Id));
                 }
 
-                return (obj is Program p && (Full || p.StartDay >= ResetDate) && p.ProgramTypeO?.ProgramMode == ProgramMode.yoga) ||
-                    (obj is ShowUp s && (Full || s.Arrived >= ResetDate) && s.ProgramModeNew == ProgramMode.yoga) ||
-                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetDate || (a.Program == null && a.Date > ResetDate)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.yoga);
+                return (obj is Program p && (Full || p.StartDay >= ResetSemDay) && p.ProgramTypeO?.ProgramMode == ProgramMode.yoga) ||
+                    (obj is ShowUp s && (Full || s.Arrived >= ResetSemDay) && s.ProgramModeNew == ProgramMode.yoga) ||
+                    (obj is Payment a && (Full || a.Program?.StartDay >= ResetSemDay || (a.Program == null && a.Date > ResetSemDay)) && a.Program != null && a.Program.ProgramTypeO?.ProgramMode == ProgramMode.yoga);
             }
             catch (Exception)
             {
@@ -6005,9 +6112,11 @@ namespace BubbleStart.Model
             RaisePropertyChanged(nameof(ShowUpsFunctionalPilatesCollectionView));
             RaisePropertyChanged(nameof(ShowUpsMassCollectionView));
             RaisePropertyChanged(nameof(ShowUpsOnlineCollectionView));
+            RaisePropertyChanged(nameof(ShowUpsMedicalCollectionView));
             RaisePropertyChanged(nameof(ShowUpsOutDoorCollectionView));
             RaisePropertyChanged(nameof(ShowUpsYogaCollectionView));
             RaisePropertyChanged(nameof(ShowUpsAerialYogaCollectionView));
+            RaisePropertyChanged(nameof(ShowUpsPersonalCollectionView));
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -6162,7 +6271,7 @@ namespace BubbleStart.Model
             }
             if (PaymentsPersonalCollectionView == null)
             {
-                PaymentsPersonalCollectionView = new ListCollectionView(Payments) { Filter = ProgramsPersonallFilter };
+                PaymentsPersonalCollectionView = new ListCollectionView(Payments) { Filter = ProgramsPersonalFilter };
                 PaymentsPersonalCollectionView.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Descending));
                 PaymentsPersonalCollectionView.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
             }
@@ -6204,21 +6313,21 @@ namespace BubbleStart.Model
                 };
                 ProgramsFunctionalPilatesCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
-            if (ProgramsMassageColelctionView == null)
+            if (ProgramsMassageCollectionView == null)
             {
-                ProgramsMassageColelctionView = new ListCollectionView(Programs)
+                ProgramsMassageCollectionView = new ListCollectionView(Programs)
                 {
                     Filter = ProgramsMassFilter
                 };
-                ProgramsMassageColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
+                ProgramsMassageCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
-            if (ProgramsOnlineColelctionView == null)
+            if (ProgramsOnlineCollectionView == null)
             {
-                ProgramsOnlineColelctionView = new ListCollectionView(Programs)
+                ProgramsOnlineCollectionView = new ListCollectionView(Programs)
                 {
                     Filter = ProgramsOnlineFilter
                 };
-                ProgramsOnlineColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
+                ProgramsOnlineCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
             if (ProgramsOutdoorCollectionView == null)
             {
@@ -6248,7 +6357,7 @@ namespace BubbleStart.Model
             {
                 ProgramsPersonalCollectionView = new ListCollectionView(Programs)
                 {
-                    Filter = ProgramsPersonallFilter
+                    Filter = ProgramsPersonalFilter
                 };
                 ProgramsPersonalCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
             }
@@ -6352,7 +6461,7 @@ namespace BubbleStart.Model
             {
                 ShowUpsPersonalCollectionView = new ListCollectionView(ShowUps)
                 {
-                    Filter = ProgramsPersonallFilter
+                    Filter = ProgramsPersonalFilter
                 };
                 ShowUpsPersonalCollectionView.SortDescriptions.Add(new SortDescription("Arrived", ListSortDirection.Descending));
             }
@@ -6370,11 +6479,11 @@ namespace BubbleStart.Model
         //private void TryRefrehAllCollections()
         //{
         //    GetRemainingDays();
-        //    ProgramsMassageColelctionView = new CollectionViewSource { Source = Programs }.View;
+        //    ProgramsMassageCollectionView = new CollectionViewSource { Source = Programs }.View;
 
-        //    ProgramsColelctionView = new CollectionViewSource { Source = Programs }.View;
-        //    ProgramsColelctionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
-        //    ProgramsColelctionView.Filter = ProgramsgymFilter;
+        //    ProgramsCollectionView = new CollectionViewSource { Source = Programs }.View;
+        //    ProgramsCollectionView.SortDescriptions.Add(new SortDescription("StartDay", ListSortDirection.Descending));
+        //    ProgramsCollectionView.Filter = ProgramsgymFilter;
 
         //    ShowUpsCollectionView = new CollectionViewSource { Source = ShowUps }.View;
         //    ShowUpsCollectionView.SortDescriptions.Add(new SortDescription("Arrived", ListSortDirection.Descending));
@@ -6446,7 +6555,7 @@ namespace BubbleStart.Model
             }
         }
 
-        internal void FillDefaultProframs()
+        internal void FillDefaultPrograms()
         {
             DefaultPrograms = new ObservableCollection<DefaultProgram>(BasicDataManager.ProgramModes
                 .Select(t => new DefaultProgram { Name = t.Value, Id = t.Key }));

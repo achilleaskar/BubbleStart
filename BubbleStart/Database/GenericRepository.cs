@@ -1,7 +1,4 @@
-﻿using BubbleStart.Helpers;
-using BubbleStart.Model;
-using BubbleStart.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
@@ -10,6 +7,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Windows;
+using BubbleStart.Helpers;
+using BubbleStart.Model;
+using BubbleStart.ViewModels;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace BubbleStart.Database
 {
@@ -183,8 +184,10 @@ namespace BubbleStart.Database
                 var thisWeek = DateTime.Today.AddDays(-7);
 
                 await Context.Set<ShowUp>()
-                    .Where(s => s.Customer.Id == id && ((s.ProgramModeNew != ProgramMode.massage && s.Arrived >= s.Customer.ResetDate) ||
+                    .Where(s => s.Customer.Id == id && (
+                    (s.ProgramModeNew != ProgramMode.massage && s.ProgramModeNew != ProgramMode.yoga && s.ProgramModeNew != ProgramMode.aerialYoga && s.Arrived >= s.Customer.ResetDate) ||
                     (s.ProgramModeNew == ProgramMode.massage && s.Arrived >= s.Customer.MassageResetDay) ||
+                    ((s.ProgramModeNew == ProgramMode.yoga && s.ProgramModeNew == ProgramMode.aerialYoga) && s.Arrived >= s.Customer.ResetSemDay) ||
                     s.Arrived >= thisWeek))
                     .ToListAsync();
 
@@ -196,18 +199,19 @@ namespace BubbleStart.Database
                     .ToListAsync();
                 await Context.Set<Program>()
                     .Where(p => p.Customer.Id == id &&
-                    ((p.ProgramTypeO.ProgramMode != ProgramMode.massage && p.StartDay >= p.Customer.ResetDate) || (p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)))
+                    (
+                    (p.ProgramTypeO.ProgramMode != ProgramMode.massage && p.ProgramTypeO.ProgramMode != ProgramMode.yoga && p.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga && p.StartDay >= p.Customer.ResetDate) ||
+                    (p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay) ||
+                    ((p.ProgramTypeO.ProgramMode == ProgramMode.yoga || p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga) && p.StartDay >= p.Customer.ResetSemDay)
+                    ))
                     .ToListAsync();
-
-                await Context.Set<Program>()
-                   .Where(p => p.Customer.Id == id && p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)
-                   .ToListAsync();
 
                 await Context.Set<Payment>()
                     .Where(s => s.Customer.Id == id
-                    && ((s.Program.ProgramTypeO.ProgramMode != ProgramMode.massage && s.Program.StartDay >= s.Customer.ResetDate) ||
+                    && ((s.Program.ProgramTypeO.ProgramMode != ProgramMode.massage && s.Program.ProgramTypeO.ProgramMode != ProgramMode.yoga && s.Program.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga && s.Program.StartDay >= s.Customer.ResetDate) ||
                     (s.Program.ProgramTypeO.ProgramMode == ProgramMode.massage && s.Program.StartDay >= s.Customer.MassageResetDay) ||
-                    (s.Program == null && (s.Date >= s.Customer.ResetDate || s.Date >= s.Customer.MassageResetDay))))
+                    ((s.Program.ProgramTypeO.ProgramMode == ProgramMode.yoga || s.Program.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga) && s.Program.StartDay >= s.Customer.ResetSemDay) ||
+                    (s.Program == null && (s.Date >= s.Customer.ResetDate || s.Date >= s.Customer.MassageResetDay || s.Date >= s.Customer.ResetSemDay))))
                     .ToListAsync();
 
                 return await Context.Set<Customer>()
@@ -454,12 +458,12 @@ namespace BubbleStart.Database
             return keys.Any(key => objectContext.ObjectStateManager.GetObjectStateEntry(key).Entity == null);
         }
 
-        internal async Task<IEnumerable<Payment>> GetAllPaymentsAsync(DateTime startDateCash, DateTime endDateCash, ProgramMode? programMode = null, bool limit = true, int SelectedProgramCountIndex = 0)
+        internal async Task<IEnumerable<Payment>> GetAllPaymentsAsync(DateTime startDateCash, DateTime endDateCash, ProgramMode? programMode = null, bool limit = true, int SelectedProgramCountIndex = 0, List<ProgramMode> programModeIds = null)
         {
             try
             {
                 endDateCash = endDateCash.AddDays(1);
-                return await Context.Payments
+                var pa = await Context.Payments
                     .Where(p => p.Date >= startDateCash && p.Date < endDateCash && (!limit || p.Date >= Limit)
                     && (programMode == null || p.Program.ProgramTypeO.ProgramMode == programMode)
                     && (SelectedProgramCountIndex == 0 ||
@@ -469,6 +473,12 @@ namespace BubbleStart.Database
                     .Include(c => c.Customer)
                     .Include(c => c.Program)
                     .ToListAsync();
+
+                if (programModeIds==null)
+                {
+                    return pa;
+                }
+                return pa.Where(p1 => p1.Program?.ProgramTypeO?.ProgramMode!=null && programModeIds.Contains(p1.Program.ProgramTypeO.ProgramMode));
             }
             catch (Exception)
             {
@@ -476,24 +486,34 @@ namespace BubbleStart.Database
             }
         }
 
-        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null, int mainId = -1, int secId = -1, Stores store = Stores.empty, bool? receipt = null)
+        internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null, int mainId = -1, int secId = -1,
+            Stores store = Stores.empty, bool FromToFilter = false, Expense newExpense = null, bool? reciept = null)
         {
+            if (newExpense == null)
+            {
+                newExpense = new Expense();
+            }
             if (expensetypes == null || expensetypes.Count == 0)
+            {
+
                 return await Context.Expenses.Where(e => (!limit || e.Date >= Limit) &&
                 (mainId <= 0 || mainId == e.MainCategoryId) &&
                 (StaticResources.User.Level <= 1 || (mainId > 0 && StaticResources.afroallowedExpCat.Contains(mainId)) || (mainId <= 0 && (e.MainCategory == null || StaticResources.afroallowedExpCat.Contains(e.MainCategoryId.Value)))) &&
                 (secId <= 0 || secId == e.SecondaryCategoryId) &&
+                (!FromToFilter || (e.To >= newExpense.From && e.From <= newExpense.To)) &&
                 (store == Stores.empty || store == e.SelectedStore) &&
-                (receipt == null || e.Reciept == receipt)).Where(filterp)
+                (reciept == null || e.Reciept == reciept)).Where(filterp)
                    .ToListAsync();
+            }
             else
                 return await Context.Expenses.Where(e => e.MainCategoryId != null && (!limit || e.Date >= Limit) &&
                 (StaticResources.User.Level <= 1 || (mainId > 0 && StaticResources.afroallowedExpCat.Contains(mainId)) || (mainId <= 0 && (e.MainCategory == null || StaticResources.afroallowedExpCat.Contains(e.MainCategoryId.Value)))) &&
                 (mainId <= 0 || mainId == e.MainCategoryId) &&
                 (secId <= 0 || secId == e.SecondaryCategoryId) &&
+                (!FromToFilter || (e.To >= newExpense.From && e.From <= newExpense.To)) &&
                 expensetypes.Contains((int)e.MainCategoryId) &&
                 (store == Stores.empty || store == e.SelectedStore) &&
-                (receipt == null || e.Reciept == receipt))
+                (reciept == null || e.Reciept == reciept))
                     .Where(filterp)
                    .Include(e => e.User)
                    .ToListAsync();
@@ -592,8 +612,12 @@ namespace BubbleStart.Database
             {
                 var thisWeek = StaticResources.GetNextWeekday(DateTime.Today, DayOfWeek.Monday).AddDays(-7);
                 await Context.Set<ShowUp>()
-                    .Where(s => s.Customer.Enabled && ((s.ProgramModeNew != ProgramMode.massage && s.Arrived >= s.Customer.ResetDate) ||
-                    (s.ProgramModeNew == ProgramMode.massage && s.Arrived >= s.Customer.MassageResetDay)) || s.Arrived >= thisWeek)
+                    .Where(s => s.Customer.Enabled && (
+                    (s.ProgramModeNew != ProgramMode.massage && s.ProgramModeNew != ProgramMode.yoga && s.ProgramModeNew != ProgramMode.aerialYoga && s.Arrived >= s.Customer.ResetDate) ||
+                    (s.ProgramModeNew == ProgramMode.massage && s.Arrived >= s.Customer.MassageResetDay) ||
+                    ((s.ProgramModeNew == ProgramMode.yoga || s.ProgramModeNew == ProgramMode.aerialYoga) && s.Arrived >= s.Customer.ResetSemDay)
+                    )
+                    || s.Arrived >= thisWeek)
                     .ToListAsync();
 
                 await Context.Set<Change>()
@@ -602,14 +626,21 @@ namespace BubbleStart.Database
                 await Context.Set<Apointment>()
                     .Where(p4 => p4.Customer.Enabled && p4.DateTime >= CloseLimit)
                     .ToListAsync();
-                await Context.Set<Program>()
-                    .Where(p => p.Customer.Enabled && ((p.ProgramTypeO.ProgramMode != ProgramMode.massage && p.StartDay >= p.Customer.ResetDate) || (p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)))
+                    await Context.Set<Program>()
+                    .Where(p => p.Customer.Enabled && (
+                    (p.ProgramTypeO.ProgramMode != ProgramMode.massage && p.ProgramTypeO.ProgramMode != ProgramMode.yoga && p.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga && p.StartDay >= p.Customer.ResetDate) ||
+                    ((p.ProgramTypeO.ProgramMode == ProgramMode.yoga || p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga) && p.StartDay >= p.Customer.ResetSemDay) ||
+                    (p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)
+                    ))
                     .Include(s => s.ShowUpsList)
                     .ToListAsync();
                 await Context.Set<Payment>()
-                    .Where(s => s.Customer.Enabled && ((s.Program.ProgramTypeO.ProgramMode != ProgramMode.massage && s.Program.StartDay >= s.Customer.ResetDate) ||
+                    .Where(s => s.Customer.Enabled && (
+                    (s.Program.ProgramTypeO.ProgramMode != ProgramMode.massage && s.Program.ProgramTypeO.ProgramMode != ProgramMode.yoga && s.Program.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga && s.Program.StartDay >= s.Customer.ResetDate) ||
                     (s.Program.ProgramTypeO.ProgramMode == ProgramMode.massage && s.Program.StartDay >= s.Customer.MassageResetDay) ||
-                    (s.Program == null && (s.Date >= s.Customer.ResetDate || s.Date >= s.Customer.MassageResetDay))))
+                    ((s.Program.ProgramTypeO.ProgramMode == ProgramMode.yoga || s.Program.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga) && s.Program.StartDay >= s.Customer.ResetSemDay) ||
+                    (s.Program == null && (s.Date >= s.Customer.ResetDate || s.Date >= s.Customer.MassageResetDay || s.Date >= s.Customer.ResetSemDay)
+                    )))
                     .ToListAsync();
 
                 var x = (await Context.Set<Customer>()
@@ -697,6 +728,29 @@ namespace BubbleStart.Database
         {
             return await Context.Programs.Where(r => r.Gift)
                 .Include(r => r.Customer)
+                .ToListAsync();
+        }
+
+        internal async Task<List<Customer>> GetStudentsAsync(bool activeOnly)
+        {
+            return await Context.Customers.Where(r => (!activeOnly || r.Enabled) &&
+            r.Programs.Any(p => p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga))
+                .ToListAsync();
+        }
+
+        internal async Task<List<int>> GetStudentsIdsAsync()
+        {
+            return await Context.Customers.Where(r =>  
+            r.Programs.Any(p => p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga))
+                .Select(r => r.Id)
+                .ToListAsync();
+        }
+
+        internal async Task<List<int>> GetNonStudentsIdsAsync()
+        {
+            return await Context.Customers.Where(r =>
+            r.Programs.Any(p => p.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga))
+                .Select(r => r.Id)
                 .ToListAsync();
         }
     }

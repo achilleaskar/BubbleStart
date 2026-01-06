@@ -15,7 +15,7 @@ namespace BubbleStart.Model
 
         public Expense()
         {
-            Date = From = To = DateTime.Today;
+            Date = From = To = RecieptDate = DateTime.Today;
         }
 
         #endregion Constructors
@@ -57,8 +57,8 @@ namespace BubbleStart.Model
 
         [NotMapped]
         public ObservableCollection<ExpenseCategoryClass> SecondaryCategories => parent != null && MainCategory != null ? (Income ?
-            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == 20 || p.Id == -1).OrderBy(r => r.Name)) :
-            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => p.ParentId == MainCategory.Id || p.Id == -1).OrderBy(r => r.Name)))
+            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => (p.ParentId == 20 || p.Id == -1)).OrderBy(r => r.Name)) :
+            new ObservableCollection<ExpenseCategoryClass>(parent.BasicDataManager.ExpenseCategoryClasses.Where(p => (p.ParentId == MainCategory.Id || p.Id == -1)).OrderBy(r => r.Name)))
             : new ObservableCollection<ExpenseCategoryClass>();
 
         public DateTime Date
@@ -77,6 +77,23 @@ namespace BubbleStart.Model
                     From = To = value;
                 }
                 _Date = value;
+
+                RaisePropertyChanged();
+            }
+        }
+
+        public DateTime RecieptDate
+        {
+            get => _RecieptDate;
+
+            set
+            {
+                if (_RecieptDate == value)
+                {
+                    return;
+                }
+
+                _RecieptDate = value;
 
                 RaisePropertyChanged();
             }
@@ -197,7 +214,7 @@ namespace BubbleStart.Model
 
                 _Cash = value;
 
-                if (MainCategory?.Id == 3||MainCategoryId==3)
+                if (MainCategory?.Id == 3 || MainCategoryId == 3)
                 {
                     Amount = Bank + Cash;
                 }
@@ -295,7 +312,7 @@ namespace BubbleStart.Model
 
 
         private Stores _SelectedStore;
-
+        private DateTime _RecieptDate;
 
         public Stores SelectedStore
         {

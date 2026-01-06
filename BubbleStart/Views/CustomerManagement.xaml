@@ -330,6 +330,19 @@
                                    Margin="5 0" />
                         <TextBlock Text="Yoga"
                                    Margin="5 5 5 0" />
+                        <StackPanel Orientation="Horizontal" Margin="0,5,-25,0">
+                            <TextBlock Text="Sem Εκαθ.:"
+                                       Margin="0 5 5 5" />
+                            <DatePicker SelectedDate="{Binding ResetSemDay,UpdateSourceTrigger=PropertyChanged}"
+                                        Name="ResetSemDayPicker"
+                                        VerticalAlignment="Center"
+                                        Width="90" />
+                            <Button Click="Button_ClickSem"
+                                    VerticalAlignment="Center"
+                                    Margin="5 0">
+                                <iconPacks:PackIconFontAwesome Kind="ArrowDownSolid" />
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="" />
@@ -351,7 +364,7 @@
                     </StackPanel>
                     <StackPanel Margin="20 0 0 0"
                                 HorizontalAlignment="Right">
-                        <CheckBox Content="Εμβόλιο"
+                        <!--<CheckBox Content="Εμβόλιο"
                                   Margin="0 0 5 0"
                                   VerticalAlignment="Top"
                                   IsChecked="{Binding Vacinated}" />
@@ -363,10 +376,10 @@
                                         FontSize="11"
                                         Width="80"
                                         SelectedDate="{Binding IllDate}" />
-                        </StackPanel>
-                        <CheckBox Content="Ανεμβολίαστος"
+                        </StackPanel>-->
+                        <!--<CheckBox Content="Ανεμβολίαστος"
                                   VerticalAlignment="Center"
-                                  IsChecked="{Binding Psek}" />
+                                  IsChecked="{Binding Psek}" />-->
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Content="Χαρτί Γιατ."
                                       VerticalAlignment="Center"
@@ -376,18 +389,30 @@
                                         Width="80"
                                         SelectedDate="{Binding DoctorDate}" />
                         </StackPanel>
-                        <CheckBox Content="3η δόση"
+                        <!--<CheckBox Content="3η δόση"
                                   VerticalAlignment="Center"
-                                  IsChecked="{Binding ThirdDose}" />
+                                  IsChecked="{Binding ThirdDose}" />-->
                         <CheckBox Content="Μαλιαρόπουλος"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding Maliar}" />
-                        <CheckBox Content="Google *"
+                        <CheckBox Content="* Corpus"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding Google}" />
+                        <CheckBox Content="* Pilates Studio"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding Google}" />
+                        <CheckBox Content="* Functional Studio"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding Google}" />
+                        <CheckBox Content="* Corpus Athletic Seminars"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding Google}" />
+                        <CheckBox Content="* Book"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding Google}" />
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Ημ. Εκαθ.:"
-                                       Margin="0 5 5 5" />
+                                       Margin="0 5 14 5" />
                             <DatePicker SelectedDate="{Binding ResetDate,UpdateSourceTrigger=PropertyChanged}"
                                         Name="ResetDayPicker"
                                         VerticalAlignment="Center"
@@ -797,7 +822,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -1157,7 +1182,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -1517,7 +1542,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -1926,7 +1951,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -2030,7 +2055,7 @@
                                 <GroupBox Header="Πακέτα Massage"
                                           VerticalAlignment="Stretch">
                                     <DataGrid  Name="DatagridOnline"
-                                               ItemsSource="{Binding ProgramsMassageColelctionView}"
+                                               ItemsSource="{Binding ProgramsMassageCollectionView}"
                                                VerticalAlignment="Stretch"
                                                CanUserAddRows="False"
                                                EnableRowVirtualization="False"
@@ -2270,7 +2295,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -2393,7 +2418,7 @@
                                 </GroupBox>
                                 <GroupBox Header="Πακέτα Online"
                                           VerticalAlignment="Stretch">
-                                    <DataGrid ItemsSource="{Binding ProgramsOnlineColelctionView}"
+                                    <DataGrid ItemsSource="{Binding ProgramsOnlineCollectionView  }"
                                               VerticalAlignment="Stretch"
                                               CanUserAddRows="False"
                                               SelectedItem="{Binding SelectedProgramOnlineToDelete}"
@@ -2630,7 +2655,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -2994,7 +3019,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -3354,7 +3379,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -3718,7 +3743,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -4058,7 +4083,7 @@
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Online"
-                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=1}"
+                                                              CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=2}"
                                                               Command="{Binding DataContext.ToggleShowUpCommand,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
                                                     <MenuItem Header="Outdoor"
                                                               CommandParameter="{Binding Converter={StaticResource DoubleParameterConverter},ConverterParameter=3}"
@@ -4216,7 +4241,7 @@
                                                                 Width="60"
                                                                 Binding="{Binding StartDay,ConverterParameter='d/MM/yy', Converter={StaticResource DateTimeToString}}" />
                                             <DataGridTemplateColumn Header="Τύπος"
-                                                                    Width="250">
+                                                                    Width="220">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.ProgramTypes,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -4224,6 +4249,8 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
+                                            <DataGridCheckBoxColumn Header="Πτυχ."
+                                                                    Binding="{Binding Certified,UpdateSourceTrigger=PropertyChanged}" />
                                             <DataGridTextColumn Header="Συν."
                                                                 Width="30"
                                                                 Binding="{Binding Showups}" />
@@ -4277,7 +4304,7 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Deal"
-                                                                    Width="150">
+                                                                    Width="120">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ComboBox ItemsSource="{Binding DataContext.BasicDataManager.Deals,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"

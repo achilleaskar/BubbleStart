@@ -26,7 +26,7 @@ namespace BubbleStart
     public partial class App : Application
     {
         private IHost _host;
-        private DispatcherTimer timer = new DispatcherTimer();
+        //private DispatcherTimer timer = new DispatcherTimer();
         private Stopwatch stopWatch = new Stopwatch();
 
         protected override void OnStartup(StartupEventArgs e)
@@ -61,9 +61,9 @@ namespace BubbleStart
                 new KeyEventHandler(OnPreviewKeyDown));
             stopWatch.Start();
 
-            timer.Interval = new TimeSpan(0, 0, 30);
-            timer.Tick += timer_Tick;
-            timer.Start();
+            //timer.Interval = new TimeSpan(0, 0, 30);
+            //timer.Tick += timer_Tick;
+            //timer.Start();
 
             var vCulture = new CultureInfo("el-GR");
 
@@ -80,21 +80,21 @@ namespace BubbleStart
             base.OnStartup(e);
         }
 
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            if (StaticResources.User?.Id != 35 && StaticResources.User?.Id != 3 && StaticResources.User?.Id != 36 && StaticResources.User?.Id != 44 && stopWatch.Elapsed.TotalSeconds >= 180)
-            {
-                if (StaticResources.OpenWindow != null)
-                {
-                    if (StaticResources.OpenWindow.DataContext is Customer c && c.BasicDataManager.HasChanges())
-                    {
-                        c.BasicDataManager.RollBack();
-                    }
-                    StaticResources.OpenWindow.Close();
-                }
-                Messenger.Default.Send(new LoginLogOutMessage(false));
-            }
-        }
+        //private void timer_Tick(object sender, EventArgs e)
+        //{
+        //    if (StaticResources.User?.Id != 35 && StaticResources.User?.Id != 3 && StaticResources.User?.Id != 36 && StaticResources.User?.Id != 44 && stopWatch.Elapsed.TotalSeconds >= 180)
+        //    {
+        //        if (StaticResources.OpenWindow != null)
+        //        {
+        //            if (StaticResources.OpenWindow.DataContext is Customer c && c.BasicDataManager.HasChanges())
+        //            {
+        //                c.BasicDataManager.RollBack();
+        //            }
+        //            StaticResources.OpenWindow.Close();
+        //        }
+        //        Messenger.Default.Send(new LoginLogOutMessage(false));
+        //    }
+        //}
 
         private void OnPreviewMouseMove(object sender, MouseEventArgs e)
         {

@@ -10,10 +10,10 @@
         WindowStartupLocation="CenterOwner"
         Title="{Binding ControlName}"
         Height="470"
-        Width="800">
+        Width="950">
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <GroupBox Header="Επεξεργασία"
@@ -83,7 +83,7 @@
             </Grid>
         </GroupBox>
         <GroupBox Header="Καταχωρημένες κατηγορίες"
-                  Grid.Column="1"
+                  Grid.Column="1" MinWidth="400"
                   HorizontalAlignment="Center">
             <Grid>
                 <Grid.RowDefinitions>
@@ -100,19 +100,20 @@
                                                    Margin="5" />
                 </Button>
                 <DataGrid ItemsSource="{Binding MainCollection}"
-                          Width="300"
                           Grid.Row="1"
+                          Grid.ColumnSpan="3"
                           VerticalAlignment="Stretch"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           CanUserDeleteRows="False"
                           SelectedItem="{Binding SelectedEntity}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Όνομα"
+                        <DataGridTextColumn Header="Υποκατηγορία"
                                             IsReadOnly="True"
-                                            Width="100"
+                                            Width="300"
                                             Binding="{Binding Name}" />
-                        <DataGridTextColumn Header="Ώρες"
+                        <DataGridTextColumn Header="Κατηγορία"
+                                            Width="300"
                                             IsReadOnly="True"
                                             Binding="{Binding Parent.Name}" />
                     </DataGrid.Columns>

@@ -36,14 +36,14 @@ namespace BubbleStart.ViewModels
 
             SearchCustomer_ViewModel = new SearchCustomer_ViewModel(basicDataManager);
             EconomicData_ViewModel = new EconomicData_ViewModel(basicDataManager);
-            Apointments_ViewModel = new Apointments_ViewModel(BasicDataManager,GymNum: 0);
+            Apointments_ViewModel = new Apointments_ViewModel(BasicDataManager, GymNum: 0);
             Apointments2_ViewModel = new Apointments_ViewModel(BasicDataManager, GymNum: 1);
             ShowUpsPerDay_ViewModel = new ShowUpsPerDay_ViewModel(BasicDataManager);
             EmployeeManagement_ViewModel = new EmployeeManagement_ViewModel(BasicDataManager);
             Shop_ViewModel = new Shop_ViewModel(BasicDataManager);
             InActiveCustomers_ViewModel = new InActiveCustomers_ViewModel(BasicDataManager, SearchCustomer_ViewModel);
             MarketingCustomers_ViewModel = new InActiveCustomers_ViewModel(BasicDataManager, SearchCustomer_ViewModel, true);
-
+            StudentsCustomers_ViewModel = new StudentsCustomers_ViewModel(BasicDataManager);
             Messenger.Default.Register<BasicDataManagerRefreshedMessage>(this, msg => Load());
         }
 
@@ -81,6 +81,9 @@ namespace BubbleStart.ViewModels
             Mouse.OverrideCursor = Cursors.Wait;
             int lineNum = 1;
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Πελάτες.xlsx";
+            var inactiveCustomers = BasicDataManager.Context.Context.Customers.Where(c => !c.Enabled);
+            var studentsIds = await BasicDataManager.Context.GetStudentsIdsAsync();
+            var nonStudentsIds = await BasicDataManager.Context.GetNonStudentsIdsAsync();
 
             FileInfo fileInfo = new FileInfo(path);
             ExcelPackage p = new ExcelPackage();
@@ -102,8 +105,10 @@ namespace BubbleStart.ViewModels
             myWorksheet.Cells["M1"].Value = "Τσάντα";
             myWorksheet.Cells["N1"].Value = "Google";
             myWorksheet.Cells["O1"].Value = "Μαλιαρ";
+            myWorksheet.Cells["P1"].Value = "Μαθητής";
+            myWorksheet.Cells["Q1"].Value = "Αθλητής";
 
-            var inactiveCustomers = BasicDataManager.Context.Context.Customers.Where(c => !c.Enabled);
+
             foreach (Customer customer in BasicDataManager.Customers)
             {
                 lineNum++;
@@ -123,7 +128,7 @@ namespace BubbleStart.ViewModels
                 myWorksheet.Cells["H" + lineNum].Style.Font.Color.SetColor(customer.ThirdDose ? System.Drawing.Color.Black : System.Drawing.Color.Red);
 
                 myWorksheet.Cells["I" + lineNum].Value = customer.Doctor ? "Έχει" : "Δεν έχει";
-                myWorksheet.Cells["J" + lineNum].Value = customer.Items.Where(t => t.ItemId == 2) is IEnumerable<ItemPurchase> l1 && l1.Any() ?
+                myWorksheet.Cells["J" + lineNum].Value = customer.Items?.Where(t => t.ItemId == 2) is IEnumerable<ItemPurchase> l1 && l1?.Any()==true ?
                     string.Join(", ", l1.Select(i => i.Size.ToString()).Distinct()) : "OXI";
                 myWorksheet.Cells["K" + lineNum].Value = customer.Items.Where(t => t.ItemId == 1) is IEnumerable<ItemPurchase> l2 && l2.Any() ?
                     string.Join(", ", l2.Select(i => i.Size.ToString()).Distinct()) : "OXI";
@@ -137,21 +142,32 @@ namespace BubbleStart.ViewModels
                 myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Google ? System.Drawing.Color.Black : System.Drawing.Color.Red);
                 myWorksheet.Cells["O" + lineNum].Value = customer.Maliar ? "NAI" : "OXI";
                 myWorksheet.Cells["O" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                var student = studentsIds.Any(s => s == customer.Id);
+                myWorksheet.Cells["P" + lineNum].Value = student ? "NAI" : "OXI";
+                myWorksheet.Cells["P" + lineNum].Style.Font.Color.SetColor(student ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                var athlete = nonStudentsIds.Any(s => s == customer.Id);
+                myWorksheet.Cells["Q" + lineNum].Value = athlete ? "NAI" : "OXI";
+                myWorksheet.Cells["Q" + lineNum].Style.Font.Color.SetColor(athlete ? System.Drawing.Color.Black : System.Drawing.Color.Red);
 
             }
-            myWorksheet.Column(1).Width = 4;
+            myWorksheet.Column(1).Width = 5;
             myWorksheet.Column(2).Width = 16;
             myWorksheet.Column(3).Width = 18;
             myWorksheet.Column(4).Width = 12;
             myWorksheet.Column(5).Width = 30;
-            myWorksheet.Column(6).Width = 8;
+            myWorksheet.Column(6).Width = 10;
             myWorksheet.Column(7).Width = 13;
             myWorksheet.Column(8).Width = 13;
             myWorksheet.Column(9).Width = 13;
             myWorksheet.Column(10).Width = 13;
-            myWorksheet.Column(11).Width = 8;
-            myWorksheet.Column(12).Width = 8;
-            myWorksheet.Column(13).Width = 8;
+            myWorksheet.Column(11).Width = 10;
+            myWorksheet.Column(12).Width = 10;
+            myWorksheet.Column(13).Width = 10;
+            myWorksheet.Column(14).Width = 10;
+            myWorksheet.Column(15).Width = 10;
+            myWorksheet.Column(16).Width = 10;
+            myWorksheet.Column(17).Width = 10;
+            myWorksheet.Cells[myWorksheet.Dimension.Address].AutoFilter = true;
 
 
             p.Workbook.Worksheets.Add("Inactive");
@@ -170,6 +186,10 @@ namespace BubbleStart.ViewModels
             myWorksheet.Cells["L1"].Value = "Τσάντα";
             myWorksheet.Cells["M1"].Value = "Google";
             myWorksheet.Cells["N1"].Value = "Μαλιαρ";
+            myWorksheet.Cells["O1"].Value = "Μαθητής";
+            myWorksheet.Cells["P1"].Value = "Αθλητής";
+
+
 
             lineNum = 1;
 
@@ -198,22 +218,34 @@ namespace BubbleStart.ViewModels
                 myWorksheet.Cells["N" + lineNum].Value = customer.Maliar ?
                     "NAI" : "OXI";
                 myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                var student = studentsIds.Any(s => s == customer.Id);
+                myWorksheet.Cells["O" + lineNum].Value = student ? "NAI" : "OXI";
+                myWorksheet.Cells["O" + lineNum].Style.Font.Color.SetColor(student ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                var athlete = nonStudentsIds.Any(s => s == customer.Id);
+                myWorksheet.Cells["P" + lineNum].Value = athlete ? "NAI" : "OXI";
+                myWorksheet.Cells["P" + lineNum].Style.Font.Color.SetColor(athlete ? System.Drawing.Color.Black : System.Drawing.Color.Red);
 
             }
 
 
-            myWorksheet.Column(1).Width = 4;
+            myWorksheet.Column(1).Width = 5;
             myWorksheet.Column(2).Width = 16;
             myWorksheet.Column(3).Width = 18;
             myWorksheet.Column(4).Width = 12;
             myWorksheet.Column(5).Width = 30;
-            myWorksheet.Column(6).Width = 8;
+            myWorksheet.Column(6).Width = 10;
             myWorksheet.Column(7).Width = 13;
             myWorksheet.Column(8).Width = 13;
             myWorksheet.Column(9).Width = 13;
             myWorksheet.Column(10).Width = 13;
-            myWorksheet.Column(11).Width = 8;
-            myWorksheet.Column(12).Width = 8;
+            myWorksheet.Column(11).Width = 10;
+            myWorksheet.Column(12).Width = 10;
+            myWorksheet.Column(13).Width = 10;
+            myWorksheet.Column(14).Width = 10;
+            myWorksheet.Column(15).Width = 10;
+            myWorksheet.Column(16).Width = 10;
+            myWorksheet.Cells[myWorksheet.Dimension.Address].AutoFilter = true;
+
 
             p.Workbook.Worksheets.Add("Marketing");
             myWorksheet = p.Workbook.Worksheets[3];
@@ -231,6 +263,9 @@ namespace BubbleStart.ViewModels
             myWorksheet.Cells["L1"].Value = "Τσάντα";
             myWorksheet.Cells["M1"].Value = "Google";
             myWorksheet.Cells["N1"].Value = "Μαλιαρ";
+            myWorksheet.Cells["O1"].Value = "Μαθητής";
+            myWorksheet.Cells["P1"].Value = "Αθλητής";
+
 
             lineNum = 1;
 
@@ -259,23 +294,117 @@ namespace BubbleStart.ViewModels
                 myWorksheet.Cells["N" + lineNum].Value = customer.Maliar ?
                     "NAI" : "OXI";
                 myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                var student = studentsIds.Any(s => s == customer.Id);
+                myWorksheet.Cells["O" + lineNum].Value = student ? "NAI" : "OXI";
+                myWorksheet.Cells["O" + lineNum].Style.Font.Color.SetColor(student ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                var athlete = nonStudentsIds.Any(s => s == customer.Id);
+                myWorksheet.Cells["P" + lineNum].Value = athlete ? "NAI" : "OXI";
+                myWorksheet.Cells["P" + lineNum].Style.Font.Color.SetColor(athlete ? System.Drawing.Color.Black : System.Drawing.Color.Red);
 
             }
 
 
-            myWorksheet.Column(1).Width = 4;
+            myWorksheet.Column(1).Width = 5;
             myWorksheet.Column(2).Width = 16;
             myWorksheet.Column(3).Width = 18;
             myWorksheet.Column(4).Width = 12;
             myWorksheet.Column(5).Width = 30;
-            myWorksheet.Column(6).Width = 8;
+            myWorksheet.Column(6).Width = 10;
             myWorksheet.Column(7).Width = 13;
             myWorksheet.Column(8).Width = 13;
             myWorksheet.Column(9).Width = 13;
             myWorksheet.Column(10).Width = 13;
-            myWorksheet.Column(11).Width = 8;
-            myWorksheet.Column(12).Width = 8;
+            myWorksheet.Column(11).Width = 10;
+            myWorksheet.Column(12).Width = 10;
+            myWorksheet.Column(13).Width = 10;
+            myWorksheet.Column(14).Width = 10;
+            myWorksheet.Column(15).Width = 10;
+            myWorksheet.Column(16).Width = 10;
+            myWorksheet.Cells[myWorksheet.Dimension.Address].AutoFilter = true;
 
+            var all = BasicDataManager.Customers;
+            foreach (var item in inactiveCustomers)
+            {
+                if (all.Any(a => a.Id != item.Id))
+                {
+                    all.Add(item);
+                }
+            }
+
+            p.Workbook.Worksheets.Add("All");
+            myWorksheet = p.Workbook.Worksheets[4];
+            myWorksheet.Cells["A1"].Value = "#";
+            myWorksheet.Cells["B1"].Value = "Όνομα";
+            myWorksheet.Cells["C1"].Value = "Επίθετο";
+            myWorksheet.Cells["D1"].Value = "Τηλέφωνο";
+            myWorksheet.Cells["E1"].Value = "Email";
+            myWorksheet.Cells["F1"].Value = "Ενεργός";
+            myWorksheet.Cells["G1"].Value = "Εμβόλιο";
+            myWorksheet.Cells["H1"].Value = "3η δόση";
+            myWorksheet.Cells["I1"].Value = "Χαρτί";
+            myWorksheet.Cells["J1"].Value = "Μπλούζα";
+            myWorksheet.Cells["K1"].Value = "Φούτερ";
+            myWorksheet.Cells["L1"].Value = "Τσάντα";
+            myWorksheet.Cells["M1"].Value = "Google";
+            myWorksheet.Cells["N1"].Value = "Μαλιαρ";
+            myWorksheet.Cells["O1"].Value = "Μαθητής";
+            myWorksheet.Cells["P1"].Value = "Αθλητής";
+
+            lineNum = 1;
+
+            foreach (Customer customer in all.OrderBy(a => a.SureName))
+            {
+                lineNum++;
+                myWorksheet.Cells["A" + lineNum].Value = lineNum - 1;
+                myWorksheet.Cells["B" + lineNum].Value = customer.Name;
+                myWorksheet.Cells["C" + lineNum].Value = customer.SureName;
+                myWorksheet.Cells["D" + lineNum].Value = !string.IsNullOrEmpty(customer.Tel) && customer.Tel.Length >= 10 && !customer.Tel.StartsWith("000") ? customer.Tel : "";
+                myWorksheet.Cells["E" + lineNum].Value = customer.Email;
+                myWorksheet.Cells["F" + lineNum].Value = customer.ActiveCustomer ? "ΝΑΙ" : "ΟΧΙ";
+                myWorksheet.Cells["F" + lineNum].Style.Font.Color.SetColor(customer.ActiveCustomer ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["G" + lineNum].Value = customer.Vacinated ? "Έκανε" : "Δεν έκανε";
+                myWorksheet.Cells["G" + lineNum].Style.Font.Color.SetColor(customer.Vacinated ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["H" + lineNum].Value = customer.ThirdDose ? "Έκανε" : "Δεν έκανε";
+                myWorksheet.Cells["H" + lineNum].Style.Font.Color.SetColor(customer.ThirdDose ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["I" + lineNum].Value = customer.Doctor ? "Έχει" : "Δεν έχει";
+                myWorksheet.Cells["M" + lineNum].Value = customer.Google ?
+                    "NAI" : "OXI";
+                myWorksheet.Cells["M" + lineNum].Style.Font.Color.SetColor(customer.Google ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                myWorksheet.Cells["N" + lineNum].Value = customer.Maliar ?
+                    "NAI" : "OXI";
+                myWorksheet.Cells["N" + lineNum].Style.Font.Color.SetColor(customer.Maliar ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+                var student = studentsIds.Any(s => s == customer.Id);
+                myWorksheet.Cells["O" + lineNum].Value = student ? "NAI" : "OXI";
+                myWorksheet.Cells["O" + lineNum].Style.Font.Color.SetColor(student ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+                var athlete = nonStudentsIds.Any(s => s == customer.Id);
+                myWorksheet.Cells["P" + lineNum].Value = athlete ? "NAI" : "OXI";
+                myWorksheet.Cells["P" + lineNum].Style.Font.Color.SetColor(athlete ? System.Drawing.Color.Black : System.Drawing.Color.Red);
+
+            }
+
+
+            myWorksheet.Column(1).Width = 5;
+            myWorksheet.Column(2).Width = 16;
+            myWorksheet.Column(3).Width = 18;
+            myWorksheet.Column(4).Width = 12;
+            myWorksheet.Column(5).Width = 30;
+            myWorksheet.Column(6).Width = 10;
+            myWorksheet.Column(7).Width = 13;
+            myWorksheet.Column(8).Width = 13;
+            myWorksheet.Column(9).Width = 13;
+            myWorksheet.Column(10).Width = 13;
+            myWorksheet.Column(11).Width = 10;
+            myWorksheet.Column(12).Width = 10;
+            myWorksheet.Column(13).Width = 10;
+            myWorksheet.Column(14).Width = 10;
+            myWorksheet.Column(15).Width = 10;
+            myWorksheet.Column(16).Width = 10;
+            myWorksheet.Cells[myWorksheet.Dimension.Address].AutoFilter = true;
 
             //fileInfo = new FileInfo(wbPath ?? throw new InvalidOperationException());
             p.SaveAs(fileInfo);
@@ -436,6 +565,32 @@ namespace BubbleStart.ViewModels
 
 
 
+
+
+
+
+
+        private StudentsCustomers_ViewModel _StudentsCustomers_ViewModel;
+
+
+        public StudentsCustomers_ViewModel StudentsCustomers_ViewModel
+        {
+            get
+            {
+                return _StudentsCustomers_ViewModel;
+            }
+
+            set
+            {
+                if (_StudentsCustomers_ViewModel == value)
+                {
+                    return;
+                }
+
+                _StudentsCustomers_ViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
 
 
         private InActiveCustomers_ViewModel _MarketingCustomers_ViewModel;

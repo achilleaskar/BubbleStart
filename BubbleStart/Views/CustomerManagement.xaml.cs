@@ -144,7 +144,7 @@ namespace BubbleStart.Views
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ResetDayPicker.SelectedDate = System.DateTime.Today;
+            ResetDayPicker.SelectedDate = DateTime.Today;
 
         }
 
@@ -212,12 +212,16 @@ namespace BubbleStart.Views
             {
                 Clipboard.SetText(c.ToString());
             }
-
         }
 
         private void Button_ClickMass(object sender, RoutedEventArgs e)
         {
-            MassageResetDayPicker.SelectedDate = System.DateTime.Today;
+            MassageResetDayPicker.SelectedDate = DateTime.Today;
+        }
+
+        private void Button_ClickSem(object sender, RoutedEventArgs e)
+        {
+            ResetSemDayPicker.SelectedDate = DateTime.Today;
         }
     }
 }

@@ -47,7 +47,7 @@
                               d:Visibility="Visible"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
                     <MenuItem Command="{Binding OpenExpenseCategoriesCommand}"
-                              Header="Κατηγορίες Εξόδων"
+                              Header="Κατηγορίες Εξόδων/Εσόδων"
                               d:Visibility="Visible"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
                     <MenuItem Command="{Binding OpenProgramTypesEditCommand}"
@@ -116,12 +116,19 @@
                 <TabItem Header="Παρουσίες">
                     <views:ShowUpsPerDay_UserControl DataContext="{Binding ShowUpsPerDay_ViewModel }" />
                 </TabItem>
-                <TabItem Header="Ανενεργοί">
-                    <views:InActiveCustomers_UserControl DataContext="{Binding InActiveCustomers_ViewModel }" />
-                </TabItem>
-                <TabItem Header="Ενημέρωση">
-                    <views:InActiveCustomers_UserControl DataContext="{Binding MarketingCustomers_ViewModel }" />
-                </TabItem>
+                <TabItem Header="Πελάτες">
+                    <TabControl>
+                        <TabItem Header="Ανενεργοί">
+                            <views:InActiveCustomers_UserControl DataContext="{Binding InActiveCustomers_ViewModel}" />
+                        </TabItem>
+                        <TabItem Header="Ενημέρωση">
+                            <views:InActiveCustomers_UserControl DataContext="{Binding MarketingCustomers_ViewModel}" />
+                        </TabItem>
+                        <TabItem Header="Μαθητές">
+                            <views:StudentsCustomers_UserControl DataContext="{Binding StudentsCustomers_ViewModel}" />
+                        </TabItem>
+                    </TabControl>
+                </TabItem> 
                 <TabItem Header="Shop">
                     <views:Shop_UserControl DataContext="{Binding Shop_ViewModel }" />
                 </TabItem>

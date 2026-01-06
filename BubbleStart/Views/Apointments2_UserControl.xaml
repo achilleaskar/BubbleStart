@@ -11,7 +11,7 @@
              mc:Ignorable="d"
              Background="White"
              FontSize="11"
-             x:Name="window"
+             x:Name="window2"
              d:DesignHeight="650"
              d:DesignWidth="1200">
     <UserControl.Resources>
@@ -26,7 +26,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Popup Name="TimePopup"
+            <Popup Name="TimePopup2"
                    IsOpen="{Binding TimePopupOpen}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"

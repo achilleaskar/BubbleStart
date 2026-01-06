@@ -17,6 +17,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -31,7 +32,6 @@
     <ApplicationVersion>0.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -608,6 +608,22 @@
     <Compile Include="Migrations\202501282253203_person_nullable.Designer.cs">
       <DependentUpon>202501282253203_person_nullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202506302137529_resSemDay.cs" />
+    <Compile Include="Migrations\202506302137529_resSemDay.Designer.cs">
+      <DependentUpon>202506302137529_resSemDay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202507051120073_ReenabledDate.cs" />
+    <Compile Include="Migrations\202507051120073_ReenabledDate.Designer.cs">
+      <DependentUpon>202507051120073_ReenabledDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202511182214596_recieptDate.cs" />
+    <Compile Include="Migrations\202511182214596_recieptDate.Designer.cs">
+      <DependentUpon>202511182214596_recieptDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202512211701072_certified.cs" />
+    <Compile Include="Migrations\202512211701072_certified.Designer.cs">
+      <DependentUpon>202512211701072_certified.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -657,6 +673,7 @@
     <Compile Include="ViewModels\ShiftsManagement_Viewmodel.cs" />
     <Compile Include="ViewModels\Shop_ViewModel.cs" />
     <Compile Include="ViewModels\ShowUpsPerDay_ViewModel.cs" />
+    <Compile Include="ViewModels\StudentsCustomers_ViewModel.cs" />
     <Compile Include="ViewModels\UsersManagement_viewModel.cs" />
     <Compile Include="ViewModels\CustomersWindow_Viewmodel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
@@ -680,6 +697,9 @@
     </Compile>
     <Compile Include="Views\FindCustomerWidnow.xaml.cs">
       <DependentUpon>FindCustomerWidnow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StudentsCustomers_UserControl.xaml.cs">
+      <DependentUpon>StudentsCustomers_UserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\InActiveCustomers_UserControl.xaml.cs">
       <DependentUpon>InActiveCustomers_UserControl.xaml</DependentUpon>
@@ -1099,6 +1119,18 @@
     <EmbeddedResource Include="Migrations\202501282253203_person_nullable.resx">
       <DependentUpon>202501282253203_person_nullable.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202506302137529_resSemDay.resx">
+      <DependentUpon>202506302137529_resSemDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202507051120073_ReenabledDate.resx">
+      <DependentUpon>202507051120073_ReenabledDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202511182214596_recieptDate.resx">
+      <DependentUpon>202511182214596_recieptDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202512211701072_certified.resx">
+      <DependentUpon>202512211701072_certified.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -1146,6 +1178,10 @@
     <Page Include="Views\FindCustomerWidnow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StudentsCustomers_UserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\InActiveCustomers_UserControl.xaml">
       <SubType>Designer</SubType>

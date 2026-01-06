@@ -31,6 +31,29 @@ namespace BubbleStart.Model
 
 
 
+        private bool _Certified;
+
+
+        public bool Certified
+        {
+            get
+            {
+                return _Certified;
+            }
+
+            set
+            {
+                if (_Certified == value)
+                {
+                    return;
+                }
+
+                _Certified = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
         private bool _Gift;
 
 
@@ -624,7 +647,7 @@ namespace BubbleStart.Model
         {
             if (StartDay >= new DateTime(2025, 3, 11))
             {
-                return StartDay.AddDays((months * 30)-1);
+                return StartDay.AddDays((months * 30) - 1);
             }
             var x = StartDay.AddMonths(months);
             if (StartDay >= new DateTime(2022, 1, 17))

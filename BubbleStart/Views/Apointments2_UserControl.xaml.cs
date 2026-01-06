@@ -37,13 +37,13 @@ namespace BubbleStart.Views
 
         private void CloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            TimePopup.IsOpen = false;
+            TimePopup2.IsOpen = false;
             ((Apointments_ViewModel)DataContext).CustomTime = "";
         }
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            TimePopup.IsOpen = true;
+            TimePopup2.IsOpen = true;
         }
 
         private void Border_PreviewMouseLeftButtonUpF(object sender, MouseButtonEventArgs e)

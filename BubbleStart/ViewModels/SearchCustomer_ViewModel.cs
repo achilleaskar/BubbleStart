@@ -289,6 +289,7 @@ namespace BubbleStart.ViewModels
 
         private User _SelectedGymanst;
         private int _SelectedProgramCountIndex;
+        private string _MO;
 
         public User SelectedGymanst
         {
@@ -456,6 +457,21 @@ namespace BubbleStart.ViewModels
                 RaisePropertyChanged();
             }
         }
+        public string MO
+        {
+            get => _MO;
+
+            set
+            {
+                if (_MO == value)
+                {
+                    return;
+                }
+
+                _MO = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public int SelectedProgramModeIndex
         {
@@ -473,9 +489,21 @@ namespace BubbleStart.ViewModels
 
                 _SelectedProgramModeIndex = value;
                 CustomersCollectionView.Refresh();
+                UpdateMO();
                 RaisePropertyChanged();
             }
         }
+
+        private void UpdateMO()
+        {
+
+            var pm = (ProgramMode)(SelectedProgramModeIndex - 1);
+            var cs = Customers.Where(c => c.HasActiveProgram(pm));
+            var prices = cs.Select(c => c.GetActiveProgramPricePerMonth(pm)).Where(a => a > 0).ToList();
+            MO = prices.Count > 0 ? (prices.Sum() / prices.Count).ToString("0.##") : "-";
+            MO += $" ({prices.Count})";
+        }
+
         public int SelectedProgramCountIndex
         {
             get
@@ -884,7 +912,7 @@ namespace BubbleStart.ViewModels
                 }
 
             }
-            if (EnableStartAfterFilter && customer.FirstDate < StartAfterFilter)
+            if (EnableStartAfterFilter && (customer.FirstDate <= StartAfterFilter && customer.ReEnabled <= StartAfterFilter))
             {
                 return false;
             }
@@ -900,7 +928,7 @@ namespace BubbleStart.ViewModels
                 StaticResources.ContainsGreekName(tmpTerm, customer.Name) ||
                 StaticResources.ContainsGreekName(tmpTerm, customer.SureName) ||
                 customer.Name.ToUpper().Contains(SearchTerm) ||
-                customer.SureName.ToUpper().Contains(SearchTerm) || 
+                customer.SureName.ToUpper().Contains(SearchTerm) ||
                 customer.Tel.Contains(tmpTerm));
         }
 
@@ -935,7 +963,7 @@ namespace BubbleStart.ViewModels
                 c.EditedInCustomerManagement = true;
                 c.BasicDataManager = BasicDataManager;
                 c.UpdateCollections();
-                c.FillDefaultProframs();
+                c.FillDefaultPrograms();
 
                 Window window = new CustomerManagement
                 {

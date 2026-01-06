@@ -835,6 +835,7 @@ namespace BubbleStart.Helpers
                 Mouse.OverrideCursor = Cursors.Arrow;
         }
 
+       
         #endregion Methods
     }
 }

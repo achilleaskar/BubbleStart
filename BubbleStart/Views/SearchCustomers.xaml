@@ -17,6 +17,7 @@
              d:DesignWidth="1200">
     <UserControl.Resources>
         <Converters:MeetingsToColorConverter x:Key="MeetingsToColorConverter" />
+        <Converters:UserToVisibility x:Key="UserToVisibility" />
         <Converters:BoolToShowedUp_Converter x:Key="BoolToShowedUp_Converter" />
         <Converters:RowToIndexConverter x:Key="RowToIndexConverter" />
         <Converters:DateTimeToString x:Key="DateTimeToString" />
@@ -363,7 +364,10 @@
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Λέξη Κλειδί:"
-                               Margin="0 0 50 0" />
+                               Margin="0 0 10 0" />
+                    <TextBlock Text="{Binding MO}"
+                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}"
+                               Margin="0 0 5 0" />
                     <Label Grid.Row="0"
                            Content="Ενεργοί:" />
                     <ComboBox SelectedIndex="{Binding SelectedAciveIndex}"
