@@ -54,6 +54,10 @@
                               Header="Κατηγορίες Προγραμμάτων"
                               d:Visibility="Visible"
                               Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
+                    <MenuItem Command="{Binding OpenDealsEditCommand}"
+                              Header="Προσφορές"
+                              d:Visibility="Visible"
+                              Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}" />
                     <MenuItem Command="{Binding PrintCustomersCommand}"
                               Header="Εκτύπωση όλων"
                               d:Visibility="Visible"

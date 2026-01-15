@@ -540,8 +540,8 @@ namespace BubbleStart.ViewModels
             List<CustomeTime> customTimes = refresh ? await BasicDataManager.Context.Context.CustomeTimes.Where(a => (int)a.Room >= RoomFrom && (int)a.Room <= RoomTo && a.Datetime >= StartDate && a.Datetime < tmpdate).Distinct().ToListAsync() :
               BasicDataManager.Context.Context.CustomeTimes.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate).Distinct().ToList();
 
-            List<GymnastHour> gymnasts = refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => (int)a.Room >= RoomFrom && (int)a.Room <= RoomTo && a.Datetime >= StartDate && a.Datetime < tmpdate || a.Forever).ToListAsync() :
-             BasicDataManager.Context.Context.GymnastHours.Local.Where(a => a.Datetime >= StartDate && a.Datetime < tmpdate || a.Forever).Distinct().ToList();
+            List<GymnastHour> gymnasts = refresh ? await BasicDataManager.Context.Context.GymnastHours.Where(a => (int)a.Room >= RoomFrom && (int)a.Room <= RoomTo && ((a.Datetime >= StartDate && a.Datetime < tmpdate) || a.Forever)).ToListAsync() :
+             BasicDataManager.Context.Context.GymnastHours.Local.Where(a => (int)a.Room >= RoomFrom && (int)a.Room <= RoomTo && ((a.Datetime >= StartDate && a.Datetime < tmpdate) || a.Forever)).Distinct().ToList();
             GymnastsLocal = gymnasts;
             List<ClosedHour> closedHours = refresh ? await BasicDataManager.Context.Context.ClosedHours.Where(a => (int)a.Room >= RoomFrom && (int)a.Room <= RoomTo && a.Date >= StartDate && a.Date < tmpdate).Distinct().ToListAsync() :
              BasicDataManager.Context.Context.ClosedHours.Local.Where(a => a.Date >= StartDate && a.Date < tmpdate).Distinct().ToList();
@@ -767,7 +767,7 @@ namespace BubbleStart.ViewModels
             foreach (var day in Days)
             {
                 Wrules = new List<WorkingRule>();
-                foreach (var u in BasicDataManager.Users)
+                foreach (var u in BasicDataManager.Users.Where(a => !a.Disabled))
                 {
                     rule = u.WorkingRules.OrderByDescending(w => w.Id).FirstOrDefault(r => r.From <= day.Date && r.To >= day.Date);
                     if (rule != null)
@@ -790,8 +790,8 @@ namespace BubbleStart.ViewModels
                         }
                     }
                     hour.GymnastsWorking = hour.GymnastsWorking.TrimEnd(' ').TrimEnd(',');
-                }
-            }
+                    }
+                    }
             //var count = 0;
             //foreach (var day in Days)
             //{
@@ -923,7 +923,7 @@ namespace BubbleStart.ViewModels
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             StartDate = DateTime.Today.AddDays(-((int)DateTime.Today.DayOfWeek + 6) % 7);
-            Gymnasts = new ObservableCollection<User>(BasicDataManager.Users.Where(u => u.Id == 4 || u.Level == 4));
+            Gymnasts = new ObservableCollection<User>(BasicDataManager.Gymnasts);
             SelectedDayToGo = DateTime.Today;
             Days = new ObservableCollection<Day>();
             stopWatch.Stop();

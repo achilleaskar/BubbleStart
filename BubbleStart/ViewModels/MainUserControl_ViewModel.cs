@@ -29,6 +29,7 @@ namespace BubbleStart.ViewModels
             OpenSfiftsEditCommand = new RelayCommand(async () => await OpenShiftsWindow(), CanEditWindows);
             OpenItemsEditCommand = new RelayCommand(async () => await OpenItemsWindow(), CanEditWindows);
             OpenProgramTypesEditCommand = new RelayCommand(async () => await OpenProgramTypesWindow(), CanEditWindows);
+            OpenDealsEditCommand = new RelayCommand(async () => await OpenDealsWindow(), CanEditWindows);
             OpenExpenseCategoriesCommand = new RelayCommand(async () => await OpenExpenseCategories(), CanEditWindows);
             PrintCustomersCommand = new RelayCommand(async () => await PrintCustomers());
 
@@ -52,6 +53,13 @@ namespace BubbleStart.ViewModels
             var vm = new ProgramTypesManagement_ViewModel(BasicDataManager);
             await vm.LoadAsync();
             MessengerInstance.Send(new OpenChildWindowCommand(new ProgramTypesManagement_Window { DataContext = vm }));
+        }
+
+        private async Task OpenDealsWindow()
+        {
+            var vm = new DealsManagement_ViewModel(BasicDataManager);
+            await vm.LoadAsync();
+            MessengerInstance.Send(new OpenChildWindowCommand(new DealsManagement_Window { DataContext = vm }));
         }
 
         private async Task OpenItemsWindow()
@@ -496,6 +504,7 @@ namespace BubbleStart.ViewModels
         public RelayCommand OpenSfiftsEditCommand { get; set; }
         public RelayCommand OpenItemsEditCommand { get; set; }
         public RelayCommand OpenProgramTypesEditCommand { get; set; }
+        public RelayCommand OpenDealsEditCommand { get; set; }
         public RelayCommand PrintCustomersCommand { get; set; }
         public RelayCommand OpenExpenseCategoriesCommand { get; set; }
 

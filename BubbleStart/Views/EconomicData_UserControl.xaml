@@ -232,9 +232,18 @@
                                             <DataGridTextColumn Header="Ημερομ."
                                                                 Width="65"
                                                                 Binding="{Binding Date,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
-                                            <DataGridTextColumn Header="Παραστ."
-                                                                Width="65"
-                                                                Binding="{Binding RecieptDate,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DateTimeToString},ConverterParameter='dd/MM/yy'}" />
+                                            <DataGridTemplateColumn Header="Παραστ."
+                                                                    Width="100"
+                                                                    SortMemberPath="RecieptDate"
+                                                                    CellStyle="{StaticResource DataGridCellStyle}">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <DatePicker VerticalAlignment="Top"
+                                                                    Visibility="{Binding Reciept, Converter={StaticResource booleanToVisibilityConverter}}"
+                                                                    SelectedDate="{Binding RecieptDate, UpdateSourceTrigger=PropertyChanged}" />
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
                                             <DataGridTemplateColumn Header="Κατηγ."
                                                                     Width="90"
                                                                     SortMemberPath="MainCategory.Name"
@@ -373,6 +382,7 @@
                                                     <TextBlock Text="Ημερομηνία τιμολογίου:" />
                                                     <DatePicker VerticalAlignment="Bottom"
                                                                 Width="120"
+                                                                Visibility="{Binding NewExpense.Reciept, Converter={StaticResource booleanToVisibilityConverter}}"
                                                                 SelectedDate="{Binding NewExpense.RecieptDate,  UpdateSourceTrigger=PropertyChanged}" />
                                                 </StackPanel>
                                                 <StackPanel Margin=" 40 5 0 0"
@@ -1912,6 +1922,91 @@
                                                 Binding="{Binding Deal}" />
                         </DataGrid.Columns>
                     </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Πωλήσεις Ρούχων"
+                     d:Visibility="Visible"
+                     Visibility="{Binding ConverterParameter=1, Converter={StaticResource UserToVisibilityConverter}}">
+                <Grid HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel>
+                            <TextBlock Text="Aπό:" />
+                            <DatePicker VerticalAlignment="Center"
+                                        Width="100"
+                                        SelectedDate="{Binding StartDateClothSales, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Margin="5,0,0,5">
+                            <TextBlock Text="Έως:" />
+                            <DatePicker VerticalAlignment="Center"
+                                        Width="100"
+                                        SelectedDate="{Binding EndDateClothSales, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <Button Content="Προβολή"
+                                Margin="5"
+                                VerticalAlignment="Bottom"
+                                Command="{Binding ShowClothSalesDataCommand}" />
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding ClothSales}"
+                              Grid.Row="1"
+                              CanUserAddRows="False"
+                              IsReadOnly="True"
+                              HorizontalAlignment="Left"
+                              CanUserDeleteRows="False"
+                              AutoGenerateColumns="False">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="{x:Type DataGridRow}">
+                                <EventSetter Event="MouseDoubleClick"
+                                             Handler="ListView_MouseDoubleClick" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Ημερομηνία"
+                                                Width="90"
+                                                Binding="{Binding Date, Converter={StaticResource DateTimeToString}, ConverterParameter='dd/MM/yy'}" />
+                            <DataGridTextColumn Header="Όνομα"
+                                                Width="120"
+                                                Binding="{Binding Customer.Name}" />
+                            <DataGridTextColumn Header="Επίθετο"
+                                                Width="120"
+                                                Binding="{Binding Customer.SureName}" />
+                            <DataGridTextColumn Header="Προϊόν"
+                                                Width="120"
+                                                Binding="{Binding Item.Name}" />
+                            <DataGridTextColumn Header="Μέγεθος"
+                                                Width="70"
+                                                Binding="{Binding Size}" />
+                            <DataGridTextColumn Header="Χρώμα"
+                                                Width="80"
+                                                Binding="{Binding Color}" />
+                            <DataGridTemplateColumn Header="Τιμή"
+                                                    Width="70">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Price, StringFormat=C2}"
+                                                   HorizontalAlignment="Right"
+                                                   Margin="0,0,5,0" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridCheckBoxColumn Header="Δωρεάν"
+                                                    Width="60"
+                                                    Binding="{Binding Free}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Row="2"
+                                Margin="5">
+                        <Label Content="Σύνολο:" />
+                        <Label Content="{Binding TotalClothSales, Converter={StaticResource FtoSConverter}}" />
+                        <Label Content="Δωρεάν:"
+                               Margin="20,0,0,0" />
+                        <Label Content="{Binding TotalClothSalesFree}" />
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Header="Λήγουν"

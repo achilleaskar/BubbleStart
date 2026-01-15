@@ -33,9 +33,37 @@ namespace BubbleStart.ViewModels
 
         private ObservableCollection<User> _Users;
 
+        private ObservableCollection<UserWrapper> _EnabledUsers;
+
+        private ObservableCollection<UserWrapper> _DisabledUsers;
+
         #endregion Fields
 
         #region Properties
+
+        public ObservableCollection<UserWrapper> EnabledUsers
+        {
+            get => _EnabledUsers;
+            set
+            {
+                if (_EnabledUsers == value)
+                    return;
+                _EnabledUsers = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<UserWrapper> DisabledUsers
+        {
+            get => _DisabledUsers;
+            set
+            {
+                if (_DisabledUsers == value)
+                    return;
+                _DisabledUsers = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public SecureString PassWord
         {
@@ -129,12 +157,63 @@ namespace BubbleStart.ViewModels
 
         public override async Task LoadAsync(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
-            MainCollection = new ObservableCollection<UserWrapper>((await Context.Context.GetAllUsersAsyncSortedByUserName()).Select(u => new UserWrapper(u)));
+            var allUsers = (await Context.Context.GetAllUsersAsyncSortedByUserName()).Select(u => new UserWrapper(u)).ToList();
+            MainCollection = new ObservableCollection<UserWrapper>(allUsers);
+            EnabledUsers = new ObservableCollection<UserWrapper>(allUsers.Where(u => !u.Disabled));
+            DisabledUsers = new ObservableCollection<UserWrapper>(allUsers.Where(u => u.Disabled));
         }
 
         public override Task ReloadAsync()
         {
             throw new NotImplementedException();
+        }
+
+        public override async void SaveChanges()
+        {
+            var selectedUser = SelectedEntity;
+            var wasDisabled = selectedUser?.Model != null && Context.Context.Context.Entry(selectedUser.Model).OriginalValues.GetValue<bool>(nameof(User.Disabled));
+            var isNowDisabled = selectedUser?.Disabled ?? false;
+
+            base.SaveChanges();
+
+            // Move user between lists if Disabled status changed
+            if (selectedUser != null && wasDisabled != isNowDisabled)
+            {
+                if (isNowDisabled)
+                {
+                    EnabledUsers.Remove(selectedUser);
+                    if (!DisabledUsers.Contains(selectedUser))
+                        DisabledUsers.Add(selectedUser);
+                }
+                else
+                {
+                    DisabledUsers.Remove(selectedUser);
+                    if (!EnabledUsers.Contains(selectedUser))
+                        EnabledUsers.Add(selectedUser);
+                }
+            }
+        }
+
+        public override void AddedItem(User entity, bool removed)
+        {
+            base.AddedItem(entity, removed);
+            
+            var wrapper = MainCollection.FirstOrDefault(w => w.Model == entity);
+            if (wrapper == null)
+                return;
+
+            if (removed)
+            {
+                EnabledUsers.Remove(wrapper);
+                DisabledUsers.Remove(wrapper);
+            }
+            else
+            {
+                if (entity.Disabled)
+                    DisabledUsers.Add(wrapper);
+                else
+                    EnabledUsers.Add(wrapper);
+            }
         }
 
         #endregion Methods

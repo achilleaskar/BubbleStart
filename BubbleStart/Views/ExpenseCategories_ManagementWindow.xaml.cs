@@ -2,6 +2,7 @@
 using BubbleStart.ViewModels;
 using GalaSoft.MvvmLight.Messaging;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace BubbleStart.Views
 {
@@ -33,6 +34,17 @@ namespace BubbleStart.Views
                     u.Context.RefreshCommand.Execute(null);
             }
             Messenger.Default.Send(new UpdateExpenseCategoriesMessage());
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.Source is TabControl && DataContext is ExpenseCategoriesManagement_Viewmodel vm)
+            {
+                if (e.AddedItems.Count > 0 && e.AddedItems[0] is TabItem tabItem)
+                {
+                    vm.IsIncomeTabSelected = tabItem.Tag?.ToString() == "Income";
+                }
+            }
         }
     }
 }

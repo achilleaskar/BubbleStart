@@ -4803,6 +4803,90 @@ namespace BubbleStart.Model
             }
         }
 
+        private bool _PilatesStudio;
+
+        public bool PilatesStudio
+        {
+            get
+            {
+                return _PilatesStudio;
+            }
+
+            set
+            {
+                if (_PilatesStudio == value)
+                {
+                    return;
+                }
+
+                _PilatesStudio = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _FunctionalStudio;
+
+        public bool FunctionalStudio
+        {
+            get
+            {
+                return _FunctionalStudio;
+            }
+
+            set
+            {
+                if (_FunctionalStudio == value)
+                {
+                    return;
+                }
+
+                _FunctionalStudio = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _CorpusAthleticSeminars;
+
+        public bool CorpusAthleticSeminars
+        {
+            get
+            {
+                return _CorpusAthleticSeminars;
+            }
+
+            set
+            {
+                if (_CorpusAthleticSeminars == value)
+                {
+                    return;
+                }
+
+                _CorpusAthleticSeminars = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _Book;
+
+        public bool Book
+        {
+            get
+            {
+                return _Book;
+            }
+
+            set
+            {
+                if (_Book == value)
+                {
+                    return;
+                }
+
+                _Book = value;
+                RaisePropertyChanged();
+            }
+        }
+
         [NotMapped]
         public bool FullyLoaded { get; internal set; }
 
@@ -5738,6 +5822,7 @@ namespace BubbleStart.Model
             Messenger.Default.Send(new UpdateProgramMessage());
             FromProgram = false;
             CalculateRemainingAmount();
+            SaveChangesAsyncCommand.RaiseCanExecuteChanged();
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 

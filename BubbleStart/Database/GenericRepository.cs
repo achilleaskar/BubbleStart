@@ -474,11 +474,11 @@ namespace BubbleStart.Database
                     .Include(c => c.Program)
                     .ToListAsync();
 
-                if (programModeIds==null)
+                if (programModeIds == null)
                 {
                     return pa;
                 }
-                return pa.Where(p1 => p1.Program?.ProgramTypeO?.ProgramMode!=null && programModeIds.Contains(p1.Program.ProgramTypeO.ProgramMode));
+                return pa.Where(p1 => p1.Program?.ProgramTypeO?.ProgramMode != null && programModeIds.Contains(p1.Program.ProgramTypeO.ProgramMode));
             }
             catch (Exception)
             {
@@ -487,7 +487,7 @@ namespace BubbleStart.Database
         }
 
         internal async Task<List<Expense>> GetAllExpensesAsync(Expression<Func<Expense, bool>> filterp, bool limit = true, List<int> expensetypes = null, int mainId = -1, int secId = -1,
-            Stores store = Stores.empty, bool FromToFilter = false, Expense newExpense = null, bool? reciept = null)
+            Stores store = Stores.empty, bool fromToFilter = false, Expense newExpense = null, bool? reciept = null)
         {
             if (newExpense == null)
             {
@@ -495,12 +495,11 @@ namespace BubbleStart.Database
             }
             if (expensetypes == null || expensetypes.Count == 0)
             {
-
                 return await Context.Expenses.Where(e => (!limit || e.Date >= Limit) &&
                 (mainId <= 0 || mainId == e.MainCategoryId) &&
                 (StaticResources.User.Level <= 1 || (mainId > 0 && StaticResources.afroallowedExpCat.Contains(mainId)) || (mainId <= 0 && (e.MainCategory == null || StaticResources.afroallowedExpCat.Contains(e.MainCategoryId.Value)))) &&
                 (secId <= 0 || secId == e.SecondaryCategoryId) &&
-                (!FromToFilter || (e.To >= newExpense.From && e.From <= newExpense.To)) &&
+                (!fromToFilter || (e.To >= newExpense.From && e.From <= newExpense.To)) &&
                 (store == Stores.empty || store == e.SelectedStore) &&
                 (reciept == null || e.Reciept == reciept)).Where(filterp)
                    .ToListAsync();
@@ -510,7 +509,7 @@ namespace BubbleStart.Database
                 (StaticResources.User.Level <= 1 || (mainId > 0 && StaticResources.afroallowedExpCat.Contains(mainId)) || (mainId <= 0 && (e.MainCategory == null || StaticResources.afroallowedExpCat.Contains(e.MainCategoryId.Value)))) &&
                 (mainId <= 0 || mainId == e.MainCategoryId) &&
                 (secId <= 0 || secId == e.SecondaryCategoryId) &&
-                (!FromToFilter || (e.To >= newExpense.From && e.From <= newExpense.To)) &&
+                (!fromToFilter || (e.To >= newExpense.From && e.From <= newExpense.To)) &&
                 expensetypes.Contains((int)e.MainCategoryId) &&
                 (store == Stores.empty || store == e.SelectedStore) &&
                 (reciept == null || e.Reciept == reciept))
@@ -626,14 +625,14 @@ namespace BubbleStart.Database
                 await Context.Set<Apointment>()
                     .Where(p4 => p4.Customer.Enabled && p4.DateTime >= CloseLimit)
                     .ToListAsync();
-                    await Context.Set<Program>()
-                    .Where(p => p.Customer.Enabled && (
-                    (p.ProgramTypeO.ProgramMode != ProgramMode.massage && p.ProgramTypeO.ProgramMode != ProgramMode.yoga && p.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga && p.StartDay >= p.Customer.ResetDate) ||
-                    ((p.ProgramTypeO.ProgramMode == ProgramMode.yoga || p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga) && p.StartDay >= p.Customer.ResetSemDay) ||
-                    (p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)
-                    ))
-                    .Include(s => s.ShowUpsList)
-                    .ToListAsync();
+                await Context.Set<Program>()
+                .Where(p => p.Customer.Enabled && (
+                (p.ProgramTypeO.ProgramMode != ProgramMode.massage && p.ProgramTypeO.ProgramMode != ProgramMode.yoga && p.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga && p.StartDay >= p.Customer.ResetDate) ||
+                ((p.ProgramTypeO.ProgramMode == ProgramMode.yoga || p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga) && p.StartDay >= p.Customer.ResetSemDay) ||
+                (p.ProgramTypeO.ProgramMode == ProgramMode.massage && p.StartDay >= p.Customer.MassageResetDay)
+                ))
+                .Include(s => s.ShowUpsList)
+                .ToListAsync();
                 await Context.Set<Payment>()
                     .Where(s => s.Customer.Enabled && (
                     (s.Program.ProgramTypeO.ProgramMode != ProgramMode.massage && s.Program.ProgramTypeO.ProgramMode != ProgramMode.yoga && s.Program.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga && s.Program.StartDay >= s.Customer.ResetDate) ||
@@ -740,7 +739,7 @@ namespace BubbleStart.Database
 
         internal async Task<List<int>> GetStudentsIdsAsync()
         {
-            return await Context.Customers.Where(r =>  
+            return await Context.Customers.Where(r =>
             r.Programs.Any(p => p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga))
                 .Select(r => r.Id)
                 .ToListAsync();
@@ -753,5 +752,24 @@ namespace BubbleStart.Database
                 .Select(r => r.Id)
                 .ToListAsync();
         }
+
+        public async Task<List<CustomerTypeInfo>> GetACtiveIsGymOrStudent()
+        {
+            return await Context.Customers.Where(c => c.ForceDisable == 0 && c.Enabled)
+            .Select(r =>
+            new CustomerTypeInfo
+            {
+                CustomerId = r.Id,
+                Gym = r.Programs.Any(p => p.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga && p.ProgramTypeO.ProgramMode != ProgramMode.aerialYoga),
+                Student = r.Programs.Any(p => p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga || p.ProgramTypeO.ProgramMode == ProgramMode.aerialYoga)
+            }).ToListAsync();
+        }
+    }
+
+    public class CustomerTypeInfo
+    {
+        public int CustomerId { get; set; }
+        public bool Gym { get; set; }
+        public bool Student { get; set; }
     }
 }

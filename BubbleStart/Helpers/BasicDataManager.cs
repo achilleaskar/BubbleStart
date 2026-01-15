@@ -249,6 +249,8 @@ namespace BubbleStart.Helpers
             }
         }
 
+        public List<CustomerTypeInfo> StudentsOrGym { get; set; }
+
         private ObservableCollection<User> _Gymnasts;
 
         public ObservableCollection<User> Gymnasts
@@ -282,14 +284,14 @@ namespace BubbleStart.Helpers
             Customers = new ObservableCollection<Customer>(await Context.LoadAllCustomersAsync());
             ExpenseCategoryClasses = new ObservableCollection<ExpenseCategoryClass>((await Context.GetAllAsync<ExpenseCategoryClass>()).OrderBy(e => e.Name));
             ExpenseCategoryClasses.Insert(0, new ExpenseCategoryClass { Id = -1, Name = " " });
-            Gymnasts = new ObservableCollection<User>(Users.Where(u => u.Id == 4 || u.Level == 4));
+            Gymnasts = new ObservableCollection<User>(Users.Where(u => !u.Disabled && (u.Id == 4 || u.Level == 4)));
             StaticResources.context = this;
 
             Items = new List<Item>(await Context.GetAllAsync<Item>());
             ItemsList = new ObservableCollection<Item>(Items.Where(i => !i.Shop));
             ShopItems = new ObservableCollection<Item>(Items.Where(i => i.Shop));
             _ = await Context.GetAllAsync<ItemPurchase>();
-
+            StudentsOrGym = await Context.GetACtiveIsGymOrStudent();
             ProgramModes = new Dictionary<int, string>();
             foreach (ProgramMode item in Enum.GetValues(typeof(ProgramMode)))
             {
@@ -835,7 +837,7 @@ namespace BubbleStart.Helpers
                 Mouse.OverrideCursor = Cursors.Arrow;
         }
 
-       
+
         #endregion Methods
     }
 }

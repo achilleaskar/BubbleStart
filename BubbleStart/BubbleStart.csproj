@@ -624,6 +624,26 @@
     <Compile Include="Migrations\202512211701072_certified.Designer.cs">
       <DependentUpon>202512211701072_certified.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202601061034018_google.cs" />
+    <Compile Include="Migrations\202601061034018_google.Designer.cs">
+      <DependentUpon>202601061034018_google.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202601061830214_reciept.cs" />
+    <Compile Include="Migrations\202601061830214_reciept.Designer.cs">
+      <DependentUpon>202601061830214_reciept.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202601061836340_remove_reciept.cs" />
+    <Compile Include="Migrations\202601061836340_remove_reciept.Designer.cs">
+      <DependentUpon>202601061836340_remove_reciept.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202601061843016_nullreciept3.cs" />
+    <Compile Include="Migrations\202601061843016_nullreciept3.Designer.cs">
+      <DependentUpon>202601061843016_nullreciept3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202601061859105_nullreciept4.cs" />
+    <Compile Include="Migrations\202601061859105_nullreciept4.Designer.cs">
+      <DependentUpon>202601061859105_nullreciept4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\ContextConfiguration.cs" />
     <Compile Include="Model\Apointment.cs" />
@@ -657,6 +677,7 @@
     <Compile Include="Security\SecureStringManipulation.cs" />
     <Compile Include="ViewModels\AddEditBase.cs" />
     <Compile Include="ViewModels\Apointments_ViewModel.cs" />
+    <Compile Include="ViewModels\DealsManagement_ViewModel.cs" />
     <Compile Include="ViewModels\EconomicData_ViewModel.cs" />
     <Compile Include="ViewModels\EmployeeManagement_ViewModel.cs" />
     <Compile Include="ViewModels\ExpenseCategoriesManagement_Viewmodel.cs" />
@@ -685,6 +706,9 @@
     </Compile>
     <Compile Include="Views\CustomerManagement.xaml.cs">
       <DependentUpon>CustomerManagement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DealsManagement_Window.xaml.cs">
+      <DependentUpon>DealsManagement_Window.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EconomicData_UserControl.xaml.cs">
       <DependentUpon>EconomicData_UserControl.xaml</DependentUpon>
@@ -744,6 +768,7 @@
     <Compile Include="Views\UsersManagement_Window.xaml.cs">
       <DependentUpon>UsersManagement_Window.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Wrappers\DealWrapper.cs" />
     <Compile Include="Wrappers\ExpenseCategoryClassWrapper.cs" />
     <Compile Include="Wrappers\ItemWrapper.cs" />
     <Compile Include="Wrappers\ModelWrapper.cs" />
@@ -1131,6 +1156,21 @@
     <EmbeddedResource Include="Migrations\202512211701072_certified.resx">
       <DependentUpon>202512211701072_certified.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202601061034018_google.resx">
+      <DependentUpon>202601061034018_google.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202601061830214_reciept.resx">
+      <DependentUpon>202601061830214_reciept.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202601061836340_remove_reciept.resx">
+      <DependentUpon>202601061836340_remove_reciept.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202601061843016_nullreciept3.resx">
+      <DependentUpon>202601061843016_nullreciept3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202601061859105_nullreciept4.resx">
+      <DependentUpon>202601061859105_nullreciept4.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -1161,6 +1201,9 @@
     </Page>
     <Page Include="Views\CustomerManagement.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DealsManagement_Window.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EconomicData_UserControl.xaml">

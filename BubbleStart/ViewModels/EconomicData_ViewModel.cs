@@ -139,6 +139,7 @@ namespace BubbleStart.ViewModels
             OpenCustomerManagementCommand = new RelayCommand(() => { OpenCustomerManagement(SelectedCustomer); });
 
             ShowSalesDataCommand = new RelayCommand(async () => { await ShowSalesData(); });
+            ShowClothSalesDataCommand = new RelayCommand(async () => { await ShowClothSalesData(); });
             CustomersExpire = new ObservableCollection<Customer>();
             DeleteExpenseCommand = new RelayCommand(async () => { await DeleteExpense(); });
             DeleteIncomeCommand = new RelayCommand(async () => { await DeleteIncome(); });
@@ -290,6 +291,24 @@ namespace BubbleStart.ViewModels
                 p.CalculateRemainingAmount();
             }
             TotalSales = Sales.Sum(s => s.Amount);
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private async Task ShowClothSalesData()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            var enddate = EndDateClothSales.AddDays(1);
+            
+            var purchases = await BasicDataManager.Context.Context.ItemPurchases
+                .Where(p => p.Date >= StartDateClothSales && p.Date < EndDateClothSales)
+                .Include(p => p.Customer)
+                .Include(p => p.Item)
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+
+            ClothSales = new ObservableCollection<ItemPurchase>(purchases);
+            TotalClothSales = ClothSales.Where(c => !c.Free).Sum(c => c.Price);
+            TotalClothSalesFree = ClothSales.Count(c => c.Free);
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
@@ -1510,6 +1529,80 @@ namespace BubbleStart.ViewModels
             }
         }
 
+        private ObservableCollection<ItemPurchase> _ClothSales;
+
+        public ObservableCollection<ItemPurchase> ClothSales
+        {
+            get => _ClothSales;
+            set
+            {
+                if (_ClothSales == value)
+                    return;
+                _ClothSales = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private decimal _TotalClothSales;
+
+        public decimal TotalClothSales
+        {
+            get => _TotalClothSales;
+            set
+            {
+                if (_TotalClothSales == value)
+                    return;
+                _TotalClothSales = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _TotalClothSalesFree;
+
+        public int TotalClothSalesFree
+        {
+            get => _TotalClothSalesFree;
+            set
+            {
+                if (_TotalClothSalesFree == value)
+                    return;
+                _TotalClothSalesFree = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private DateTime _StartDateClothSales = DateTime.Today;
+
+        public DateTime StartDateClothSales
+        {
+            get => _StartDateClothSales;
+            set
+            {
+                if (_StartDateClothSales == value)
+                    return;
+                if (value > EndDateClothSales)
+                    EndDateClothSales = value;
+                _StartDateClothSales = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private DateTime _EndDateClothSales = DateTime.Today;
+
+        public DateTime EndDateClothSales
+        {
+            get => _EndDateClothSales;
+            set
+            {
+                if (_EndDateClothSales == value)
+                    return;
+                if (value < StartDateClothSales)
+                    StartDateClothSales = value;
+                _EndDateClothSales = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private ObservableCollection<Customer> _CustomersExpire;
 
         public ObservableCollection<Customer> CustomersExpire
@@ -1538,6 +1631,7 @@ namespace BubbleStart.ViewModels
         public RelayCommand ShowExpensesDataCommand { get; set; }
 
         public RelayCommand ShowSalesDataCommand { get; set; }
+        public RelayCommand ShowClothSalesDataCommand { get; set; }
 
         public RelayCommand FindAndReplaceCommand { get; set; }
 
@@ -2318,7 +2412,8 @@ namespace BubbleStart.ViewModels
                 MainCategory?.Id ?? -1,
                 NewExpense?.SecondaryCategory?.Id ?? -1,
                 NewExpense.SelectedStore,
-         FromToFilter, NewExpense,
+                FromToFilter,
+                NewExpense,
                 NewExpense.Reciept)).OrderBy(a => a.Date));
             foreach (var item in Expenses)
             {

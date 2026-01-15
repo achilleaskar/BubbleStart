@@ -476,7 +476,7 @@ namespace BubbleStart.ViewModels
         public override void Load(int id = 0, MyViewModelBaseAsync previousViewModel = null)
         {
             Customers = new ObservableCollection<Customer>(BasicDataManager.Customers.ToHashSet());
-            Gymnasts = new ObservableCollection<User>(BasicDataManager.Users.Where(u => u.Id == 4 || u.Level == 4));
+            Gymnasts = new ObservableCollection<User>(BasicDataManager.Gymnasts);
             CustomersCollectionView = CollectionViewSource.GetDefaultView(Customers);
             CustomersCollectionView.Filter = CustomerFilter;
         }

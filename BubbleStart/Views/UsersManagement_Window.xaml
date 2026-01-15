@@ -137,7 +137,7 @@
         </GroupBox>
         <GroupBox Header="Καταχωρημένοι Χρήστες"
                   Grid.Column="1"
-                  HorizontalAlignment="Center">
+                  HorizontalAlignment="Stretch">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -152,21 +152,38 @@
                                                    Spin="{Binding UnitOfWork.IsBusy}"
                                                    Margin="5" />
                 </Button>
-                <DataGrid ItemsSource="{Binding MainCollection}"
-                          Width="200"
-                          Grid.Row="1"
-                          VerticalAlignment="Stretch"
-                          AutoGenerateColumns="False"
-                          CanUserAddRows="False"
-                          CanUserDeleteRows="False"
-                          SelectedItem="{Binding SelectedEntity}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Όνομα"
-                                            Binding="{Binding Name}" />
-                        <DataGridTextColumn Header="Τηλέφωνο"
-                                            Binding="{Binding Tel }" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                <TabControl Grid.Row="1">
+                    <TabItem Header="Ενεργοί">
+                        <DataGrid ItemsSource="{Binding EnabledUsers}"
+                                  VerticalAlignment="Stretch"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  SelectedItem="{Binding SelectedEntity}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Όνομα"
+                                                    Binding="{Binding Name}" />
+                                <DataGridTextColumn Header="Τηλέφωνο"
+                                                    Binding="{Binding Tel}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                    <TabItem Header="Ανενεργοί">
+                        <DataGrid ItemsSource="{Binding DisabledUsers}"
+                                  VerticalAlignment="Stretch"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  SelectedItem="{Binding SelectedEntity}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Όνομα"
+                                                    Binding="{Binding Name}" />
+                                <DataGridTextColumn Header="Τηλέφωνο"
+                                                    Binding="{Binding Tel}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                </TabControl>
                 <Button Content="Διαγραφη"
                         Grid.Row="2"
                         HorizontalAlignment="Right"

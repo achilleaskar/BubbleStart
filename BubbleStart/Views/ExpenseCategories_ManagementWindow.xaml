@@ -45,11 +45,10 @@
                          Margin="0,5,5,5"
                          Grid.Row="0"
                          Grid.Column="1" />
-                <Label Content="Parent:"
+                <Label Content="Κατηγορία:"
                        Grid.Row="1"
                        Grid.Column="0" />
-                <ComboBox ItemsSource="{Binding Parents}"
-                          ItemStringFormat="{}{0:HH:mm}"
+                <ComboBox ItemsSource="{Binding CurrentParents}"
                           DisplayMemberPath="Name"
                           SelectedItem="{Binding SelectedEntity.Parent}"
                           Margin="0,5,5,5"
@@ -83,8 +82,9 @@
             </Grid>
         </GroupBox>
         <GroupBox Header="Καταχωρημένες κατηγορίες"
-                  Grid.Column="1" MinWidth="400"
-                  HorizontalAlignment="Center">
+                  Grid.Column="1"
+                  MinWidth="400"
+                  HorizontalAlignment="Stretch">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -99,25 +99,49 @@
                                                    Spin="{Binding UnitOfWork.IsBusy}"
                                                    Margin="5" />
                 </Button>
-                <DataGrid ItemsSource="{Binding MainCollection}"
-                          Grid.Row="1"
-                          Grid.ColumnSpan="3"
-                          VerticalAlignment="Stretch"
-                          AutoGenerateColumns="False"
-                          CanUserAddRows="False"
-                          CanUserDeleteRows="False"
-                          SelectedItem="{Binding SelectedEntity}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Υποκατηγορία"
-                                            IsReadOnly="True"
-                                            Width="300"
-                                            Binding="{Binding Name}" />
-                        <DataGridTextColumn Header="Κατηγορία"
-                                            Width="300"
-                                            IsReadOnly="True"
-                                            Binding="{Binding Parent.Name}" />
-                    </DataGrid.Columns>
-                </DataGrid>
+                <TabControl Grid.Row="1"
+                            SelectionChanged="TabControl_SelectionChanged">
+                    <TabItem Header="Έξοδα"
+                             Tag="Expense">
+                        <DataGrid ItemsSource="{Binding ExpenseCategories}"
+                                  VerticalAlignment="Stretch"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  SelectedItem="{Binding SelectedEntity}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Υποκατηγορία"
+                                                    IsReadOnly="True"
+                                                    Width="200"
+                                                    Binding="{Binding Name}" />
+                                <DataGridTextColumn Header="Κατηγορία"
+                                                    Width="200"
+                                                    IsReadOnly="True"
+                                                    Binding="{Binding Parent.Name}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                    <TabItem Header="Έσοδα"
+                             Tag="Income">
+                        <DataGrid ItemsSource="{Binding IncomeCategories}"
+                                  VerticalAlignment="Stretch"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  SelectedItem="{Binding SelectedEntity}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Υποκατηγορία"
+                                                    IsReadOnly="True"
+                                                    Width="200"
+                                                    Binding="{Binding Name}" />
+                                <DataGridTextColumn Header="Κατηγορία"
+                                                    Width="200"
+                                                    IsReadOnly="True"
+                                                    Binding="{Binding Parent.Name}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </TabItem>
+                </TabControl>
                 <Button Content="Διαγραφη"
                         Grid.Row="2"
                         HorizontalAlignment="Right"
